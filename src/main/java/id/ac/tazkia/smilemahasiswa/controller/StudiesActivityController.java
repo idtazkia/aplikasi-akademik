@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.DetailPresensiDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.SpDto;
@@ -18,6 +19,7 @@ import id.ac.tazkia.smilemahasiswa.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.kafka.common.protocol.types.Field.Str;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.PropertyTemplate;
@@ -62,7 +64,8 @@ import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Controller @Slf4j
+@Controller
+@Slf4j
 public class StudiesActivityController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudiesActivityController.class);
@@ -136,7 +139,8 @@ public class StudiesActivityController {
     @Autowired
     private ProgramDao programDao;
 
-    @Autowired private ScoreService scoreService;
+    @Autowired
+    private ScoreService scoreService;
 
     @Autowired
     private PraKrsSpDao praKrsSpDao;
@@ -198,7 +202,7 @@ public class StudiesActivityController {
     @Value("${upload.rps}")
     private String uploadRps;
 
-    //    Attribute
+    // Attribute
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
@@ -220,48 +224,52 @@ public class StudiesActivityController {
         return mahasiswaDao.cariAngkatan();
     }
 
-//    API
-        @GetMapping("/api/nilai")
-        @ResponseBody
-        public KrsDetail findByJadwal(@RequestParam(required = false) KrsDetail krsDetail ,Model model){
-            model.addAttribute("otomatisNilai", krsDetail);
-            return krsDetail;
-        }
+    // API
+    @GetMapping("/api/nilai")
+    @ResponseBody
+    public KrsDetail findByJadwal(@RequestParam(required = false) KrsDetail krsDetail, Model model) {
+        model.addAttribute("otomatisNilai", krsDetail);
+        return krsDetail;
+    }
 
-        @GetMapping("/api/mahasiswa")
-        @ResponseBody
-        public Mahasiswa findByNim(@RequestParam(required = false) String nim ,Model model){
-            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            model.addAttribute("mahasiswa", mahasiswa);
-            return mahasiswa;
-        }
+    @GetMapping("/api/mahasiswa")
+    @ResponseBody
+    public Mahasiswa findByNim(@RequestParam(required = false) String nim, Model model) {
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mahasiswa", mahasiswa);
+        return mahasiswa;
+    }
 
-//    Attendance
+    // Attendance
 
     @GetMapping("/studiesActivity/attendance/listdosen")
-    public void listLectureAttendance(Model model, Authentication authentication, @RequestParam(required = false) TahunAkademik tahunAkademik){
+    public void listLectureAttendance(Model model, Authentication authentication,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        if (tahunAkademik != null){
+        if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
-            Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
+            Iterable<JadwalDosen> jadwal = jadwalDosenDao
+                    .findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(
+                            Arrays.asList(StatusRecord.HAPUS), tahunAkademik, dosen);
             model.addAttribute("jadwal", jadwal);
 
-        }else {
+        } else {
             TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahun,dosen);
+            Iterable<JadwalDosen> jadwal = jadwalDosenDao
+                    .findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(
+                            Arrays.asList(StatusRecord.HAPUS), tahun, dosen);
             model.addAttribute("jadwal", jadwal);
         }
-
 
     }
 
     @GetMapping("/studiesActivity/attendance/list")
     public void listAttendance(Model model, @RequestParam(required = false) Prodi prodi,
-                               @RequestParam(required = false) TahunAkademik tahunAkademik,
-                               @RequestParam(required = false) Hari hari) {
+            @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Hari hari) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedHari", hari);
         model.addAttribute("selectedProdi", prodi);
@@ -271,22 +279,28 @@ public class StudiesActivityController {
             model.addAttribute("jadwal", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hari));
         }
 
-
         if (prodi != null && tahunAkademik != null && hari == null) {
             model.addAttribute("ploting", jadwalDao.ploting(prodi, tahunAkademik));
-            model.addAttribute("minggu", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("0").get()));
-            model.addAttribute("senin", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("1").get()));
-            model.addAttribute("selasa", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("2").get()));
-            model.addAttribute("rabu", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("3").get()));
-            model.addAttribute("kamis", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("4").get()));
-            model.addAttribute("jumat", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("5").get()));
-            model.addAttribute("sabtu", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("6").get()));
+            model.addAttribute("minggu",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("0").get()));
+            model.addAttribute("senin",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("1").get()));
+            model.addAttribute("selasa",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("2").get()));
+            model.addAttribute("rabu",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("3").get()));
+            model.addAttribute("kamis",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("4").get()));
+            model.addAttribute("jumat",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("5").get()));
+            model.addAttribute("sabtu",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("6").get()));
         }
     }
 
     @GetMapping("/studiesActivity/attendance/detail")
     public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
-        model.addAttribute("detail",presensiDosenDao.listPresensiDosen(jadwal));
+        model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("jadwal", jadwal);
@@ -294,9 +308,11 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/attendance/download")
-    public void downloadAttendance(@RequestParam(required = false) Jadwal jadwal, HttpServletResponse response) throws IOException {
+    public void downloadAttendance(@RequestParam(required = false) Jadwal jadwal, HttpServletResponse response)
+            throws IOException {
 
-        String[] column = {"No", "Nim", "Nama", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
+        String[] column = { "No", "Nim", "Nama", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
+                "14", "15", "16" };
 
         List<Object[]> listAbsen = presensiMahasiswaDao.bkdAttendance(jadwal);
 
@@ -390,7 +406,7 @@ public class StudiesActivityController {
 
         Row headerRow = sheet.createRow(9);
 
-        for (int i = 0; i < column.length; i++){
+        for (int i = 0; i < column.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(column[i]);
             cell.setCellStyle(headerCellStyle);
@@ -399,7 +415,7 @@ public class StudiesActivityController {
         int rowNum = 10;
         int baris = 1;
 
-        for (Object[] list : listAbsen){
+        for (Object[] list : listAbsen) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list[2].toString());
@@ -441,7 +457,7 @@ public class StudiesActivityController {
             row.getCell(18).setCellStyle(dataCellStyle);
         }
 
-        for (int i = 0; i<column.length; i++){
+        for (int i = 0; i < column.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
@@ -452,48 +468,48 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/detail")
-    public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto)throws Exception{
+    public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto) throws Exception {
 
         LocalTime jamMulai1 = LocalTime.now().plusHours(7);
         DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
 
         presensiService.inputPresensi(jadwalDto.getDosen(),
                 jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
-                LocalDateTime.of(jadwalDto.getTanggal(),jamMulai1),jadwalDto.getPertemuan());
+                LocalDateTime.of(jadwalDto.getTanggal(), jamMulai1), jadwalDto.getPertemuan());
 
         return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
 
     }
 
-
     @GetMapping("/studiesActivity/attendance/mahasiswa")
-    public void attendance(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
+    public void attendance(@RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah, Model model) {
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,
+                StatusRecord.AKTIF);
         List<Mahasiswa> mahasiswas = new ArrayList<>();
 
-
         Map<String, String> statusPresensi = new HashMap<>();
-        for(PresensiMahasiswa pm : presensiMahasiswa){
+        for (PresensiMahasiswa pm : presensiMahasiswa) {
             mahasiswas.add(pm.getMahasiswa());
             statusPresensi.put(pm.getId(), pm.getStatusPresensi().toString());
         }
         if (!mahasiswas.isEmpty()) {
-            List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas, sesiKuliah.getJadwal(), StatusRecord.AKTIF);
+            List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas,
+                    sesiKuliah.getJadwal(), StatusRecord.AKTIF);
             model.addAttribute("detail", krsDetails);
-        }else {
-            List<KrsDetail> krsDetails = krsDetailDao.findByJadwalAndStatus(sesiKuliah.getJadwal(),StatusRecord.AKTIF);
+        } else {
+            List<KrsDetail> krsDetails = krsDetailDao.findByJadwalAndStatus(sesiKuliah.getJadwal(), StatusRecord.AKTIF);
             model.addAttribute("detail", krsDetails);
 
         }
         model.addAttribute("statusPresensi", StatusPresensi.values());
         model.addAttribute("presensi", presensiMahasiswaDao.listPresensiMahasiswa(sesiKuliah));
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
-        model.addAttribute("sesi",sesiKuliah.getId());
+        model.addAttribute("sesi", sesiKuliah.getId());
     }
 
     @GetMapping("/data-presensi-mahasiswa")
     @ResponseBody
-    public List<PresensiMahasiswaDto> listPresensiMahasiswaBarcode(@RequestParam String id){
+    public List<PresensiMahasiswaDto> listPresensiMahasiswaBarcode(@RequestParam String id) {
         PresensiDosen presensiDosen = presensiDosenDao.findById(id).get();
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
         return presensiMahasiswaDao.listPresensiMahasiswaBarcode(sesiKuliah);
@@ -501,7 +517,7 @@ public class StudiesActivityController {
 
     @PutMapping("/update-presensi-mahasiswa/{id}")
     @ResponseBody
-    public BaseResponse listPresensiMahasiswa(@PathVariable String id, @RequestParam String status){
+    public BaseResponse listPresensiMahasiswa(@PathVariable String id, @RequestParam String status) {
         PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findById(id).get();
         presensiMahasiswa.setStatusPresensi(StatusPresensi.valueOf(status));
         presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
@@ -518,27 +534,28 @@ public class StudiesActivityController {
 
     @GetMapping("/detail-presensi-mahasiswa")
     @ResponseBody
-    public List<PresensiMahasiswaDto> listPresensiMahasiswa(@RequestParam String id){
+    public List<PresensiMahasiswaDto> listPresensiMahasiswa(@RequestParam String id) {
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
         return presensiMahasiswaDao.listDataPresensiMahasiswa(sesiKuliah);
     }
 
     @PostMapping("/studiesActivity/attendance/mahasiswa")
-    public String prosesAttendance(@RequestParam String jadwal, @RequestParam String sesi, HttpServletRequest request){
+    public String prosesAttendance(@RequestParam String jadwal, @RequestParam String sesi, HttpServletRequest request) {
         Jadwal j = jadwalDao.findById(jadwal).get();
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
 
-        for (PresensiMahasiswa presensiMahasiswa : presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF)){
+        for (PresensiMahasiswa presensiMahasiswa : presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,
+                StatusRecord.AKTIF)) {
             String pilihan = request.getParameter(presensiMahasiswa.getMahasiswa().getNim() + "nim");
-            if (pilihan == null || pilihan.isEmpty()){
+            if (pilihan == null || pilihan.isEmpty()) {
                 System.out.println("gaada");
-            }else {
+            } else {
                 presensiMahasiswa.setMahasiswa(presensiMahasiswa.getMahasiswa());
                 StatusPresensi statusPresensi = StatusPresensi.valueOf(pilihan);
                 presensiMahasiswa.setStatusPresensi(statusPresensi);
                 presensiMahasiswa.setCatatan("Manual");
                 presensiMahasiswa.setKrsDetail(presensiMahasiswa.getKrsDetail());
-                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
+                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(), j.getJamSelesai()));
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
                 presensiMahasiswaDao.save(presensiMahasiswa);
@@ -547,17 +564,17 @@ public class StudiesActivityController {
 
         }
 
-        return "redirect:detail?jadwal="+j.getId();
+        return "redirect:detail?jadwal=" + j.getId();
     }
 
     @PostMapping("/studiesActivity/attendance/sesi")
-    public String saveSesiBaru(@RequestParam Jadwal jadwal, @RequestParam SesiKuliah sesi,HttpServletRequest request){
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(sesi.getJadwal(),StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail){
+    public String saveSesiBaru(@RequestParam Jadwal jadwal, @RequestParam SesiKuliah sesi, HttpServletRequest request) {
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(sesi.getJadwal(), StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail) {
             String pilihan = request.getParameter(kd.getMahasiswa().getNim() + "nim");
-            if (pilihan == null || pilihan.isEmpty()){
+            if (pilihan == null || pilihan.isEmpty()) {
                 System.out.println("gaada");
-            }else {
+            } else {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 StatusPresensi statusPresensi = StatusPresensi.valueOf(pilihan);
@@ -570,22 +587,24 @@ public class StudiesActivityController {
                 presensiMahasiswaDao.save(presensiMahasiswa);
             }
         }
-        return "redirect:mahasiswa?id="+sesi.getId();
+        return "redirect:mahasiswa?id=" + sesi.getId();
     }
 
     @PostMapping("/studiesActivity/attendance/save")
-    public String savePresensi(@RequestParam(required = false) String sesi, @RequestParam(required = false) StatusPresensi statusPresensi){
+    public String savePresensi(@RequestParam(required = false) String sesi,
+            @RequestParam(required = false) StatusPresensi statusPresensi) {
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
-        for (PresensiMahasiswa pm : presensiMahasiswa){
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,
+                StatusRecord.AKTIF);
+        for (PresensiMahasiswa pm : presensiMahasiswa) {
             pm.setStatusPresensi(statusPresensi);
             presensiMahasiswaDao.save(pm);
         }
-        return "redirect:detail?jadwal="+sesiKuliah.getJadwal().getId();
+        return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
     }
 
     @GetMapping("/studiesActivity/attendance/form")
-    public void editAttendance(Model model,@RequestParam(name = "id",value = "id")SesiKuliah sesiKuliah){
+    public void editAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah) {
         JadwalDto jadwalDto = new JadwalDto();
         jadwalDto.setId(sesiKuliah.getId());
         jadwalDto.setJadwal(sesiKuliah.getJadwal());
@@ -603,38 +622,39 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/form")
-    public String prosesEdit(@ModelAttribute JadwalDto jadwalDto){
+    public String prosesEdit(@ModelAttribute JadwalDto jadwalDto) {
 
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
 
-//        String date = jadwalDto.getTanggal().toString();
-//        String time1 = jadwalDto.getWaktuMulai();
-//        String time2 = jadwalDto.getWaktuSelesai();
+        // String date = jadwalDto.getTanggal().toString();
+        // String time1 = jadwalDto.getWaktuMulai();
+        // String time2 = jadwalDto.getWaktuSelesai();
 
-//        String jammulai = time1.substring(0,5) + ":00";
-//        String jamselsai = time2.substring(0,5) + ":00";
-//
-//        LocalTime jammu = LocalTime.parse(jammulai);
-//        LocalTime jamse = LocalTime.parse(jamselsai);
-//
-//        String tanggalan = date + ' ' + time1 + ':' + "00";
-//        String tanggalan2 = date + ' ' + time2 + ':' + "00";
-//
-//        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        LocalDateTime localDate1 = LocalDateTime.parse(tanggalan, formatter1);
-//        LocalDateTime localDate2 = LocalDateTime.parse(tanggalan2, formatter1);
-////        pejabatMatrikulasi.setTanggalSelesai(localDate1.plusDays(0));
-//
+        // String jammulai = time1.substring(0,5) + ":00";
+        // String jamselsai = time2.substring(0,5) + ":00";
+        //
+        // LocalTime jammu = LocalTime.parse(jammulai);
+        // LocalTime jamse = LocalTime.parse(jamselsai);
+        //
+        // String tanggalan = date + ' ' + time1 + ':' + "00";
+        // String tanggalan2 = date + ' ' + time2 + ':' + "00";
+        //
+        // DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd
+        // HH:mm:ss");
+        // LocalDateTime localDate1 = LocalDateTime.parse(tanggalan, formatter1);
+        // LocalDateTime localDate2 = LocalDateTime.parse(tanggalan2, formatter1);
+        //// pejabatMatrikulasi.setTanggalSelesai(localDate1.plusDays(0));
+        //
 
-//        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jammu));
-//        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jamse));
+        // sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jammu));
+        // sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jamse));
 
-        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
-        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
+        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
+        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamSelesai()));
 
-//        sesiKuliah.setWaktuMulai(localDate1);
-//        sesiKuliah.setWaktuSelesai(localDate2);
+        // sesiKuliah.setWaktuMulai(localDate1);
+        // sesiKuliah.setWaktuSelesai(localDate2);
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());
@@ -644,41 +664,41 @@ public class StudiesActivityController {
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
 
-        return "redirect:detail?jadwal="+sesiKuliah.getJadwal().getId();
+        return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
     }
 
     @PostMapping("/studiesActivity/attendance/delete")
-    public String deletePresensi(@RequestParam(value = "id", name = "id") SesiKuliah sesiKuliah){
+    public String deletePresensi(@RequestParam(value = "id", name = "id") SesiKuliah sesiKuliah) {
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setStatus(StatusRecord.HAPUS);
         presensiDosenDao.save(presensiDosen);
 
         List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
-        for (PresensiMahasiswa pm : presensiMahasiswa){
+        for (PresensiMahasiswa pm : presensiMahasiswa) {
             pm.setStatus(StatusRecord.HAPUS);
             presensiMahasiswaDao.save(pm);
         }
 
-        return "redirect:detail?jadwal="+sesiKuliah.getJadwal().getId();
+        return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
     }
 
-//    KRS
+    // KRS
     @GetMapping("/studiesActivity/krs/paket")
-    public void main(Model model,@RequestParam(required = false) Kelas kelas){
-        model.addAttribute("kelas",kelasMahasiswaDao.carikelasMahasiswa());
-        model.addAttribute("selected",kelas);
+    public void main(Model model, @RequestParam(required = false) Kelas kelas) {
+        model.addAttribute("kelas", kelasMahasiswaDao.carikelasMahasiswa());
+        model.addAttribute("selected", kelas);
         List<KelasMahasiswaDto> kelasMahasiswaDtos = new ArrayList<>();
 
-        if (kelas != null){
-            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(kelas,StatusRecord.AKTIF);
-            if (IterableUtils.size(kelasMahasiswa) == 0){
-                model.addAttribute("kosong","gada mahasiswa");
+        if (kelas != null) {
+            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(kelas, StatusRecord.AKTIF);
+            if (IterableUtils.size(kelasMahasiswa) == 0) {
+                model.addAttribute("kosong", "gada mahasiswa");
             }
-            if (IterableUtils.size(kelasMahasiswa) > 0){
-                for (KelasMahasiswa km : kelasMahasiswa){
+            if (IterableUtils.size(kelasMahasiswa) > 0) {
+                for (KelasMahasiswa km : kelasMahasiswa) {
                     KelasMahasiswaDto kelasMahasiswaDto = new KelasMahasiswaDto();
                     kelasMahasiswaDto.setNim(km.getMahasiswa().getNim());
                     kelasMahasiswaDto.setNama(km.getMahasiswa().getNama());
@@ -687,26 +707,28 @@ public class StudiesActivityController {
 
                 }
             }
-            model.addAttribute("mahasiswaList",kelasMahasiswaDtos);
+            model.addAttribute("mahasiswaList", kelasMahasiswaDtos);
         }
     }
 
     @PostMapping("/studiesActivity/krs/paket")
     private String paketKrs(@RequestParam(required = false) Kelas kelas) {
-        if (kelas != null){
-            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(kelas,StatusRecord.AKTIF);
-            if (kelasMahasiswa == null){
-//                model.addAttribute("empty","tidak ada mahasiswa");
+        if (kelas != null) {
+            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(kelas, StatusRecord.AKTIF);
+            if (kelasMahasiswa == null) {
+                // model.addAttribute("empty","tidak ada mahasiswa");
             }
 
             if (kelasMahasiswa != null) {
                 for (KelasMahasiswa km : kelasMahasiswa) {
-                    Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),km.getMahasiswa(),StatusRecord.AKTIF);
-                    if (krs != null){
-                        List<Jadwal> jadwal = jadwalDao.findByStatusAndTahunAkademikAndKelasAndHariNotNull(StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),kelas);
+                    Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(
+                            tahunAkademikDao.findByStatus(StatusRecord.AKTIF), km.getMahasiswa(), StatusRecord.AKTIF);
+                    if (krs != null) {
+                        List<Jadwal> jadwal = jadwalDao.findByStatusAndTahunAkademikAndKelasAndHariNotNull(
+                                StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), kelas);
                         for (Jadwal j : jadwal) {
                             KrsDetail kd = krsDetailDao.findByJadwalAndStatusAndKrs(j, StatusRecord.AKTIF, krs);
-                            if (kd == null){
+                            if (kd == null) {
                                 KrsDetail krsDetail = new KrsDetail();
                                 krsDetail.setJadwal(j);
                                 krsDetail.setKrs(krs);
@@ -732,16 +754,19 @@ public class StudiesActivityController {
                 }
             }
         }
-        return "redirect:paket?kelas="+kelas.getId();
+        return "redirect:paket?kelas=" + kelas.getId();
     }
 
     @GetMapping("/studiesActivity/krs/list")
-    public void listKrs(@RequestParam(required = false)String nim, @RequestParam(required = false) TahunAkademik tahunAkademik, Model model){
-        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+    public void listKrs(@RequestParam(required = false) String nim,
+            @RequestParam(required = false) TahunAkademik tahunAkademik, Model model) {
+        model.addAttribute("tahunAkademik",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         if (nim != null && tahunAkademik != null) {
 
-//            Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
+            // Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim,
+            // StatusRecord.AKTIF);
             model.addAttribute("nim", nim);
             model.addAttribute("tahun", tahunAkademik);
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
@@ -752,45 +777,58 @@ public class StudiesActivityController {
                 model.addAttribute("validasi", ta);
             }
 
-            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik,StatusRecord.AKTIF);
-            if (k == null){
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, StatusRecord.AKTIF);
+            if (k == null) {
                 model.addAttribute("validation", "Krs belum aktif, Silahkan aktifasi terlebih dahulu ");
             }
 
-            model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
+            model.addAttribute("listKrs",
+                    krsDetailDao
+                            .findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(
+                                    StatusRecord.AKTIF, k, mahasiswa));
             model.addAttribute("mahasiswa", mahasiswa);
 
         }
 
     }
 
+    @GetMapping("/detail/presensi/{id}")
+    @ResponseBody
+    public List<DetailPresensiDto> detailPresensiMahasiswa(@PathVariable String id) {
+        KrsDetail krsDetail = krsDetailDao.findById(id).get();
+
+        return presensiMahasiswaDao.detailPresensi(krsDetail.getMahasiswa(), krsDetail.getTahunAkademik(),
+                krsDetail.getJadwal());
+
+    }
+
     @GetMapping("/studiesActivity/krs/form")
-    public void formKrs(@RequestParam(required = false)String nim, @RequestParam(required = false) String tahunAkademik,
-                        Model model, @RequestParam(required = false) String lebih,@RequestParam(required = false) String kosong){
+    public void formKrs(@RequestParam(required = false) String nim,
+            @RequestParam(required = false) String tahunAkademik,
+            Model model, @RequestParam(required = false) String lebih, @RequestParam(required = false) String kosong) {
         model.addAttribute("nim", nim);
         model.addAttribute("tahun", tahunAkademik);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-
-        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
 
         TahunAkademik ta = tahunAkademikDao.findById(tahunAkademik).get();
-        String firstFourChars = ta.getKodeTahunAkademik().substring(0,4);
+        String firstFourChars = ta.getKodeTahunAkademik().substring(0, 4);
         System.out.println(firstFourChars);
 
-        if (ta.getJenis() == StatusRecord.GENAP){
-            String kode = firstFourChars+"1";
+        if (ta.getJenis() == StatusRecord.GENAP) {
+            String kode = firstFourChars + "1";
             System.out.println("kode : " + kode);
-            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GANJIL);
-            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
-            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode, StatusRecord.GANJIL);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa, tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
 
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
-            if (ipk == null){
+            if (ipk == null) {
                 model.addAttribute("kosong", "24");
-            }else {
+            } else {
 
                 if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
                     model.addAttribute("full", "24");
@@ -799,18 +837,18 @@ public class StudiesActivityController {
             model.addAttribute("sks", sks);
         }
 
-        if (ta.getJenis() == StatusRecord.GANJIL){
-            Integer prosesKode = Integer.valueOf(firstFourChars)-1;
-            String kode = prosesKode.toString()+"2";
+        if (ta.getJenis() == StatusRecord.GANJIL) {
+            Integer prosesKode = Integer.valueOf(firstFourChars) - 1;
+            String kode = prosesKode.toString() + "2";
 
-            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
-            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
-            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode, StatusRecord.GENAP);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa, tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
-            if (ipk == null){
+            if (ipk == null) {
                 model.addAttribute("kosong", "24");
-            }else {
+            } else {
 
                 if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
                     model.addAttribute("full", "24");
@@ -819,7 +857,8 @@ public class StudiesActivityController {
             model.addAttribute("sks", sks);
         }
 
-        List<Object[]> krsDetail = krsDetailDao.newPilihKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa, mahasiswa.getIdProdi().getIdJenjang());
+        List<Object[]> krsDetail = krsDetailDao.newPilihKrs(ta, kelasMahasiswa.getKelas(), mahasiswa.getIdProdi(),
+                mahasiswa, mahasiswa.getIdProdi().getIdJenjang());
         model.addAttribute("pilihanKrs", krsDetail);
         model.addAttribute("tahun", ta);
         model.addAttribute("lebih", lebih);
@@ -828,15 +867,16 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/krs/form")
-    public String prosesKrs(Authentication authentication, @RequestParam String jumlah, @RequestParam(required = false) String[] selected,
-                            @RequestParam TahunAkademik tahunAkademik,@RequestParam String nim){
+    public String prosesKrs(Authentication authentication, @RequestParam String jumlah,
+            @RequestParam(required = false) String[] selected,
+            @RequestParam TahunAkademik tahunAkademik, @RequestParam String nim) {
 
-        Mahasiswa mahasiswa = mahasiswaDao.findByNimAndStatus(nim,StatusRecord.AKTIF);
-        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik,StatusRecord.AKTIF);
+        Mahasiswa mahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
+        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, StatusRecord.AKTIF);
 
         if (k != null) {
 
-//            Long krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+            // Long krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             Long krsDetail = krsDetailDao.cariJumlahSks(k.getId());
 
@@ -878,7 +918,7 @@ public class StudiesActivityController {
 
                 if (krsDetail != null) {
                     if (jadwal + krsDetail > Integer.valueOf(jumlah)) {
-                        return "redirect:list?nim="+nim+"&tahunAkademik="+tahunAkademik.getId()+"&lebih=true";
+                        return "redirect:list?nim=" + nim + "&tahunAkademik=" + tahunAkademik.getId() + "&lebih=true";
                     } else {
                         for (String idJadwal : selected) {
                             Jadwal j = jadwalDao.findById(idJadwal).get();
@@ -909,65 +949,66 @@ public class StudiesActivityController {
                     }
                 }
 
-
             }
-        }else {
-            return "redirect:list?nim="+nim+"&tahunAkademik="+tahunAkademik.getId();
+        } else {
+            return "redirect:list?nim=" + nim + "&tahunAkademik=" + tahunAkademik.getId();
         }
 
-        return "redirect:list?nim="+nim+"&tahunAkademik="+tahunAkademik.getId();
-
+        return "redirect:list?nim=" + nim + "&tahunAkademik=" + tahunAkademik.getId();
 
     }
 
     @PostMapping("/studiesActivity/krs/delete")
-    public String deleteKrs(@RequestParam(name = "id", value = "id") KrsDetail krsDetail){
+    public String deleteKrs(@RequestParam(name = "id", value = "id") KrsDetail krsDetail) {
         krsDetail.setStatus(StatusRecord.HAPUS);
         krsDetailDao.save(krsDetail);
 
-        return "redirect:list?nim="+krsDetail.getMahasiswa().getNim()+"&tahunAkademik="+krsDetail.getTahunAkademik().getId();
+        return "redirect:list?nim=" + krsDetail.getMahasiswa().getNim() + "&tahunAkademik="
+                + krsDetail.getTahunAkademik().getId();
 
     }
 
-//    Assesment
+    // Assesment
 
     @GetMapping("/studiesActivity/assesment/list")
-    public void assesmentList(Model model,@RequestParam(required = false)TahunAkademik tahunAkademik,
-                              @RequestParam(required = false)Prodi prodi,@RequestParam(required = false) String search){
-        if (tahunAkademik != null){
+    public void assesmentList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) String search) {
+        if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
-            if (!StringUtils.isEmpty(search)){
+            if (!StringUtils.isEmpty(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("list",jadwalDao.assesmentSearch(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,search));
-            }else {
-                model.addAttribute("list", jadwalDao.assesment(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik));
+                model.addAttribute("list",
+                        jadwalDao.assesmentSearch(prodi, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search));
+            } else {
+                model.addAttribute("list",
+                        jadwalDao.assesment(prodi, Arrays.asList(StatusRecord.HAPUS), tahunAkademik));
             }
         }
     }
 
     @GetMapping("/studiesActivity/assesment/listdosen")
-    public void listPenilaianDosen(Model model,Authentication authentication, @RequestParam(required = false)TahunAkademik tahunAkademik){
+    public void listPenilaianDosen(Model model, Authentication authentication,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        if (tahunAkademik != null){
+        if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
 
             TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahunAkademik));
+            model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahunAkademik));
             model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademik));
-        }else{
+        } else {
             TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahun));
+            model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahun));
         }
-
 
     }
 
     @PostMapping("/berkas/uts/setting")
-    public String saveAksesUts(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uts){
+    public String saveAksesUts(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uts) {
 
         log.info("jadwal: {}", jadwal.getId());
         log.info("uts: {}", uts);
@@ -981,7 +1022,7 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/berkas/uas/setting")
-    public String saveAksesUas(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uas){
+    public String saveAksesUas(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uas) {
 
         log.info("jadwal: {}", jadwal.getId());
         log.info("uas: {}", uas);
@@ -995,55 +1036,62 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/assesment/edit")
-    public void editTugas(@RequestParam(name = "id", value = "id") BobotTugas bobot, Model model){
+    public void editTugas(@RequestParam(name = "id", value = "id") BobotTugas bobot, Model model) {
         model.addAttribute("bobotTugas", bobot);
 
     }
 
     @PostMapping("/studiesActivity/assesment/edit")
-    String prosesEdit(@ModelAttribute @Valid BobotTugas bobotTugas){
+    String prosesEdit(@ModelAttribute @Valid BobotTugas bobotTugas) {
         bobotTugasDao.save(bobotTugas);
-        return "redirect:weight?jadwal="+bobotTugas.getJadwal().getId();
+        return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
     }
 
     @PostMapping("/studiesActivity/assesment/delete")
-    public String deleteBobot(@RequestParam(name = "id", value = "id") String bobot){
+    public String deleteBobot(@RequestParam(name = "id", value = "id") String bobot) {
         BobotTugas bobotTugas = bobotTugasDao.findById(bobot).get();
         bobotTugas.setStatus(StatusRecord.HAPUS);
         bobotTugasDao.save(bobotTugas);
-        return "redirect:weight?jadwal="+bobotTugas.getJadwal().getId();
+        return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
     }
 
     @GetMapping("/studiesActivity/assesment/upload/soal")
-    public void listUas(@RequestParam Jadwal jadwal,@RequestParam StatusRecord status, Authentication authentication, Model model){
+    public void listUas(@RequestParam Jadwal jadwal, @RequestParam StatusRecord status, Authentication authentication,
+            Model model) {
 
         if (StatusRecord.UTS == status) {
-            Iterable<Soal> soal = soalDao.findByJadwalAndStatusAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusRecord.UTS);
+            Iterable<Soal> soal = soalDao.findByJadwalAndStatusAndStatusSoal(jadwal, StatusRecord.AKTIF,
+                    StatusRecord.UTS);
             User user = currentUserService.currentUser(authentication);
             Karyawan karyawan = karyawanDao.findByIdUser(user);
-            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UTS);
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF,
+                    StatusApprove.APPROVED, StatusRecord.UTS);
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
-            Soal validasi = soalDao.findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(jadwal,StatusRecord.UTS, StatusRecord.AKTIF,Arrays.asList(StatusApprove.WAITING,StatusApprove.APPROVED));
+            Soal validasi = soalDao.findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(jadwal, StatusRecord.UTS,
+                    StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED));
             model.addAttribute("cek", validasi);
             model.addAttribute("jadwal", jadwal);
             model.addAttribute("soal", soal);
             model.addAttribute("dosen", dosen);
             model.addAttribute("approve", s);
-            model.addAttribute("status",status);
+            model.addAttribute("status", status);
         }
 
         if (StatusRecord.UAS == status) {
-            Iterable<Soal> soal = soalDao.findByJadwalAndStatusAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusRecord.UAS);
+            Iterable<Soal> soal = soalDao.findByJadwalAndStatusAndStatusSoal(jadwal, StatusRecord.AKTIF,
+                    StatusRecord.UAS);
             User user = currentUserService.currentUser(authentication);
             Karyawan karyawan = karyawanDao.findByIdUser(user);
-            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UAS);
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF,
+                    StatusApprove.APPROVED, StatusRecord.UAS);
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
-            Soal validasi = soalDao.findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(jadwal,StatusRecord.UAS, StatusRecord.AKTIF,Arrays.asList(StatusApprove.WAITING,StatusApprove.APPROVED));
+            Soal validasi = soalDao.findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(jadwal, StatusRecord.UAS,
+                    StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED));
             model.addAttribute("cek", validasi);
             model.addAttribute("jadwal", jadwal);
             model.addAttribute("soal", soal);
             model.addAttribute("dosen", dosen);
-            model.addAttribute("status",status);
+            model.addAttribute("status", status);
             model.addAttribute("approve", s);
         }
 
@@ -1051,9 +1099,8 @@ public class StudiesActivityController {
 
     @PostMapping("/studiesActivity/assesment/upload/soal")
     public String uploadBukti(@Valid Soal soal,
-                              BindingResult error, MultipartFile file,
-                              Authentication currentUser) throws Exception {
-
+            BindingResult error, MultipartFile file,
+            Authentication currentUser) throws Exception {
 
         String namaFile = file.getName();
         String jenisFile = file.getContentType();
@@ -1063,9 +1110,9 @@ public class StudiesActivityController {
         System.out.println("Nama File : {}" + namaFile);
         System.out.println("Jenis File : {}" + jenisFile);
         System.out.println("Nama Asli File : {}" + namaAsli);
-        System.out.println("Ukuran File : {}"+ ukuran);
+        System.out.println("Ukuran File : {}" + ukuran);
 
-//        memisahkan extensi
+        // memisahkan extensi
         String extension = "";
 
         int i = namaAsli.lastIndexOf('.');
@@ -1075,8 +1122,8 @@ public class StudiesActivityController {
             extension = namaAsli.substring(i + 1);
         }
 
-
-        String idFile = soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+ soal.getJadwal().getKelas().getNamaKelas();
+        String idFile = soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "-"
+                + soal.getJadwal().getKelas().getNamaKelas();
         String lokasiUpload = uploadFolder + File.separator + soal.getJadwal().getId();
         LOGGER.debug("Lokasi upload : {}", lokasiUpload);
         new File(lokasiUpload).mkdirs();
@@ -1084,39 +1131,37 @@ public class StudiesActivityController {
         file.transferTo(tujuan);
         LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
 
-
         soal.setStatus(StatusRecord.AKTIF);
         soal.setTanggalUpload(LocalDate.now());
         soal.setStatusApprove(StatusApprove.WAITING);
         soal.setFileUpload(idFile + "." + extension);
 
         if (soal.getStatusSoal() == StatusRecord.UTS) {
-            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED), StatusRecord.UTS);
-            if (s == null){
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),
+                    StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED), StatusRecord.UTS);
+            if (s == null) {
 
                 soalDao.save(soal);
             }
 
-            if (s != null){
+            if (s != null) {
                 s.setStatus(StatusRecord.NONAKTIF);
                 soalDao.save(s);
                 soalDao.save(soal);
             }
-        } else if (soal.getStatusSoal() == StatusRecord.UAS){
-            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED), StatusRecord.UAS);
-            if (s == null){
+        } else if (soal.getStatusSoal() == StatusRecord.UAS) {
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),
+                    StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED), StatusRecord.UAS);
+            if (s == null) {
                 soalDao.save(soal);
             }
 
-            if (s != null){
+            if (s != null) {
                 s.setStatus(StatusRecord.NONAKTIF);
                 soalDao.save(s);
                 soalDao.save(soal);
             }
         }
-
-
-
 
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {
@@ -1130,17 +1175,16 @@ public class StudiesActivityController {
         }
         jadwalDao.save(jadwal);
 
-        return "redirect:soal?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
+        return "redirect:soal?jadwal=" + soal.getJadwal().getId() + "&status=" + soal.getStatusSoal();
 
     }
 
     @PostMapping("/studiesActivity/assesment/upload/soal/delete")
-    public String deleteSoal(@RequestParam Soal soal){
+    public String deleteSoal(@RequestParam Soal soal) {
         soal.setStatus(StatusRecord.HAPUS);
         soalDao.save(soal);
-        return "redirect:../soal?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
+        return "redirect:../soal?jadwal=" + soal.getJadwal().getId() + "&status=" + soal.getStatusSoal();
     }
-
 
     @GetMapping("/contoh/soal")
     public void contohUts(HttpServletResponse response) throws Exception {
@@ -1159,57 +1203,60 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/assesment/weight")
-    public void weightAssesment(@RequestParam Jadwal jadwal,Model model){
-        model.addAttribute("absensi", presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal));
+    public void weightAssesment(@RequestParam Jadwal jadwal, Model model) {
+        model.addAttribute("absensi", presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal));
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
-        model.addAttribute("bobot",bobotTugasDao.findByJadwalAndStatusOrderByPertemuanAsc(jadwal,StatusRecord.AKTIF));}
+        model.addAttribute("jumlahMahasiswa",
+                krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal, StatusRecord.AKTIF).size());
+        model.addAttribute("bobot", bobotTugasDao.findByJadwalAndStatusOrderByPertemuanAsc(jadwal, StatusRecord.AKTIF));
+    }
 
     @PostMapping("/studiesActivity/assesment/weight")
-    public String prosesWeight(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes){
-        BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+    public String prosesWeight(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes) {
+        BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas())
+                .add(jadwal.getBobotUts());
 
         if (jadwal.getMatakuliahKurikulum().getSds() != null) {
             BigDecimal total = totalBobot.add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
 
-            if (total.toBigInteger().intValueExact() > 100){
+            if (total.toBigInteger().intValueExact() > 100) {
                 attributes.addFlashAttribute("lebih", "Melebihi Batas");
-            }else {
+            } else {
                 jadwalDao.save(jadwal);
             }
         }
 
         if (jadwal.getMatakuliahKurikulum().getSds() == null) {
-            if (totalBobot.toBigInteger().intValueExact() > 100){
+            if (totalBobot.toBigInteger().intValueExact() > 100) {
                 attributes.addFlashAttribute("lebih", "Melebihi Batas");
-            }else {
+            } else {
                 jadwalDao.save(jadwal);
             }
         }
 
-        return "redirect:weight?jadwal="+jadwal.getId();
+        return "redirect:weight?jadwal=" + jadwal.getId();
     }
 
     @PostMapping("/studiesActivity/assesment/task")
     public String tambahTugas(@ModelAttribute @Valid BobotTugas bobotTugas,
-                              RedirectAttributes redirectAttributes){
+            RedirectAttributes redirectAttributes) {
 
         BigDecimal totalBobotUtama = jadwalDao.bobotUtsUas(bobotTugas.getJadwal().getId());
-        if (totalBobotUtama == null){
+        if (totalBobotUtama == null) {
             totalBobotUtama = BigDecimal.ZERO;
         }
 
         BigDecimal totalBobotTugas = bobotTugasDao.totalBobotTugas(bobotTugas.getJadwal().getId());
-        if (totalBobotTugas == null){
+        if (totalBobotTugas == null) {
             totalBobotTugas = BigDecimal.ZERO;
         }
 
         BigDecimal total = totalBobotTugas.add(totalBobotUtama.add(bobotTugas.getBobot()));
 
-        if (total.compareTo(new BigDecimal(100)) > 0){
+        if (total.compareTo(new BigDecimal(100)) > 0) {
             redirectAttributes.addFlashAttribute("gagal", "Save Data Gagal");
             return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
-        }else {
+        } else {
             bobotTugasDao.save(bobotTugas);
             List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(), StatusRecord.AKTIF);
             for (KrsDetail kd : krsDetail) {
@@ -1227,13 +1274,12 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/assesment/score")
-    public String assesmentScore(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes){
+    public String assesmentScore(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes) {
 
-
-//            krsDetailDao.insertNilaiTugas(jadwal.getId());
+        // krsDetailDao.insertNilaiTugas(jadwal.getId());
 
         List<KrsNilaiTugasDto> krsNilaiTugasDtos = krsDetailDao.listKrsNilaiTugas(jadwal.getId());
-        if (krsNilaiTugasDtos != null){
+        if (krsNilaiTugasDtos != null) {
             for (KrsNilaiTugasDto kd : krsNilaiTugasDtos) {
 
                 NilaiTugas nilaiTugas = new NilaiTugas();
@@ -1247,49 +1293,51 @@ public class StudiesActivityController {
             }
         }
 
-        if (jadwal.getFinalStatus().equals("FINAL")){
-            return "redirect:weight?jadwal="+jadwal.getId();
+        if (jadwal.getFinalStatus().equals("FINAL")) {
+            return "redirect:weight?jadwal=" + jadwal.getId();
 
-        }else {
-            if (jadwal.getMatakuliahKurikulum().getSds() != null){
-                BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
+        } else {
+            if (jadwal.getMatakuliahKurikulum().getSds() != null) {
+                BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas())
+                        .add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
                 if (totalBobot.toBigInteger().intValueExact() < 100) {
                     attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                    return "redirect:weight ?jadwal="+jadwal.getId();
+                    return "redirect:weight ?jadwal=" + jadwal.getId();
                 }
-            }else {
-                BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+            } else {
+                BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas())
+                        .add(jadwal.getBobotUts());
                 if (totalBobot.toBigInteger().intValueExact() < 100) {
                     attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                    return "redirect:weight?jadwal="+jadwal.getId();
+                    return "redirect:weight?jadwal=" + jadwal.getId();
                 }
                 if (totalBobot.toBigInteger().intValueExact() > 100) {
                     attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                    return "redirect:weight?jadwal="+jadwal.getId();
+                    return "redirect:weight?jadwal=" + jadwal.getId();
                 }
             }
         }
 
-        List<ScoreDto> score = jadwalDao.scoreInput(jadwal,jadwal.getTahunAkademik());
-        for (ScoreDto sc : score){
+        List<ScoreDto> score = jadwalDao.scoreInput(jadwal, jadwal.getTahunAkademik());
+        for (ScoreDto sc : score) {
             System.out.println(sc.getSds());
         }
 
-
-            List<BobotDto> nilaiTugas = nilaiTugasDao.nilaiTugasList(jadwal);
+        List<BobotDto> nilaiTugas = nilaiTugasDao.nilaiTugasList(jadwal);
         model.addAttribute("detailJadwal", jadwal);
         model.addAttribute("jadwal", score);
-        model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
+        model.addAttribute("jumlahMahasiswa",
+                krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal, StatusRecord.AKTIF).size());
         model.addAttribute("nilaiTugas", nilaiTugas);
-        model.addAttribute("bobot", bobotTugasDao.bobotTugas(jadwal.getId(),StatusRecord.AKTIF));
-        model.addAttribute("bobotTugas", bobotTugasDao.Tugas(jadwal.getId(),StatusRecord.AKTIF));
+        model.addAttribute("bobot", bobotTugasDao.bobotTugas(jadwal.getId(), StatusRecord.AKTIF));
+        model.addAttribute("bobotTugas", bobotTugasDao.Tugas(jadwal.getId(), StatusRecord.AKTIF));
 
         return "studiesActivity/assesment/score";
 
     }
 
     @GetMapping("/studiesActivity/assesment/rekap")
-    public void rekapScore(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes){
+    public void rekapScore(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes) {
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
         model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
@@ -1297,57 +1345,69 @@ public class StudiesActivityController {
 
     @PostMapping(value = "/studiesActivity/assesment/score")
     @ResponseStatus(HttpStatus.OK)
-    public void simpanNilai(@RequestBody @Valid ScoreInput in) throws Exception   {
+    public void simpanNilai(@RequestBody @Valid ScoreInput in) throws Exception {
 
-        if (in != null){
+        if (in != null) {
 
-            if (in.getNilai() != null && !in.getNilai().trim().isEmpty()){
+            if (in.getNilai() != null && !in.getNilai().trim().isEmpty()) {
                 BobotTugas bobotTugas = bobotTugasDao.findById(in.getTugas()).get();
                 KrsDetail krsDetail = krsDetailDao.findById(in.getKrs()).get();
-                NilaiTugas validasi = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF, bobotTugas, krsDetail);
+                NilaiTugas validasi = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF,
+                        bobotTugas, krsDetail);
 
-                if (validasi != null){
-                    BigDecimal nilai = bobotTugas.getBobot().multiply(new BigDecimal(in.getNilai()).divide(new BigDecimal(100)));
+                if (validasi != null) {
+                    BigDecimal nilai = bobotTugas.getBobot()
+                            .multiply(new BigDecimal(in.getNilai()).divide(new BigDecimal(100)));
                     validasi.setNilaiAkhir(nilai);
                     validasi.setNilai(new BigDecimal(in.getNilai()));
                     nilaiTugasDao.save(validasi);
-                    List<NilaiTugas> nilaiAkhir = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord.AKTIF, krsDetail,StatusRecord.AKTIF);
+                    List<NilaiTugas> nilaiAkhir = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(
+                            StatusRecord.AKTIF, krsDetail, StatusRecord.AKTIF);
                     BigDecimal sum = nilaiAkhir.stream()
                             .map(NilaiTugas::getNilaiAkhir)
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     System.out.println(sum);
                     KrsDetail kd = krsDetailDao.findById(validasi.getKrsDetail().getId()).get();
 
-                    BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
-                    BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
+                    BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas())
+                            .divide(new BigDecimal(100));
+                    BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts())
+                            .divide(new BigDecimal(100));
                     kd.setNilaiPresensi(new BigDecimal(in.getAbsen()));
                     kd.setNilaiTugas(sum);
-                    kd.setNilaiAkhir(kd.getNilaiTugas().add(nilaiUts).add(kd.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
+                    kd.setNilaiAkhir(kd.getNilaiTugas().add(nilaiUts).add(kd.getNilaiPresensi()).add(nilaiUas)
+                            .add(new BigDecimal(in.getSds())));
 
                     scoreService.hitungNilaiAkhir(kd);
                 }
             }
 
-            if (in.getUas() != null && !in.getUas().trim().isEmpty()){
+            if (in.getUas() != null && !in.getUas().trim().isEmpty()) {
                 KrsDetail krsDetail = krsDetailDao.findById(in.getKrs()).get();
                 krsDetail.setNilaiPresensi(new BigDecimal(in.getAbsen()));
-                BigDecimal nilaiUas = new BigDecimal(in.getUas()).multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
-                BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
+                BigDecimal nilaiUas = new BigDecimal(in.getUas()).multiply(krsDetail.getJadwal().getBobotUas())
+                        .divide(new BigDecimal(100));
+                BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts())
+                        .divide(new BigDecimal(100));
                 krsDetail.setNilaiUas(new BigDecimal(in.getUas()));
 
-                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
+                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi())
+                        .add(nilaiUas).add(new BigDecimal(in.getSds())));
 
                 scoreService.hitungNilaiAkhir(krsDetail);
 
             }
 
-            if (in.getUts() != null && !in.getUts().trim().isEmpty()){
+            if (in.getUts() != null && !in.getUts().trim().isEmpty()) {
                 KrsDetail krsDetail = krsDetailDao.findById(in.getKrs()).get();
-                BigDecimal nilaiUts = new BigDecimal(in.getUts()).multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
-                BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
+                BigDecimal nilaiUts = new BigDecimal(in.getUts()).multiply(krsDetail.getJadwal().getBobotUts())
+                        .divide(new BigDecimal(100));
+                BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas())
+                        .divide(new BigDecimal(100));
                 krsDetail.setNilaiPresensi(new BigDecimal(in.getAbsen()));
                 krsDetail.setNilaiUts(new BigDecimal(in.getUts()));
-                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
+                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi())
+                        .add(nilaiUas).add(new BigDecimal(in.getSds())));
 
                 scoreService.hitungNilaiAkhir(krsDetail);
 
@@ -1356,33 +1416,30 @@ public class StudiesActivityController {
 
     }
 
-
-
     @GetMapping("/studiesActivity/assesment/uploadnilai")
-    public String upload(Model model,@RequestParam Jadwal jadwal){
+    public String upload(Model model, @RequestParam Jadwal jadwal) {
 
-        List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+        List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("listTugas",listTugas);
+        model.addAttribute("listTugas", listTugas);
 
-        if (jadwal.getFinalStatus().equals("FINAL")){
-            return "redirect:weight?jadwal="+jadwal.getId();
+        if (jadwal.getFinalStatus().equals("FINAL")) {
+            return "redirect:weight?jadwal=" + jadwal.getId();
 
-        }else {
+        } else {
             return "studiesActivity/assesment/uploadnilai";
         }
     }
 
     @GetMapping("/studiesActivity/assesment/sds")
-    public void sds(Model model,@RequestParam Jadwal jadwal){
+    public void sds(Model model, @RequestParam Jadwal jadwal) {
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("mahasiswa", jadwalDao.cariMahasiswaBelumSds(jadwal.getProdi(),jadwal.getTahunAkademik()));
+        model.addAttribute("mahasiswa", jadwalDao.cariMahasiswaBelumSds(jadwal.getProdi(), jadwal.getTahunAkademik()));
     }
 
-
     @PostMapping("/studiesActivity/assesment/sds")
-    public String sds(@RequestParam Jadwal jadwal, @RequestParam(required = false) String[] data){
-        if (data != null){
+    public String sds(@RequestParam Jadwal jadwal, @RequestParam(required = false) String[] data) {
+        if (data != null) {
             for (String krs : data) {
                 Krs k = krsDao.findById(krs).get();
                 KrsDetail kd = new KrsDetail();
@@ -1408,13 +1465,14 @@ public class StudiesActivityController {
             }
         }
 
-        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademik().getId()+"&prodi="+jadwal.getProdi().getId();
+        return "redirect:list?tahunAkademik=" + jadwal.getTahunAkademik().getId() + "&prodi="
+                + jadwal.getProdi().getId();
     }
 
-
-    //TUGAS
+    // TUGAS
     @GetMapping("/studiesActivity/assesment/excelTugas")
-    public void downloadExcelTugas (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+    public void downloadExcelTugas(@RequestParam(required = false) String id, HttpServletResponse response)
+            throws IOException {
 
         List<String> staticColumn1 = new ArrayList<>();
 
@@ -1424,8 +1482,8 @@ public class StudiesActivityController {
         staticColumn1.add("NILAI ");
 
         BobotTugas tugas = bobotTugasDao.findById(id).get();
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNimAsc(tugas.getJadwal(),StatusRecord.AKTIF);
-
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNimAsc(tugas.getJadwal(),
+                StatusRecord.AKTIF);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("penilaian");
@@ -1443,35 +1501,34 @@ public class StudiesActivityController {
         headerCellStyle.setBorderLeft(BorderStyle.THIN);
         headerCellStyle.setBorderRight(BorderStyle.THIN);
 
-
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
         sheet.createRow(1).createCell(3).setCellValue("                        INSTITUT TAZKIA");
         sheet.createRow(2).createCell(3).setCellValue("                 ACADEMIC YEAR 2019/2020");
 
-        int rowInfo = 5 ;
+        int rowInfo = 5;
         Row rowi1 = sheet.createRow(rowInfo);
         rowi1.createCell(2).setCellValue("Subject :");
-        rowi1.createCell(3).setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        rowi1.createCell(3)
+                .setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
         rowi1.createCell(4).setCellValue("Course :");
-        rowi1.createCell(5).setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+        rowi1.createCell(5)
+                .setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
 
-
-        int rowInfo2 = 6 ;
+        int rowInfo2 = 6;
         Row rowi2 = sheet.createRow(rowInfo2);
         rowi2.createCell(2).setCellValue("Day/date :");
         rowi2.createCell(3).setCellValue(tugas.getJadwal().getHari().getNamaHari());
         rowi2.createCell(4).setCellValue("Semester :");
         rowi2.createCell(5).setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getSemester().toString());
 
-
-        int rowInfo3 = 7 ;
+        int rowInfo3 = 7;
         Row rowi3 = sheet.createRow(rowInfo3);
         rowi3.createCell(2).setCellValue("Room No/Time :");
         rowi3.createCell(3).setCellValue(tugas.getJadwal().getRuangan().getNamaRuangan());
         rowi3.createCell(4).setCellValue("Lecturer :");
         rowi3.createCell(5).setCellValue(tugas.getJadwal().getDosen().getKaryawan().getNamaKaryawan());
 
-        int rowInfo4 = 8 ;
+        int rowInfo4 = 8;
         Row rowi4 = sheet.createRow(rowInfo4);
         rowi4.createCell(2).setCellValue("Komponen :");
         rowi4.createCell(3).setCellValue("Tugas " + tugas.getNamaTugas());
@@ -1490,8 +1547,7 @@ public class StudiesActivityController {
             cellNum++;
         }
 
-
-        int rowNum = 12 ;
+        int rowNum = 12;
         int no = 1;
         for (KrsDetail kd : krsDetail) {
             int kolom = 2;
@@ -1503,19 +1559,21 @@ public class StudiesActivityController {
             rowNum++;
         }
 
-
         String namaFile = "PenilaianTugas ";
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile + tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_" + tugas.getJadwal().getKelas().getNamaKelas() + "_" + tugas.getNamaTugas() + extentionX +  "\"");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=\"" + namaFile
+                        + tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_"
+                        + tugas.getJadwal().getKelas().getNamaKelas() + "_" + tugas.getNamaTugas() + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
-
-    //UTS
+    // UTS
     @GetMapping("/studiesActivity/assesment/excelUTS")
-    public void downloadExcelUts (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+    public void downloadExcelUts(@RequestParam(required = false) String id, HttpServletResponse response)
+            throws IOException {
 
         List<String> staticColumn1 = new ArrayList<>();
 
@@ -1525,12 +1583,12 @@ public class StudiesActivityController {
         staticColumn1.add("NILAI ");
 
         Jadwal jadwal = jadwalDao.findById(id).get();
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNimAsc(jadwal,StatusRecord.AKTIF);
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNimAsc(jadwal,
+                StatusRecord.AKTIF);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("penilaian");
         sheet.autoSizeColumn(9);
-
 
         Font headerFont = workbook.createFont();
         headerFont.setFontHeightInPoints((short) 12);
@@ -1544,35 +1602,32 @@ public class StudiesActivityController {
         headerCellStyle.setBorderLeft(BorderStyle.THIN);
         headerCellStyle.setBorderRight(BorderStyle.THIN);
 
-
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
         sheet.createRow(1).createCell(3).setCellValue("                        INSTITUT TAZKIA");
         sheet.createRow(2).createCell(3).setCellValue("                 ACADEMIC YEAR 2019/2020");
 
-        int rowInfo = 5 ;
+        int rowInfo = 5;
         Row rowi1 = sheet.createRow(rowInfo);
         rowi1.createCell(2).setCellValue("Subject :");
         rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
         rowi1.createCell(4).setCellValue("Course :");
         rowi1.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
 
-
-        int rowInfo2 = 6 ;
+        int rowInfo2 = 6;
         Row rowi2 = sheet.createRow(rowInfo2);
         rowi2.createCell(2).setCellValue("Day/date :");
         rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
         rowi2.createCell(4).setCellValue("Semester :");
         rowi2.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getSemester().toString());
 
-
-        int rowInfo3 = 7 ;
+        int rowInfo3 = 7;
         Row rowi3 = sheet.createRow(rowInfo3);
         rowi3.createCell(2).setCellValue("Room No/Time :");
         rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
         rowi3.createCell(4).setCellValue("Lecturer :");
         rowi3.createCell(5).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
 
-        int rowInfo4 = 8 ;
+        int rowInfo4 = 8;
         Row rowi4 = sheet.createRow(rowInfo4);
         rowi4.createCell(2).setCellValue("Komponen :");
         rowi4.createCell(3).setCellValue("UTS");
@@ -1591,8 +1646,7 @@ public class StudiesActivityController {
             cellNum++;
         }
 
-
-        int rowNum = 12 ;
+        int rowNum = 12;
         int no = 1;
         for (KrsDetail kd : krsDetail) {
             int kolom = 2;
@@ -1604,19 +1658,21 @@ public class StudiesActivityController {
             rowNum++;
         }
 
-
         String namaFile = "PenilaianUTS ";
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_" + jadwal.getKelas().getNamaKelas() + extentionX +  "\"");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=\"" + namaFile
+                        + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_"
+                        + jadwal.getKelas().getNamaKelas() + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
-
-    //UAS
+    // UAS
     @GetMapping("/studiesActivity/assesment/excelUAS")
-    public void downloadExcelUas (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+    public void downloadExcelUas(@RequestParam(required = false) String id, HttpServletResponse response)
+            throws IOException {
 
         List<String> staticColumn1 = new ArrayList<>();
 
@@ -1626,13 +1682,13 @@ public class StudiesActivityController {
         staticColumn1.add("NILAI ");
 
         Jadwal jadwal = jadwalDao.findById(id).get();
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNimAsc(jadwal,StatusRecord.AKTIF);
-        List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNimAsc(jadwal,
+                StatusRecord.AKTIF);
+        List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("penilaian");
         sheet.autoSizeColumn(9);
-
 
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
@@ -1646,35 +1702,32 @@ public class StudiesActivityController {
         headerCellStyle.setBorderLeft(BorderStyle.THIN);
         headerCellStyle.setBorderRight(BorderStyle.THIN);
 
-
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
         sheet.createRow(1).createCell(3).setCellValue("                        INSTITUT TAZKIA");
         sheet.createRow(2).createCell(3).setCellValue("                 ACADEMIC YEAR 2019/2020");
 
-        int rowInfo = 5 ;
+        int rowInfo = 5;
         Row rowi1 = sheet.createRow(rowInfo);
         rowi1.createCell(2).setCellValue("Subject :");
         rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
         rowi1.createCell(4).setCellValue("Course :");
         rowi1.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
 
-
-        int rowInfo2 = 6 ;
+        int rowInfo2 = 6;
         Row rowi2 = sheet.createRow(rowInfo2);
         rowi2.createCell(2).setCellValue("Day/date :");
         rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
         rowi2.createCell(4).setCellValue("Semester :");
         rowi2.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getSemester().toString());
 
-
-        int rowInfo3 = 7 ;
+        int rowInfo3 = 7;
         Row rowi3 = sheet.createRow(rowInfo3);
         rowi3.createCell(2).setCellValue("Room No/Time :");
         rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
         rowi3.createCell(4).setCellValue("Lecturer :");
         rowi3.createCell(5).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
 
-        int rowInfo4 = 8 ;
+        int rowInfo4 = 8;
         Row rowi4 = sheet.createRow(rowInfo4);
         rowi4.createCell(2).setCellValue("Komponen :");
         rowi4.createCell(3).setCellValue("UAS");
@@ -1693,9 +1746,7 @@ public class StudiesActivityController {
             cellNum++;
         }
 
-
-
-        int rowNum = 12 ;
+        int rowNum = 12;
         int no = 1;
         for (KrsDetail kd : krsDetail) {
             int kolom = 2;
@@ -1707,20 +1758,21 @@ public class StudiesActivityController {
             rowNum++;
         }
 
-
         String namaFile = "PenilaianUAS ";
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_" + jadwal.getKelas().getNamaKelas() + extentionX +  "\"");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=\"" + namaFile
+                        + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_"
+                        + jadwal.getKelas().getNamaKelas() + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
-
-
-    //post.excel.Tugas
+    // post.excel.Tugas
     @PostMapping("/studiesActivity/assesment/formTugas")
-    public String prosesFormUploadTugas(MultipartFile file, @RequestParam(name = "jadwal",value = "jadwal") BobotTugas bobotTugas) {
+    public String prosesFormUploadTugas(MultipartFile file,
+            @RequestParam(name = "jadwal", value = "jadwal") BobotTugas bobotTugas) {
 
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
@@ -1729,42 +1781,43 @@ public class StudiesActivityController {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
 
-
             int row = 12;
-            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
-            for (int i = 0; i < jmlMhs;i++){
+            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(bobotTugas.getJadwal(), StatusRecord.AKTIF);
+            for (int i = 0; i < jmlMhs; i++) {
                 Row baris = sheetPertama.getRow(row + i);
 
                 String nim = baris.getCell(3).getStringCellValue();
-                Cell nilai = baris.getCell(5 );
+                Cell nilai = baris.getCell(5);
 
                 if (nilai != null) {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             bobotTugas.getJadwal(), StatusRecord.AKTIF);
-                    NilaiTugas nilaiTugas = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF, bobotTugas,
+                    NilaiTugas nilaiTugas = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF,
+                            bobotTugas,
                             krsDetail);
                     BigDecimal nilaiAkhir = new BigDecimal(nilai.getNumericCellValue()).multiply(bobotTugas.getBobot())
                             .divide(new BigDecimal(100));
-
-
 
                     nilaiTugas.setNilai(new BigDecimal(nilai.getNumericCellValue()));
                     nilaiTugas.setNilaiAkhir(nilaiAkhir);
 
                     nilaiTugasDao.save(nilaiTugas);
-                    List<NilaiTugas> nilaiAkhirnya = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord.AKTIF, krsDetail,StatusRecord.AKTIF);
+                    List<NilaiTugas> nilaiAkhirnya = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(
+                            StatusRecord.AKTIF, krsDetail, StatusRecord.AKTIF);
 
-                    /*sum semua tugas*/ BigDecimal nilTug = nilaiAkhirnya.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    /* sum semua tugas */ BigDecimal nilTug = nilaiAkhirnya.stream().map(NilaiTugas::getNilaiAkhir)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
                     krsDetail.setNilaiTugas(nilTug);
                     krsDetailDao.save(krsDetail);
-                }else {
+                } else {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             bobotTugas.getJadwal(), StatusRecord.AKTIF);
-                    NilaiTugas nilaiTugas = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF, bobotTugas,
+                    NilaiTugas nilaiTugas = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF,
+                            bobotTugas,
                             krsDetail);
 
                     nilaiTugas.setNilai(BigDecimal.ZERO);
@@ -1780,9 +1833,10 @@ public class StudiesActivityController {
             LOGGER.error(e.getMessage(), e);
         }
 
-        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(bobotTugas.getJadwal(),bobotTugas.getJadwal().getTahunAkademik());
+        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(bobotTugas.getJadwal(),
+                bobotTugas.getJadwal().getTahunAkademik());
 
-        for(ScoreHitungDto s : scoreDtos){
+        for (ScoreHitungDto s : scoreDtos) {
 
             KrsDetail krsDetail2 = krsDetailDao.findById(s.getKrs()).get();
             krsDetail2.setNilaiAkhir(s.getNilaiAkhir());
@@ -1791,14 +1845,13 @@ public class StudiesActivityController {
 
             krsDetailDao.save(krsDetail2);
 
-
         }
 
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + bobotTugas.getJadwal().getId();
 
     }
 
-    //post.excel.UTS
+    // post.excel.UTS
     @PostMapping("/studiesActivity/assesment/formUTS")
     public String prosesFormUploadUTS(MultipartFile file, @RequestParam Jadwal jadwal) {
 
@@ -1810,15 +1863,14 @@ public class StudiesActivityController {
             Sheet sheetPertama = workbook.getSheetAt(0);
 
             int row = 12;
-            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-            for (int i = 0; i < jmlMhs;i++) {
+            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
+            for (int i = 0; i < jmlMhs; i++) {
                 Row baris = sheetPertama.getRow(row + i);
 
                 String nim = baris.getCell(3).getStringCellValue();
                 Cell nilai = baris.getCell(5);
 
-
-                if(nilai != null) {
+                if (nilai != null) {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             jadwal, StatusRecord.AKTIF);
 
@@ -1832,8 +1884,7 @@ public class StudiesActivityController {
                     krsDetail.setNilaiUts(new BigDecimal(nilai.getNumericCellValue()));
                     krsDetailDao.save(krsDetail);
 
-
-                }else {
+                } else {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             jadwal, StatusRecord.AKTIF);
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
@@ -1852,9 +1903,9 @@ public class StudiesActivityController {
             LOGGER.error(e.getMessage(), e);
         }
 
-        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(jadwal,jadwal.getTahunAkademik());
+        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(jadwal, jadwal.getTahunAkademik());
 
-        for(ScoreHitungDto s : scoreDtos){
+        for (ScoreHitungDto s : scoreDtos) {
 
             KrsDetail krsDetail2 = krsDetailDao.findById(s.getKrs()).get();
             krsDetail2.setNilaiAkhir(s.getNilaiAkhir());
@@ -1863,16 +1914,13 @@ public class StudiesActivityController {
 
             krsDetailDao.save(krsDetail2);
 
-
         }
-
-
 
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
 
     }
 
-    //post.excel.UAS
+    // post.excel.UAS
     @PostMapping("/studiesActivity/assesment/formUAS")
     public String prosesFormUploadUAS(MultipartFile file, @RequestParam Jadwal jadwal) {
 
@@ -1884,13 +1932,12 @@ public class StudiesActivityController {
             Sheet sheetPertama = workbook.getSheetAt(0);
 
             int row = 12;
-            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-            for (int i = 0; i < jmlMhs;i++) {
+            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
+            for (int i = 0; i < jmlMhs; i++) {
                 Row baris = sheetPertama.getRow(row + i);
 
                 Cell nilai = baris.getCell(5);
                 String nim = baris.getCell(3).getStringCellValue();
-
 
                 if (nilai != null) {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
@@ -1906,8 +1953,7 @@ public class StudiesActivityController {
                     krsDetail.setNilaiUas(new BigDecimal(nilai.getNumericCellValue()));
                     krsDetailDao.save(krsDetail);
 
-
-                }else {
+                } else {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
@@ -1925,9 +1971,9 @@ public class StudiesActivityController {
             LOGGER.error(e.getMessage(), e);
         }
 
-        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(jadwal,jadwal.getTahunAkademik());
+        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(jadwal, jadwal.getTahunAkademik());
 
-        for(ScoreHitungDto s : scoreDtos){
+        for (ScoreHitungDto s : scoreDtos) {
 
             KrsDetail krsDetail2 = krsDetailDao.findById(s.getKrs()).get();
             krsDetail2.setNilaiAkhir(s.getNilaiAkhir());
@@ -1936,75 +1982,78 @@ public class StudiesActivityController {
 
             krsDetailDao.save(krsDetail2);
 
-
         }
 
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
 
     }
 
-    //KHS
+    // KHS
 
     @GetMapping("/studiesActivity/khs/list")
-    public void listKhs(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
-                        @RequestParam(required = false) String nim){
+    public void listKhs(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String nim) {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        model.addAttribute("tahun" , tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
-        if (mahasiswa != null){
+        model.addAttribute("tahun",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        if (mahasiswa != null) {
             if (tahunAkademik != null) {
-                model.addAttribute("selectedTahun" , tahunAkademik);
-                model.addAttribute("selectedNim" , nim);
-                List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
-                if (!krsDetail.isEmpty()){
-                    model.addAttribute("khs",krsDetail);
-                    model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik()));
-                    model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+                model.addAttribute("selectedTahun", tahunAkademik);
+                model.addAttribute("selectedNim", nim);
+                List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik, mahasiswa);
+                if (!krsDetail.isEmpty()) {
+                    model.addAttribute("khs", krsDetail);
+                    model.addAttribute("ipk",
+                            krsDetailDao.ipkTahunAkademik(mahasiswa, tahunAkademik.getKodeTahunAkademik()));
+                    model.addAttribute("ip", krsDetailDao.ip(mahasiswa, tahunAkademik));
                 }
             } else {
-                model.addAttribute("selectedNim" , nim);
-                List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
-                model.addAttribute("khs",krsDetail);
-                model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF).getKodeTahunAkademik()));
-                model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+                model.addAttribute("selectedNim", nim);
+                List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),
+                        mahasiswa);
+                model.addAttribute("khs", krsDetail);
+                model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,
+                        tahunAkademikDao.findByStatus(StatusRecord.AKTIF).getKodeTahunAkademik()));
+                model.addAttribute("ip", krsDetailDao.ip(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
             }
         }
     }
 
     @GetMapping("/studiesActivity/khs/download")
-    public void downloadKhs(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
-                            @RequestParam(required = false) String nim){
+    public void downloadKhs(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String nim) {
 
         if (tahunAkademik != null) {
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            model.addAttribute("selectedTahun" , tahunAkademik);
-            model.addAttribute("selectedNim" , nim);
-            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedNim", nim);
+            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik, mahasiswa);
             int sumSks = krsDetail.stream().mapToInt(DataKhsDto::getSks).sum();
             Double sumBobot = krsDetail.stream().mapToDouble(DataKhsDto::getTotal).sum();
-            model.addAttribute("khs",krsDetail);
-            model.addAttribute("sks",sumSks);
-            model.addAttribute("bobot",sumBobot);
-            model.addAttribute("mahasiswa",mahasiswa);
-            model.addAttribute("tahun",tahunAkademik);
-            model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik()));
-            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+            model.addAttribute("khs", krsDetail);
+            model.addAttribute("sks", sumSks);
+            model.addAttribute("bobot", sumBobot);
+            model.addAttribute("mahasiswa", mahasiswa);
+            model.addAttribute("tahun", tahunAkademik);
+            model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa, tahunAkademik.getKodeTahunAkademik()));
+            model.addAttribute("ip", krsDetailDao.ip(mahasiswa, tahunAkademik));
         }
 
     }
 
     @GetMapping("/studiesActivity/khs/downloadexcel")
-    public void khsExcel (Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
-                                    @RequestParam(required = false) String nim, HttpServletResponse response) throws IOException, URISyntaxException {
-
+    public void khsExcel(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException, URISyntaxException {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-        List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+        List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik, mahasiswa);
 
         int sumSks = krsDetail.stream().mapToInt(DataKhsDto::getSks).sum();
-        IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
-        IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
+        IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa, tahunAkademik.getKodeTahunAkademik());
+        IpkDto ip = krsDetailDao.ip(mahasiswa, tahunAkademik);
 
         InputStream file = contohExcelKhs.getInputStream();
 
@@ -2080,14 +2129,12 @@ public class StudiesActivityController {
         styleIpk.setFont(prodiFont);
         styleIpk.setAlignment(HorizontalAlignment.CENTER);
 
-
-
-        int rowInfoTahun = 2 ;
+        int rowInfoTahun = 2;
         Row rowTahun = sheet.createRow(rowInfoTahun);
         rowTahun.createCell(0).setCellValue(tahunAkademik.getNamaTahunAkademik());
         rowTahun.getCell(0).setCellStyle(styleSubHeader);
 
-        int rowInfoNama = 7 ;
+        int rowInfoNama = 7;
         Row rowNama = sheet.createRow(rowInfoNama);
         rowNama.createCell(0).setCellValue("Nama");
         rowNama.createCell(2).setCellValue(":");
@@ -2096,7 +2143,7 @@ public class StudiesActivityController {
         rowNama.getCell(2).setCellStyle(styleSymbol);
         rowNama.getCell(3).setCellStyle(styleData);
 
-        int rowInfoNim = 8 ;
+        int rowInfoNim = 8;
         Row rowNim = sheet.createRow(rowInfoNim);
         rowNim.createCell(0).setCellValue("NIM");
         rowNim.createCell(2).setCellValue(":");
@@ -2105,7 +2152,7 @@ public class StudiesActivityController {
         rowNim.getCell(2).setCellStyle(styleSymbol);
         rowNim.getCell(3).setCellStyle(styleData);
 
-        int rowInfo3 = 9 ;
+        int rowInfo3 = 9;
         Row rowi3 = sheet.createRow(rowInfo3);
         rowi3.createCell(0).setCellValue("Program Studi");
         rowi3.createCell(2).setCellValue(":");
@@ -2114,11 +2161,11 @@ public class StudiesActivityController {
         rowi3.getCell(2).setCellStyle(styleSymbol);
         rowi3.getCell(3).setCellStyle(styleData);
 
-        int rowNum = 13 ;
+        int rowNum = 13;
         int no = 1;
         for (DataKhsDto kd : krsDetail) {
             Row row = sheet.createRow(rowNum);
-            sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum,2,3));
+            sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 2, 3));
 
             row.createCell(0).setCellValue(no);
             row.getCell(0).setCellStyle(styleDataKhs);
@@ -2128,14 +2175,14 @@ public class StudiesActivityController {
             row.getCell(2).setCellStyle(styleDataKhs);
             row.createCell(4).setCellValue(kd.getSks());
             row.getCell(4).setCellStyle(styleDataKhs);
-            if (kd.getMatakuliah().equals("Student Dynamic Session")){
+            if (kd.getMatakuliah().equals("Student Dynamic Session")) {
                 row.createCell(5).setCellValue("-");
                 row.getCell(5).setCellStyle(styleDataKhs);
                 row.createCell(6).setCellValue("-");
                 row.getCell(6).setCellStyle(styleDataKhs);
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleDataKhs);
-            }else {
+            } else {
                 row.createCell(5).setCellValue(kd.getBobot().toString());
                 row.getCell(5).setCellStyle(styleDataKhs);
                 row.createCell(6).setCellValue(kd.getGrade());
@@ -2147,7 +2194,7 @@ public class StudiesActivityController {
             rowNum++;
         }
 
-        int rowTotalSks = 13 + krsDetail.size() ;
+        int rowTotalSks = 13 + krsDetail.size();
         Row totalSks = sheet.createRow(rowTotalSks);
         totalSks.createCell(3).setCellValue("Jumlah SKS  :");
         totalSks.createCell(4).setCellValue(sumSks);
@@ -2157,7 +2204,7 @@ public class StudiesActivityController {
         totalSks.getCell(5).setCellStyle(styleIp);
         totalSks.getCell(4).setCellStyle(styleIpk);
         totalSks.getCell(7).setCellStyle(styleIpk);
-        sheet.addMergedRegion(new CellRangeAddress(rowTotalSks,rowTotalSks,5,6));
+        sheet.addMergedRegion(new CellRangeAddress(rowTotalSks, rowTotalSks, 5, 6));
 
         int rowTotalIpk = 13 + krsDetail.size() + 1;
         Row totalIpk = sheet.createRow(rowTotalIpk);
@@ -2165,7 +2212,7 @@ public class StudiesActivityController {
         totalIpk.createCell(7).setCellValue(ipk.getIpk().toString());
         totalIpk.getCell(5).setCellStyle(styleIp);
         totalIpk.getCell(7).setCellStyle(styleIpk);
-        sheet.addMergedRegion(new CellRangeAddress(rowTotalIpk,rowTotalIpk,5,6));
+        sheet.addMergedRegion(new CellRangeAddress(rowTotalIpk, rowTotalIpk, 5, 6));
 
         int rowKoor = 13 + krsDetail.size() + 5;
         Row koor = sheet.createRow(rowKoor);
@@ -2182,17 +2229,15 @@ public class StudiesActivityController {
         namaDosen.createCell(4).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         namaDosen.getCell(4).setCellStyle(styleManajemen);
 
-
-        String namaFile = "KHS-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
+        String namaFile = "KHS-" + mahasiswa.getNim() + "-" + mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
-    //Edom
-
+    // Edom
 
     @GetMapping("/studiesActivity/assesment/hasiledom")
     public void hasilEdom(Model model, @RequestParam Jadwal jadwal, Authentication authentication) {
@@ -2203,39 +2248,39 @@ public class StudiesActivityController {
 
         List<Object[]> headerEdom = edomMahasiswaDao.headerEdomMahasiswaPerDosen(jadwal, dosen);
         model.addAttribute("headerEdom", headerEdom);
-        if (headerEdom != null){
+        if (headerEdom != null) {
             List<Object[]> detailEdom = edomQuestionDao.detailEdomPerDosen(jadwal, dosen);
             model.addAttribute("detailEdom", detailEdom);
-        }else{
+        } else {
             model.addAttribute("questionNull", "Pertanyaan Edom Belum Dibuat");
         }
         model.addAttribute("jadwal", jadwal);
 
-//        model.addAttribute("edom", krsDetailDao.edomJadwal(jadwal));
-//
-//        EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,jadwal.getTahunAkademik());
-//        EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,jadwal.getTahunAkademik());
-//        EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,jadwal.getTahunAkademik());
-//        EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,jadwal.getTahunAkademik());
-//        EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,jadwal.getTahunAkademik());
-//        model.addAttribute("edomQuestion1",edomQuestion1);
-//        model.addAttribute("edomQuestion2",edomQuestion2);
-//        model.addAttribute("edomQuestion3",edomQuestion3);
-//        model.addAttribute("edomQuestion4",edomQuestion4);
-//        model.addAttribute("edomQuestion5",edomQuestion5);
-
-
-
+        // model.addAttribute("edom", krsDetailDao.edomJadwal(jadwal));
+        //
+        // EdomQuestion edomQuestion1 =
+        // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,jadwal.getTahunAkademik());
+        // EdomQuestion edomQuestion2 =
+        // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,jadwal.getTahunAkademik());
+        // EdomQuestion edomQuestion3 =
+        // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,jadwal.getTahunAkademik());
+        // EdomQuestion edomQuestion4 =
+        // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,jadwal.getTahunAkademik());
+        // EdomQuestion edomQuestion5 =
+        // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,jadwal.getTahunAkademik());
+        // model.addAttribute("edomQuestion1",edomQuestion1);
+        // model.addAttribute("edomQuestion2",edomQuestion2);
+        // model.addAttribute("edomQuestion3",edomQuestion3);
+        // model.addAttribute("edomQuestion4",edomQuestion4);
+        // model.addAttribute("edomQuestion5",edomQuestion5);
 
     }
 
-//    BKD
+    // BKD
 
     @GetMapping("/studiesActivity/assesment/topic")
-    public void topic(Model model,@RequestParam Jadwal jadwal){
+    public void topic(Model model, @RequestParam Jadwal jadwal) {
         String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
-
-
 
         model.addAttribute("tahun", tahun);
         model.addAttribute("topic", presensiDosenDao.bkdBeritaAcara(jadwal));
@@ -2245,7 +2290,7 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/assesment/nilai")
-    public void nilai(Model model,@RequestParam Jadwal jadwal){
+    public void nilai(Model model, @RequestParam Jadwal jadwal) {
         String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
 
         model.addAttribute("tahun", tahun);
@@ -2255,12 +2300,13 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/assesment/attendance")
-    public void attendance(Model model,@RequestParam Jadwal jadwal){
+    public void attendance(Model model, @RequestParam Jadwal jadwal) {
         String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
 
         model.addAttribute("tahun", tahun);
 
-//        JadwalDosenDto jadwalDosenDto = (JadwalDosenDto) jadwalDosenDao.headerJadwal(jadwal.getId());
+        // JadwalDosenDto jadwalDosenDto = (JadwalDosenDto)
+        // jadwalDosenDao.headerJadwal(jadwal.getId());
 
         model.addAttribute("jadwal", jadwal);
 
@@ -2268,15 +2314,14 @@ public class StudiesActivityController {
 
         List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
         log.debug("BKD Attendance : {}", hasil.size());
-//
-//        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
-//        log.debug("BKD Attendance : {}", hasil.size());
-//
-//        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
-//        log.debug("BKD Attendance : {}", hasil.size());
+        //
+        // hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+        // log.debug("BKD Attendance : {}", hasil.size());
+        //
+        // hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+        // log.debug("BKD Attendance : {}", hasil.size());
 
         model.addAttribute("attendance", hasil);
-
 
     }
 
@@ -2285,7 +2330,9 @@ public class StudiesActivityController {
 
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Presensi - Berita Acara - Nilai " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal.getKelas().getNamaKelas() + ".pdf";
+        String headerValue = "attachment; filename=Presensi - Berita Acara - Nilai "
+                + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - "
+                + jadwal.getKelas().getNamaKelas() + ".pdf";
 
         response.setHeader(headerKey, headerValue);
 
@@ -2294,75 +2341,73 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/transcript/list")
-    public void checkTranscript(Model model, @RequestParam(required = false)String nim){
-
+    public void checkTranscript(Model model, @RequestParam(required = false) String nim) {
 
         if (nim != null) {
             model.addAttribute("nim", nim);
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            if (mahasiswa != null){
-                model.addAttribute("mhsw",mahasiswa);
+            if (mahasiswa != null) {
+                model.addAttribute("mhsw", mahasiswa);
 
-                //tampilsemua
+                // tampilsemua
                 model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
                 model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
                 model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
                 model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
                 model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
-            }else{
-                model.addAttribute("message","error message");
+            } else {
+                model.addAttribute("message", "error message");
             }
 
         }
-
-
-
 
     }
 
     public static String getPattern(int month) {
         String first = "MMMM d";
         String last = " yyyy";
-        String pos = (month == 1 || month == 21 || month == 31) ? "'st'" : (month == 2 || month == 22) ? "'nd'" : (month == 3 || month == 23) ? "'rd'" : "'th'";
+        String pos = (month == 1 || month == 21 || month == 31) ? "'st'"
+                : (month == 2 || month == 22) ? "'nd'" : (month == 3 || month == 23) ? "'rd'" : "'th'";
         return first + pos + last;
     }
 
     @GetMapping("/studiesActivity/transcript/cetaktranscript")
-    public void cetakTranscript(Model model,@RequestParam(required = false) String nim,@RequestParam(required = false) String nirm){
+    public void cetakTranscript(Model model, @RequestParam(required = false) String nim,
+            @RequestParam(required = false) String nirm) {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
         if (StringUtils.hasText(nirm)) {
-            model.addAttribute("nirm",nirm);
+            model.addAttribute("nirm", nirm);
 
         }
         if (StringUtils.hasText(nim)) {
-            model.addAttribute("search",nim);
+            model.addAttribute("search", nim);
 
         }
-        if (mahasiswa != null){
+        if (mahasiswa != null) {
             Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan());
-            if (cekTanggalDisahkan != null){
+            if (cekTanggalDisahkan != null) {
                 model.addAttribute("disahkan", cekTanggalDisahkan.getTanggalDisahkan());
             }
 
-            model.addAttribute("mahasiswa",mahasiswa);
+            model.addAttribute("mahasiswa", mahasiswa);
 
         }
     }
 
     @PostMapping("/studiesActivity/transcript/cetaktranscript")
-    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa, @RequestParam(required = false) String tanggal, @RequestParam(required = false) String nirm){
+    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa,
+            @RequestParam(required = false) String tanggal, @RequestParam(required = false) String nirm) {
 
-
-        if (nirm != null){
+        if (nirm != null) {
             mahasiswaDao.save(mahasiswa);
             return "redirect:cetaktranscript?nim=" + mahasiswa.getNim() + "&nirm=AKTIF";
-        }else {
+        } else {
             LocalDate tanggalDisahkann = LocalDate.parse(tanggal);
             Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan());
-            if (cekTanggalDisahkan == null){
+            if (cekTanggalDisahkan == null) {
                 mahasiswa.setTanggalDisahkan(tanggalDisahkann);
-            }else {
+            } else {
                 cekTanggalDisahkan.setTanggalDisahkan(tanggalDisahkann);
             }
 
@@ -2373,8 +2418,7 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/transcript/uploadpin")
-    public String uploadPin(MultipartFile file,RedirectAttributes attributes){
-
+    public String uploadPin(MultipartFile file, RedirectAttributes attributes) {
 
         List<BaseResponse> errors = new ArrayList<>();
         List<BaseResponse> success = new ArrayList<>();
@@ -2415,7 +2459,6 @@ public class StudiesActivityController {
                 }
             }
 
-
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -2424,30 +2467,29 @@ public class StudiesActivityController {
         attributes.addFlashAttribute("success", success);
 
         return "redirect:cetaktranscript";
-//        attributes.addFlashAttribute("mahasiswa", mahasiswas);
+        // attributes.addFlashAttribute("mahasiswa", mahasiswas);
     }
 
     @GetMapping("/studiesActivity/transcript/transkriptexcel")
-    public void transkriptExcel (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
-
+    public void transkriptExcel(@RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        List<TranskriptDto> semester1 = krsDetailDao.excelTranskript(mahasiswa.getId(),"1");
-        List<TranskriptDto> semester2 = krsDetailDao.excelTranskript(mahasiswa.getId(),"2");
-        List<TranskriptDto> semester3 = krsDetailDao.excelTranskript(mahasiswa.getId(),"3");
-        List<TranskriptDto> semester4 = krsDetailDao.excelTranskript(mahasiswa.getId(),"4");
-        List<TranskriptDto> semester5 = krsDetailDao.excelTranskript(mahasiswa.getId(),"5");
-        List<TranskriptDto> semester6 = krsDetailDao.excelTranskript(mahasiswa.getId(),"6");
-        List<TranskriptDto> semester7 = krsDetailDao.excelTranskript(mahasiswa.getId(),"7");
-        List<TranskriptDto> semester8 = krsDetailDao.excelTranskript(mahasiswa.getId(),"8");
+        List<TranskriptDto> semester1 = krsDetailDao.excelTranskript(mahasiswa.getId(), "1");
+        List<TranskriptDto> semester2 = krsDetailDao.excelTranskript(mahasiswa.getId(), "2");
+        List<TranskriptDto> semester3 = krsDetailDao.excelTranskript(mahasiswa.getId(), "3");
+        List<TranskriptDto> semester4 = krsDetailDao.excelTranskript(mahasiswa.getId(), "4");
+        List<TranskriptDto> semester5 = krsDetailDao.excelTranskript(mahasiswa.getId(), "5");
+        List<TranskriptDto> semester6 = krsDetailDao.excelTranskript(mahasiswa.getId(), "6");
+        List<TranskriptDto> semester7 = krsDetailDao.excelTranskript(mahasiswa.getId(), "7");
+        List<TranskriptDto> semester8 = krsDetailDao.excelTranskript(mahasiswa.getId(), "8");
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
         IpkDto ipk = krsDetailDao.ipk(mahasiswa);
 
-//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
-
+        // BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
         InputStream file = contohExcelTranskript.getInputStream();
 
@@ -2567,8 +2609,7 @@ public class StudiesActivityController {
         styleSubHeader1.setVerticalAlignment(VerticalAlignment.CENTER);
         styleSubHeader1.setFont(ipFont);
 
-
-        int rowInfoNama = 5 ;
+        int rowInfoNama = 5;
         Row nama = sheet.createRow(rowInfoNama);
         nama.createCell(0).setCellValue("Name");
         nama.createCell(3).setCellValue(":");
@@ -2577,7 +2618,7 @@ public class StudiesActivityController {
         nama.getCell(3).setCellStyle(styleSymbol);
         nama.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNim = 6 ;
+        int rowInfoNim = 6;
         Row matricNo = sheet.createRow(rowInfoNim);
         matricNo.createCell(0).setCellValue("Student Matric No");
         matricNo.createCell(3).setCellValue(":");
@@ -2586,7 +2627,7 @@ public class StudiesActivityController {
         matricNo.getCell(3).setCellStyle(styleSymbol);
         matricNo.getCell(4).setCellStyle(styleData);
 
-        int rowInfoEntry = 7 ;
+        int rowInfoEntry = 7;
         Row entry = sheet.createRow(rowInfoEntry);
         entry.createCell(0).setCellValue("Entry Matric No / Graduated Matric No");
         entry.createCell(3).setCellValue(":");
@@ -2595,36 +2636,34 @@ public class StudiesActivityController {
         entry.getCell(3).setCellStyle(styleSymbol);
         entry.getCell(4).setCellStyle(styleData);
 
-        int rowInfoBirth = 8 ;
+        int rowInfoBirth = 8;
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(0).setCellValue("Place and Date of Birth");
         birthDay.createCell(3).setCellValue(":");
 
-
         int month = mahasiswa.getTanggalLahir().getDayOfMonth();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(getPattern(month));
         String birthdate = mahasiswa.getTanggalLahir().format(formatter);
-        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + birthdate);
+        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir() + "," + " " + birthdate);
         birthDay.getCell(4).setCellStyle(styleData);
-
 
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoLevel = 9 ;
+        int rowInfoLevel = 9;
         Row level = sheet.createRow(rowInfoLevel);
         level.createCell(0).setCellValue("Level");
         level.createCell(3).setCellValue(":");
 
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             level.createCell(4).setCellValue("Undergraduate");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             level.createCell(4).setCellValue("Post Graduate");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()) {
             level.createCell(4).setCellValue("Undergraduate");
             level.getCell(4).setCellStyle(styleData);
 
@@ -2632,7 +2671,7 @@ public class StudiesActivityController {
         level.getCell(0).setCellStyle(styleData);
         level.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoDepartment = 10 ;
+        int rowInfoDepartment = 10;
         Row department = sheet.createRow(rowInfoDepartment);
         department.createCell(0).setCellValue("Department");
         department.createCell(3).setCellValue(":");
@@ -2641,7 +2680,7 @@ public class StudiesActivityController {
         department.getCell(3).setCellStyle(styleSymbol);
         department.getCell(4).setCellStyle(styleData);
 
-        int rowInfoFaculty = 11 ;
+        int rowInfoFaculty = 11;
         Row facultyy = sheet.createRow(rowInfoFaculty);
         facultyy.createCell(0).setCellValue("Faculty");
         facultyy.createCell(3).setCellValue(":");
@@ -2650,7 +2689,7 @@ public class StudiesActivityController {
         facultyy.getCell(3).setCellStyle(styleSymbol);
         facultyy.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNoAcred = 12 ;
+        int rowInfoNoAcred = 12;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
         accreditation.createCell(0).setCellValue("No of Accreditation Decree");
         accreditation.createCell(3).setCellValue(":");
@@ -2659,8 +2698,7 @@ public class StudiesActivityController {
         accreditation.getCell(3).setCellStyle(styleSymbol);
         accreditation.getCell(4).setCellStyle(styleData);
 
-
-        int rowInfoDateAcred = 13 ;
+        int rowInfoDateAcred = 13;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(0).setCellValue("Date of Accreditation Decree");
         dateAccreditation.createCell(3).setCellValue(":");
@@ -2673,7 +2711,7 @@ public class StudiesActivityController {
         dateAccreditation.getCell(0).setCellStyle(styleData);
         dateAccreditation.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoGraduatedDate = 14 ;
+        int rowInfoGraduatedDate = 14;
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Graduated Date");
         graduatedDate.createCell(3).setCellValue(":");
@@ -2687,7 +2725,7 @@ public class StudiesActivityController {
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoTranscript = 15 ;
+        int rowInfoTranscript = 15;
         Row transcript = sheet.createRow(rowInfoTranscript);
         transcript.createCell(0).setCellValue("No of Transcript");
         transcript.createCell(3).setCellValue(":");
@@ -2696,11 +2734,11 @@ public class StudiesActivityController {
         transcript.getCell(3).setCellStyle(styleSymbol);
         transcript.getCell(4).setCellStyle(styleData);
 
-        int rowNumSemester1 = 18 ;
+        int rowNumSemester1 = 18;
         for (TranskriptDto sem1 : semester1) {
             Row row = sheet.createRow(rowNumSemester1);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 7, 8));
 
             row.createCell(0).setCellValue(sem1.getKode());
             row.createCell(1).setCellValue(sem1.getCourses());
@@ -2718,11 +2756,11 @@ public class StudiesActivityController {
             rowNumSemester1++;
         }
 
-        int rowNumSemester2 = 18+semester1.size() ;
+        int rowNumSemester2 = 18 + semester1.size();
         for (TranskriptDto sem2 : semester2) {
             Row row = sheet.createRow(rowNumSemester2);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 7, 8));
 
             row.createCell(0).setCellValue(sem2.getKode());
             row.createCell(1).setCellValue(sem2.getCourses());
@@ -2740,11 +2778,11 @@ public class StudiesActivityController {
             rowNumSemester2++;
         }
 
-        int rowNumSemester3 = 18+semester1.size()+semester2.size() ;
+        int rowNumSemester3 = 18 + semester1.size() + semester2.size();
         for (TranskriptDto sem3 : semester3) {
             Row row = sheet.createRow(rowNumSemester3);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 7, 8));
 
             row.createCell(0).setCellValue(sem3.getKode());
             row.createCell(1).setCellValue(sem3.getCourses());
@@ -2762,11 +2800,11 @@ public class StudiesActivityController {
             rowNumSemester3++;
         }
 
-        int rowNumSemester4 = 18+semester1.size()+semester2.size()+semester3.size() ;
+        int rowNumSemester4 = 18 + semester1.size() + semester2.size() + semester3.size();
         for (TranskriptDto sem4 : semester4) {
             Row row = sheet.createRow(rowNumSemester4);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 7, 8));
 
             row.createCell(0).setCellValue(sem4.getKode());
             row.createCell(1).setCellValue(sem4.getCourses());
@@ -2784,11 +2822,11 @@ public class StudiesActivityController {
             rowNumSemester4++;
         }
 
-        int rowNumSemester5 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size() ;
+        int rowNumSemester5 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size();
         for (TranskriptDto sem5 : semester5) {
             Row row = sheet.createRow(rowNumSemester5);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 7, 8));
 
             row.createCell(0).setCellValue(sem5.getKode());
             row.createCell(1).setCellValue(sem5.getCourses());
@@ -2806,11 +2844,12 @@ public class StudiesActivityController {
             rowNumSemester5++;
         }
 
-        int rowNumSemester6 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size() ;
+        int rowNumSemester6 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size();
         for (TranskriptDto sem6 : semester6) {
             Row row = sheet.createRow(rowNumSemester6);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 7, 8));
 
             row.createCell(0).setCellValue(sem6.getKode());
             row.createCell(1).setCellValue(sem6.getCourses());
@@ -2828,11 +2867,12 @@ public class StudiesActivityController {
             rowNumSemester6++;
         }
 
-        int rowNumSemester7 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size();
+        int rowNumSemester7 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size();
         for (TranskriptDto sem7 : semester7) {
             Row row = sheet.createRow(rowNumSemester7);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 7, 8));
 
             row.createCell(0).setCellValue(sem7.getKode());
             row.createCell(1).setCellValue(sem7.getCourses());
@@ -2850,11 +2890,12 @@ public class StudiesActivityController {
             rowNumSemester7++;
         }
 
-        int rowNumSemester8 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size();
+        int rowNumSemester8 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size();
         for (TranskriptDto sem8 : semester8) {
             Row row = sheet.createRow(rowNumSemester8);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 7, 8));
 
             row.createCell(0).setCellValue(sem8.getKode());
             row.createCell(1).setCellValue(sem8.getCourses());
@@ -2872,9 +2913,10 @@ public class StudiesActivityController {
             rowNumSemester8++;
         }
 
-        int total = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size();
+        int total = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size();
         Row rowTotal = sheet.createRow(total);
-        sheet.addMergedRegion(new CellRangeAddress(total,total,1,4));
+        sheet.addMergedRegion(new CellRangeAddress(total, total, 1, 4));
         rowTotal.createCell(1).setCellValue("Total");
         rowTotal.createCell(5).setCellValue(totalSKS.intValue());
         rowTotal.createCell(9).setCellValue(totalMuti.toString());
@@ -2882,78 +2924,82 @@ public class StudiesActivityController {
         rowTotal.getCell(5).setCellStyle(styleDataKhs);
         rowTotal.getCell(9).setCellStyle(styleDataKhs);
 
-        int ipKomulatif = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+2;
+        int ipKomulatif = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 2;
         Row rowIpk = sheet.createRow(ipKomulatif);
-        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
+        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif, ipKomulatif, 0, 2));
         rowIpk.createCell(0).setCellValue("Cumulative Grade Point Average");
         rowIpk.createCell(5).setCellValue(ipk.getIpk().toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
-        int predicate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
+        int predicate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(0).setCellValue("Predicate :");
-        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0) {
             predicateRow.createCell(1).setCellValue("Satisfactory");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0) {
             predicateRow.createCell(1).setCellValue("Good");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
 
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(1).setCellValue("Good");
                 predicateRow.getCell(1).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(1).setCellValue("Very Good");
                 predicateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
 
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(1).setCellValue("Good");
                 predicateRow.getCell(21).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(1).setCellValue("Excellent");
                 predicateRow.getCell(1).setCellStyle(styleData);
             }
-
 
         }
 
         predicateRow.getCell(0).setCellStyle(styleSubHeader);
 
-        int thesis = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
+        int thesis = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 5;
         Row thesisRow = sheet.createRow(thesis);
         thesisRow.createCell(0).setCellValue("Thesis Title :");
         thesisRow.createCell(1).setCellValue(mahasiswa.getTitle());
         thesisRow.getCell(0).setCellStyle(styleSubHeader);
         thesisRow.getCell(1).setCellStyle(styleData);
 
-        int keyResult = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8;
+        int keyResult = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8;
         Row resultRow = sheet.createRow(keyResult);
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,5,9));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 5, 9));
         resultRow.createCell(0).setCellValue("Key to Result");
         resultRow.createCell(5).setCellValue("Grading System");
         resultRow.getCell(0).setCellStyle(styleDataKhs);
         resultRow.getCell(5).setCellStyle(styleDataKhs);
 
-        int remark = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10;
+        int remark = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 10;
         Row remarkRow = sheet.createRow(remark);
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 7, 9));
         remarkRow.createCell(0).setCellValue("Remarks");
         remarkRow.createCell(5).setCellValue("Grade");
         remarkRow.createCell(6).setCellValue("Value");
@@ -2963,10 +3009,11 @@ public class StudiesActivityController {
         remarkRow.getCell(6).setCellStyle(styleIpk);
         remarkRow.getCell(7).setCellStyle(styleIpk);
 
-        int excellent = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11;
+        int excellent = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11;
         Row excellentRow = sheet.createRow(excellent);
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 7, 9));
         excellentRow.createCell(0).setCellValue("3,80-4,00");
         excellentRow.createCell(1).setCellValue("Excellent (Minimum B)");
         excellentRow.createCell(5).setCellValue("A");
@@ -2978,10 +3025,11 @@ public class StudiesActivityController {
         excellentRow.getCell(6).setCellStyle(styleDataKhs);
         excellentRow.getCell(7).setCellStyle(styleManajemen);
 
-        int veryGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12;
+        int veryGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 12;
         Row veryGoodRow = sheet.createRow(veryGood);
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 7, 9));
         veryGoodRow.createCell(0).setCellValue("3,50-3,79");
         veryGoodRow.createCell(1).setCellValue("Very Good (Minimum B)");
         veryGoodRow.createCell(5).setCellValue("A-");
@@ -2993,10 +3041,11 @@ public class StudiesActivityController {
         veryGoodRow.getCell(6).setCellStyle(styleDataKhs);
         veryGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int good = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13;
+        int good = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 13;
         Row goodRow = sheet.createRow(good);
-        sheet.addMergedRegion(new CellRangeAddress(good,good,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(good,good,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 7, 9));
         goodRow.createCell(0).setCellValue("3,00-3,49");
         goodRow.createCell(1).setCellValue("Good");
         goodRow.createCell(5).setCellValue("B+");
@@ -3008,10 +3057,11 @@ public class StudiesActivityController {
         goodRow.getCell(6).setCellStyle(styleDataKhs);
         goodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactory = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14;
+        int satisfactory = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14;
         Row satisfactoryRow = sheet.createRow(satisfactory);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 7, 9));
         satisfactoryRow.createCell(0).setCellValue("2,75-2,99");
         satisfactoryRow.createCell(1).setCellValue("Satisfactory");
         satisfactoryRow.createCell(5).setCellValue("B");
@@ -3023,9 +3073,10 @@ public class StudiesActivityController {
         satisfactoryRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryRow.getCell(7).setCellStyle(styleManajemen);
 
-        int almostGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+15;
+        int almostGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 15;
         Row almostGoodRow = sheet.createRow(almostGood);
-        sheet.addMergedRegion(new CellRangeAddress(almostGood,almostGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 7, 9));
         almostGoodRow.createCell(5).setCellValue("B-");
         almostGoodRow.createCell(6).setCellValue("2,7");
         almostGoodRow.createCell(7).setCellValue("Almost Good");
@@ -3033,9 +3084,10 @@ public class StudiesActivityController {
         almostGoodRow.getCell(6).setCellStyle(styleDataKhs);
         almostGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryCplus = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+16;
+        int satisfactoryCplus = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 16;
         Row satisfactoryCplusRow = sheet.createRow(satisfactoryCplus);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus,satisfactoryCplus,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 7, 9));
         satisfactoryCplusRow.createCell(5).setCellValue("C+");
         satisfactoryCplusRow.createCell(6).setCellValue("2,3");
         satisfactoryCplusRow.createCell(7).setCellValue("Satisfactory");
@@ -3043,9 +3095,10 @@ public class StudiesActivityController {
         satisfactoryCplusRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCplusRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryC = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+17;
+        int satisfactoryC = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 17;
         Row satisfactoryCRow = sheet.createRow(satisfactoryC);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC,satisfactoryC,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 7, 9));
         satisfactoryCRow.createCell(5).setCellValue("C");
         satisfactoryCRow.createCell(6).setCellValue("2");
         satisfactoryCRow.createCell(7).setCellValue("Satisfactory");
@@ -3053,9 +3106,10 @@ public class StudiesActivityController {
         satisfactoryCRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCRow.getCell(7).setCellStyle(styleManajemen);
 
-        int poor = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+18;
+        int poor = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 18;
         Row poorRow = sheet.createRow(poor);
-        sheet.addMergedRegion(new CellRangeAddress(poor,poor,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(poor, poor, 7, 9));
         poorRow.createCell(5).setCellValue("D");
         poorRow.createCell(6).setCellValue("1");
         poorRow.createCell(7).setCellValue("Poor");
@@ -3063,9 +3117,10 @@ public class StudiesActivityController {
         poorRow.getCell(6).setCellStyle(styleDataKhs);
         poorRow.getCell(7).setCellStyle(styleManajemen);
 
-        int fail = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+19;
+        int fail = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 19;
         Row failRow = sheet.createRow(fail);
-        sheet.addMergedRegion(new CellRangeAddress(fail,fail,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(fail, fail, 7, 9));
         failRow.createCell(5).setCellValue("E");
         failRow.createCell(6).setCellValue("0");
         failRow.createCell(7).setCellValue("Fail");
@@ -3073,7 +3128,8 @@ public class StudiesActivityController {
         failRow.getCell(6).setCellStyle(styleDataKhs);
         failRow.getCell(7).setCellStyle(styleManajemen);
 
-        int createDate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
+        int createDate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 24;
         Row createDateRow = sheet.createRow(createDate);
         HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
@@ -3084,216 +3140,405 @@ public class StudiesActivityController {
         DateTimeFormatter formatterCreate = DateTimeFormatter.ofPattern(getPattern(monthCreate));
         String createDatee = LocalDate.now().format(formatterCreate);
 
-        if (namaBulanHijri.equals("Jumada I")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (namaBulanHijri.equals("Jumada I")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else if (namaBulanHijri.equals("Jumada II")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+        } else if (namaBulanHijri.equals("Jumada II")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else if (namaBulanHijri.equals("Rabiʻ I")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+        } else if (namaBulanHijri.equals("Rabiʻ I")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else if (namaBulanHijri.equals("Rabiʻ II")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+        } else if (namaBulanHijri.equals("Rabiʻ II")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else{
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+        } else {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
         }
 
-
-        int faculty = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
+        int faculty = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 26;
         Row facultyRow = sheet.createRow(faculty);
         facultyRow.createCell(0).setCellValue("Dean of ");
         facultyRow.getCell(0).setCellStyle(styleData);
         facultyRow.createCell(5).setCellValue("Coordinator of ");
         facultyRow.getCell(5).setCellStyle(styleData);
 
-        int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        int faculty2 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 27;
         Row facultyRow2 = sheet.createRow(faculty2);
         facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultasEnglish());
         facultyRow2.getCell(0).setCellStyle(styleData);
         facultyRow2.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdiEnglish());
         facultyRow2.getCell(5).setCellStyle(styleData);
 
-        int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
+        int lecture = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0)
+                .setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
-        int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        int nik = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 33;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(0)
+                .setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
         nikRow.getCell(5).setCellStyle(styleNik);
 
-
-
-
-
         PropertyTemplate propertyTemplate = new PropertyTemplate();
-//        semester1
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 0, 0),
+        // semester1
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 1, 4),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 5, 5),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 6, 6),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 7, 8),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-
-        //        semester2
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 9, 9),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-//        semester3
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 0, 0),
+        // semester2
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 1, 4),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 6, 6),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 7, 8),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester4
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester5
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester6
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester7
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester8
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 1, 4),
+        // semester3
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester4
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester5
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester6
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester7
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester8
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 5, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        5, 9),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 12,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 13,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
 
         propertyTemplate.applyBorders(sheet);
 
-
-        String namaFile = "Transkript-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
+        String namaFile = "Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
     @GetMapping("/studiesActivity/transcript/transkriptindo")
-    public void transkriptExcelIndo (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
-
+    public void transkriptExcelIndo(@RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        List<TranskriptDto> semester1 = krsDetailDao.excelTranskript(mahasiswa.getId(),"1");
-        List<TranskriptDto> semester2 = krsDetailDao.excelTranskript(mahasiswa.getId(),"2");
-        List<TranskriptDto> semester3 = krsDetailDao.excelTranskript(mahasiswa.getId(),"3");
-        List<TranskriptDto> semester4 = krsDetailDao.excelTranskript(mahasiswa.getId(),"4");
-        List<TranskriptDto> semester5 = krsDetailDao.excelTranskript(mahasiswa.getId(),"5");
-        List<TranskriptDto> semester6 = krsDetailDao.excelTranskript(mahasiswa.getId(),"6");
-        List<TranskriptDto> semester7 = krsDetailDao.excelTranskript(mahasiswa.getId(),"7");
-        List<TranskriptDto> semester8 = krsDetailDao.excelTranskript(mahasiswa.getId(),"8");
+        List<TranskriptDto> semester1 = krsDetailDao.excelTranskript(mahasiswa.getId(), "1");
+        List<TranskriptDto> semester2 = krsDetailDao.excelTranskript(mahasiswa.getId(), "2");
+        List<TranskriptDto> semester3 = krsDetailDao.excelTranskript(mahasiswa.getId(), "3");
+        List<TranskriptDto> semester4 = krsDetailDao.excelTranskript(mahasiswa.getId(), "4");
+        List<TranskriptDto> semester5 = krsDetailDao.excelTranskript(mahasiswa.getId(), "5");
+        List<TranskriptDto> semester6 = krsDetailDao.excelTranskript(mahasiswa.getId(), "6");
+        List<TranskriptDto> semester7 = krsDetailDao.excelTranskript(mahasiswa.getId(), "7");
+        List<TranskriptDto> semester8 = krsDetailDao.excelTranskript(mahasiswa.getId(), "8");
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
-//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+        // BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
         IpkDto ipk = krsDetailDao.ipk(mahasiswa);
-
 
         InputStream file = contohExcelTranskriptIndo.getInputStream();
 
@@ -3359,7 +3604,6 @@ public class StudiesActivityController {
         CellStyle styleNik = workbook.createCellStyle();
         styleNik.setVerticalAlignment(VerticalAlignment.CENTER);
         styleNik.setFont(nikFont);
-
 
         CellStyle styleManajemen = workbook.createCellStyle();
         styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -3414,8 +3658,7 @@ public class StudiesActivityController {
         styleIpk.setAlignment(HorizontalAlignment.CENTER);
         styleIpk.setVerticalAlignment(VerticalAlignment.CENTER);
 
-
-        int rowInfoNama = 5 ;
+        int rowInfoNama = 5;
         Row nama = sheet.createRow(rowInfoNama);
         nama.createCell(0).setCellValue("Nama Mahasiswa ");
         nama.createCell(3).setCellValue(":");
@@ -3424,7 +3667,7 @@ public class StudiesActivityController {
         nama.getCell(3).setCellStyle(styleSymbol);
         nama.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNim = 6 ;
+        int rowInfoNim = 6;
         Row matricNo = sheet.createRow(rowInfoNim);
         matricNo.createCell(0).setCellValue("NIM");
         matricNo.createCell(3).setCellValue(":");
@@ -3433,7 +3676,7 @@ public class StudiesActivityController {
         matricNo.getCell(3).setCellStyle(styleSymbol);
         matricNo.getCell(4).setCellStyle(styleData);
 
-        int rowInfoEntry = 7 ;
+        int rowInfoEntry = 7;
         Row entry = sheet.createRow(rowInfoEntry);
         entry.createCell(0).setCellValue("NIRM/NIRL");
         entry.createCell(3).setCellValue(":");
@@ -3442,79 +3685,103 @@ public class StudiesActivityController {
         entry.getCell(3).setCellStyle(styleSymbol);
         entry.getCell(4).setCellStyle(styleData);
 
-        int rowInfoBirth = 8 ;
+        int rowInfoBirth = 8;
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(0).setCellValue("Tempat, Tanggal lahir");
         birthDay.createCell(3).setCellValue(":");
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 1) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 2){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 2) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 3){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 3) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 4){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 4) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " April" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 5){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 5) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 6){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 6) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 7){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 7) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 8){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 8) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 9){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 9) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " September" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 10){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 10) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 11){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 11) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " November" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 12){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 12) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
@@ -3522,20 +3789,20 @@ public class StudiesActivityController {
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoLevel = 9 ;
+        int rowInfoLevel = 9;
         Row level = sheet.createRow(rowInfoLevel);
         level.createCell(0).setCellValue("Program Pendidikan");
         level.createCell(3).setCellValue(":");
 
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             level.createCell(4).setCellValue("Sarjana");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             level.createCell(4).setCellValue("Magister");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()) {
             level.createCell(4).setCellValue("Sarjana");
             level.getCell(4).setCellStyle(styleData);
 
@@ -3543,25 +3810,25 @@ public class StudiesActivityController {
         level.getCell(0).setCellStyle(styleData);
         level.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoDepartment = 10 ;
+        int rowInfoDepartment = 10;
         Row department = sheet.createRow(rowInfoDepartment);
         department.createCell(0).setCellValue("Program Studi");
         department.createCell(3).setCellValue(":");
-        department.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi() );
+        department.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
         department.getCell(0).setCellStyle(styleData);
         department.getCell(3).setCellStyle(styleSymbol);
         department.getCell(4).setCellStyle(styleData);
 
-        int rowInfoFaculty = 11 ;
+        int rowInfoFaculty = 11;
         Row faculty = sheet.createRow(rowInfoFaculty);
         faculty.createCell(0).setCellValue("Fakultas");
         faculty.createCell(3).setCellValue(":");
-        faculty.createCell(4).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas() );
+        faculty.createCell(4).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         faculty.getCell(0).setCellStyle(styleData);
         faculty.getCell(3).setCellStyle(styleSymbol);
         faculty.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNoAcred = 12 ;
+        int rowInfoNoAcred = 12;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
         accreditation.createCell(0).setCellValue("No SK BAN - PT");
         accreditation.createCell(3).setCellValue(":");
@@ -3570,79 +3837,90 @@ public class StudiesActivityController {
         accreditation.getCell(3).setCellStyle(styleSymbol);
         accreditation.getCell(4).setCellStyle(styleData);
 
-
-        int rowInfoDateAcred = 13 ;
+        int rowInfoDateAcred = 13;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(0).setCellValue("Tanggal SK BAN - PT ");
         dateAccreditation.createCell(3).setCellValue(":");
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Februari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Februari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Maret" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Maret" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Mei" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Mei"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juni" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juni"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juli" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juli"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Agustus" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Agustus" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Oktober" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Oktober" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
@@ -3650,87 +3928,98 @@ public class StudiesActivityController {
         dateAccreditation.getCell(0).setCellStyle(styleData);
         dateAccreditation.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoGraduatedDate = 14 ;
+        int rowInfoGraduatedDate = 14;
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Tanggal Kelulusan");
         graduatedDate.createCell(3).setCellValue(":");
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 1){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 1) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 2){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 2) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Februari" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 3){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 3) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Maret" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 4){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 4) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 5){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 5) {
+            graduatedDate.createCell(4).setCellValue(
+                    mahasiswa.getTanggalLulus().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 6){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 6) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juni" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 7){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 7) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juli" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 8){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 8) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Agustus" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 9){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 9) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 10){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 10) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Oktober" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 11){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 11) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 12){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 12) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
-
 
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoTranscript = 15 ;
+        int rowInfoTranscript = 15;
         Row transcript = sheet.createRow(rowInfoTranscript);
         transcript.createCell(0).setCellValue("No Transkrip ");
         transcript.createCell(3).setCellValue(":");
@@ -3739,11 +4028,11 @@ public class StudiesActivityController {
         transcript.getCell(3).setCellStyle(styleSymbol);
         transcript.getCell(4).setCellStyle(styleData);
 
-        int rowNumSemester1 = 18 ;
+        int rowNumSemester1 = 18;
         for (TranskriptDto sem1 : semester1) {
             Row row = sheet.createRow(rowNumSemester1);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 7, 8));
 
             row.createCell(0).setCellValue(sem1.getKode());
             row.createCell(1).setCellValue(sem1.getMatakuliah());
@@ -3761,11 +4050,11 @@ public class StudiesActivityController {
             rowNumSemester1++;
         }
 
-        int rowNumSemester2 = 18+semester1.size() ;
+        int rowNumSemester2 = 18 + semester1.size();
         for (TranskriptDto sem2 : semester2) {
             Row row = sheet.createRow(rowNumSemester2);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 7, 8));
 
             row.createCell(0).setCellValue(sem2.getKode());
             row.createCell(1).setCellValue(sem2.getMatakuliah());
@@ -3783,11 +4072,11 @@ public class StudiesActivityController {
             rowNumSemester2++;
         }
 
-        int rowNumSemester3 = 18+semester1.size()+semester2.size() ;
+        int rowNumSemester3 = 18 + semester1.size() + semester2.size();
         for (TranskriptDto sem3 : semester3) {
             Row row = sheet.createRow(rowNumSemester3);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 7, 8));
 
             row.createCell(0).setCellValue(sem3.getKode());
             row.createCell(1).setCellValue(sem3.getMatakuliah());
@@ -3805,11 +4094,11 @@ public class StudiesActivityController {
             rowNumSemester3++;
         }
 
-        int rowNumSemester4 = 18+semester1.size()+semester2.size()+semester3.size() ;
+        int rowNumSemester4 = 18 + semester1.size() + semester2.size() + semester3.size();
         for (TranskriptDto sem4 : semester4) {
             Row row = sheet.createRow(rowNumSemester4);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 7, 8));
 
             row.createCell(0).setCellValue(sem4.getKode());
             row.createCell(1).setCellValue(sem4.getMatakuliah());
@@ -3827,11 +4116,11 @@ public class StudiesActivityController {
             rowNumSemester4++;
         }
 
-        int rowNumSemester5 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size() ;
+        int rowNumSemester5 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size();
         for (TranskriptDto sem5 : semester5) {
             Row row = sheet.createRow(rowNumSemester5);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 7, 8));
 
             row.createCell(0).setCellValue(sem5.getKode());
             row.createCell(1).setCellValue(sem5.getMatakuliah());
@@ -3849,11 +4138,12 @@ public class StudiesActivityController {
             rowNumSemester5++;
         }
 
-        int rowNumSemester6 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size() ;
+        int rowNumSemester6 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size();
         for (TranskriptDto sem6 : semester6) {
             Row row = sheet.createRow(rowNumSemester6);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 7, 8));
 
             row.createCell(0).setCellValue(sem6.getKode());
             row.createCell(1).setCellValue(sem6.getMatakuliah());
@@ -3871,11 +4161,12 @@ public class StudiesActivityController {
             rowNumSemester6++;
         }
 
-        int rowNumSemester7 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size();
+        int rowNumSemester7 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size();
         for (TranskriptDto sem7 : semester7) {
             Row row = sheet.createRow(rowNumSemester7);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 7, 8));
 
             row.createCell(0).setCellValue(sem7.getKode());
             row.createCell(1).setCellValue(sem7.getMatakuliah());
@@ -3893,11 +4184,12 @@ public class StudiesActivityController {
             rowNumSemester7++;
         }
 
-        int rowNumSemester8 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size();
+        int rowNumSemester8 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size();
         for (TranskriptDto sem8 : semester8) {
             Row row = sheet.createRow(rowNumSemester8);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 7, 8));
 
             row.createCell(0).setCellValue(sem8.getKode());
             row.createCell(1).setCellValue(sem8.getMatakuliah());
@@ -3915,9 +4207,10 @@ public class StudiesActivityController {
             rowNumSemester8++;
         }
 
-        int total = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size();
+        int total = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size();
         Row rowTotal = sheet.createRow(total);
-        sheet.addMergedRegion(new CellRangeAddress(total,total,1,4));
+        sheet.addMergedRegion(new CellRangeAddress(total, total, 1, 4));
         rowTotal.createCell(1).setCellValue("Jumlah");
         rowTotal.createCell(5).setCellValue(totalSKS.intValue());
         rowTotal.createCell(9).setCellValue(totalMuti.toString());
@@ -3925,86 +4218,89 @@ public class StudiesActivityController {
         rowTotal.getCell(5).setCellStyle(styleDataKhs);
         rowTotal.getCell(9).setCellStyle(styleDataKhs);
 
-        int ipKomulatif = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+2;
+        int ipKomulatif = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 2;
         Row rowIpk = sheet.createRow(ipKomulatif);
-        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
+        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif, ipKomulatif, 0, 2));
         rowIpk.createCell(0).setCellValue("Indeks Prestasi Kumulatif");
         rowIpk.createCell(5).setCellValue(ipk.getIpk().toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
-        int predicate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
+        int predicate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(0).setCellValue("Predikat :");
-        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0) {
             predicateRow.createCell(1).setCellValue("Memuaskan");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0) {
             predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
                 predicateRow.getCell(1).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(1).setCellValue("Pujian ");
                 predicateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
                 predicateRow.getCell(1).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(1).setCellValue("Pujian Tertinggi");
                 predicateRow.getCell(1).setCellStyle(styleData);
             }
-
 
         }
 
         predicateRow.getCell(0).setCellStyle(styleSubHeader);
 
-        int thesis = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
+        int thesis = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 5;
         Row thesisRow = sheet.createRow(thesis);
-        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             thesisRow.createCell(0).setCellValue("Judul skripsi :");
             thesisRow.createCell(1).setCellValue(mahasiswa.getJudul());
             thesisRow.getCell(0).setCellStyle(styleSubHeader);
             thesisRow.getCell(1).setCellStyle(styleData);
         }
 
-        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             thesisRow.createCell(0).setCellValue("Judul Tesis :");
             thesisRow.createCell(1).setCellValue(mahasiswa.getJudul());
             thesisRow.getCell(0).setCellStyle(styleSubHeader);
             thesisRow.getCell(1).setCellStyle(styleData);
         }
 
-
-        int keyResult = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8;
+        int keyResult = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8;
         Row resultRow = sheet.createRow(keyResult);
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,5,9));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 5, 9));
         resultRow.createCell(0).setCellValue("Prestasi Akademik");
         resultRow.createCell(5).setCellValue("Sistem Penilaian");
         resultRow.getCell(0).setCellStyle(styleDataKhs);
         resultRow.getCell(5).setCellStyle(styleDataKhs);
 
-        int remark = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10;
+        int remark = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 10;
         Row remarkRow = sheet.createRow(remark);
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 7, 9));
         remarkRow.createCell(0).setCellValue("Keterangan");
         remarkRow.createCell(5).setCellValue("HM");
         remarkRow.createCell(6).setCellValue("AM");
@@ -4014,10 +4310,11 @@ public class StudiesActivityController {
         remarkRow.getCell(6).setCellStyle(styleIpk);
         remarkRow.getCell(7).setCellStyle(styleIpk);
 
-        int excellent = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11;
+        int excellent = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11;
         Row excellentRow = sheet.createRow(excellent);
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 7, 9));
         excellentRow.createCell(0).setCellValue("3,80-4,00");
         excellentRow.createCell(1).setCellValue("Pujian Tertinggi (Minimal B)");
         excellentRow.createCell(5).setCellValue("A");
@@ -4029,10 +4326,11 @@ public class StudiesActivityController {
         excellentRow.getCell(6).setCellStyle(styleDataKhs);
         excellentRow.getCell(7).setCellStyle(styleManajemen);
 
-        int veryGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12;
+        int veryGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 12;
         Row veryGoodRow = sheet.createRow(veryGood);
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 7, 9));
         veryGoodRow.createCell(0).setCellValue("3,50-3,79");
         veryGoodRow.createCell(1).setCellValue("Pujian (Minimal B)");
         veryGoodRow.createCell(5).setCellValue("A-");
@@ -4044,10 +4342,11 @@ public class StudiesActivityController {
         veryGoodRow.getCell(6).setCellStyle(styleDataKhs);
         veryGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int good = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13;
+        int good = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 13;
         Row goodRow = sheet.createRow(good);
-        sheet.addMergedRegion(new CellRangeAddress(good,good,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(good,good,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 7, 9));
         goodRow.createCell(0).setCellValue("3,00-3,49");
         goodRow.createCell(1).setCellValue("Sangat Memuaskan");
         goodRow.createCell(5).setCellValue("B+");
@@ -4059,10 +4358,11 @@ public class StudiesActivityController {
         goodRow.getCell(6).setCellStyle(styleDataKhs);
         goodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactory = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14;
+        int satisfactory = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14;
         Row satisfactoryRow = sheet.createRow(satisfactory);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 7, 9));
         satisfactoryRow.createCell(0).setCellValue("2,75-2,99");
         satisfactoryRow.createCell(1).setCellValue("Memuaskan");
         satisfactoryRow.createCell(5).setCellValue("B");
@@ -4074,9 +4374,10 @@ public class StudiesActivityController {
         satisfactoryRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryRow.getCell(7).setCellStyle(styleManajemen);
 
-        int almostGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+15;
+        int almostGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 15;
         Row almostGoodRow = sheet.createRow(almostGood);
-        sheet.addMergedRegion(new CellRangeAddress(almostGood,almostGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 7, 9));
         almostGoodRow.createCell(5).setCellValue("B-");
         almostGoodRow.createCell(6).setCellValue("2,7");
         almostGoodRow.createCell(7).setCellValue("Baik");
@@ -4084,9 +4385,10 @@ public class StudiesActivityController {
         almostGoodRow.getCell(6).setCellStyle(styleDataKhs);
         almostGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryCplus = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+16;
+        int satisfactoryCplus = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 16;
         Row satisfactoryCplusRow = sheet.createRow(satisfactoryCplus);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus,satisfactoryCplus,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 7, 9));
         satisfactoryCplusRow.createCell(5).setCellValue("C+");
         satisfactoryCplusRow.createCell(6).setCellValue("2,3");
         satisfactoryCplusRow.createCell(7).setCellValue("Cukup");
@@ -4094,9 +4396,10 @@ public class StudiesActivityController {
         satisfactoryCplusRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCplusRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryC = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+17;
+        int satisfactoryC = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 17;
         Row satisfactoryCRow = sheet.createRow(satisfactoryC);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC,satisfactoryC,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 7, 9));
         satisfactoryCRow.createCell(5).setCellValue("C");
         satisfactoryCRow.createCell(6).setCellValue("2");
         satisfactoryCRow.createCell(7).setCellValue("Cukup");
@@ -4104,9 +4407,10 @@ public class StudiesActivityController {
         satisfactoryCRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCRow.getCell(7).setCellStyle(styleManajemen);
 
-        int poor = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+18;
+        int poor = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 18;
         Row poorRow = sheet.createRow(poor);
-        sheet.addMergedRegion(new CellRangeAddress(poor,poor,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(poor, poor, 7, 9));
         poorRow.createCell(5).setCellValue("D");
         poorRow.createCell(6).setCellValue("1");
         poorRow.createCell(7).setCellValue("Kurang");
@@ -4114,9 +4418,10 @@ public class StudiesActivityController {
         poorRow.getCell(6).setCellStyle(styleDataKhs);
         poorRow.getCell(7).setCellStyle(styleManajemen);
 
-        int fail = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+19;
+        int fail = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 19;
         Row failRow = sheet.createRow(fail);
-        sheet.addMergedRegion(new CellRangeAddress(fail,fail,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(fail, fail, 7, 9));
         failRow.createCell(5).setCellValue("E");
         failRow.createCell(6).setCellValue("0");
         failRow.createCell(7).setCellValue("Sangat Kurang");
@@ -4124,428 +4429,793 @@ public class StudiesActivityController {
         failRow.getCell(6).setCellStyle(styleDataKhs);
         failRow.getCell(7).setCellStyle(styleManajemen);
 
-        int createDate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
+        int createDate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 24;
         Row createDateRow = sheet.createRow(createDate);
         HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
         String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("dd", new Locale("en")));
         String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
 
-        if (LocalDate.now().getMonthValue() == 1){
+        if (LocalDate.now().getMonthValue() == 1) {
 
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari " + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari " + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 2){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 2) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 3){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 4){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 3) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 5){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 6){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 4) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 7){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 8){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 5) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 9){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 10){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 6) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 11){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 12){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 7) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        int facultyy = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
+        if (LocalDate.now().getMonthValue() == 8) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 9) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 10) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 11) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 12) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        int facultyy = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 26;
         Row facultyRow = sheet.createRow(facultyy);
         facultyRow.createCell(0).setCellValue("Dekan ");
         facultyRow.getCell(0).setCellStyle(styleData);
         facultyRow.createCell(5).setCellValue("Koordinator ");
         facultyRow.getCell(5).setCellStyle(styleData);
 
-        int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        int faculty2 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 27;
         Row facultyRow2 = sheet.createRow(faculty2);
         facultyRow2.createCell(0).setCellValue("Fakultas " + mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         facultyRow2.getCell(0).setCellStyle(styleData);
         facultyRow2.createCell(5).setCellValue("Program Studi " + mahasiswa.getIdProdi().getNamaProdi());
         facultyRow2.getCell(5).setCellStyle(styleData);
 
-        int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
+        int lecture = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0)
+                .setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
-        int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        int nik = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 33;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(0)
+                .setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
         nikRow.getCell(5).setCellStyle(styleNik);
 
-
-
         PropertyTemplate propertyTemplate = new PropertyTemplate();
-//        semester1
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 0, 0),
+        // semester1
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 1, 4),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 5, 5),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 6, 6),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 7, 8),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-
-        //        semester2
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 9, 9),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-//        semester3
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 0, 0),
+        // semester2
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 1, 4),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 6, 6),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 7, 8),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester4
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester5
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester6
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester7
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester8
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 1, 4),
+        // semester3
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester4
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester5
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester6
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester7
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester8
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 5, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        5, 9),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 12,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 13,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
 
         propertyTemplate.applyBorders(sheet);
 
-
-        String namaFile = "Transkript-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
+        String namaFile = "Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
     @GetMapping("/studiesActivity/transcript/print")
-    public void printTranskript(Model model, @RequestParam(required = false)String nim, HttpServletResponse response) throws Exception {
+    public void printTranskript(Model model, @RequestParam(required = false) String nim, HttpServletResponse response)
+            throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("mhsw", mahasiswa);
         model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
 
         IpkDto ipk = krsDetailDao.ipk(mahasiswa);
@@ -4567,24 +5237,34 @@ public class StudiesActivityController {
 
         response.setHeader(headerKey, headerValue);
 
-        transcriptService.transkripSementara(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6, semester7, semester8, sks, ipk, mutu, response);
+        transcriptService.transkripSementara(mahasiswa, semester1, semester2, semester3, semester4, semester5,
+                semester6, semester7, semester8, sks, ipk, mutu, response);
 
-//        model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
-//        model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
-//        model.addAttribute("transkrip1", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"1"));
-//        model.addAttribute("transkrip2", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"2"));
-//        model.addAttribute("transkrip3", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"3"));
-//        model.addAttribute("transkrip4", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"4"));
-//        model.addAttribute("transkrip5", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"5"));
-//        model.addAttribute("transkrip6", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"6"));
-//        model.addAttribute("transkrip7", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"7"));
-//        model.addAttribute("transkrip8", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"8"));
+        // model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
+        // model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
+        // model.addAttribute("transkrip1",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"1"));
+        // model.addAttribute("transkrip2",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"2"));
+        // model.addAttribute("transkrip3",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"3"));
+        // model.addAttribute("transkrip4",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"4"));
+        // model.addAttribute("transkrip5",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"5"));
+        // model.addAttribute("transkrip6",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"6"));
+        // model.addAttribute("transkrip7",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"7"));
+        // model.addAttribute("transkrip8",
+        // krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"8"));
     }
 
     @GetMapping("/studiesActivity/transcript/print1")
-    public void printTranskript1(Model model, @RequestParam(required = false)String nim, HttpServletResponse response) throws IOException {
+    public void printTranskript1(Model model, @RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("mhsw", mahasiswa);
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
@@ -4592,14 +5272,10 @@ public class StudiesActivityController {
 
         int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-
         BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-
-        BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
-
+        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
 
         model.addAttribute("ipk", ipk);
         model.addAttribute("sks", sks);
@@ -4614,30 +5290,29 @@ public class StudiesActivityController {
         List<DataTranskript> semester7 = new ArrayList<>();
         List<DataTranskript> semester8 = new ArrayList<>();
 
-
-        for (DataTranskript data : listTranskript){
-            if (data.getSemester().equals("1")){
+        for (DataTranskript data : listTranskript) {
+            if (data.getSemester().equals("1")) {
                 semester1.add(data);
             }
-            if (data.getSemester().equals("2")){
+            if (data.getSemester().equals("2")) {
                 semester2.add(data);
             }
-            if (data.getSemester().equals("3")){
+            if (data.getSemester().equals("3")) {
                 semester3.add(data);
             }
-            if (data.getSemester().equals("4")){
+            if (data.getSemester().equals("4")) {
                 semester4.add(data);
             }
-            if (data.getSemester().equals("5")){
+            if (data.getSemester().equals("5")) {
                 semester5.add(data);
             }
-            if (data.getSemester().equals("6")){
+            if (data.getSemester().equals("6")) {
                 semester6.add(data);
             }
-            if (data.getSemester().equals("7")){
+            if (data.getSemester().equals("7")) {
                 semester7.add(data);
             }
-            if (data.getSemester().equals("8")){
+            if (data.getSemester().equals("8")) {
                 semester8.add(data);
             }
         }
@@ -4648,27 +5323,28 @@ public class StudiesActivityController {
 
         response.setHeader(headerKey, headerValue);
 
-        transcriptService.transkripIndo(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6, semester7, semester8, sks, ipk, mutu, response);
+        transcriptService.transkripIndo(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6,
+                semester7, semester8, sks, ipk, mutu, response);
 
+        // model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
+        // model.addAttribute("transkrip1", semester1);
+        // model.addAttribute("transkrip2", semester2);
+        // model.addAttribute("transkrip3", semester3);
+        // model.addAttribute("transkrip4", semester4);
+        // model.addAttribute("transkrip5", semester5);
+        // model.addAttribute("transkrip6", semester6);
+        // model.addAttribute("transkrip7", semester7);
+        // model.addAttribute("transkrip8", semester8);
 
-//        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
-//        model.addAttribute("transkrip1", semester1);
-//        model.addAttribute("transkrip2", semester2);
-//        model.addAttribute("transkrip3", semester3);
-//        model.addAttribute("transkrip4", semester4);
-//        model.addAttribute("transkrip5", semester5);
-//        model.addAttribute("transkrip6", semester6);
-//        model.addAttribute("transkrip7", semester7);
-//        model.addAttribute("transkrip8", semester8);
-
-//        return "dashboardadmin";
+        // return "dashboardadmin";
 
     }
 
     @GetMapping("/studiesActivity/transcript/inggris")
-    public void printTranskriptInggris(Model model, @RequestParam(required = false)String nim, HttpServletResponse response) throws Exception {
+    public void printTranskriptInggris(Model model, @RequestParam(required = false) String nim,
+            HttpServletResponse response) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("mhsw", mahasiswa);
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
@@ -4676,14 +5352,10 @@ public class StudiesActivityController {
 
         int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-
         BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-
-        BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
-
+        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
 
         model.addAttribute("ipk", ipk);
         model.addAttribute("sks", sks);
@@ -4698,30 +5370,29 @@ public class StudiesActivityController {
         List<DataTranskript> semester7 = new ArrayList<>();
         List<DataTranskript> semester8 = new ArrayList<>();
 
-
-        for (DataTranskript data : listTranskript){
-            if (data.getSemester().equals("1")){
+        for (DataTranskript data : listTranskript) {
+            if (data.getSemester().equals("1")) {
                 semester1.add(data);
             }
-            if (data.getSemester().equals("2")){
+            if (data.getSemester().equals("2")) {
                 semester2.add(data);
             }
-            if (data.getSemester().equals("3")){
+            if (data.getSemester().equals("3")) {
                 semester3.add(data);
             }
-            if (data.getSemester().equals("4")){
+            if (data.getSemester().equals("4")) {
                 semester4.add(data);
             }
-            if (data.getSemester().equals("5")){
+            if (data.getSemester().equals("5")) {
                 semester5.add(data);
             }
-            if (data.getSemester().equals("6")){
+            if (data.getSemester().equals("6")) {
                 semester6.add(data);
             }
-            if (data.getSemester().equals("7")){
+            if (data.getSemester().equals("7")) {
                 semester7.add(data);
             }
-            if (data.getSemester().equals("8")){
+            if (data.getSemester().equals("8")) {
                 semester8.add(data);
             }
         }
@@ -4732,96 +5403,117 @@ public class StudiesActivityController {
 
         response.setHeader(headerKey, headerValue);
 
-        transcriptService.transcriptEnglish(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6, semester7, semester8, sks, ipk, mutu, response);
+        transcriptService.transcriptEnglish(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6,
+                semester7, semester8, sks, ipk, mutu, response);
 
-//        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
-//        model.addAttribute("transkrip1", semester1);
-//        model.addAttribute("transkrip2", semester2);
-//        model.addAttribute("transkrip3", semester3);
-//        model.addAttribute("transkrip4", semester4);
-//        model.addAttribute("transkrip5", semester5);
-//        model.addAttribute("transkrip6", semester6);
-//        model.addAttribute("transkrip7", semester7);
-//        model.addAttribute("transkrip8", semester8);
+        // model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
+        // model.addAttribute("transkrip1", semester1);
+        // model.addAttribute("transkrip2", semester2);
+        // model.addAttribute("transkrip3", semester3);
+        // model.addAttribute("transkrip4", semester4);
+        // model.addAttribute("transkrip5", semester5);
+        // model.addAttribute("transkrip6", semester6);
+        // model.addAttribute("transkrip7", semester7);
+        // model.addAttribute("transkrip8", semester8);
 
     }
 
-
-//    Exam Validation
+    // Exam Validation
 
     @GetMapping("/studiesActivity/validation/list")
-    public void validationQuestion(Model model, @RequestParam(required = false)TahunAkademik tahun, Pageable page,
-                                   @RequestParam(required = false)StatusApprove status, @RequestParam(required = false)String search){
+    public void validationQuestion(Model model, @RequestParam(required = false) TahunAkademik tahun, Pageable page,
+            @RequestParam(required = false) StatusApprove status, @RequestParam(required = false) String search) {
 
-        model.addAttribute("akademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("akademik",
+                tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         if (tahun != null && status == null) {
-            model.addAttribute("tahunAkademik",tahun);
+            model.addAttribute("tahunAkademik", tahun);
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,search,page));
+                model.addAttribute("jadwal", jadwalDao
+                        .findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, search, search, page));
             } else {
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+                model.addAttribute("jadwal",
+                        jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, page));
             }
 
         }
 
-        if (tahun != null && status != null){
-            model.addAttribute("tahunAkademik",tahun);
-            model.addAttribute("status",status);
+        if (tahun != null && status != null) {
+            model.addAttribute("tahunAkademik", tahun);
+            model.addAttribute("status", status);
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUtsAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndStatusUtsAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,status,search,StatusRecord.AKTIF,status,tahun,search,page));
+                model.addAttribute("jadwal", jadwalDao
+                        .findByStatusAndTahunAkademikAndStatusUtsAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndStatusUtsAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, status, search, StatusRecord.AKTIF, status, tahun, search,
+                                page));
             } else {
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUtsAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun,status, page));
+                model.addAttribute("jadwal", jadwalDao
+                        .findByStatusAndTahunAkademikAndStatusUtsAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, status, page));
             }
         }
 
     }
 
     @GetMapping("/studiesActivity/validation/listuas")
-    public void validationUas(Model model, @RequestParam(required = false)TahunAkademik tahun, Pageable page,
-                              @RequestParam(required = false)StatusApprove status, @RequestParam(required = false)String search){
-        model.addAttribute("akademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
+    public void validationUas(Model model, @RequestParam(required = false) TahunAkademik tahun, Pageable page,
+            @RequestParam(required = false) StatusApprove status, @RequestParam(required = false) String search) {
+        model.addAttribute("akademik",
+                tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
 
-        if (tahun != null && status != null){
-            model.addAttribute("status",status);
-            model.addAttribute("tahunAkademik",tahun);
+        if (tahun != null && status != null) {
+            model.addAttribute("status", status);
+            model.addAttribute("tahunAkademik", tahun);
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUasAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndStatusUasAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,status,search,StatusRecord.AKTIF,status,tahun,search,page));
+                model.addAttribute("jadwal", jadwalDao
+                        .findByStatusAndTahunAkademikAndStatusUasAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndStatusUasAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, status, search, StatusRecord.AKTIF, status, tahun, search,
+                                page));
             } else {
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUasAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun,status, page));
+                model.addAttribute("jadwal", jadwalDao
+                        .findByStatusAndTahunAkademikAndStatusUasAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, status, page));
             }
         }
 
         if (tahun != null && status == null) {
-            model.addAttribute("tahunAkademik",tahun);
+            model.addAttribute("tahunAkademik", tahun);
             if (StringUtils.hasText(search)) {
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,StatusRecord.AKTIF,tahun,search,page));
+                model.addAttribute("jadwal", jadwalDao
+                        .findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, search, StatusRecord.AKTIF, tahun, search, page));
                 model.addAttribute("search", search);
             } else {
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+                model.addAttribute("jadwal",
+                        jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(
+                                StatusRecord.AKTIF, tahun, page));
             }
 
         }
     }
 
     @GetMapping("/studiesActivity/validation/approval")
-    public void approval(Model model,@RequestParam Jadwal jadwal,@RequestParam StatusRecord status){
-        model.addAttribute("jadwal",jadwal);
-        model.addAttribute("soal",soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(jadwal,StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED,StatusApprove.APPROVED),status));
+    public void approval(Model model, @RequestParam Jadwal jadwal, @RequestParam StatusRecord status) {
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("soal", soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(jadwal,
+                StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED, StatusApprove.APPROVED), status));
     }
 
     @GetMapping("/studiesActivity/validation/detail")
-    public void detailApprove (Model model,@RequestParam Jadwal jadwal,@RequestParam StatusRecord status){
-        model.addAttribute("jadwal",jadwal);
-        model.addAttribute("soal",soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED,status));
+    public void detailApprove(Model model, @RequestParam Jadwal jadwal, @RequestParam StatusRecord status) {
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("soal", soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,
+                StatusRecord.AKTIF, StatusApprove.APPROVED, status));
     }
 
     @PostMapping("/studiesActivity/validation/approval")
-    public String prosesApprove(@RequestParam Soal soal,MultipartFile file) throws Exception {
-
+    public String prosesApprove(@RequestParam Soal soal, MultipartFile file) throws Exception {
 
         String namaFile = file.getName();
         String jenisFile = file.getContentType();
@@ -4831,9 +5523,9 @@ public class StudiesActivityController {
         System.out.println("Nama File : {}" + namaFile);
         System.out.println("Jenis File : {}" + jenisFile);
         System.out.println("Nama Asli File : {}" + namaAsli);
-        System.out.println("Ukuran File : {}"+ ukuran);
+        System.out.println("Ukuran File : {}" + ukuran);
 
-//        memisahkan extensi
+        // memisahkan extensi
         String extension = "";
 
         int i = namaAsli.lastIndexOf('.');
@@ -4843,10 +5535,11 @@ public class StudiesActivityController {
             extension = namaAsli.substring(i + 1);
         }
 
-
-//        String idFile = soal.getJadwal().getTahunAkademik().getKodeTahunAkademik()+"-"+soal.getStatusSoal()+"-"+soal.getJadwal().getKelas().getNamaKelas()+"-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getDosen().getKaryawan().getNamaKaryawan();
-        String idFile = "VLD-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+ soal.getJadwal().getKelas().getNamaKelas();
-        if (idFile.length() > 65){
+        // String idFile =
+        // soal.getJadwal().getTahunAkademik().getKodeTahunAkademik()+"-"+soal.getStatusSoal()+"-"+soal.getJadwal().getKelas().getNamaKelas()+"-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getDosen().getKaryawan().getNamaKaryawan();
+        String idFile = "VLD-" + soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "-"
+                + soal.getJadwal().getKelas().getNamaKelas();
+        if (idFile.length() > 65) {
 
         }
 
@@ -4861,10 +5554,9 @@ public class StudiesActivityController {
         soal.setStatusApprove(StatusApprove.APPROVED);
         soal.setKeteranganApprove(soal.getKeterangan());
         soalDao.save(soal);
-        mailService.validasiSoal(soal,"APPROVE");
+        mailService.validasiSoal(soal, "APPROVE");
 
-
-        Jadwal jadwal =jadwalDao.findById(soal.getJadwal().getId()).get();
+        Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {
             jadwal.setStatusUts(StatusApprove.APPROVED);
         }
@@ -4873,18 +5565,18 @@ public class StudiesActivityController {
         }
         jadwalDao.save(jadwal);
 
-        if (soal.getStatusSoal() == StatusRecord.UAS){
-            return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            return "redirect:listuas?tahun=" + jadwal.getTahunAkademik().getId() + "&status=" + StatusApprove.APPROVED;
         }
-        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+        return "redirect:list?tahun=" + jadwal.getTahunAkademik().getId() + "&status=" + StatusApprove.APPROVED;
     }
 
     @PostMapping("/studiesActivity/validation/rejected")
-    public String prosesReject(@RequestParam Soal soal,@RequestParam(required = false) String keteranganApprove){
+    public String prosesReject(@RequestParam Soal soal, @RequestParam(required = false) String keteranganApprove) {
         soal.setStatusApprove(StatusApprove.REJECTED);
         soal.setKeteranganApprove(keteranganApprove);
         soalDao.save(soal);
-        mailService.validasiSoal(soal,"REJECT");
+        mailService.validasiSoal(soal, "REJECT");
 
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {
@@ -4896,74 +5588,64 @@ public class StudiesActivityController {
         jadwalDao.save(jadwal);
 
         if (soal.getStatusSoal() == StatusRecord.UAS) {
-            return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
+            return "redirect:listuas?tahun=" + jadwal.getTahunAkademik().getId() + "&status=" + StatusApprove.REJECTED;
         }
 
-
-        return "redirect:list?tahun="+soal.getJadwal().getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
+        return "redirect:list?tahun=" + soal.getJadwal().getTahunAkademik().getId() + "&status="
+                + StatusApprove.REJECTED;
     }
 
     @RequestMapping("/filedownload/")
-    public void downloadSoal( HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     @RequestParam Soal soal)
-    {
-        //If user is not authorized - he should be thrown out from here itself
+    public void downloadSoal(HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam Soal soal) {
+        // If user is not authorized - he should be thrown out from here itself
         String fileName = soal.getFileApprove();
-        //Authorized user will download the file
-        String lokasi = uploadFolder+File.separator+soal.getJadwal().getId();
+        // Authorized user will download the file
+        String lokasi = uploadFolder + File.separator + soal.getJadwal().getId();
         String dataDirectory = request.getServletContext().getRealPath(lokasi);
         Path file = Paths.get(lokasi, fileName);
         System.out.println(file);
-        if (Files.exists(file))
-        {
+        if (Files.exists(file)) {
             response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.addHeader("Content-Disposition", "attachment; filename="+fileName);
-            try
-            {
+            response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+            try {
                 Files.copy(file, response.getOutputStream());
                 response.getOutputStream().flush();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
     @RequestMapping("/file/{fileName}")
-    public void downloadPDFResource( HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     @RequestParam Soal soal,
-                                     @PathVariable("fileName") String fileName)
-    {
-        //If user is not authorized - he should be thrown out from here itself
+    public void downloadPDFResource(HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam Soal soal,
+            @PathVariable("fileName") String fileName) {
+        // If user is not authorized - he should be thrown out from here itself
 
-        //Authorized user will download the file
-        String lokasi = uploadFolder+File.separator+soal.getJadwal().getId();
+        // Authorized user will download the file
+        String lokasi = uploadFolder + File.separator + soal.getJadwal().getId();
         String dataDirectory = request.getServletContext().getRealPath(lokasi);
         Path file = Paths.get(lokasi, fileName);
         System.out.println(file);
-        if (Files.exists(file))
-        {
+        if (Files.exists(file)) {
             response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.addHeader("Content-Disposition", "attachment; filename="+fileName);
-            try
-            {
+            response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+            try {
                 Files.copy(file, response.getOutputStream());
                 response.getOutputStream().flush();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-
-
     @PostMapping("/studiesActivity/validation/canceluts")
-    public String cancel (@RequestParam Jadwal jadwal)
-    {
-        Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED,StatusRecord.UTS);
+    public String cancel(@RequestParam Jadwal jadwal) {
+        Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF,
+                StatusApprove.APPROVED, StatusRecord.UTS);
         soal.setStatusApprove(StatusApprove.REJECTED);
         soal.setKeteranganApprove("Dibatalkan");
         soalDao.save(soal);
@@ -4971,14 +5653,14 @@ public class StudiesActivityController {
         jadwal.setStatusUts(StatusApprove.REJECTED);
         jadwalDao.save(jadwal);
 
-        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+        return "redirect:list?tahun=" + jadwal.getTahunAkademik().getId() + "&status=" + StatusApprove.APPROVED;
 
     }
 
     @PostMapping("/studiesActivity/validation/canceluas")
-    public String cancelUas (@RequestParam Jadwal jadwal)
-    {
-        Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED,StatusRecord.UAS);
+    public String cancelUas(@RequestParam Jadwal jadwal) {
+        Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF,
+                StatusApprove.APPROVED, StatusRecord.UAS);
         soal.setStatusApprove(StatusApprove.REJECTED);
         soal.setKeteranganApprove("Dibatalkan");
         soalDao.save(soal);
@@ -4986,23 +5668,21 @@ public class StudiesActivityController {
         jadwal.setStatusUas(StatusApprove.REJECTED);
         jadwalDao.save(jadwal);
 
-        return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+        return "redirect:listuas?tahun=" + jadwal.getTahunAkademik().getId() + "&status=" + StatusApprove.APPROVED;
 
     }
 
     @GetMapping("/studiesActivity/assesment/upload/rps")
-    public void listRps(@RequestParam Jadwal jadwal, Model model){
+    public void listRps(@RequestParam Jadwal jadwal, Model model) {
         model.addAttribute("jadwal", jadwal);
-        Iterable<Rps> rps = rpsDao.findByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
+        Iterable<Rps> rps = rpsDao.findByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
 
-        model.addAttribute("rps",rps);
+        model.addAttribute("rps", rps);
 
     }
 
-
     @PostMapping("/studiesActivity/assesment/upload/rps")
-    public String uploadRps(@Valid Rps rps,MultipartFile file, @RequestParam Jadwal jadwal) throws Exception {
-
+    public String uploadRps(@Valid Rps rps, MultipartFile file, @RequestParam Jadwal jadwal) throws Exception {
 
         String namaFile = file.getName();
         String jenisFile = file.getContentType();
@@ -5012,9 +5692,9 @@ public class StudiesActivityController {
         System.out.println("Nama File : {}" + namaFile);
         System.out.println("Jenis File : {}" + jenisFile);
         System.out.println("Nama Asli File : {}" + namaAsli);
-        System.out.println("Ukuran File : {}"+ ukuran);
+        System.out.println("Ukuran File : {}" + ukuran);
 
-//        memisahkan extensi
+        // memisahkan extensi
         String extension = "";
 
         int i = namaAsli.lastIndexOf('.');
@@ -5024,7 +5704,6 @@ public class StudiesActivityController {
             extension = namaAsli.substring(i + 1);
         }
 
-
         String idFile = "RPS-" + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
         String lokasiUpload = uploadRps + File.separator + rps.getJadwal().getId();
         LOGGER.debug("Lokasi upload : {}", lokasiUpload);
@@ -5033,18 +5712,17 @@ public class StudiesActivityController {
         file.transferTo(tujuan);
         LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
 
-
         rps.setJadwal(jadwal);
         rps.setStatus(StatusRecord.AKTIF);
         rps.setTanggalUpload(LocalDate.now());
         rps.setFilename(idFile + "." + extension);
-        Rps rpsId = rpsDao.findByJadwalAndStatus(rps.getJadwal(),StatusRecord.AKTIF);
+        Rps rpsId = rpsDao.findByJadwalAndStatus(rps.getJadwal(), StatusRecord.AKTIF);
 
-        if (rpsId == null){
+        if (rpsId == null) {
             rpsDao.save(rps);
         }
 
-        if (rpsId != null){
+        if (rpsId != null) {
             rpsId.setStatus(StatusRecord.NONAKTIF);
             rpsDao.save(rpsId);
             rpsDao.save(rps);
@@ -5055,13 +5733,15 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/validation/download")
-    public void validationExamDownload(@RequestParam String tahunAkademik, @RequestParam String jenis, HttpServletResponse response, @PageableDefault(size = Integer.MAX_VALUE) Pageable page) throws IOException {
+    public void validationExamDownload(@RequestParam String tahunAkademik, @RequestParam String jenis,
+            HttpServletResponse response, @PageableDefault(size = Integer.MAX_VALUE) Pageable page) throws IOException {
 
         TahunAkademik tahun = tahunAkademikDao.findById(tahunAkademik).get();
 
-        String[] columns = {"NO. ", "Matakuliah", "Kelas", "Dosen", "Status Upload", "Bentuk Ujian", "Prodi"};
+        String[] columns = { "NO. ", "Matakuliah", "Kelas", "Dosen", "Status Upload", "Bentuk Ujian", "Prodi" };
 
-        Page<Jadwal> jadwalPage = jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page);
+        Page<Jadwal> jadwalPage = jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(
+                StatusRecord.AKTIF, tahun, page);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List validasi soal");
@@ -5076,7 +5756,7 @@ public class StudiesActivityController {
 
         Row headerRow = sheet.createRow(0);
 
-        for (int i = 0; i<columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
@@ -5085,7 +5765,7 @@ public class StudiesActivityController {
         int rowNum = 1;
         int baris = 1;
 
-        for (Jadwal list : jadwalPage){
+        for (Jadwal list : jadwalPage) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
@@ -5094,33 +5774,34 @@ public class StudiesActivityController {
             if ("uts".equals(jenis)) {
                 row.createCell(4).setCellValue(list.getStatusUts().toString());
                 row.createCell(5).setCellValue(list.getFormatUts());
-            }else if ("uas".equals(jenis)){
+            } else if ("uas".equals(jenis)) {
                 row.createCell(4).setCellValue(list.getStatusUas().toString());
                 row.createCell(5).setCellValue(list.getFormatUas());
             }
             row.createCell(6).setCellValue(list.getProdi().getKodeProdi());
         }
 
-        for (int i = 0; i<columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=List_validasi_soal " + tahun.getNamaTahunAkademik() + ".xlsx");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=List_validasi_soal " + tahun.getNamaTahunAkademik() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
     }
 
-//    Pra KRS SP
+    // Pra KRS SP
 
     @GetMapping("/studiesActivity/sp/list")
-    public void listSp(Model model){
+    public void listSp(Model model) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         if (tahun.getJenis() != StatusRecord.PENDEK) {
             model.addAttribute("message", "Aktifkan tahun akademik pendek");
-        }else{
+        } else {
             tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
             if (tahun == null) {
                 tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
@@ -5131,7 +5812,8 @@ public class StudiesActivityController {
         model.addAttribute("list", p1);
         model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("listProdi", prodiDao.findAll());
-        model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listTahun",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
 
         model.addAttribute("matkulDetail1", praKrsSpDao.detailSp(tahun));
@@ -5139,7 +5821,8 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/sp/proses")
-    public void prosesSp(Model model, @RequestParam(required = false) String[] checkBox, Authentication authentication){
+    public void prosesSp(Model model, @RequestParam(required = false) String[] checkBox,
+            Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -5150,23 +5833,26 @@ public class StudiesActivityController {
         }
 
         List<String> listSp = new ArrayList<>();
-        for(String list : checkBox){
+        for (String list : checkBox) {
             listSp.add(list);
         }
         List<Object[]> spList = praKrsSpDao.listLunasSpPerMatkul(tahun, listSp);
         model.addAttribute("listSp", spList);
-        List<MatakuliahKurikulum> matkul = matakuliahKurikulumDao.findByStatusAndMatakuliahIdIn(StatusRecord.AKTIF, listSp);
+        List<MatakuliahKurikulum> matkul = matakuliahKurikulumDao.findByStatusAndMatakuliahIdIn(StatusRecord.AKTIF,
+                listSp);
         model.addAttribute("listMatkul", matkul);
         model.addAttribute("listId", listSp);
 
         // jadwal yang sudah ada
-        List<Jadwal> existSchedule = jadwalDao.findByTahunAkademikAndStatusAndMatakuliahKurikulumIn(tahun, StatusRecord.AKTIF, matkul);
+        List<Jadwal> existSchedule = jadwalDao.findByTahunAkademikAndStatusAndMatakuliahKurikulumIn(tahun,
+                StatusRecord.AKTIF, matkul);
         model.addAttribute("jadwal", existSchedule);
 
         // halaman approve
         model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("listProdi", prodiDao.findAll());
-        model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listTahun",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         // halaman reject
 
@@ -5175,14 +5861,15 @@ public class StudiesActivityController {
 
         // halaman custom
 
-
-
     }
 
     @Transactional
     @PostMapping("/studiesActivity/sp/approve")
-    public String approveSp(@RequestParam(required = false) List<String> id, @RequestParam(required = false) String checkBox, @RequestParam(required = false) String checkJadwal, @RequestParam(required = false) String[] checkMhs, @RequestParam(required = false) String dosen,
-                            @RequestParam(required = false) String prodi, @RequestParam(required = false) String tahunAkademik, Authentication authentication){
+    public String approveSp(@RequestParam(required = false) List<String> id,
+            @RequestParam(required = false) String checkBox, @RequestParam(required = false) String checkJadwal,
+            @RequestParam(required = false) String[] checkMhs, @RequestParam(required = false) String dosen,
+            @RequestParam(required = false) String prodi, @RequestParam(required = false) String tahunAkademik,
+            Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -5193,12 +5880,12 @@ public class StudiesActivityController {
         }
 
         List<String> listMhs = new ArrayList<>();
-        for (String list : checkMhs){
+        for (String list : checkMhs) {
             listMhs.add(list);
         }
         System.out.println("tes : " + listMhs);
 
-        praKrsSpDao.updateStatus(karyawan,listMhs, "APPROVED");
+        praKrsSpDao.updateStatus(karyawan, listMhs, "APPROVED");
 
         Kelas kelas = kelasDao.findById("SP-01").get();
 
@@ -5206,11 +5893,11 @@ public class StudiesActivityController {
         MatakuliahKurikulum matkur;
         TahunAkademik tahunJadwal;
 
-        if (checkJadwal != null){
+        if (checkJadwal != null) {
             jadwal = jadwalDao.findById(checkJadwal).get();
             matkur = jadwal.getMatakuliahKurikulum();
             tahunJadwal = jadwal.getTahunAkademik();
-        }else {
+        } else {
             tahunJadwal = tahunAkademikDao.findById(tahunAkademik).get();
             matkur = matakuliahKurikulumDao.findById(checkBox).get();
             Dosen dos = dosenDao.findById(dosen).get();
@@ -5248,16 +5935,18 @@ public class StudiesActivityController {
             jadwalDosenDao.save(jadwalDosen);
         }
 
-        for (String krsId : listMhs){
+        for (String krsId : listMhs) {
             PraKrsSp findMahasiswa = praKrsSpDao.findById(krsId).get();
             Mahasiswa mhs = mahasiswaDao.findByNim(findMahasiswa.getMahasiswa().getNim());
-            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunJadwal, mhs.getIdProdi());
+            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunJadwal,
+                    mhs.getIdProdi());
 
-            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunJadwal, jadwal, StatusRecord.AKTIF);
+            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunJadwal,
+                    jadwal, StatusRecord.AKTIF);
             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunJadwal, StatusRecord.AKTIF);
 
-            if (krsDetail == null){
-                if (k == null){
+            if (krsDetail == null) {
+                if (k == null) {
                     Krs krs = new Krs();
                     krs.setTahunAkademik(tahunJadwal);
                     krs.setTahunAkademikProdi(tahunAkademikProdi);
@@ -5290,7 +5979,7 @@ public class StudiesActivityController {
                     kd.setTahunAkademik(tahunJadwal);
                     krsDetailDao.save(kd);
 
-                }else{
+                } else {
 
                     KrsDetail kd = new KrsDetail();
                     kd.setKrs(k);
@@ -5323,7 +6012,8 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/sp/reject")
-    public String rejectSp(@RequestParam(required = false) List<String> id, @RequestParam(required = false) String[] checkMhsRe, Authentication authentication){
+    public String rejectSp(@RequestParam(required = false) List<String> id,
+            @RequestParam(required = false) String[] checkMhsRe, Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -5334,7 +6024,7 @@ public class StudiesActivityController {
         }
 
         List<String> listMhs = new ArrayList<>();
-        for (String list : checkMhsRe){
+        for (String list : checkMhsRe) {
             listMhs.add(list);
         }
         System.out.println("list mahasiswa : " + listMhs);
@@ -5345,8 +6035,9 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/sp/custom")
-    public void customKelas(Model model, @RequestParam String id, @RequestParam(required = false) List<String> matkul, @RequestParam(required = false) String jenis, @RequestParam(required = false) String jumlah,
-                            @RequestParam(required = false) String maks){
+    public void customKelas(Model model, @RequestParam String id, @RequestParam(required = false) List<String> matkul,
+            @RequestParam(required = false) String jenis, @RequestParam(required = false) String jumlah,
+            @RequestParam(required = false) String maks) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
@@ -5358,7 +6049,7 @@ public class StudiesActivityController {
 
         MatakuliahKurikulum mk = matakuliahKurikulumDao.findById(id).get();
         model.addAttribute("matkul", mk);
-        if (jenis != null){
+        if (jenis != null) {
             model.addAttribute("jadwal", jadwalDao.findByMatakuliahKurikulumAndStatus(mk, StatusRecord.PREVIEW));
             model.addAttribute("jenis", jenis);
             model.addAttribute("jumlah", jumlah);
@@ -5366,15 +6057,19 @@ public class StudiesActivityController {
             model.addAttribute("listMahasiswa", matkul);
             model.addAttribute("listProdi", prodiDao.findAll());
             model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-            model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
-//            model.addAttribute("listKelas", kelasDao.findByStatusAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord.AKTIF, "SP"));
+            model.addAttribute("listTahun",
+                    tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+            // model.addAttribute("listKelas",
+            // kelasDao.findByStatusAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord.AKTIF,
+            // "SP"));
         }
 
     }
 
     @PostMapping("/studiesActivity/sp/custom")
-    public String kelasCustom(@RequestParam String id, @RequestParam List<String> matkul, @RequestParam(required = false) String jenis, @RequestParam(required = false) String jumlah,
-                              @RequestParam(required = false) String maks, Authentication authentication, RedirectAttributes attributes){
+    public String kelasCustom(@RequestParam String id, @RequestParam List<String> matkul,
+            @RequestParam(required = false) String jenis, @RequestParam(required = false) String jumlah,
+            @RequestParam(required = false) String maks, Authentication authentication, RedirectAttributes attributes) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
@@ -5385,21 +6080,21 @@ public class StudiesActivityController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         MatakuliahKurikulum mk = matakuliahKurikulumDao.findById(id).get();
         List<Jadwal> cekPreview = jadwalDao.findByMatakuliahKurikulumAndStatus(mk, StatusRecord.PREVIEW);
-        for (Jadwal j : cekPreview){
+        for (Jadwal j : cekPreview) {
             jadwalDao.delete(j);
         }
 
         List<Object[]> m = praKrsSpDao.listAllSpPerMatkul(tahun, matkul);
         System.out.println("cek list: " + m);
         List<String> listId = new ArrayList<>();
-        for(Object[] pks : m){
+        for (Object[] pks : m) {
             listId.add(pks[9].toString());
         }
-        praKrsSpDao.updateSp(karyawan,listId);
+        praKrsSpDao.updateSp(karyawan, listId);
         System.out.println("mhs : " + listId);
 
         int j = Integer.parseInt(jumlah);
-        for(int i = 1; i <= j; i++){
+        for (int i = 1; i <= j; i++) {
             Jadwal jadwal = new Jadwal();
             jadwal.setJumlahSesi(1);
             jadwal.setBobotTugas(BigDecimal.ZERO);
@@ -5416,12 +6111,13 @@ public class StudiesActivityController {
         }
 
         attributes.addFlashAttribute("testMatkul", matkul);
-        return "redirect:custom?id="+id+"&jenis="+jenis+"&jumlah="+jumlah+"&maks="+maks;
+        return "redirect:custom?id=" + id + "&jenis=" + jenis + "&jumlah=" + jumlah + "&maks=" + maks;
     }
 
     @Transactional
     @PostMapping("/studiesActivity/sp/cancel")
-    public String cancelKelas(@RequestParam String id, @RequestParam List<String> matkul, Authentication authentication){
+    public String cancelKelas(@RequestParam String id, @RequestParam List<String> matkul,
+            Authentication authentication) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
@@ -5433,14 +6129,14 @@ public class StudiesActivityController {
         MatakuliahKurikulum mk = matakuliahKurikulumDao.findById(id).get();
 
         List<Jadwal> cekJadwal = jadwalDao.findByMatakuliahKurikulumAndStatus(mk, StatusRecord.PREVIEW);
-        for (Jadwal j : cekJadwal){
+        for (Jadwal j : cekJadwal) {
             jadwalDao.delete(j);
         }
 
         List<Object[]> m = praKrsSpDao.listAllSpPerMatkul(tahun, matkul);
         System.out.println("cek list: " + m);
         List<String> listId = new ArrayList<>();
-        for (Object[] pks : m){
+        for (Object[] pks : m) {
             listId.add(pks[9].toString());
         }
         System.out.println("mhs : " + listId);
@@ -5452,8 +6148,10 @@ public class StudiesActivityController {
 
     @Transactional
     @PostMapping("/studiesActivity/sp/custom/submit")
-    public String submitCustom(@RequestParam String id, @RequestParam List<String> matkul, @RequestParam(required = false) String jenis, @RequestParam(required = false) String jumlah, @RequestParam(required = false) String maks,
-                               HttpServletRequest request, Authentication authentication){
+    public String submitCustom(@RequestParam String id, @RequestParam List<String> matkul,
+            @RequestParam(required = false) String jenis, @RequestParam(required = false) String jumlah,
+            @RequestParam(required = false) String maks,
+            HttpServletRequest request, Authentication authentication) {
 
         TahunAkademik semesterPendek = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (semesterPendek == null) {
@@ -5462,19 +6160,19 @@ public class StudiesActivityController {
 
         MatakuliahKurikulum mk = matakuliahKurikulumDao.findById(id).get();
         List<Jadwal> jadwal = jadwalDao.findByMatakuliahKurikulumAndStatus(mk, StatusRecord.PREVIEW);
-        for (Jadwal j : jadwal){
-            String pilihan = request.getParameter("dosen-"+j.getId());
+        for (Jadwal j : jadwal) {
+            String pilihan = request.getParameter("dosen-" + j.getId());
             if (pilihan != null && !pilihan.trim().isEmpty()) {
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
-                TahunAkademik tahun = tahunAkademikDao.findById(request.getParameter("tahun-"+j.getId())).get();
-                Prodi prodi = prodiDao.findById(request.getParameter("prodi-"+j.getId())).get();
+                TahunAkademik tahun = tahunAkademikDao.findById(request.getParameter("tahun-" + j.getId())).get();
+                Prodi prodi = prodiDao.findById(request.getParameter("prodi-" + j.getId())).get();
                 TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, prodi);
                 SpDto m = praKrsSpDao.tampilPerMatkul(mk.getId());
 
                 System.out.println("jenis : " + jenis);
 
-                if (jenis.equals("campur")){
+                if (jenis.equals("campur")) {
 
                     Kelas kelas = kelasDao.findById("SP-01").get();
                     Dosen dosen = dosenDao.findById(pilihan).get();
@@ -5501,10 +6199,11 @@ public class StudiesActivityController {
 
                     List<Object[]> spLunas = praKrsSpDao.listLunasSpPerMatkul(tahun, matkul);
                     System.out.println("tes lunas : " + spLunas);
-                    for (Object[] listLunas : spLunas){
+                    for (Object[] listLunas : spLunas) {
                         Mahasiswa mhs = mahasiswaDao.findByNim(listLunas[2].toString());
                         TahunAkademikProdi tap = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
-                        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahun, jdwl, StatusRecord.AKTIF);
+                        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahun,
+                                jdwl, StatusRecord.AKTIF);
                         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
                         if (krsDetail == null) {
                             if (k == null) {
@@ -5539,7 +6238,7 @@ public class StudiesActivityController {
                                 kd.setTahunAkademik(tahun);
                                 krsDetailDao.save(kd);
 
-                            }else{
+                            } else {
                                 KrsDetail kd = new KrsDetail();
                                 kd.setKrs(k);
                                 kd.setMahasiswa(mhs);
@@ -5566,9 +6265,8 @@ public class StudiesActivityController {
 
                     }
 
-
                 } else if (jenis.equals("pisah")) {
-                    Kelas kelas = kelasDao.findById(request.getParameter("kelas-"+j.getId())).get();
+                    Kelas kelas = kelasDao.findById(request.getParameter("kelas-" + j.getId())).get();
                     Dosen dosen = dosenDao.findById(pilihan).get();
 
                     Jadwal jdwl = jadwalDao.findById(j.getId()).get();
@@ -5591,15 +6289,16 @@ public class StudiesActivityController {
                     jd.setJumlahTerlambat(0);
                     jadwalDosenDao.save(jd);
 
-                    if (kelas.getKodeKelas().equals("SP-01-AKHWAT")){
+                    if (kelas.getKodeKelas().equals("SP-01-AKHWAT")) {
                         List<Object[]> listLunas = praKrsSpDao.listLunasPisahKelas(tahun, matkul, "WANITA");
                         System.out.println("tes lunas : " + listLunas);
-                        for (Object[] akhwatLunas : listLunas){
+                        for (Object[] akhwatLunas : listLunas) {
                             Mahasiswa mhs = mahasiswaDao.findByNim(akhwatLunas[2].toString());
                             TahunAkademikProdi tap = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
-                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahun, jdwl, StatusRecord.AKTIF);
+                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs,
+                                    tahun, jdwl, StatusRecord.AKTIF);
                             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
-                            if (krsDetail == null){
+                            if (krsDetail == null) {
                                 if (k == null) {
                                     Krs krs = new Krs();
                                     krs.setTahunAkademik(tahun);
@@ -5632,7 +6331,7 @@ public class StudiesActivityController {
                                     kd.setStatus(StatusRecord.AKTIF);
                                     kd.setTahunAkademik(tahun);
                                     krsDetailDao.save(kd);
-                                }else{
+                                } else {
                                     KrsDetail kd = new KrsDetail();
                                     kd.setKrs(k);
                                     kd.setMahasiswa(mhs);
@@ -5659,13 +6358,14 @@ public class StudiesActivityController {
 
                         }
 
-                    }else if (kelas.getKodeKelas().equals("SP-01-IKHWAN")){
+                    } else if (kelas.getKodeKelas().equals("SP-01-IKHWAN")) {
                         List<Object[]> listLunas = praKrsSpDao.listLunasPisahKelas(tahun, matkul, "PRIA");
                         System.out.println("tes lunas : " + listLunas);
-                        for (Object[] listIkhwan : listLunas){
+                        for (Object[] listIkhwan : listLunas) {
                             Mahasiswa mhs = mahasiswaDao.findByNim(listIkhwan[2].toString());
                             TahunAkademikProdi tap = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
-                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahun, jdwl, StatusRecord.AKTIF);
+                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs,
+                                    tahun, jdwl, StatusRecord.AKTIF);
                             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
                             if (krsDetail == null) {
                                 if (k == null) {
@@ -5701,7 +6401,7 @@ public class StudiesActivityController {
                                     kd.setTahunAkademik(tahun);
                                     krsDetailDao.save(kd);
 
-                                }else{
+                                } else {
                                     KrsDetail kd = new KrsDetail();
                                     kd.setKrs(k);
                                     kd.setMahasiswa(mhs);
@@ -5736,7 +6436,7 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/sp/detail")
-    public void spDetail(Model model){
+    public void spDetail(Model model) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
@@ -5748,7 +6448,7 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/download/detail/sp")
-    public void listDetail(HttpServletResponse response) throws IOException{
+    public void listDetail(HttpServletResponse response) throws IOException {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
@@ -5756,7 +6456,7 @@ public class StudiesActivityController {
         }
         List<Object[]> listDetail = praKrsSpDao.allDetail(tahun);
 
-        String[] columns = {"No", "Nama", "NIM", "Prodi", "Matakuliah", "SKS", "Pembayaran", "Tanggal Pembayaran"};
+        String[] columns = { "No", "Nama", "NIM", "Prodi", "Matakuliah", "SKS", "Pembayaran", "Tanggal Pembayaran" };
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List detail mahasiswa request SP");
@@ -5771,7 +6471,7 @@ public class StudiesActivityController {
 
         Row headerRow = sheet.createRow(0);
 
-        for (int i = 0; i < columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
@@ -5780,7 +6480,7 @@ public class StudiesActivityController {
         int rowNum = 1;
         int baris = 1;
 
-        for(Object[] detail : listDetail){
+        for (Object[] detail : listDetail) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(detail[3].toString());
@@ -5792,19 +6492,20 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(detail[10].toString());
         }
 
-        for (int i = 1; i < columns.length; i++){
+        for (int i = 1; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Detail_MHS_SP_"+LocalDate.now()+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Detail_MHS_SP_" + LocalDate.now() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
     }
 
     @GetMapping("/download/list")
-    public void listPerMatkul(@RequestParam(required = false) String matkul, HttpServletResponse response) throws  IOException{
+    public void listPerMatkul(@RequestParam(required = false) String matkul, HttpServletResponse response)
+            throws IOException {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
@@ -5812,9 +6513,10 @@ public class StudiesActivityController {
         }
         MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(matkul).get();
         SpDto m = praKrsSpDao.tampilPerMatkul(matkur.getId());
-        List<Object[]> listDownload = praKrsSpDao.excelDownlaod(tahun, m.getId(), m.getIdMatakuliah(), m.getKode(), m.getNamaMatakuliah());
+        List<Object[]> listDownload = praKrsSpDao.excelDownlaod(tahun, m.getId(), m.getIdMatakuliah(), m.getKode(),
+                m.getNamaMatakuliah());
 
-        String[] columns = {"No", "Nim", "Nama", "Prodi", "Nomor Telepon", "Status Pembayaran" , "Tanggal Pembayaran"};
+        String[] columns = { "No", "Nim", "Nama", "Prodi", "Nomor Telepon", "Status Pembayaran", "Tanggal Pembayaran" };
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List Mahasiswa Request SP");
@@ -5831,7 +6533,7 @@ public class StudiesActivityController {
 
         Row headerRow = sheet.createRow(2);
 
-        for (int i = 0; i < columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
@@ -5840,7 +6542,7 @@ public class StudiesActivityController {
         int rowNum = 3;
         int baris = 1;
 
-        for (Object[] list : listDownload){
+        for (Object[] list : listDownload) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list[2].toString());
@@ -5851,40 +6553,37 @@ public class StudiesActivityController {
             row.createCell(6).setCellValue(list[10].toString());
         }
 
-        for (int i = 0; i < columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
-
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=List_Request_SP_Matkul_"+matkur.getMatakuliah().getNamaMatakuliah()+"_"+LocalDate.now()+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=List_Request_SP_Matkul_"
+                + matkur.getMatakuliah().getNamaMatakuliah() + "_" + LocalDate.now() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
     }
 
-
     @GetMapping("/studiesActivity/transcript/transkriptindo2")
-    public void transkriptFormat2 (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
-
+    public void transkriptFormat2(@RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-//        Long totalSKS = krsDetailDao.totalSks(mahasiswa);
-//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+        // Long totalSKS = krsDetailDao.totalSks(mahasiswa);
+        // BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
-//        file
+        // file
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
         listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
         int totalSKS = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-
         BigDecimal totalMuti = listTranskript.stream().map(DataTranskript::getMutu)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-        BigDecimal ipk = totalMuti.divide(new BigDecimal(totalSKS),2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal ipk = totalMuti.divide(new BigDecimal(totalSKS), 2, BigDecimal.ROUND_HALF_UP);
 
         List<DataTranskript> semester1 = new ArrayList<>();
         List<DataTranskript> semester2 = new ArrayList<>();
@@ -5895,30 +6594,29 @@ public class StudiesActivityController {
         List<DataTranskript> semester7 = new ArrayList<>();
         List<DataTranskript> semester8 = new ArrayList<>();
 
-
-        for (DataTranskript data : listTranskript){
-            if (data.getSemester().equals("1")){
+        for (DataTranskript data : listTranskript) {
+            if (data.getSemester().equals("1")) {
                 semester1.add(data);
             }
-            if (data.getSemester().equals("2")){
+            if (data.getSemester().equals("2")) {
                 semester2.add(data);
             }
-            if (data.getSemester().equals("3")){
+            if (data.getSemester().equals("3")) {
                 semester3.add(data);
             }
-            if (data.getSemester().equals("4")){
+            if (data.getSemester().equals("4")) {
                 semester4.add(data);
             }
-            if (data.getSemester().equals("5")){
+            if (data.getSemester().equals("5")) {
                 semester5.add(data);
             }
-            if (data.getSemester().equals("6")){
+            if (data.getSemester().equals("6")) {
                 semester6.add(data);
             }
-            if (data.getSemester().equals("7")){
+            if (data.getSemester().equals("7")) {
                 semester7.add(data);
             }
-            if (data.getSemester().equals("8")){
+            if (data.getSemester().equals("8")) {
                 semester8.add(data);
             }
         }
@@ -5987,7 +6685,6 @@ public class StudiesActivityController {
         CellStyle styleNik = workbook.createCellStyle();
         styleNik.setVerticalAlignment(VerticalAlignment.CENTER);
         styleNik.setFont(nikFont);
-
 
         CellStyle styleManajemen = workbook.createCellStyle();
         styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -6046,8 +6743,7 @@ public class StudiesActivityController {
         styleIpk.setAlignment(HorizontalAlignment.CENTER);
         styleIpk.setVerticalAlignment(VerticalAlignment.CENTER);
 
-
-        int rowInfoNama = 5 ;
+        int rowInfoNama = 5;
         Row nama = sheet.createRow(rowInfoNama);
         nama.createCell(0).setCellValue("Nama Mahasiswa ");
         nama.createCell(3).setCellValue(":");
@@ -6056,7 +6752,7 @@ public class StudiesActivityController {
         nama.getCell(3).setCellStyle(styleSymbol);
         nama.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNim = 6 ;
+        int rowInfoNim = 6;
         Row matricNo = sheet.createRow(rowInfoNim);
         matricNo.createCell(0).setCellValue("NIM");
         matricNo.createCell(3).setCellValue(":");
@@ -6065,7 +6761,7 @@ public class StudiesActivityController {
         matricNo.getCell(3).setCellStyle(styleSymbol);
         matricNo.getCell(4).setCellStyle(styleData);
 
-        int rowInfoEntry = 7 ;
+        int rowInfoEntry = 7;
         Row entry = sheet.createRow(rowInfoEntry);
         entry.createCell(0).setCellValue("Penomoran Induk Nasional");
         entry.createCell(3).setCellValue(":");
@@ -6074,79 +6770,103 @@ public class StudiesActivityController {
         entry.getCell(3).setCellStyle(styleSymbol);
         entry.getCell(4).setCellStyle(styleData);
 
-        int rowInfoBirth = 8 ;
+        int rowInfoBirth = 8;
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(0).setCellValue("Tempat, Tanggal lahir");
         birthDay.createCell(3).setCellValue(":");
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 1) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 2){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 2) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 3){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 3) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 4){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 4) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " April" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 5){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 5) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 6){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 6) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 7){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 7) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 8){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 8) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 9){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 9) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " September" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 10){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 10) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 11){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 11) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " November" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 12){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 12) {
+            birthDay.createCell(4)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(4).setCellStyle(styleData);
 
         }
@@ -6154,20 +6874,20 @@ public class StudiesActivityController {
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoLevel = 9 ;
+        int rowInfoLevel = 9;
         Row level = sheet.createRow(rowInfoLevel);
         level.createCell(0).setCellValue("Program Pendidikan");
         level.createCell(3).setCellValue(":");
 
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             level.createCell(4).setCellValue("Sarjana");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             level.createCell(4).setCellValue("Magister");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()) {
             level.createCell(4).setCellValue("Sarjana");
             level.getCell(4).setCellStyle(styleData);
 
@@ -6175,25 +6895,25 @@ public class StudiesActivityController {
         level.getCell(0).setCellStyle(styleData);
         level.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoDepartment = 10 ;
+        int rowInfoDepartment = 10;
         Row department = sheet.createRow(rowInfoDepartment);
         department.createCell(0).setCellValue("Program Studi");
         department.createCell(3).setCellValue(":");
-        department.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi() );
+        department.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
         department.getCell(0).setCellStyle(styleData);
         department.getCell(3).setCellStyle(styleSymbol);
         department.getCell(4).setCellStyle(styleData);
 
-        int rowInfoFaculty = 11 ;
+        int rowInfoFaculty = 11;
         Row faculty = sheet.createRow(rowInfoFaculty);
         faculty.createCell(0).setCellValue("Fakultas");
         faculty.createCell(3).setCellValue(":");
-        faculty.createCell(4).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas() );
+        faculty.createCell(4).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         faculty.getCell(0).setCellStyle(styleData);
         faculty.getCell(3).setCellStyle(styleSymbol);
         faculty.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNoAcred = 12 ;
+        int rowInfoNoAcred = 12;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
         accreditation.createCell(0).setCellValue("No SK BAN - PT");
         accreditation.createCell(3).setCellValue(":");
@@ -6202,79 +6922,90 @@ public class StudiesActivityController {
         accreditation.getCell(3).setCellStyle(styleSymbol);
         accreditation.getCell(4).setCellStyle(styleData);
 
-
-        int rowInfoDateAcred = 13 ;
+        int rowInfoDateAcred = 13;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(0).setCellValue("Tanggal SK BAN - PT ");
         dateAccreditation.createCell(3).setCellValue(":");
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Februari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Februari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Maret" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Maret" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Mei" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Mei"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juni" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juni"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juli" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juli"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Agustus" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Agustus" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Oktober" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Oktober" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12) {
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
@@ -6282,87 +7013,98 @@ public class StudiesActivityController {
         dateAccreditation.getCell(0).setCellStyle(styleData);
         dateAccreditation.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoGraduatedDate = 14 ;
+        int rowInfoGraduatedDate = 14;
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Tanggal Kelulusan");
         graduatedDate.createCell(3).setCellValue(":");
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 1){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 1) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 2){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 2) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Februari" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 3){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 3) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Maret" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 4){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 4) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 5){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 5) {
+            graduatedDate.createCell(4).setCellValue(
+                    mahasiswa.getTanggalLulus().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 6){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 6) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juni" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 7){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 7) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juli" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 8){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 8) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Agustus" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 9){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 9) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 10){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 10) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Oktober" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 11){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 11) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 12){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 12) {
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
-
 
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoTranscript = 15 ;
+        int rowInfoTranscript = 15;
         Row transcript = sheet.createRow(rowInfoTranscript);
         transcript.createCell(0).setCellValue("No Transkrip ");
         transcript.createCell(3).setCellValue(":");
@@ -6371,11 +7113,11 @@ public class StudiesActivityController {
         transcript.getCell(3).setCellStyle(styleSymbol);
         transcript.getCell(4).setCellStyle(styleData);
 
-        int rowNumSemester1 = 18 ;
+        int rowNumSemester1 = 18;
         for (DataTranskript sem1 : semester1) {
             Row row = sheet.createRow(rowNumSemester1);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 7, 8));
 
             row.createCell(0).setCellValue(sem1.getKode());
             row.createCell(1).setCellValue(sem1.getMatkul());
@@ -6393,11 +7135,11 @@ public class StudiesActivityController {
             rowNumSemester1++;
         }
 
-        int rowNumSemester2 = 18+semester1.size() ;
+        int rowNumSemester2 = 18 + semester1.size();
         for (DataTranskript sem2 : semester2) {
             Row row = sheet.createRow(rowNumSemester2);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 7, 8));
 
             row.createCell(0).setCellValue(sem2.getKode());
             row.createCell(1).setCellValue(sem2.getMatkul());
@@ -6415,11 +7157,11 @@ public class StudiesActivityController {
             rowNumSemester2++;
         }
 
-        int rowNumSemester3 = 18+semester1.size()+semester2.size() ;
+        int rowNumSemester3 = 18 + semester1.size() + semester2.size();
         for (DataTranskript sem3 : semester3) {
             Row row = sheet.createRow(rowNumSemester3);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 7, 8));
 
             row.createCell(0).setCellValue(sem3.getKode());
             row.createCell(1).setCellValue(sem3.getMatkul());
@@ -6437,11 +7179,11 @@ public class StudiesActivityController {
             rowNumSemester3++;
         }
 
-        int rowNumSemester4 = 18+semester1.size()+semester2.size()+semester3.size() ;
+        int rowNumSemester4 = 18 + semester1.size() + semester2.size() + semester3.size();
         for (DataTranskript sem4 : semester4) {
             Row row = sheet.createRow(rowNumSemester4);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 7, 8));
 
             row.createCell(0).setCellValue(sem4.getKode());
             row.createCell(1).setCellValue(sem4.getMatkul());
@@ -6459,11 +7201,11 @@ public class StudiesActivityController {
             rowNumSemester4++;
         }
 
-        int rowNumSemester5 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size() ;
+        int rowNumSemester5 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size();
         for (DataTranskript sem5 : semester5) {
             Row row = sheet.createRow(rowNumSemester5);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 7, 8));
 
             row.createCell(0).setCellValue(sem5.getKode());
             row.createCell(1).setCellValue(sem5.getMatkul());
@@ -6481,11 +7223,12 @@ public class StudiesActivityController {
             rowNumSemester5++;
         }
 
-        int rowNumSemester6 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size() ;
+        int rowNumSemester6 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size();
         for (DataTranskript sem6 : semester6) {
             Row row = sheet.createRow(rowNumSemester6);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 7, 8));
 
             row.createCell(0).setCellValue(sem6.getKode());
             row.createCell(1).setCellValue(sem6.getMatkul());
@@ -6503,11 +7246,12 @@ public class StudiesActivityController {
             rowNumSemester6++;
         }
 
-        int rowNumSemester7 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size();
+        int rowNumSemester7 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size();
         for (DataTranskript sem7 : semester7) {
             Row row = sheet.createRow(rowNumSemester7);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 7, 8));
 
             row.createCell(0).setCellValue(sem7.getKode());
             row.createCell(1).setCellValue(sem7.getMatkul());
@@ -6525,11 +7269,12 @@ public class StudiesActivityController {
             rowNumSemester7++;
         }
 
-        int rowNumSemester8 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size();
+        int rowNumSemester8 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size();
         for (DataTranskript sem8 : semester8) {
             Row row = sheet.createRow(rowNumSemester8);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 7, 8));
 
             row.createCell(0).setCellValue(sem8.getKode());
             row.createCell(1).setCellValue(sem8.getMatkul());
@@ -6547,9 +7292,10 @@ public class StudiesActivityController {
             rowNumSemester8++;
         }
 
-        int total = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size();
+        int total = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size();
         Row rowTotal = sheet.createRow(total);
-        sheet.addMergedRegion(new CellRangeAddress(total,total,1,4));
+        sheet.addMergedRegion(new CellRangeAddress(total, total, 1, 4));
         rowTotal.createCell(1).setCellValue("Jumlah");
         rowTotal.createCell(5).setCellValue(totalSKS);
         rowTotal.createCell(9).setCellValue(totalMuti.toString());
@@ -6557,86 +7303,89 @@ public class StudiesActivityController {
         rowTotal.getCell(5).setCellStyle(styleDataKhs);
         rowTotal.getCell(9).setCellStyle(styleDataKhs);
 
-        int ipKomulatif = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+2;
+        int ipKomulatif = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 2;
         Row rowIpk = sheet.createRow(ipKomulatif);
-        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
+        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif, ipKomulatif, 0, 2));
         rowIpk.createCell(0).setCellValue("Indeks Prestasi Kumulatif");
         rowIpk.createCell(5).setCellValue(ipk.toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
-        int predicate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
+        int predicate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(0).setCellValue("Predikat :");
-        if (ipk.compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.compareTo(new BigDecimal(2.99)) <= 0) {
             predicateRow.createCell(1).setCellValue("Memuaskan");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0) {
             predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
                 predicateRow.getCell(2).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(2).setCellValue("Pujian ");
                 predicateRow.getCell(2).setCellStyle(styleData);
             }
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
                 predicateRow.getCell(2).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(2).setCellValue("Pujian Tertinggi");
                 predicateRow.getCell(2).setCellStyle(styleData);
             }
-
 
         }
 
         predicateRow.getCell(0).setCellStyle(styleSubHeader);
 
-        int thesis = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
+        int thesis = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 5;
         Row thesisRow = sheet.createRow(thesis);
-        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             thesisRow.createCell(0).setCellValue("Judul skripsi :");
             thesisRow.createCell(1).setCellValue(mahasiswa.getJudul());
             thesisRow.getCell(0).setCellStyle(styleSubHeader);
             thesisRow.getCell(1).setCellStyle(styleData);
         }
 
-        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             thesisRow.createCell(0).setCellValue("Judul Tesis :");
             thesisRow.createCell(1).setCellValue(mahasiswa.getJudul());
             thesisRow.getCell(0).setCellStyle(styleSubHeader);
             thesisRow.getCell(1).setCellStyle(styleData);
         }
 
-
-        int keyResult = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8;
+        int keyResult = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8;
         Row resultRow = sheet.createRow(keyResult);
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,5,9));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 5, 9));
         resultRow.createCell(0).setCellValue("Prestasi Akademik");
         resultRow.createCell(5).setCellValue("Sistem Penilaian");
         resultRow.getCell(0).setCellStyle(styleDataKhs);
         resultRow.getCell(5).setCellStyle(styleDataKhs);
 
-        int remark = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10;
+        int remark = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 10;
         Row remarkRow = sheet.createRow(remark);
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 7, 9));
         remarkRow.createCell(0).setCellValue("Keterangan");
         remarkRow.createCell(5).setCellValue("HM");
         remarkRow.createCell(6).setCellValue("AM");
@@ -6646,10 +7395,11 @@ public class StudiesActivityController {
         remarkRow.getCell(6).setCellStyle(styleIpk);
         remarkRow.getCell(7).setCellStyle(styleIpk);
 
-        int excellent = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11;
+        int excellent = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11;
         Row excellentRow = sheet.createRow(excellent);
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 7, 9));
         excellentRow.createCell(0).setCellValue("3,80-4,00");
         excellentRow.createCell(1).setCellValue("Pujian Tertinggi (Minimal B)");
         excellentRow.createCell(5).setCellValue("A");
@@ -6661,10 +7411,11 @@ public class StudiesActivityController {
         excellentRow.getCell(6).setCellStyle(styleDataKhs);
         excellentRow.getCell(7).setCellStyle(styleManajemen);
 
-        int veryGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12;
+        int veryGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 12;
         Row veryGoodRow = sheet.createRow(veryGood);
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 7, 9));
         veryGoodRow.createCell(0).setCellValue("3,50-3,79");
         veryGoodRow.createCell(1).setCellValue("Pujian (Minimal B)");
         veryGoodRow.createCell(5).setCellValue("A-");
@@ -6676,10 +7427,11 @@ public class StudiesActivityController {
         veryGoodRow.getCell(6).setCellStyle(styleDataKhs);
         veryGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int good = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13;
+        int good = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 13;
         Row goodRow = sheet.createRow(good);
-        sheet.addMergedRegion(new CellRangeAddress(good,good,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(good,good,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 7, 9));
         goodRow.createCell(0).setCellValue("3,00-3,49");
         goodRow.createCell(1).setCellValue("Sangat Memuaskan");
         goodRow.createCell(5).setCellValue("B+");
@@ -6691,10 +7443,11 @@ public class StudiesActivityController {
         goodRow.getCell(6).setCellStyle(styleDataKhs);
         goodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactory = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14;
+        int satisfactory = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14;
         Row satisfactoryRow = sheet.createRow(satisfactory);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 7, 9));
         satisfactoryRow.createCell(0).setCellValue("2,75-2,99");
         satisfactoryRow.createCell(1).setCellValue("Memuaskan");
         satisfactoryRow.createCell(5).setCellValue("B");
@@ -6706,9 +7459,10 @@ public class StudiesActivityController {
         satisfactoryRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryRow.getCell(7).setCellStyle(styleManajemen);
 
-        int almostGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+15;
+        int almostGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 15;
         Row almostGoodRow = sheet.createRow(almostGood);
-        sheet.addMergedRegion(new CellRangeAddress(almostGood,almostGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 7, 9));
         almostGoodRow.createCell(5).setCellValue("B-");
         almostGoodRow.createCell(6).setCellValue("2,7");
         almostGoodRow.createCell(7).setCellValue("Baik");
@@ -6716,9 +7470,10 @@ public class StudiesActivityController {
         almostGoodRow.getCell(6).setCellStyle(styleDataKhs);
         almostGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryCplus = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+16;
+        int satisfactoryCplus = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 16;
         Row satisfactoryCplusRow = sheet.createRow(satisfactoryCplus);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus,satisfactoryCplus,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 7, 9));
         satisfactoryCplusRow.createCell(5).setCellValue("C+");
         satisfactoryCplusRow.createCell(6).setCellValue("2,3");
         satisfactoryCplusRow.createCell(7).setCellValue("Cukup");
@@ -6726,9 +7481,10 @@ public class StudiesActivityController {
         satisfactoryCplusRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCplusRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryC = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+17;
+        int satisfactoryC = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 17;
         Row satisfactoryCRow = sheet.createRow(satisfactoryC);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC,satisfactoryC,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 7, 9));
         satisfactoryCRow.createCell(5).setCellValue("C");
         satisfactoryCRow.createCell(6).setCellValue("2");
         satisfactoryCRow.createCell(7).setCellValue("Cukup");
@@ -6736,9 +7492,10 @@ public class StudiesActivityController {
         satisfactoryCRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCRow.getCell(7).setCellStyle(styleManajemen);
 
-        int poor = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+18;
+        int poor = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 18;
         Row poorRow = sheet.createRow(poor);
-        sheet.addMergedRegion(new CellRangeAddress(poor,poor,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(poor, poor, 7, 9));
         poorRow.createCell(5).setCellValue("D");
         poorRow.createCell(6).setCellValue("1");
         poorRow.createCell(7).setCellValue("Kurang");
@@ -6746,9 +7503,10 @@ public class StudiesActivityController {
         poorRow.getCell(6).setCellStyle(styleDataKhs);
         poorRow.getCell(7).setCellStyle(styleManajemen);
 
-        int fail = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+19;
+        int fail = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 19;
         Row failRow = sheet.createRow(fail);
-        sheet.addMergedRegion(new CellRangeAddress(fail,fail,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(fail, fail, 7, 9));
         failRow.createCell(5).setCellValue("E");
         failRow.createCell(6).setCellValue("0");
         failRow.createCell(7).setCellValue("Sangat Kurang");
@@ -6756,445 +7514,808 @@ public class StudiesActivityController {
         failRow.getCell(6).setCellStyle(styleDataKhs);
         failRow.getCell(7).setCellStyle(styleManajemen);
 
-        int createDate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
+        int createDate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 24;
         Row createDateRow = sheet.createRow(createDate);
         HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
         String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("dd", new Locale("en")));
         String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
 
-        if (LocalDate.now().getMonthValue() == 1){
+        if (LocalDate.now().getMonthValue() == 1) {
 
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari " + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari " + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Januari" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 2){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 2) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 3){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Februari" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 4){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 3) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 5){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Maret" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 6){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 4) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 7){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 8){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 5) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 9){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Mei" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 10){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 6) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 11){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juni" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        if (LocalDate.now().getMonthValue() == 12){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (LocalDate.now().getMonthValue() == 7) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Juli" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
         }
 
-        int facultyy = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
+        if (LocalDate.now().getMonthValue() == 8) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Agustus" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 9) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 10) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " Oktober" + " " + LocalDate.now().getYear() + " / "
+                                + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 11) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        if (LocalDate.now().getMonthValue() == 12) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(0)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + LocalDate.now().getDayOfMonth() + " Desember" + " " + LocalDate.now().getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.getCell(0).setCellStyle(styleData);
+            }
+
+        }
+
+        int facultyy = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 26;
         Row facultyRow = sheet.createRow(facultyy);
         facultyRow.createCell(0).setCellValue("Dekan ");
         facultyRow.getCell(0).setCellStyle(styleData);
         facultyRow.createCell(5).setCellValue("Koordinator ");
         facultyRow.getCell(5).setCellStyle(styleData);
 
-        int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        int faculty2 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 27;
         Row facultyRow2 = sheet.createRow(faculty2);
         facultyRow2.createCell(0).setCellValue("Fakultas " + mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         facultyRow2.getCell(0).setCellStyle(styleData);
         facultyRow2.createCell(5).setCellValue("Program Studi " + mahasiswa.getIdProdi().getNamaProdi());
         facultyRow2.getCell(5).setCellStyle(styleData);
 
-        int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
+        int lecture = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0)
+                .setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
-        int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        int nik = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 33;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(0)
+                .setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
         nikRow.getCell(5).setCellStyle(styleNik);
 
-
-
         PropertyTemplate propertyTemplate = new PropertyTemplate();
-//        semester1
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 0, 0),
+        // semester1
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 1, 4),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 5, 5),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 6, 6),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 7, 8),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-
-        //        semester2
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 9, 9),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-//        semester3
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 0, 0),
+        // semester2
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 1, 4),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 6, 6),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 7, 8),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester4
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester5
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester6
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester7
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester8
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 1, 4),
+        // semester3
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester4
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester5
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester6
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester7
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester8
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 5, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        5, 9),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 12,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 13,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
 
         propertyTemplate.applyBorders(sheet);
 
-
-        String namaFile = "Transkript-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
+        String namaFile = "Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
     @GetMapping("/studiesActivity/transcript/transkriptexcel2")
-    public void transkriptExcel2 (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
-
+    public void transkriptExcel2(@RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-        List<TranskriptDto> semester1 = krsDetailDao.excelTranskript(mahasiswa.getId(),"1");
-        List<TranskriptDto> semester2 = krsDetailDao.excelTranskript(mahasiswa.getId(),"2");
-        List<TranskriptDto> semester3 = krsDetailDao.excelTranskript(mahasiswa.getId(),"3");
-        List<TranskriptDto> semester4 = krsDetailDao.excelTranskript(mahasiswa.getId(),"4");
-        List<TranskriptDto> semester5 = krsDetailDao.excelTranskript(mahasiswa.getId(),"5");
-        List<TranskriptDto> semester6 = krsDetailDao.excelTranskript(mahasiswa.getId(),"6");
-        List<TranskriptDto> semester7 = krsDetailDao.excelTranskript(mahasiswa.getId(),"7");
-        List<TranskriptDto> semester8 = krsDetailDao.excelTranskript(mahasiswa.getId(),"8");
+        List<TranskriptDto> semester1 = krsDetailDao.excelTranskript(mahasiswa.getId(), "1");
+        List<TranskriptDto> semester2 = krsDetailDao.excelTranskript(mahasiswa.getId(), "2");
+        List<TranskriptDto> semester3 = krsDetailDao.excelTranskript(mahasiswa.getId(), "3");
+        List<TranskriptDto> semester4 = krsDetailDao.excelTranskript(mahasiswa.getId(), "4");
+        List<TranskriptDto> semester5 = krsDetailDao.excelTranskript(mahasiswa.getId(), "5");
+        List<TranskriptDto> semester6 = krsDetailDao.excelTranskript(mahasiswa.getId(), "6");
+        List<TranskriptDto> semester7 = krsDetailDao.excelTranskript(mahasiswa.getId(), "7");
+        List<TranskriptDto> semester8 = krsDetailDao.excelTranskript(mahasiswa.getId(), "8");
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
         IpkDto ipk = krsDetailDao.ipk(mahasiswa);
 
-//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
-
+        // BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
         InputStream file = contohExcelTranskript.getInputStream();
 
@@ -7314,8 +8435,7 @@ public class StudiesActivityController {
         styleSubHeader1.setVerticalAlignment(VerticalAlignment.CENTER);
         styleSubHeader1.setFont(ipFont);
 
-
-        int rowInfoNama = 5 ;
+        int rowInfoNama = 5;
         Row nama = sheet.createRow(rowInfoNama);
         nama.createCell(0).setCellValue("Name");
         nama.createCell(3).setCellValue(":");
@@ -7324,7 +8444,7 @@ public class StudiesActivityController {
         nama.getCell(3).setCellStyle(styleSymbol);
         nama.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNim = 6 ;
+        int rowInfoNim = 6;
         Row matricNo = sheet.createRow(rowInfoNim);
         matricNo.createCell(0).setCellValue("Student Matric No");
         matricNo.createCell(3).setCellValue(":");
@@ -7333,7 +8453,7 @@ public class StudiesActivityController {
         matricNo.getCell(3).setCellStyle(styleSymbol);
         matricNo.getCell(4).setCellStyle(styleData);
 
-        int rowInfoEntry = 7 ;
+        int rowInfoEntry = 7;
         Row entry = sheet.createRow(rowInfoEntry);
         entry.createCell(0).setCellValue("National Certificate Number");
         entry.createCell(3).setCellValue(":");
@@ -7342,36 +8462,34 @@ public class StudiesActivityController {
         entry.getCell(3).setCellStyle(styleSymbol);
         entry.getCell(4).setCellStyle(styleData);
 
-        int rowInfoBirth = 8 ;
+        int rowInfoBirth = 8;
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(0).setCellValue("Place and Date of Birth");
         birthDay.createCell(3).setCellValue(":");
 
-
         int month = mahasiswa.getTanggalLahir().getDayOfMonth();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(getPattern(month));
         String birthdate = mahasiswa.getTanggalLahir().format(formatter);
-        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + birthdate);
+        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir() + "," + " " + birthdate);
         birthDay.getCell(4).setCellStyle(styleData);
-
 
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoLevel = 9 ;
+        int rowInfoLevel = 9;
         Row level = sheet.createRow(rowInfoLevel);
         level.createCell(0).setCellValue("Level");
         level.createCell(3).setCellValue(":");
 
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             level.createCell(4).setCellValue("Undergraduate");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             level.createCell(4).setCellValue("Post Graduate");
             level.getCell(4).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()) {
             level.createCell(4).setCellValue("Undergraduate");
             level.getCell(4).setCellStyle(styleData);
 
@@ -7379,7 +8497,7 @@ public class StudiesActivityController {
         level.getCell(0).setCellStyle(styleData);
         level.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoDepartment = 10 ;
+        int rowInfoDepartment = 10;
         Row department = sheet.createRow(rowInfoDepartment);
         department.createCell(0).setCellValue("Department");
         department.createCell(3).setCellValue(":");
@@ -7388,7 +8506,7 @@ public class StudiesActivityController {
         department.getCell(3).setCellStyle(styleSymbol);
         department.getCell(4).setCellStyle(styleData);
 
-        int rowInfoFaculty = 11 ;
+        int rowInfoFaculty = 11;
         Row facultyy = sheet.createRow(rowInfoFaculty);
         facultyy.createCell(0).setCellValue("Faculty");
         facultyy.createCell(3).setCellValue(":");
@@ -7397,7 +8515,7 @@ public class StudiesActivityController {
         facultyy.getCell(3).setCellStyle(styleSymbol);
         facultyy.getCell(4).setCellStyle(styleData);
 
-        int rowInfoNoAcred = 12 ;
+        int rowInfoNoAcred = 12;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
         accreditation.createCell(0).setCellValue("No of Accreditation Decree");
         accreditation.createCell(3).setCellValue(":");
@@ -7406,8 +8524,7 @@ public class StudiesActivityController {
         accreditation.getCell(3).setCellStyle(styleSymbol);
         accreditation.getCell(4).setCellStyle(styleData);
 
-
-        int rowInfoDateAcred = 13 ;
+        int rowInfoDateAcred = 13;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(0).setCellValue("Date of Accreditation Decree");
         dateAccreditation.createCell(3).setCellValue(":");
@@ -7420,7 +8537,7 @@ public class StudiesActivityController {
         dateAccreditation.getCell(0).setCellStyle(styleData);
         dateAccreditation.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoGraduatedDate = 14 ;
+        int rowInfoGraduatedDate = 14;
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Graduated Date");
         graduatedDate.createCell(3).setCellValue(":");
@@ -7434,7 +8551,7 @@ public class StudiesActivityController {
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
 
-        int rowInfoTranscript = 15 ;
+        int rowInfoTranscript = 15;
         Row transcript = sheet.createRow(rowInfoTranscript);
         transcript.createCell(0).setCellValue("No of Transcript");
         transcript.createCell(3).setCellValue(":");
@@ -7443,11 +8560,11 @@ public class StudiesActivityController {
         transcript.getCell(3).setCellStyle(styleSymbol);
         transcript.getCell(4).setCellStyle(styleData);
 
-        int rowNumSemester1 = 18 ;
+        int rowNumSemester1 = 18;
         for (TranskriptDto sem1 : semester1) {
             Row row = sheet.createRow(rowNumSemester1);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 7, 8));
 
             row.createCell(0).setCellValue(sem1.getKode());
             row.createCell(1).setCellValue(sem1.getCourses());
@@ -7465,11 +8582,11 @@ public class StudiesActivityController {
             rowNumSemester1++;
         }
 
-        int rowNumSemester2 = 18+semester1.size() ;
+        int rowNumSemester2 = 18 + semester1.size();
         for (TranskriptDto sem2 : semester2) {
             Row row = sheet.createRow(rowNumSemester2);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 7, 8));
 
             row.createCell(0).setCellValue(sem2.getKode());
             row.createCell(1).setCellValue(sem2.getCourses());
@@ -7487,11 +8604,11 @@ public class StudiesActivityController {
             rowNumSemester2++;
         }
 
-        int rowNumSemester3 = 18+semester1.size()+semester2.size() ;
+        int rowNumSemester3 = 18 + semester1.size() + semester2.size();
         for (TranskriptDto sem3 : semester3) {
             Row row = sheet.createRow(rowNumSemester3);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 7, 8));
 
             row.createCell(0).setCellValue(sem3.getKode());
             row.createCell(1).setCellValue(sem3.getCourses());
@@ -7509,11 +8626,11 @@ public class StudiesActivityController {
             rowNumSemester3++;
         }
 
-        int rowNumSemester4 = 18+semester1.size()+semester2.size()+semester3.size() ;
+        int rowNumSemester4 = 18 + semester1.size() + semester2.size() + semester3.size();
         for (TranskriptDto sem4 : semester4) {
             Row row = sheet.createRow(rowNumSemester4);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 7, 8));
 
             row.createCell(0).setCellValue(sem4.getKode());
             row.createCell(1).setCellValue(sem4.getCourses());
@@ -7531,11 +8648,11 @@ public class StudiesActivityController {
             rowNumSemester4++;
         }
 
-        int rowNumSemester5 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size() ;
+        int rowNumSemester5 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size();
         for (TranskriptDto sem5 : semester5) {
             Row row = sheet.createRow(rowNumSemester5);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 7, 8));
 
             row.createCell(0).setCellValue(sem5.getKode());
             row.createCell(1).setCellValue(sem5.getCourses());
@@ -7553,11 +8670,12 @@ public class StudiesActivityController {
             rowNumSemester5++;
         }
 
-        int rowNumSemester6 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size() ;
+        int rowNumSemester6 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size();
         for (TranskriptDto sem6 : semester6) {
             Row row = sheet.createRow(rowNumSemester6);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 7, 8));
 
             row.createCell(0).setCellValue(sem6.getKode());
             row.createCell(1).setCellValue(sem6.getCourses());
@@ -7575,11 +8693,12 @@ public class StudiesActivityController {
             rowNumSemester6++;
         }
 
-        int rowNumSemester7 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size();
+        int rowNumSemester7 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size();
         for (TranskriptDto sem7 : semester7) {
             Row row = sheet.createRow(rowNumSemester7);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 7, 8));
 
             row.createCell(0).setCellValue(sem7.getKode());
             row.createCell(1).setCellValue(sem7.getCourses());
@@ -7597,11 +8716,12 @@ public class StudiesActivityController {
             rowNumSemester7++;
         }
 
-        int rowNumSemester8 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size();
+        int rowNumSemester8 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size();
         for (TranskriptDto sem8 : semester8) {
             Row row = sheet.createRow(rowNumSemester8);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,1,4));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,7,8));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 1, 4));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 7, 8));
 
             row.createCell(0).setCellValue(sem8.getKode());
             row.createCell(1).setCellValue(sem8.getCourses());
@@ -7619,9 +8739,10 @@ public class StudiesActivityController {
             rowNumSemester8++;
         }
 
-        int total = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size();
+        int total = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size();
         Row rowTotal = sheet.createRow(total);
-        sheet.addMergedRegion(new CellRangeAddress(total,total,1,4));
+        sheet.addMergedRegion(new CellRangeAddress(total, total, 1, 4));
         rowTotal.createCell(1).setCellValue("Total");
         rowTotal.createCell(5).setCellValue(totalSKS.intValue());
         rowTotal.createCell(9).setCellValue(totalMuti.toString());
@@ -7629,78 +8750,82 @@ public class StudiesActivityController {
         rowTotal.getCell(5).setCellStyle(styleDataKhs);
         rowTotal.getCell(9).setCellStyle(styleDataKhs);
 
-        int ipKomulatif = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+2;
+        int ipKomulatif = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 2;
         Row rowIpk = sheet.createRow(ipKomulatif);
-        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
+        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif, ipKomulatif, 0, 2));
         rowIpk.createCell(0).setCellValue("Cumulative Grade Point Average");
         rowIpk.createCell(5).setCellValue(ipk.getIpk().toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
-        int predicate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
+        int predicate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(0).setCellValue("Predicate :");
-        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0) {
             predicateRow.createCell(1).setCellValue("Satisfactory");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0) {
             predicateRow.createCell(1).setCellValue("Good");
             predicateRow.getCell(1).setCellStyle(styleData);
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
 
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(1).setCellValue("Good");
                 predicateRow.getCell(1).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(1).setCellValue("Very Good");
                 predicateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
 
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(1).setCellValue("Good");
                 predicateRow.getCell(1).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(1).setCellValue("Excellent");
                 predicateRow.getCell(1).setCellStyle(styleData);
             }
-
 
         }
 
         predicateRow.getCell(0).setCellStyle(styleSubHeader);
 
-        int thesis = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
+        int thesis = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 5;
         Row thesisRow = sheet.createRow(thesis);
         thesisRow.createCell(0).setCellValue("Thesis Title :");
         thesisRow.createCell(1).setCellValue(mahasiswa.getTitle());
         thesisRow.getCell(0).setCellStyle(styleSubHeader);
         thesisRow.getCell(1).setCellStyle(styleData);
 
-        int keyResult = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8;
+        int keyResult = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8;
         Row resultRow = sheet.createRow(keyResult);
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,5,9));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 5, 9));
         resultRow.createCell(0).setCellValue("Key to Result");
         resultRow.createCell(5).setCellValue("Grading System");
         resultRow.getCell(0).setCellStyle(styleDataKhs);
         resultRow.getCell(5).setCellStyle(styleDataKhs);
 
-        int remark = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10;
+        int remark = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 10;
         Row remarkRow = sheet.createRow(remark);
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,0,3));
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 0, 3));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 7, 9));
         remarkRow.createCell(0).setCellValue("Remarks");
         remarkRow.createCell(5).setCellValue("Grade");
         remarkRow.createCell(6).setCellValue("Value");
@@ -7710,10 +8835,11 @@ public class StudiesActivityController {
         remarkRow.getCell(6).setCellStyle(styleIpk);
         remarkRow.getCell(7).setCellStyle(styleIpk);
 
-        int excellent = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11;
+        int excellent = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11;
         Row excellentRow = sheet.createRow(excellent);
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 7, 9));
         excellentRow.createCell(0).setCellValue("3,80-4,00");
         excellentRow.createCell(1).setCellValue("Excellent (Minimum B)");
         excellentRow.createCell(5).setCellValue("A");
@@ -7725,10 +8851,11 @@ public class StudiesActivityController {
         excellentRow.getCell(6).setCellStyle(styleDataKhs);
         excellentRow.getCell(7).setCellStyle(styleManajemen);
 
-        int veryGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12;
+        int veryGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 12;
         Row veryGoodRow = sheet.createRow(veryGood);
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 7, 9));
         veryGoodRow.createCell(0).setCellValue("3,50-3,79");
         veryGoodRow.createCell(1).setCellValue("Very Good (Minimum B)");
         veryGoodRow.createCell(5).setCellValue("A-");
@@ -7740,10 +8867,11 @@ public class StudiesActivityController {
         veryGoodRow.getCell(6).setCellStyle(styleDataKhs);
         veryGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int good = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13;
+        int good = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 13;
         Row goodRow = sheet.createRow(good);
-        sheet.addMergedRegion(new CellRangeAddress(good,good,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(good,good,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 7, 9));
         goodRow.createCell(0).setCellValue("3,00-3,49");
         goodRow.createCell(1).setCellValue("Good");
         goodRow.createCell(5).setCellValue("B+");
@@ -7755,10 +8883,11 @@ public class StudiesActivityController {
         goodRow.getCell(6).setCellStyle(styleDataKhs);
         goodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactory = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14;
+        int satisfactory = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14;
         Row satisfactoryRow = sheet.createRow(satisfactory);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,1,3));
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 7, 9));
         satisfactoryRow.createCell(0).setCellValue("2,75-2,99");
         satisfactoryRow.createCell(1).setCellValue("Satisfactory");
         satisfactoryRow.createCell(5).setCellValue("B");
@@ -7770,9 +8899,10 @@ public class StudiesActivityController {
         satisfactoryRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryRow.getCell(7).setCellStyle(styleManajemen);
 
-        int almostGood = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+15;
+        int almostGood = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 15;
         Row almostGoodRow = sheet.createRow(almostGood);
-        sheet.addMergedRegion(new CellRangeAddress(almostGood,almostGood,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 7, 9));
         almostGoodRow.createCell(5).setCellValue("B-");
         almostGoodRow.createCell(6).setCellValue("2,7");
         almostGoodRow.createCell(7).setCellValue("Almost Good");
@@ -7780,9 +8910,10 @@ public class StudiesActivityController {
         almostGoodRow.getCell(6).setCellStyle(styleDataKhs);
         almostGoodRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryCplus = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+16;
+        int satisfactoryCplus = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 16;
         Row satisfactoryCplusRow = sheet.createRow(satisfactoryCplus);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus,satisfactoryCplus,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 7, 9));
         satisfactoryCplusRow.createCell(5).setCellValue("C+");
         satisfactoryCplusRow.createCell(6).setCellValue("2,3");
         satisfactoryCplusRow.createCell(7).setCellValue("Satisfactory");
@@ -7790,9 +8921,10 @@ public class StudiesActivityController {
         satisfactoryCplusRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCplusRow.getCell(7).setCellStyle(styleManajemen);
 
-        int satisfactoryC = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+17;
+        int satisfactoryC = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 17;
         Row satisfactoryCRow = sheet.createRow(satisfactoryC);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC,satisfactoryC,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 7, 9));
         satisfactoryCRow.createCell(5).setCellValue("C");
         satisfactoryCRow.createCell(6).setCellValue("2");
         satisfactoryCRow.createCell(7).setCellValue("Satisfactory");
@@ -7800,9 +8932,10 @@ public class StudiesActivityController {
         satisfactoryCRow.getCell(6).setCellStyle(styleDataKhs);
         satisfactoryCRow.getCell(7).setCellStyle(styleManajemen);
 
-        int poor = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+18;
+        int poor = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 18;
         Row poorRow = sheet.createRow(poor);
-        sheet.addMergedRegion(new CellRangeAddress(poor,poor,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(poor, poor, 7, 9));
         poorRow.createCell(5).setCellValue("D");
         poorRow.createCell(6).setCellValue("1");
         poorRow.createCell(7).setCellValue("Poor");
@@ -7810,9 +8943,10 @@ public class StudiesActivityController {
         poorRow.getCell(6).setCellStyle(styleDataKhs);
         poorRow.getCell(7).setCellStyle(styleManajemen);
 
-        int fail = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+19;
+        int fail = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 19;
         Row failRow = sheet.createRow(fail);
-        sheet.addMergedRegion(new CellRangeAddress(fail,fail,7,9));
+        sheet.addMergedRegion(new CellRangeAddress(fail, fail, 7, 9));
         failRow.createCell(5).setCellValue("E");
         failRow.createCell(6).setCellValue("0");
         failRow.createCell(7).setCellValue("Fail");
@@ -7820,7 +8954,8 @@ public class StudiesActivityController {
         failRow.getCell(6).setCellStyle(styleDataKhs);
         failRow.getCell(7).setCellStyle(styleManajemen);
 
-        int createDate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
+        int createDate = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 24;
         Row createDateRow = sheet.createRow(createDate);
         HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
@@ -7829,194 +8964,385 @@ public class StudiesActivityController {
 
         int monthCreate = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth();
         DateTimeFormatter formatterCreate = DateTimeFormatter.ofPattern(getPattern(monthCreate));
-        String createDatee = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().format(formatterCreate);
+        String createDatee = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                .format(formatterCreate);
 
-        if (namaBulanHijri.equals("Jumada I")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+        if (namaBulanHijri.equals("Jumada I")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else if (namaBulanHijri.equals("Jumada II")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+        } else if (namaBulanHijri.equals("Jumada II")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else if (namaBulanHijri.equals("Rabiʻ I")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+        } else if (namaBulanHijri.equals("Rabiʻ I")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else if (namaBulanHijri.equals("Rabiʻ II")){
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+        } else if (namaBulanHijri.equals("Rabiʻ II")) {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
-        }else{
-            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+        } else {
+            createDateRow.createCell(0)
+                    .setCellValue("This is certified to be true and accurate statement, issued in Bogor on "
+                            + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
             createDateRow.getCell(0).setCellStyle(styleData);
         }
 
-
-        int faculty = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
+        int faculty = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 26;
         Row facultyRow = sheet.createRow(faculty);
         facultyRow.createCell(0).setCellValue("Dean of ");
         facultyRow.getCell(0).setCellStyle(styleData);
         facultyRow.createCell(5).setCellValue("Coordinator of ");
         facultyRow.getCell(5).setCellStyle(styleData);
 
-        int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        int faculty2 = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 27;
         Row facultyRow2 = sheet.createRow(faculty2);
         facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultasEnglish());
         facultyRow2.getCell(0).setCellStyle(styleData);
         facultyRow2.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdiEnglish());
         facultyRow2.getCell(5).setCellStyle(styleData);
 
-        int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
+        int lecture = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0)
+                .setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
-        int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        int nik = 18 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 33;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(0)
+                .setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
         nikRow.getCell(5).setCellStyle(styleNik);
 
-
-
-
-
         PropertyTemplate propertyTemplate = new PropertyTemplate();
-//        semester1
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 0, 0),
+        // semester1
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 1, 4),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 5, 5),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 6, 6),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 7, 8),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18, 17+semester1.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-
-        //        semester2
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size(), 9, 9),
+        propertyTemplate.drawBorders(new CellRangeAddress(18, 17 + semester1.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-//        semester3
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 0, 0),
+        // semester2
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 1, 4),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 6, 6),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 6, 6),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 7, 8),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 7, 8),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester4
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester5
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester6
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester7
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size(), 9, 9),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-//        semester8
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 0, 0),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 1, 4),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 5, 5),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 6, 6),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 7, 8),
-                BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size(), 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size(), 9, 9),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
 
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 1, 4),
+        // semester3
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        0, 0),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 5, 5),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        1, 4),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size(), 17+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+1, 9, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        5, 5),
                 BorderStyle.THIN, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(), 17 + semester1.size() + semester2.size() + semester3.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester4
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size(), 9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester5
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester6
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester7
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        // semester8
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        0, 0),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        6, 6),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        7, 8),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size(),
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        1, 4),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        5, 5),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(18 + semester1.size(),
+                        17 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 1,
+                        9, 9),
+                BorderStyle.THIN, BorderExtent.OUTSIDE);
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9, 5, 9),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 9,
+                        5, 9),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10, 0, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 10,
+                        0, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 12,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 13,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
-        propertyTemplate.drawBorders(new CellRangeAddress(18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8, 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14, 1, 3),
+        propertyTemplate.drawBorders(
+                new CellRangeAddress(
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8,
+                        18 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14,
+                        1, 3),
                 BorderStyle.MEDIUM, BorderExtent.OUTSIDE);
 
         propertyTemplate.applyBorders(sheet);
 
-
-        String namaFile = "Transkript-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
+        String namaFile = "Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
@@ -8024,14 +9350,15 @@ public class StudiesActivityController {
     // BERKAS
 
     @GetMapping("/berkas/uploadSoal/list")
-    public void listBerkas(Model model, Authentication authentication){
+    public void listBerkas(Model model, Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Karyawan k = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(k);
 
         model.addAttribute("dosen", dosen);
-        model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+        model.addAttribute("dosenAkses",
+                jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
 
         List<SoalDto> listUts = jadwalDao.listUts(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
         List<SoalDto> listUas = jadwalDao.listUas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
@@ -8042,24 +9369,21 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/transcript/excelindo2")
-    public void transkriptFormatExcel2 (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
-
+    public void transkriptFormatExcel2(@RequestParam(required = false) String nim, HttpServletResponse response)
+            throws IOException {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-
-//        file
+        // file
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
         listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
         int totalSKS = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-
         BigDecimal totalMuti = listTranskript.stream().map(DataTranskript::getMutu)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-        BigDecimal ipk = totalMuti.divide(new BigDecimal(totalSKS),2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal ipk = totalMuti.divide(new BigDecimal(totalSKS), 2, BigDecimal.ROUND_HALF_UP);
 
         List<DataTranskript> semester1 = new ArrayList<>();
         List<DataTranskript> semester2 = new ArrayList<>();
@@ -8070,30 +9394,29 @@ public class StudiesActivityController {
         List<DataTranskript> semester7 = new ArrayList<>();
         List<DataTranskript> semester8 = new ArrayList<>();
 
-
-        for (DataTranskript data : listTranskript){
-            if (data.getSemester().equals("1")){
+        for (DataTranskript data : listTranskript) {
+            if (data.getSemester().equals("1")) {
                 semester1.add(data);
             }
-            if (data.getSemester().equals("2")){
+            if (data.getSemester().equals("2")) {
                 semester2.add(data);
             }
-            if (data.getSemester().equals("3")){
+            if (data.getSemester().equals("3")) {
                 semester3.add(data);
             }
-            if (data.getSemester().equals("4")){
+            if (data.getSemester().equals("4")) {
                 semester4.add(data);
             }
-            if (data.getSemester().equals("5")){
+            if (data.getSemester().equals("5")) {
                 semester5.add(data);
             }
-            if (data.getSemester().equals("6")){
+            if (data.getSemester().equals("6")) {
                 semester6.add(data);
             }
-            if (data.getSemester().equals("7")){
+            if (data.getSemester().equals("7")) {
                 semester7.add(data);
             }
-            if (data.getSemester().equals("8")){
+            if (data.getSemester().equals("8")) {
                 semester8.add(data);
             }
         }
@@ -8180,7 +9503,7 @@ public class StudiesActivityController {
         prodiFont.setFontHeightInPoints((short) 10);
         prodiFont.setFontName("Cambria");
 
-        Font  presFont = workbook.createFont();
+        Font presFont = workbook.createFont();
         presFont.setFontHeightInPoints((short) 10);
         presFont.setFontName("Cambria");
 
@@ -8210,7 +9533,6 @@ public class StudiesActivityController {
         CellStyle styleNik = workbook.createCellStyle();
         styleNik.setVerticalAlignment(VerticalAlignment.CENTER);
         styleNik.setFont(nikFont);
-
 
         CellStyle styleManajemen = workbook.createCellStyle();
         styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -8243,7 +9565,6 @@ public class StudiesActivityController {
         styleThesis.setAlignment(HorizontalAlignment.LEFT);
         styleThesis.setVerticalAlignment(VerticalAlignment.TOP);
         styleThesis.setWrapText(true);
-
 
         CellStyle styleData = workbook.createCellStyle();
         styleData.setFont(dataFont);
@@ -8306,7 +9627,6 @@ public class StudiesActivityController {
         styleDataKhsTable2.setBorderRight(BorderStyle.THIN);
         styleDataKhsTable2.setBorderLeft(BorderStyle.THIN);
 
-
         CellStyle stylePrestasiAkademik = workbook.createCellStyle();
         stylePrestasiAkademik.setAlignment(HorizontalAlignment.LEFT);
         stylePrestasiAkademik.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -8356,7 +9676,7 @@ public class StudiesActivityController {
         CellStyle borderRight = workbook.createCellStyle();
         borderRight.setBorderRight(BorderStyle.MEDIUM);
 
-        int rowInfoNama = 12 ;
+        int rowInfoNama = 12;
         Row nama = sheet.createRow(rowInfoNama);
         nama.createCell(2).setCellValue("Nama Mahasiswa ");
         nama.createCell(4).setCellValue(":");
@@ -8365,7 +9685,7 @@ public class StudiesActivityController {
         nama.getCell(4).setCellStyle(styleSymbol);
         nama.getCell(5).setCellStyle(styleData);
 
-        int rowInfoNim = 13 ;
+        int rowInfoNim = 13;
         Row matricNo = sheet.createRow(rowInfoNim);
         matricNo.createCell(2).setCellValue("NIM");
         matricNo.createCell(4).setCellValue(":");
@@ -8374,7 +9694,7 @@ public class StudiesActivityController {
         matricNo.getCell(4).setCellStyle(styleSymbol);
         matricNo.getCell(5).setCellStyle(styleData);
 
-        int rowInfoEntry = 14 ;
+        int rowInfoEntry = 14;
         Row entry = sheet.createRow(rowInfoEntry);
         entry.createCell(2).setCellValue("Nomor Ijazah Nasional");
         entry.createCell(4).setCellValue(":");
@@ -8383,79 +9703,103 @@ public class StudiesActivityController {
         entry.getCell(4).setCellStyle(styleSymbol);
         entry.getCell(5).setCellStyle(styleData);
 
-        int rowInfoBirth = 15 ;
+        int rowInfoBirth = 15;
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(2).setCellValue("Tempat, Tanggal lahir");
         birthDay.createCell(4).setCellValue(":");
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 1) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 2){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 2) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 3){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 3) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 4){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 4) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " April" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 5){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 5) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 6){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 6) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 7){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 7) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 8){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 8) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 9){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 9) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " September" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 10){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 10) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 11){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 11) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " November" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 12){
-            birthDay.createCell(5).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 12) {
+            birthDay.createCell(5)
+                    .setCellValue(mahasiswa.getTempatLahir() + "," + " " + mahasiswa.getTanggalLahir().getDayOfMonth()
+                            + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
             birthDay.getCell(5).setCellStyle(styleData);
 
         }
@@ -8463,20 +9807,20 @@ public class StudiesActivityController {
         birthDay.getCell(2).setCellStyle(styleData);
         birthDay.getCell(4).setCellStyle(styleSymbol);
 
-        int rowInfoLevel = 16 ;
+        int rowInfoLevel = 16;
         Row level = sheet.createRow(rowInfoLevel);
         level.createCell(2).setCellValue("Program Pendidikan");
         level.createCell(4).setCellValue(":");
 
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             level.createCell(5).setCellValue("Sarjana");
             level.getCell(5).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             level.createCell(5).setCellValue("Magister");
             level.getCell(5).setCellStyle(styleData);
         }
-        if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()) {
             level.createCell(5).setCellValue("Sarjana");
             level.getCell(5).setCellStyle(styleData);
 
@@ -8484,25 +9828,25 @@ public class StudiesActivityController {
         level.getCell(2).setCellStyle(styleData);
         level.getCell(4).setCellStyle(styleSymbol);
 
-        int rowInfoDepartment = 17 ;
+        int rowInfoDepartment = 17;
         Row department = sheet.createRow(rowInfoDepartment);
         department.createCell(2).setCellValue("Program Studi");
         department.createCell(4).setCellValue(":");
-        department.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdi() );
+        department.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
         department.getCell(2).setCellStyle(styleData);
         department.getCell(4).setCellStyle(styleSymbol);
         department.getCell(5).setCellStyle(styleData);
 
-        int rowInfoFaculty = 18 ;
+        int rowInfoFaculty = 18;
         Row faculty = sheet.createRow(rowInfoFaculty);
         faculty.createCell(2).setCellValue("Fakultas");
         faculty.createCell(4).setCellValue(":");
-        faculty.createCell(5).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas() );
+        faculty.createCell(5).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         faculty.getCell(2).setCellStyle(styleData);
         faculty.getCell(4).setCellStyle(styleSymbol);
         faculty.getCell(5).setCellStyle(styleData);
 
-        int rowInfoNoAcred = 19 ;
+        int rowInfoNoAcred = 19;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
         accreditation.createCell(2).setCellValue("No SK BAN - PT");
         accreditation.createCell(4).setCellValue(":");
@@ -8511,79 +9855,90 @@ public class StudiesActivityController {
         accreditation.getCell(4).setCellStyle(styleSymbol);
         accreditation.getCell(5).setCellStyle(styleData);
 
-
-        int rowInfoDateAcred = 20 ;
+        int rowInfoDateAcred = 20;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(2).setCellValue("Tanggal SK BAN - PT ");
         dateAccreditation.createCell(4).setCellValue(":");
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Februari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Februari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Maret" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Maret" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Mei" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Mei"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juni" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juni"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juli" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Juli"
+                    + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Agustus" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Agustus" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Oktober" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Oktober" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12){
-            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12) {
+            dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth()
+                    + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(5).setCellStyle(styleData);
 
         }
@@ -8591,98 +9946,108 @@ public class StudiesActivityController {
         dateAccreditation.getCell(2).setCellStyle(styleData);
         dateAccreditation.getCell(4).setCellStyle(styleSymbol);
 
-        int rowInfoGraduatedDate = 21 ;
+        int rowInfoGraduatedDate = 21;
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(2).setCellValue("Tanggal Kelulusan");
         graduatedDate.createCell(4).setCellValue(":");
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 1){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 1) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 2){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 2) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Februari" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 3){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 3) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Maret" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 4){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 4) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 5){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 5) {
+            graduatedDate.createCell(5).setCellValue(
+                    mahasiswa.getTanggalLulus().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 6){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 6) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juni" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 7){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 7) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Juli" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 8){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 8) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Agustus" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 9){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 9) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 10){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 10) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Oktober" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 11){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 11) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
 
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 12){
-            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLulus().getYear());
+        if (mahasiswa.getTanggalLulus().getMonthValue() == 12) {
+            graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " "
+                    + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(5).setCellStyle(styleData);
 
         }
-
 
         graduatedDate.getCell(2).setCellStyle(styleData);
         graduatedDate.getCell(4).setCellStyle(styleSymbol);
 
-
-        int rowInfoTranscript = 10 ;
+        int rowInfoTranscript = 10;
         Row transcript = sheet.createRow(rowInfoTranscript);
-        sheet.addMergedRegion(new CellRangeAddress(rowInfoTranscript,rowInfoTranscript,1,10));
-        transcript.createCell(1).setCellValue("Nomor : " +mahasiswa.getNoTranskript());
+        sheet.addMergedRegion(new CellRangeAddress(rowInfoTranscript, rowInfoTranscript, 1, 10));
+        transcript.createCell(1).setCellValue("Nomor : " + mahasiswa.getNoTranskript());
         transcript.getCell(1).setCellStyle(styleDataNew);
 
-        int rowNumSemester1 = 24 ;
+        int rowNumSemester1 = 24;
         for (DataTranskript sem1 : semester1) {
             Row row = sheet.createRow(rowNumSemester1);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1,rowNumSemester1,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 8, 9));
 
             row.createCell(1).setCellValue(sem1.getKode());
             row.createCell(2).setCellValue(sem1.getMatkul());
@@ -8691,10 +10056,9 @@ public class StudiesActivityController {
             row.createCell(8).setCellValue(sem1.getBobot().toString());
             row.createCell(10).setCellValue(sem1.getMutu().toString());
 
-
             rowNumSemester1++;
 
-            if (24 + semester1.size() == rowNumSemester1){
+            if (24 + semester1.size() == rowNumSemester1) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8704,7 +10068,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8717,11 +10081,11 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester2 = 24+semester1.size() ;
+        int rowNumSemester2 = 24 + semester1.size();
         for (DataTranskript sem2 : semester2) {
             Row row = sheet.createRow(rowNumSemester2);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2,rowNumSemester2,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 8, 9));
 
             row.createCell(1).setCellValue(sem2.getKode());
             row.createCell(2).setCellValue(sem2.getMatkul());
@@ -8732,7 +10096,7 @@ public class StudiesActivityController {
 
             rowNumSemester2++;
 
-            if (24 + semester1.size() + semester2.size() == rowNumSemester2){
+            if (24 + semester1.size() + semester2.size() == rowNumSemester2) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8742,7 +10106,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8755,11 +10119,11 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester3 = 24+semester1.size()+semester2.size() ;
+        int rowNumSemester3 = 24 + semester1.size() + semester2.size();
         for (DataTranskript sem3 : semester3) {
             Row row = sheet.createRow(rowNumSemester3);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3,rowNumSemester3,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 8, 9));
 
             row.createCell(1).setCellValue(sem3.getKode());
             row.createCell(2).setCellValue(sem3.getMatkul());
@@ -8770,7 +10134,7 @@ public class StudiesActivityController {
 
             rowNumSemester3++;
 
-            if (24 + semester1.size() + semester2.size() + semester3.size() == rowNumSemester3){
+            if (24 + semester1.size() + semester2.size() + semester3.size() == rowNumSemester3) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8780,7 +10144,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8793,11 +10157,11 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester4 = 24+semester1.size()+semester2.size()+semester3.size() ;
+        int rowNumSemester4 = 24 + semester1.size() + semester2.size() + semester3.size();
         for (DataTranskript sem4 : semester4) {
             Row row = sheet.createRow(rowNumSemester4);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4,rowNumSemester4,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 8, 9));
 
             row.createCell(1).setCellValue(sem4.getKode());
             row.createCell(2).setCellValue(sem4.getMatkul());
@@ -8808,7 +10172,7 @@ public class StudiesActivityController {
 
             rowNumSemester4++;
 
-            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() == rowNumSemester4){
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() == rowNumSemester4) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8818,7 +10182,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8831,11 +10195,11 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester5 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size() ;
+        int rowNumSemester5 = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size();
         for (DataTranskript sem5 : semester5) {
             Row row = sheet.createRow(rowNumSemester5);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5,rowNumSemester5,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 8, 9));
 
             row.createCell(1).setCellValue(sem5.getKode());
             row.createCell(2).setCellValue(sem5.getMatkul());
@@ -8846,7 +10210,8 @@ public class StudiesActivityController {
 
             rowNumSemester5++;
 
-            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() == rowNumSemester5){
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                    + semester5.size() == rowNumSemester5) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8856,7 +10221,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8869,11 +10234,12 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester6 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size() ;
+        int rowNumSemester6 = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size();
         for (DataTranskript sem6 : semester6) {
             Row row = sheet.createRow(rowNumSemester6);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6,rowNumSemester6,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 8, 9));
 
             row.createCell(1).setCellValue(sem6.getKode());
             row.createCell(2).setCellValue(sem6.getMatkul());
@@ -8884,7 +10250,8 @@ public class StudiesActivityController {
 
             rowNumSemester6++;
 
-            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() + semester6.size() == rowNumSemester6){
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                    + semester6.size() == rowNumSemester6) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8894,7 +10261,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8907,11 +10274,12 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester7 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size();
+        int rowNumSemester7 = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size();
         for (DataTranskript sem7 : semester7) {
             Row row = sheet.createRow(rowNumSemester7);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7,rowNumSemester7,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 8, 9));
 
             row.createCell(1).setCellValue(sem7.getKode());
             row.createCell(2).setCellValue(sem7.getMatkul());
@@ -8922,7 +10290,8 @@ public class StudiesActivityController {
 
             rowNumSemester7++;
 
-            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() + semester6.size() + semester7.size() == rowNumSemester7){
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                    + semester6.size() + semester7.size() == rowNumSemester7) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8932,7 +10301,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8945,11 +10314,12 @@ public class StudiesActivityController {
             }
         }
 
-        int rowNumSemester8 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size();
+        int rowNumSemester8 = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size();
         for (DataTranskript sem8 : semester8) {
             Row row = sheet.createRow(rowNumSemester8);
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,2,5));
-            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,8,9));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 2, 5));
+            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 8, 9));
 
             row.createCell(1).setCellValue(sem8.getKode());
             row.createCell(2).setCellValue(sem8.getMatkul());
@@ -8959,7 +10329,8 @@ public class StudiesActivityController {
             row.createCell(10).setCellValue(sem8.getMutu().toString());
             rowNumSemester8++;
 
-            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() + semester6.size() + semester7.size() + semester8.size() == rowNumSemester8){
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                    + semester6.size() + semester7.size() + semester8.size() == rowNumSemester8) {
                 row.getCell(1).setCellStyle(styleDataTale2);
                 row.getCell(2).setCellStyle(styleDataKhsTable2);
                 row.createCell(3).setCellStyle(styleDataKhsTable2);
@@ -8969,7 +10340,7 @@ public class StudiesActivityController {
                 row.getCell(7).setCellStyle(styleDataTale2);
                 row.getCell(8).setCellStyle(styleDataTale2);
                 row.getCell(10).setCellStyle(styleDataTale2);
-            }else{
+            } else {
                 row.getCell(1).setCellStyle(styleDataTale);
                 row.getCell(2).setCellStyle(styleDataKhsTable);
                 row.createCell(3).setCellStyle(styleDataKhsTable);
@@ -8981,9 +10352,10 @@ public class StudiesActivityController {
                 row.getCell(10).setCellStyle(styleDataTale);
             }
         }
-        int total = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size();
+        int total = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size();
         Row rowTotal = sheet.createRow(total);
-        sheet.addMergedRegion(new CellRangeAddress(total,total,2,5));
+        sheet.addMergedRegion(new CellRangeAddress(total, total, 2, 5));
         rowTotal.createCell(2).setCellValue("Jumlah");
         rowTotal.createCell(3).setCellStyle(styleTotalBorder);
         rowTotal.createCell(4).setCellStyle(styleTotalBorder);
@@ -8994,60 +10366,62 @@ public class StudiesActivityController {
         rowTotal.getCell(6).setCellStyle(styleDataTale2);
         rowTotal.getCell(10).setCellStyle(styleDataTale2);
 
-        int ipKomulatif = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+2;
+        int ipKomulatif = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 2;
         Row rowIpk = sheet.createRow(ipKomulatif);
         rowIpk.createCell(1).setCellValue("Indeks Prestasi Kumulatif");
         rowIpk.createCell(6).setCellValue(ipk.toString());
         rowIpk.getCell(1).setCellStyle(styleTotal);
         rowIpk.getCell(6).setCellStyle(styleIsiIpk);
 
-        int predicate = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
+        int predicate = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(1).setCellValue("Predikat :");
-        if (ipk.compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.compareTo(new BigDecimal(2.99)) <= 0) {
             predicateRow.createCell(2).setCellValue("Memuaskan");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0) {
             predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
                 predicateRow.getCell(2).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(2).setCellValue("Pujian ");
                 predicateRow.getCell(2).setCellStyle(styleData);
             }
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0) {
             Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
-            if (!validate.equals(0)){
+            if (!validate.equals(0)) {
                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
                 predicateRow.getCell(2).setCellStyle(styleData);
-            }else {
+            } else {
                 predicateRow.createCell(2).setCellValue("Pujian Tertinggi");
                 predicateRow.getCell(2).setCellStyle(styleData);
             }
-
 
         }
 
         predicateRow.getCell(1).setCellStyle(styleSubHeader);
 
-        int thesis = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
+        int thesis = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 5;
         Row thesisRow = sheet.createRow(thesis);
-        sheet.addMergedRegion(new CellRangeAddress(thesis,thesis +1,1,1));
-        sheet.addMergedRegion(new CellRangeAddress(thesis,thesis +1,2,10));
-        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
+        sheet.addMergedRegion(new CellRangeAddress(thesis, thesis + 1, 1, 1));
+        sheet.addMergedRegion(new CellRangeAddress(thesis, thesis + 1, 2, 10));
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()) {
             thesisRow.createCell(1).setCellValue("Judul Skripsi :");
             thesisRow.createCell(2).setCellValue(mahasiswa.getJudul());
             thesisRow.getCell(1).setCellStyle(styleJudul);
@@ -9055,7 +10429,7 @@ public class StudiesActivityController {
             thesisRow.getCell(2).setCellStyle(styleThesis);
         }
 
-        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
+        if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()) {
             thesisRow.createCell(1).setCellValue("Judul Tesis :");
             thesisRow.createCell(2).setCellValue(mahasiswa.getJudul());
             thesisRow.getCell(1).setCellStyle(styleJudul);
@@ -9063,11 +10437,11 @@ public class StudiesActivityController {
             thesisRow.getCell(2).setCellStyle(styleThesis);
         }
 
-
-        int keyResult = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+8;
+        int keyResult = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8;
         Row resultRow = sheet.createRow(keyResult);
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,1,4));
-        sheet.addMergedRegion(new CellRangeAddress(keyResult,keyResult+1,6,10));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 1, 4));
+        sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 6, 10));
         resultRow.createCell(1).setCellValue("Prestasi Akademik");
         resultRow.createCell(2).setCellStyle(stylePres);
         resultRow.createCell(3).setCellStyle(stylePres);
@@ -9080,7 +10454,8 @@ public class StudiesActivityController {
         resultRow.getCell(1).setCellStyle(stylePres);
         resultRow.getCell(6).setCellStyle(stylePres);
 
-        int border = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9;
+        int border = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 9;
         Row borderRow = sheet.createRow(border);
         borderRow.createCell(1).setCellStyle(stylePres);
         borderRow.createCell(2).setCellStyle(stylePres);
@@ -9092,10 +10467,11 @@ public class StudiesActivityController {
         borderRow.createCell(9).setCellStyle(stylePres);
         borderRow.createCell(10).setCellStyle(stylePres);
 
-        int remark = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+10;
+        int remark = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 10;
         Row remarkRow = sheet.createRow(remark);
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,1,4));
-        sheet.addMergedRegion(new CellRangeAddress(remark,remark,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 1, 4));
+        sheet.addMergedRegion(new CellRangeAddress(remark, remark, 8, 10));
         remarkRow.createCell(1).setCellValue("Keterangan");
         remarkRow.createCell(2).setCellStyle(stylePres);
         remarkRow.createCell(3).setCellStyle(stylePres);
@@ -9108,10 +10484,11 @@ public class StudiesActivityController {
         remarkRow.getCell(7).setCellStyle(styleIpk);
         remarkRow.getCell(8).setCellStyle(styleIpk);
 
-        int excellent = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+11;
+        int excellent = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11;
         Row excellentRow = sheet.createRow(excellent);
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,2,4));
-        sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 2, 4));
+        sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 8, 10));
         excellentRow.createCell(1).setCellValue("3,80-4,00");
         excellentRow.createCell(2).setCellValue("Pujian Tertinggi (Minimal B)");
         excellentRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
@@ -9125,10 +10502,11 @@ public class StudiesActivityController {
         excellentRow.getCell(7).setCellStyle(stylePenilaian);
         excellentRow.getCell(8).setCellStyle(styleManajemen);
 
-        int veryGood = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+12;
+        int veryGood = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 12;
         Row veryGoodRow = sheet.createRow(veryGood);
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,2,4));
-        sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 2, 4));
+        sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 8, 10));
         veryGoodRow.createCell(1).setCellValue("3,50-3,79");
         veryGoodRow.createCell(2).setCellValue("Pujian (Minimal B)");
         veryGoodRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
@@ -9142,10 +10520,11 @@ public class StudiesActivityController {
         veryGoodRow.getCell(7).setCellStyle(stylePenilaian);
         veryGoodRow.getCell(8).setCellStyle(styleManajemen);
 
-        int good = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+13;
+        int good = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 13;
         Row goodRow = sheet.createRow(good);
-        sheet.addMergedRegion(new CellRangeAddress(good,good,2,4));
-        sheet.addMergedRegion(new CellRangeAddress(good,good,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 2, 4));
+        sheet.addMergedRegion(new CellRangeAddress(good, good, 8, 10));
         goodRow.createCell(1).setCellValue("3,00-3,49");
         goodRow.createCell(2).setCellValue("Sangat Memuaskan");
         goodRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
@@ -9159,10 +10538,11 @@ public class StudiesActivityController {
         goodRow.getCell(7).setCellStyle(stylePenilaian);
         goodRow.getCell(8).setCellStyle(styleManajemen);
 
-        int satisfactory = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+14;
+        int satisfactory = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14;
         Row satisfactoryRow = sheet.createRow(satisfactory);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,2,4));
-        sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 2, 4));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 8, 10));
         satisfactoryRow.createCell(1).setCellValue("2,75-2,99");
         satisfactoryRow.createCell(2).setCellValue("Memuaskan");
         satisfactoryRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
@@ -9176,9 +10556,10 @@ public class StudiesActivityController {
         satisfactoryRow.getCell(7).setCellStyle(stylePenilaian);
         satisfactoryRow.getCell(8).setCellStyle(styleManajemen);
 
-        int almostGood = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+15;
+        int almostGood = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 15;
         Row almostGoodRow = sheet.createRow(almostGood);
-        sheet.addMergedRegion(new CellRangeAddress(almostGood,almostGood,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 8, 10));
         almostGoodRow.createCell(6).setCellValue("B-");
         almostGoodRow.createCell(7).setCellValue("2,7");
         almostGoodRow.createCell(8).setCellValue("Baik");
@@ -9186,9 +10567,10 @@ public class StudiesActivityController {
         almostGoodRow.getCell(7).setCellStyle(stylePenilaian);
         almostGoodRow.getCell(8).setCellStyle(styleManajemen);
 
-        int satisfactoryCplus = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+16;
+        int satisfactoryCplus = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 16;
         Row satisfactoryCplusRow = sheet.createRow(satisfactoryCplus);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus,satisfactoryCplus,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 8, 10));
         satisfactoryCplusRow.createCell(6).setCellValue("C+");
         satisfactoryCplusRow.createCell(7).setCellValue("2,3");
         satisfactoryCplusRow.createCell(8).setCellValue("Cukup");
@@ -9196,9 +10578,10 @@ public class StudiesActivityController {
         satisfactoryCplusRow.getCell(7).setCellStyle(stylePenilaian);
         satisfactoryCplusRow.getCell(8).setCellStyle(styleManajemen);
 
-        int satisfactoryC = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+17;
+        int satisfactoryC = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 17;
         Row satisfactoryCRow = sheet.createRow(satisfactoryC);
-        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC,satisfactoryC,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 8, 10));
         satisfactoryCRow.createCell(6).setCellValue("C");
         satisfactoryCRow.createCell(7).setCellValue("2");
         satisfactoryCRow.createCell(8).setCellValue("Cukup");
@@ -9206,9 +10589,10 @@ public class StudiesActivityController {
         satisfactoryCRow.getCell(7).setCellStyle(stylePenilaian);
         satisfactoryCRow.getCell(8).setCellStyle(styleManajemen);
 
-        int poor = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+18;
+        int poor = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 18;
         Row poorRow = sheet.createRow(poor);
-        sheet.addMergedRegion(new CellRangeAddress(poor,poor,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(poor, poor, 8, 10));
         poorRow.createCell(6).setCellValue("D");
         poorRow.createCell(7).setCellValue("1");
         poorRow.createCell(8).setCellValue("Kurang");
@@ -9216,9 +10600,10 @@ public class StudiesActivityController {
         poorRow.getCell(7).setCellStyle(stylePenilaian);
         poorRow.getCell(8).setCellStyle(styleManajemen);
 
-        int fail = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+19;
+        int fail = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 19;
         Row failRow = sheet.createRow(fail);
-        sheet.addMergedRegion(new CellRangeAddress(fail,fail,8,10));
+        sheet.addMergedRegion(new CellRangeAddress(fail, fail, 8, 10));
         failRow.createCell(6).setCellValue("E");
         failRow.createCell(7).setCellValue("0");
         failRow.createCell(8).setCellValue("Sangat Kurang");
@@ -9226,299 +10611,674 @@ public class StudiesActivityController {
         failRow.getCell(7).setCellStyle(stylePenilaian);
         failRow.getCell(8).setCellStyle(styleManajemen);
 
-        int createDate = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+22;
+        int createDate = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
+                + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 22;
         Row createDateRow = sheet.createRow(createDate);
-        HijrahDate islamicDate = HijrahDate.from(mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan());
+        HijrahDate islamicDate = HijrahDate
+                .from(mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
         String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("dd", new Locale("en")));
         String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
 
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 1){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 1) {
 
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari " + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Januari " + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Januari" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 2){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 2) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }
-
-        }
-
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 3){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }
-
-        }
-
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 4){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Februari" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 5){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 3) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }
-
-        }
-
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 6){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }
-
-        }
-
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 7){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Maret" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 8){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 4) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }
-
-        }
-
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 9){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }
-
-        }
-
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 10){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
-                createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " April" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 11){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 5) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Mei" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 12){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 6) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juni" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        int facultyy = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 7) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Juli" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            }
+
+        }
+
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 8) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Agustus" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            }
+
+        }
+
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 9) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " September" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            }
+
+        }
+
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 10) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Oktober" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            }
+
+        }
+
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 11) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " November" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            }
+
+        }
+
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 12) {
+            if (namaBulanHijri.equals("Jumada I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Jumada II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ I")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else if (namaBulanHijri.equals("Rabiʻ II")) {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan())
+                                        .getTanggalDisahkan().getYear()
+                                + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            } else {
+                createDateRow.createCell(1)
+                        .setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getDayOfMonth()
+                                + " Desember" + " "
+                                + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan()
+                                        .getYear()
+                                + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.getCell(1).setCellStyle(styleData);
+            }
+
+        }
+
+        int facultyy = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 24;
         Row facultyRow = sheet.createRow(facultyy);
         facultyRow.createCell(6).setCellValue("Dekan ");
         facultyRow.getCell(6).setCellStyle(styleData);
 
-        int faculty2 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+25;
+        int faculty2 = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 25;
         Row facultyRow2 = sheet.createRow(faculty2);
         facultyRow2.createCell(6).setCellValue("Fakultas " + mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         facultyRow2.getCell(6).setCellStyle(styleData);
 
-        int lecture = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+30;
+        int lecture = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 30;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(6).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(6)
+                .setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(6).setCellStyle(styleDosen);
 
-        int nik = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+31;
+        int nik = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size()
+                + semester6.size() + semester7.size() + semester8.size() + 31;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(6).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(6)
+                .setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(6).setCellStyle(styleNik);
 
-
-
-
-
-
-        String namaFile = "Transkript-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
+        String namaFile = "Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
     @GetMapping("/check-presensi-dosen/{id}")
     @ResponseBody
-    public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse checkPresensiDosenHariIni(@PathVariable String id){
+    public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse checkPresensiDosenHariIni(@PathVariable String id) {
         Jadwal jadwal = jadwalDao.findById(id).get();
         SesiKuliah sesiKuliah = sesiKuliahDao.cariSesiKuliahHariIni(jadwal);
 
-        if (sesiKuliah == null){
+        if (sesiKuliah == null) {
             id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = new id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse();
             response.setCode("404");
             response.setMessage("Sesi Kuliah Belum Dibuat");
             return response;
-        }else {
+        } else {
             id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = new id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse();
             response.setCode("200");
             response.setMessage("Sesi Kuliah Telah Dibuat");
@@ -9527,4 +11287,3 @@ public class StudiesActivityController {
 
     }
 }
-
