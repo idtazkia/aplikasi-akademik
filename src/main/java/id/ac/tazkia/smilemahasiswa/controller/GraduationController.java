@@ -1257,10 +1257,11 @@ public class GraduationController {
         return "redirect:list?tahunAkademik="+seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
-    @GetMapping("/graduation/seminar/reject")
-    public String prosesReject(@RequestParam Seminar seminar,Authentication authentication){
+    @PostMapping("/graduation/seminar/reject")
+    public String prosesReject(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         seminar.setUserApprove(user);
+        seminar.setKomentar(keterangan);
         seminar.setStatus(StatusApprove.REJECTED);
         seminarDao.save(seminar);
 

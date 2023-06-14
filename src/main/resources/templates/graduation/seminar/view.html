@@ -67,7 +67,31 @@
                         </div>
                         <div class="form-group text-center">
                             <a class="btn btn-success" th:href="@{/graduation/seminar/approved (id = ${seminar.id})}"><i class="fas fa-check-circle"></i> Approve</a>
-                            <a class="btn btn-danger" th:href="@{/graduation/seminar/reject (seminar = ${seminar.id})}"><i class="fa fa-window-close" aria-hidden="true"></i> Reject</a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-reject"><i class="fa fa-window-close" ></i> Reject</button>
+                            <!-- modal reject -->
+                            <div class="modal fade" id="modal-reject" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form th:action="@{/graduation/seminar/reject (seminar = ${seminar.id})}" method="post">
+                                                <div class="form-group">
+                                                    <textarea name="keterangan" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
+                                                </div>
+                                                <input type="hidden" name="id" th:value="${seminar.id}">
+                                                <div class="form-group">
+                                                    <button class="btn btn-danger" type="submit">Reject</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!--<button class="btn btn-info"><i class="fas fa-undo"></i> Revision</button>-->
                             <a class="btn btn-dark" th:href="@{/graduation/seminar/list(tahunAkademik = ${seminar.tahunAkademik.id}, prodi = ${seminar.note.mahasiswa.idProdi.id})}"><i class="fas fa-arrow-circle-left"></i> Back</a>
                         </div>
