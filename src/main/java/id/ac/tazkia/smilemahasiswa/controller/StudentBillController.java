@@ -164,6 +164,9 @@ public class StudentBillController {
         return prodiDao.findAll();
     }
 
+    @ModelAttribute("beasiswa")
+    public Iterable<Beasiswa> beasiswa(){return beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF);}
+
     @ModelAttribute("program")
     public Iterable<Program> program() {
         return programDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
@@ -307,6 +310,7 @@ public class StudentBillController {
     }
 
 
+    // Jenis Tagihan
     @GetMapping("/studentBill/typeBill/list")
     public void listType(Model model, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)){
@@ -348,6 +352,7 @@ public class StudentBillController {
         return "redirect:list";
     }
 
+    // Nilai Jenis Tagihan
     @GetMapping("/studentBill/valueType/list")
     public void listNilai(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page, String search ){
 
@@ -357,9 +362,9 @@ public class StudentBillController {
         }else{
             if (StringUtils.hasText(search)){
                 model.addAttribute("search", search);
-                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
             }else{
-                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
             }
         }
 
@@ -402,6 +407,7 @@ public class StudentBillController {
         return "redirect:list";
     }
 
+    // List Tagihan
     @GetMapping("/studentBill/bill/list")
     public void listBill(Model model, @PageableDefault(size = 10) Pageable page,
                            Authentication authentication){
@@ -2608,6 +2614,84 @@ public class StudentBillController {
         }
 
         return "redirect:potongan";
+    }
+
+    // Nilai Tagihan Beasiswa
+    @GetMapping("/studentBill/scholarship/list")
+    public void listNilaiBeasiswa(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page, String search){
+
+        model.addAttribute("selectTahun", tahunAkademik);
+        if (tahunAkademik == null) {
+            model.addAttribute("tahun", "tahun");
+        }else {
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("search", search);
+                model.addAttribute("list", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndBeasiswaNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
+            }else {
+                model.addAttribute("list", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndBeasiswaNotNullOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
+            }
+        }
+    }
+
+    @GetMapping("studentBill/scholarship/form")
+    public void formNilaiBeasiswa(Model model, @RequestParam(required = false) String id){
+        model.addAttribute("valueBill", new NilaiJenisTagihan());
+        model.addAttribute("jenisTagihan", jenisTagihanDao.findByStatusOrderByKode(StatusRecord.AKTIF));
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("beasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
+        model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("selectAngkatan", angkatan());
+        model.addAttribute("kategori", StatusTagihan.values());
+
+        if (id != null && !id.isEmpty()){
+            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findById(id).get();
+            if (nilaiJenisTagihan != null){
+                model.addAttribute("valueBill", nilaiJenisTagihan);
+                if (nilaiJenisTagihan.getStatus() == null){
+                    nilaiJenisTagihan.setStatus(StatusRecord.NONAKTIF);
+                }
+            }
+        }
+    }
+
+    @PostMapping("/studentBill/scholarship/new")
+    public String newNilaiBeasiswa(@Valid NilaiJenisTagihan nilaiJenisTagihan){
+        if (nilaiJenisTagihan.getStatus() == null){
+            nilaiJenisTagihan.setStatus(StatusRecord.NONAKTIF);
+        }
+        nilaiJenisTagihanDao.save(nilaiJenisTagihan);
+        return "redirect:list?tahunAkademik="+nilaiJenisTagihan.getTahunAkademik().getId();
+    }
+
+    @PostMapping("/studentBill/scholarship/delete")
+    public String deleteNilaiBeasiswa(@RequestParam NilaiJenisTagihan nilaiJenisTagihan){
+        nilaiJenisTagihan.setStatus(StatusRecord.HAPUS);
+        nilaiJenisTagihanDao.save(nilaiJenisTagihan);
+        return "redirect:list";
+    }
+
+    @GetMapping("/studentBill/scholarship/generate")
+    public void generateTagihanBeasiswa(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Program program,
+                                        @RequestParam(required = false) Beasiswa beasiswa, @RequestParam(required = false) String angkatan){
+
+        model.addAttribute("selectAngkatan", angkatan);
+        model.addAttribute("selectTahun", tahunAkademik);
+        model.addAttribute("selectBeasiswa", beasiswa);
+        model.addAttribute("selectProgram", program);
+
+    }
+
+    @PostMapping("/studentBill/scholarship/generate")
+    public String generateBeasiswa(@RequestParam(required = false) Beasiswa beasiswa, @RequestParam(required = false) Program program,
+                                   @RequestParam(required = false) String angkatan, @RequestParam(required = false) TahunAkademik tahun){
+
+        List<Mahasiswa> listMahasiswa = mahasiswaDao.findByBeasiswaAndStatusAktifAndStatusAndAngkatanAndIdProgram(beasiswa, "AKTIF", StatusRecord.AKTIF, angkatan, program);
+        log.info("generate tagihan beasiswa");
+
+        tagihanService.generateTagihanBeasiswa(tahun, program, listMahasiswa);
+
+        return "redirect:generate";
+
     }
 
 }

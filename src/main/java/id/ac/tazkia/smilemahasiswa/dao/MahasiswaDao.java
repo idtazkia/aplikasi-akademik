@@ -79,4 +79,6 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
     @Query(value = "select * from mahasiswa where angkatan = ?1 and tanggal_disahkan is not null limit 1", nativeQuery = true)
     Mahasiswa cekTanggalDisahkan(String angkatan);
 
+    List<Mahasiswa> findByBeasiswaAndStatusAktifAndStatusAndAngkatanAndIdProgram(Beasiswa beasiswa, String status, StatusRecord statusRecord, String angkatan, Program program);
+
 }

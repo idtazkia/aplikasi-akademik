@@ -11,15 +11,21 @@ import java.util.List;
 
 public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJenisTagihan, String> {
 
-    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, String angkatan, String prodi, Pageable page);
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, String angkatan, String prodi, Pageable page);
 
-    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
+
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndBeasiswaNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, String angkatan, String prodi, Pageable page);
+
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndBeasiswaNotNullOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
 
     List<NilaiJenisTagihan> findByStatusOrderByJenisTagihan(StatusRecord statusRecord);
 
     Integer countByStatusAndJenisTagihan(StatusRecord statusRecord, JenisTagihan jenisTagihan);
 
     List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(TahunAkademik tahunAkademik, String angkatan, Prodi prodi, Program program, StatusRecord statusRecord);
+
+    List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndBeasiswaAndProgramAndStatus(TahunAkademik tahunAkademik, String angkatan, Beasiswa beasiswa, Program program, StatusRecord statusRecord);
 
     List<NilaiJenisTagihan> findByTahunAkademikAndProdi(TahunAkademik tahunAkademik, Prodi prodi);
 

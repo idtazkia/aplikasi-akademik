@@ -231,6 +231,11 @@
                                                                    th:if="${data.statusTagihan.PERINGANAN} == ${data.statusTagihan}"
                                                                    th:text="${data.statusTagihan}">
                                                                 </a>
+
+                                                                <a type="button" class="btn btn-primary btn-sm" href="#!"
+                                                                   th:if="${data.statusTagihan.BEASISWA} == ${data.statusTagihan}"
+                                                                   th:text="${data.statusTagihan}">
+                                                                </a>
                                                             </td>
                                                             <td class="text-center">
                                                                 <a th:href="@{/studentBill/billAdmin/detail(tagihan = ${data.id})}" data-toggle="tooltip" title="Detail" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>

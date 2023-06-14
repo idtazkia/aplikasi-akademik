@@ -370,6 +370,9 @@
                                 <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Bill</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/scholarship/generate}" class="nav-link">Generate Bill Beasiswa</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/billAdmin/potongan}" class="nav-link">Generate Potongan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
@@ -377,6 +380,9 @@
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/valueType/list}" class="nav-link">Nilai Jenis Tagihan</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/scholarship/list}" class="nav-link">Nilai Tagihan Beasiswa</a>
                             </li>
                             <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
                             <!--                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>-->

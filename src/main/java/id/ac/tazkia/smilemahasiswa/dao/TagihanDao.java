@@ -50,7 +50,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "(select a.id,b.nama as namaTagihan,c.nama_tahun_akademik as namaTahun, a.status_tagihan as status,a.nilai_tagihan from tagihan as a \n" +
             "inner join nilai_jenis_tagihan as g on a.id_nilai_jenis_tagihan = g.id \n" +
             "inner join jenis_tagihan as b on g.id_jenis_tagihan=b.id \n" +
-            "inner join tahun_akademik as c on a.id_tahun_akademik=c.id where a.id_mahasiswa=?1 and a.status!='HAPUS' \n" +
+            "inner join tahun_akademik as c on a.id_tahun_akademik=c.id where a.id_mahasiswa=?1 and a.status!='HAPUS' and a.status_tagihan != 'BEASISWA' \n" +
             "order by b.nama)aaa \n" +
             "left join \n" +
             "(select sum(amount)as dibayar,aa.id_tagihan from pembayaran as aa inner join tagihan as bb on \n" +
@@ -353,7 +353,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, boolean lunas);
 
-    List<Tagihan> findByNilaiJenisTagihanProdiAndNilaiJenisTagihanProgramAndNilaiJenisTagihanAngkatanAndTahunAkademikAndTanggalPembuatanAndStatusTagihanOrderByMahasiswaNama(Prodi prodi, Program program, String angkatan, TahunAkademik tahunAkademik, LocalDate tanggal, StatusTagihan status);
+    List<Tagihan> findByMahasiswaAndNilaiJenisTagihanAndTahunAkademik(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, TahunAkademik tahun);
 
     List<Tagihan> findByStatusNotInAndLunasAndMahasiswaAndTahunAkademik(List<StatusRecord> statusRecord, boolean lunas, Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 

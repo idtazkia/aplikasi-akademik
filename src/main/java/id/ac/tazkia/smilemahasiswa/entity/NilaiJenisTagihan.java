@@ -40,6 +40,10 @@ public class NilaiJenisTagihan {
     private Prodi prodi;
 
     @ManyToOne
+    @JoinColumn(name = "id_beasiswa")
+    private Beasiswa beasiswa;
+
+    @ManyToOne
     @JoinColumn(name = "id_program")
     private Program program;
 

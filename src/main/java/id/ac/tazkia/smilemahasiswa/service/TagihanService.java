@@ -456,7 +456,36 @@ public class TagihanService {
                 }
             }
         }
+    }
 
+    public void generateTagihanBeasiswa(TahunAkademik tahunAkademik, Program program, List<Mahasiswa> mahasiswas){
+        if (!mahasiswas.isEmpty()) {
+            log.info("cek mahasiswa {} ", mahasiswas);
+            for (Mahasiswa mhs : mahasiswas){
+                List<NilaiJenisTagihan> njt = nilaiJenisTagihanDao.findByTahunAkademikAndAngkatanAndBeasiswaAndProgramAndStatus(tahunAkademik, mhs.getAngkatan(), mhs.getBeasiswa(), program, StatusRecord.AKTIF);
+                if (!njt.isEmpty()) {
+                    for (NilaiJenisTagihan nilaiBeasiswa : njt){
+                        List<Tagihan> tagihan = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndTahunAkademik(mhs, nilaiBeasiswa, tahunAkademik);
+                        if (tagihan.isEmpty()) {
+                            Tagihan t = new Tagihan();
+                            t.setMahasiswa(mhs);
+                            t.setNilaiJenisTagihan(nilaiBeasiswa);
+                            t.setNilaiTagihan(nilaiBeasiswa.getNilai());
+                            t.setAkumulasiPembayaran(nilaiBeasiswa.getNilai());
+                            t.setTahunAkademik(tahunAkademik);
+                            t.setTanggalPembuatan(LocalDate.now());
+                            t.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                            t.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                            t.setKeterangan("Tagihan " + mhs.getBeasiswa().getNamaBeasiswa() + ".");
+                            t.setLunas(true);
+                            t.setStatus(StatusRecord.LUNAS);
+                            t.setStatusTagihan(StatusTagihan.BEASISWA);
+                            tagihanDao.save(t);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void requestCreateTagihan(Tagihan tagihan) {
