@@ -5798,17 +5798,19 @@ public class StudiesActivityController {
     @GetMapping("/studiesActivity/sp/list")
     public void listSp(Model model) {
 
-        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (tahun.getJenis() != StatusRecord.PENDEK) {
-            model.addAttribute("message", "Aktifkan tahun akademik pendek");
-        } else {
+        List<Object[]> p1 = null;
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
             tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
             if (tahun == null) {
-                tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+                model.addAttribute("message", "Aktifkan tahun akademik pendek");
+            }else{
+                p1 = praKrsSpDao.listKrsSp(tahun.getId());
             }
+        }else{
+            p1 = praKrsSpDao.listKrsSp(tahun.getId());
         }
 
-        List<Object[]> p1 = praKrsSpDao.listKrsSp(tahun.getId());
         model.addAttribute("list", p1);
         model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("listProdi", prodiDao.findAll());
