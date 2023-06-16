@@ -252,7 +252,7 @@
                             <div class="modal-footer">
 
                                 <div th:if="${cekbox == 1}">
-                                    <form method="post" th:action="@{/prakrs/request/sp}">
+                                    <form id="save-krs1" method="post" th:action="@{/prakrs/request/sp}">
                                         <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
                                         <input type="hidden" name="jumlahSks" th:value="${jumlahSks}">
                                         <input type="hidden" th:value="${biayaSks}">
@@ -269,7 +269,7 @@
 
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <button type="submit" class="btn btn-default text-center">Submit</button>
+                                                    <button type="submit" id="myBtn1" onclick="saveKrs1()" class="btn btn-default text-center">Submit</button>
                                                     <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
@@ -279,7 +279,7 @@
                                 </div>
 
                                 <div th:if="${cekbox == 2}">
-                                    <form method="post" th:action="@{/prakrs/request/sp}">
+                                    <form id="save-krs2" method="post" th:action="@{/prakrs/request/sp}">
                                         <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
                                         <input type="hidden" name="idMatkul2" th:value="${cekCheckbox2.id}">
                                         <input type="hidden" name="jumlahSks" th:value="${jumlahSks}">
@@ -297,7 +297,7 @@
 
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <button type="submit" class="btn btn-default text-center">Submit</button>
+                                                    <button type="submit" id="myBtn2" onclick="saveKrs2()" class="btn btn-default text-center">Submit</button>
                                                     <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
@@ -333,3 +333,21 @@
 </section>
 </body>
 </html>
+<script>
+    function saveKrs1() {
+        $("#myBtn1").removeClass("btn-default");
+        $("#myBtn1").addClass("btn-warning");
+        $("#myBtn1").prop('disabled', true);
+        $("#myBtn1").html('Loading...');
+
+        $("#save-krs1").submit();
+    }
+    function saveKrs2() {
+        $("#myBtn2").removeClass("btn-default");
+        $("#myBtn2").addClass("btn-warning");
+        $("#myBtn2").prop('disabled', true);
+        $("#myBtn2").html('Loading...');
+
+        $("#save-krs2").submit();
+    }
+</script>
