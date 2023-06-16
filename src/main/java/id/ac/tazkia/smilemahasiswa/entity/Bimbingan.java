@@ -31,6 +31,8 @@ public class Bimbingan {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime tanggalInput = LocalDateTime.now();
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String keterangan;
 
     @Enumerated(EnumType.STRING)
