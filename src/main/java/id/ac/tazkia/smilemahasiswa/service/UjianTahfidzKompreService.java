@@ -5,7 +5,6 @@ import com.github.mustachejava.MustacheFactory;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
-import com.lowagie.text.List;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.CMYKColor;
 import com.lowagie.text.pdf.PdfPCell;
@@ -27,6 +26,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -48,7 +48,7 @@ public class UjianTahfidzKompreService {
                 Document document = new Document(PageSize.A4);
                 PdfWriter.getInstance(document, response.getOutputStream());
 
-                List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+                java.util.List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
                 listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
                 int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
@@ -524,7 +524,7 @@ public class UjianTahfidzKompreService {
                 cell.setBorder(Rectangle.NO_BORDER);
                 formFormulir.addCell(cell);
 
-                cell = new PdfPCell(new Phrase(String.valueOf(ipk) + "/" + totalSKS, font));
+                cell = new PdfPCell(new Phrase(String.valueOf(ipk) + "/" + sks, font));
                 cell.setBorder(Rectangle.NO_BORDER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 formFormulir.addCell(cell);
