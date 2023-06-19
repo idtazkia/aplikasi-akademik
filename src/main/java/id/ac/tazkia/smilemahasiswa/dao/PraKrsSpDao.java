@@ -58,7 +58,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id \n" +
             "where d.kode = '23' and b.lunas = true and b.id_tahun_akademik = ?1)b on a.id_mahasiswa = b.id_mahasiswa\n" +
             "left join\n" +
-            "(select * from refund_sp where status='AKTIF')c on a.id_mahasiswa=c.id_mahasiswa\n" +
+            "(select sp.* from refund_sp as sp inner join pra_krs_sp as krs on sp.id_pra_krs_sp=krs.id where sp.status='AKTIF' and krs.id_tahun_akademik=?1)c on a.id_mahasiswa=c.id_mahasiswa\n" +
             "group by a.id_mahasiswa,a.id_matakuliah\n" +
             "order by a.nim", nativeQuery = true)
     List<Object[]> allDetail(TahunAkademik tahunAkademik);
@@ -176,7 +176,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
     @Query(value = "select * from pra_krs_sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF' limit 1", nativeQuery = true)
     PraKrsSp cariKrsSp(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
-    @Query(value = "select count (*) from pra_krs_sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF'", nativeQuery = true)
+    @Query(value = "select count(sp.id) from pra_krs_sp sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF'", nativeQuery = true)
     Integer countSp(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
     List<PraKrsSp> findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(Mahasiswa mahasiswa, StatusRecord statusRecord, StatusApprove statusApprove, TahunAkademik tahunAkademik);

@@ -6490,8 +6490,8 @@ public class StudiesActivityController {
             row.createCell(3).setCellValue(detail[4].toString());
             row.createCell(4).setCellValue(detail[6].toString());
             row.createCell(5).setCellValue(detail[7].toString());
-            row.createCell(6).setCellValue(detail[9].toString());
-            row.createCell(7).setCellValue(detail[10].toString());
+            row.createCell(6).setCellValue(detail[10].toString());
+            row.createCell(7).setCellValue(detail[11].toString());
         }
 
         for (int i = 1; i < columns.length; i++) {
