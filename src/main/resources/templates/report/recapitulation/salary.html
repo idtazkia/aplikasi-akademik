@@ -1,141 +1,156 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
 <body>
-<div layout:fragment="main">
-    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-        <div class="container-fluid">
-            <div class="header-body">
-                <!-- Card stats -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card card-stats mb-4 mb-xl-0">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Recapitulation Lecturer</span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                            <i class="fas fa-user-astronaut"></i>
+    <div layout:fragment="main">
+        <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+            <div class="container-fluid">
+                <div class="header-body">
+                    <!-- Card stats -->
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card card-stats mb-4 mb-xl-0">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                            <span class="h2 font-weight-bold mb-0">Recapitulation Lecturer</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div
+                                                class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                                <i class="fas fa-user-astronaut"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container-fluid mt--7">
-        <div class="row">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <h3 class="mb-0">Data</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group text-center">
-                                        <label>Tahun</label>
-                                        <select name="tahun" class="form-control" id="tahun"></select>
-                                        <input type="hidden" id="selectedTahun" th:value="${selectedTahun}">
+        <div class="container-fluid mt--7">
+            <div class="row">
+                <div class="col">
+                    <div class="card shadow">
+                        <div class="card-header border-0">
+                            <h3 class="mb-0">Data</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="get">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group text-center">
+                                            <label>Dari Tanggal</label>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i
+                                                                class="ni ni-calendar-grid-58"></i></span>
+                                                    </div>
+                                                    <input class="form-control" placeholder="Start date" name="masuk"
+                                                        type="date" th:value="${masuk}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group text-center">
+                                            <label>Sampai Tanggal</label>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i
+                                                                class="ni ni-calendar-grid-58"></i></span>
+                                                    </div>
+                                                    <input class="form-control" th:value="${selesai}"
+                                                        placeholder="Start date" type="date" name="selesai">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-info">Search</button>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group text-center">
-                                        <label>Semester</label>
-                                        <select th:value="${selectedBulan}" required class="form-control js-example-placeholder-single"
-                                                style="width: 100%!important;" name="bulan">
-                                            <option th:selected="('01' == *{selectedBulan})" value="01">Januari</option>
-                                            <option th:selected="('02' == *{selectedBulan})" value="02">Februari</option>
-                                            <option th:selected="('03' == *{selectedBulan})" value="03">Maret</option>
-                                            <option th:selected="('04' == *{selectedBulan})" value="04">April</option>
-                                            <option th:selected="('05' == *{selectedBulan})" value="05">Mei</option>
-                                            <option th:selected="('06' == *{selectedBulan})" value="06">Juni</option>
-                                            <option th:selected="('07' == *{selectedBulan})" value="07">Juli</option>
-                                            <option th:selected="('08' == *{selectedBulan})" value="08">Agustus</option>
-                                            <option th:selected="('09' == *{selectedBulan})" value="09">September</option>
-                                            <option th:selected="('10' == *{selectedBulan})" value="10">Oktober</option>
-                                            <option th:selected="('11' == *{selectedBulan})" value="11">November</option>
-                                            <option th:selected="('12' == *{selectedBulan})" value="12">Desember</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-info">Search</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer" th:if="${selectedTahun != null}">
-                        <div class="card shadow" th:each="rekap, row : ${rekapJumlahSks}" style="margin-top: 10px; margin-bottom: 10px;">
-                            <div class="card-header border-0">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h3 class="mb-0"><i class="fas fa-user"></i> &nbsp; <span th:text="${rekap.value.namaDosen}"></span></h3>
-                                    </div>
-                                </div>
-                            </div>
+                            </form>
+                        </div>
+                        <div class="card-footer" th:if="${masuk != null}">
                             <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
-                                    <thead class="thead-light">
-                                    <tr>
-                                        <th>Matakuliah</th>
-                                        <th>SKS</th>
-                                        <th>Kelas</th>
-                                        <th>Tanggal Mengajar</th>
-                                        <th>Total Mengajar</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="jd : ${rekapJadwalPerDosen.get(rekap.key)}">
-                                        <td th:text="${jd.matkul}">1</td>
-                                        <td th:text="${jd.sks}">Call of Duty</td>
-                                        <td th:text="${jd.kelas}">Call of Duty</td>
-                                        <td th:text="${jd.tanggal}">$64.50</td>
-                                        <td th:text="${jd.hadir}">$64.50</td>
-                                        <td>
-
-                                        </td>
-
-                                    </tr>
-                                    </tbody>
+                                <table id="table" data-filter-control="true" data-search="true" data-show-refresh="true"
+                                    data-flat="true" data-pagination="true"
+                                    th:attr="data-url=@{/rekap-salary(masuk=${masuk}, selesai=${selesai})}"
+                                    data-side-pagination="client">
                                 </table>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
+
 </html>
+<link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script
+    src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js">
+</script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js">
+</script>
 <script>
-    $(function() {
-        var start_year = new Date().getFullYear();
+    var $table = $('#table')
 
-        for (var i = start_year; i > start_year - 10; i--) {
-            $('#tahun').append('<option value="' + i + '">' + i + '</option>');
-        }
-
-        if ($('#selectedTahun').val() != ''){
-            $('#tahun').val($('#selectedTahun').val())
-        }
-    });
+    $(function () {
+        $table.bootstrapTable({
+            columns: [{
+                field: 'nama',
+                title: 'Dosen',
+                sortable: true,
+                align: 'center',
+                valign: 'middle'
+            }, {
+                title: 'Matakuliah',
+                field: 'matkul',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'SKS',
+                field: 'sks',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'Kelas',
+                field: 'kelas',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'Tanggal',
+                field: 'tanggal',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: '#',
+                field: 'html',
+                align: 'center',
+                valign: 'middle'
+            }]
+        })
+    })
 </script>
