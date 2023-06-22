@@ -63,6 +63,8 @@ public class StudentBillController {
 
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40", "44");
 
+    public static final List<String> programS2 = Arrays.asList("03", "8ec26f2c-a48a-4948-be90-e03e9374c675");
+
     @Autowired
     private BankDao bankDao;
 
@@ -1323,7 +1325,7 @@ public class StudentBillController {
     }
 
     @GetMapping("/studentBill/requestCicilan/approval")
-    public void approvalCicilan(Model model, @PageableDefault(size = 10) Pageable page,
+    public void approvalCicilan(Model model, @PageableDefault(size = 50) Pageable page,
                                 @RequestParam(required = false) Tagihan tagihan){
 
         StatusTagihan info = tagihan.getStatusTagihan();
@@ -1521,7 +1523,7 @@ public class StudentBillController {
 
     @GetMapping("/studentBill/requestCicilan/detail")
     public void detailCicilan(Model model, @RequestParam(required = false) Tagihan tagihan,
-                              @PageableDefault(size = 10) Pageable page){
+                              @PageableDefault(size = 50) Pageable page){
 
         StatusTagihan info = tagihan.getStatusTagihan();
         model.addAttribute("cek", info);
