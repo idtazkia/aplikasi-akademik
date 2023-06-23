@@ -184,6 +184,75 @@ public class ReportController {
 
     }
 
+    @GetMapping("/rekap/salary/download")
+    public void downloadSalary(String masuk, String selesai, HttpServletResponse response) throws IOException {
+        LocalDate m = LocalDate.parse(masuk);
+        LocalDate s = LocalDate.parse(selesai);
+
+        String[] column = {"No", "Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal"};
+
+        List<SalaryDto> list = presensiDosenDao.rekapSalary(m,s);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Rekap Salary");
+
+        Font header = workbook.createFont();
+        header.setBold(true);
+        header.setFontHeightInPoints((short) 14);
+        header.setFontName("Times New Roman");
+
+        CellStyle styleHeader = workbook.createCellStyle();
+        styleHeader.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleHeader.setAlignment(HorizontalAlignment.CENTER);
+        styleHeader.setFont(header);
+
+        Font fontIsiCenter = workbook.createFont();
+        fontIsiCenter.setFontHeightInPoints((short) 12);
+        fontIsiCenter.setFontName("Times New Roman");
+        CellStyle isiStyleCenter = workbook.createCellStyle();
+        isiStyleCenter.setVerticalAlignment(VerticalAlignment.CENTER);
+        isiStyleCenter.setAlignment(HorizontalAlignment.CENTER);
+        isiStyleCenter.setFont(fontIsiCenter);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < column.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(column[i]);
+            cell.setCellStyle(styleHeader);
+        }
+
+        int rowNum = 1;
+        int barus = 1;
+
+        for (SalaryDto salary : list){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(barus++);
+            row.createCell(1).setCellValue(salary.getNama());
+            row.createCell(2).setCellValue(salary.getMatkul());
+            row.createCell(3).setCellValue(salary.getSks());
+            row.createCell(4).setCellValue(salary.getKelas());
+            row.createCell(5).setCellValue(salary.getTanggal());
+
+            row.getCell(0).setCellStyle(isiStyleCenter);
+            row.getCell(1).setCellStyle(isiStyleCenter);
+            row.getCell(2).setCellStyle(isiStyleCenter);
+            row.getCell(3).setCellStyle(isiStyleCenter);
+            row.getCell(4).setCellStyle(isiStyleCenter);
+            row.getCell(5).setCellStyle(isiStyleCenter);
+        }
+
+        for (int i = 0; i<column.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Salary_"+m+"-"+s+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
     @GetMapping("/rekap-salary")
     @ResponseBody
     List<SalaryDto> getSalaryDto(String masuk, String selesai) {

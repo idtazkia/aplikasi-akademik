@@ -81,6 +81,10 @@
                                     <div class="col-md-12 text-center">
                                         <button type="submit" class="btn btn-info">Search</button>
                                     </div>
+                                    <br><br><br>
+                                    <div th:if="${masuk != null}" class="col-md-12 text-center">
+                                        <a th:href="@{/rekap/salary/download(masuk=${masuk}, selesai=${selesai})}" class="btn btn-success"><i class="fa fa-download"></i> Download</a>
+                                    </div>
                                 </div>
                             </form>
                         </div>
