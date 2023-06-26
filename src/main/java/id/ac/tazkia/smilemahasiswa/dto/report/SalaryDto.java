@@ -14,4 +14,6 @@ public interface SalaryDto {
     String getTanggal();
 
     String getProdi();
+
+    String getSdosen();
 }

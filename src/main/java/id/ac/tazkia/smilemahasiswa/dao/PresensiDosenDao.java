@@ -83,14 +83,14 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
                                         "order by count(pd.id) DESC) as a", nativeQuery = true)
         Page<Object[]> klasemenDosen(TahunAkademik tahunAkademik, String statusPresensi, Pageable pageable);
 
-        @Query(value = "select a.id_jadwal as jadwal,a.id_dosen as dosen,a.nama_karyawan as nama,a.email as email,a.nama_matakuliah as matkul,a.nama_kelas as kelas,a.sks as sks,a.month as bulan,a.day as hari,a.date as tanggal,a.total_sesi as totalsesi,a.total_sks as totalsks,coalesce(total_seluruh_sesi,0) as totalseluruhsesi, sks * coalesce(total_seluruh_sesi,0) as totalseluruhsks,idprodi,prodi,idjenjang,jenjang from\n"
+        @Query(value = "select a.id_jadwal as jadwal,a.id_dosen as dosen,a.nama_karyawan as nama,a.email as email,a.nama_matakuliah as matkul,a.nama_kelas as kelas,a.sks as sks,a.month as bulan,a.day as hari,a.date as tanggal,a.total_sesi as totalsesi,a.total_sks as totalsks,coalesce(total_seluruh_sesi,0) as totalseluruhsesi, sks * coalesce(total_seluruh_sesi,0) as totalseluruhsks,idprodi,prodi,idjenjang,jenjang, sdosen from\n"
                         +
                         "(select id_jadwal,id_dosen, nama_karyawan, email, nama_matakuliah, nama_kelas, jumlah_sks as sks, month, day, group_concat(date order by date) as date, sum(sesi) as total_sesi,\n"
                         +
-                        "jumlah_sks * sum(sesi) as total_sks,idprodi,prodi,idjenjang,jenjang from\n" +
+                        "jumlah_sks * sum(sesi) as total_sks,idprodi,prodi,idjenjang,jenjang, sdosen from\n" +
                         "(select a.id_jadwal,a.id_dosen, h.nama_karyawan, email, d.nama_matakuliah, e.nama_kelas, c.jumlah_sks,monthname(waktu_masuk) as month, dayname(waktu_masuk) as day,\n"
                         +
-                        "concat(day(waktu_masuk),'-',left(monthname(waktu_masuk),3)) as date, jam_mulai, waktu_masuk,1 as sesi,p.id as idProdi, p.nama_prodi as prodi,j.id as idjenjang,j.nama_jenjang as jenjang from presensi_dosen as a\n"
+                        "concat(day(waktu_masuk),'-',left(monthname(waktu_masuk),3)) as date, jam_mulai, waktu_masuk,1 as sesi,p.id as idProdi, p.nama_prodi as prodi,j.id as idjenjang,j.nama_jenjang as jenjang, g.status_dosen as sdosen from presensi_dosen as a\n"
                         +
                         "inner join jadwal as b on a.id_jadwal = b.id\n" +
                         "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +

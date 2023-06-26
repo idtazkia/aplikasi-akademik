@@ -189,7 +189,7 @@ public class ReportController {
         LocalDate m = LocalDate.parse(masuk);
         LocalDate s = LocalDate.parse(selesai);
 
-        String[] column = {"No", "Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal"};
+        String[] column = {"No", "Dosen", "Status Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal"};
 
         List<SalaryDto> list = presensiDosenDao.rekapSalary(m,s);
 
@@ -229,10 +229,11 @@ public class ReportController {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(barus++);
             row.createCell(1).setCellValue(salary.getNama());
-            row.createCell(2).setCellValue(salary.getMatkul());
-            row.createCell(3).setCellValue(salary.getSks());
-            row.createCell(4).setCellValue(salary.getKelas());
-            row.createCell(5).setCellValue(salary.getTanggal());
+            row.createCell(2).setCellValue(salary.getSdosen());
+            row.createCell(3).setCellValue(salary.getMatkul());
+            row.createCell(4).setCellValue(salary.getSks());
+            row.createCell(5).setCellValue(salary.getKelas());
+            row.createCell(6).setCellValue(salary.getTanggal());
 
             row.getCell(0).setCellStyle(isiStyleCenter);
             row.getCell(1).setCellStyle(isiStyleCenter);
@@ -240,6 +241,7 @@ public class ReportController {
             row.getCell(3).setCellStyle(isiStyleCenter);
             row.getCell(4).setCellStyle(isiStyleCenter);
             row.getCell(5).setCellStyle(isiStyleCenter);
+            row.getCell(6).setCellStyle(isiStyleCenter);
         }
 
         for (int i = 0; i<column.length; i++){
