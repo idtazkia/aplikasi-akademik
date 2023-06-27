@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @RequestMapping("/request/mahasiswa/import/")
 @RestController
 @Slf4j
 public class ImportDataController  {
+
+    public static final List<String> programS2 = Arrays.asList("03", "8ec26f2c-a48a-4948-be90-e03e9374c675");
 
     @Autowired
     private MahasiswaService mahasiswaService;
@@ -69,6 +72,13 @@ public class ImportDataController  {
                     try {
                         mahasiswaService.importMahasiswa(request);
                         Mahasiswa m = mahasiswaDao.findByNim(request.getNim());
+                        if (programS2.contains(m.getIdProgram().getId())){
+                            log.info("create mahasiswa cicilan aktif dari import mahasiswa");
+                            MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
+                            mahasiswaCicilan.setMahasiswa(m);
+                            mahasiswaCicilan.setStatus(StatusRecord.AKTIF);
+                            mahasiswaCicilanDao.save(mahasiswaCicilan);
+                        }
                         if (!request.getCicilan().isEmpty() || request.getCicilan() != null) {
                             createTagihan(request.getCicilan(), m);
                         }
@@ -90,10 +100,29 @@ public class ImportDataController  {
     }
 
     private void createTagihan(List<RequestCicilanDto> cicilans, Mahasiswa mahasiswa){
-        MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
-        mahasiswaCicilan.setMahasiswa(mahasiswa);
-        mahasiswaCicilan.setStatus(StatusRecord.NONAKTIF);
-        mahasiswaCicilanDao.save(mahasiswaCicilan);
+        MahasiswaCicilan mc = mahasiswaCicilanDao.findByMahasiswa(mahasiswa);
+        if (programS2.contains(mahasiswa.getIdProgram().getId())) {
+            log.info("create mahasiswa cicilan aktif dari tagihan mahasiswa cicilan");
+            if (mc == null) {
+                MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
+                mahasiswaCicilan.setMahasiswa(mahasiswa);
+                mahasiswaCicilan.setStatus(StatusRecord.AKTIF);
+                mahasiswaCicilanDao.save(mahasiswaCicilan);
+            }else{
+                mc.setStatus(StatusRecord.AKTIF);
+                mahasiswaCicilanDao.save(mc);
+            }
+        }else{
+            if (mc == null) {
+                MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
+                mahasiswaCicilan.setMahasiswa(mahasiswa);
+                mahasiswaCicilan.setStatus(StatusRecord.NONAKTIF);
+                mahasiswaCicilanDao.save(mahasiswaCicilan);
+            }else{
+                mc.setStatus(StatusRecord.NONAKTIF);
+                mahasiswaCicilanDao.save(mc);
+            }
+        }
 
         JenisTagihan jenisTagihan = jenisTagihanDao.findByKodeAndStatus("02",StatusRecord.AKTIF);
         NilaiJenisTagihan cekNilaiJenis = nilaiJenisTagihanDao.

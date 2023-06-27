@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface MahasiswaCicilanDao extends PagingAndSortingRepository<MahasiswaCicilan, String> {
 
+    MahasiswaCicilan findByMahasiswa(Mahasiswa mhs);
     MahasiswaCicilan findByStatusAndMahasiswa(StatusRecord status, Mahasiswa mahasiswa);
 
 }
