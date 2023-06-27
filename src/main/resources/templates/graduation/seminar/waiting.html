@@ -286,6 +286,11 @@
                                     <b>Waiting</b>
                                 </button>
 
+                                <button class="btn-status-warning" th:if="${data.status.APPROVED_AKADEMIK == data.status}">
+                                    <i class="fa fa-hourglass-start" aria-hidden="true"></i>
+                                    <b>Waiting</b>
+                                </button>
+
                                 <button class="btn-status-sucess" th:if="${data.status.APPROVED == data.status}">
                                     <i class="fa fa-check-circle" aria-hidden="true"></i>
                                     <b>Approved</b>
