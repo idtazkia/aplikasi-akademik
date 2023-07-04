@@ -403,6 +403,7 @@
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/ktp/(sidang=${data.id})}">CV</a>
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/bimbinganSidang/(sidang=${data.id})}">Kehadiran Sidang</a>
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji Plagiarisme</a>
+                                                <a th:if="${data.filePerbaikan != null}" class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/perbaikan/(sidang=${data.id})}">Hasil Perbaikan</a>
                                             </div>
 
                                             <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish1'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

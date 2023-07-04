@@ -592,7 +592,7 @@ public class SidangController {
 
     @PostMapping("/graduation/sidang/mahasiswa/pendaftaranS2")
     public String saveSidangS2(@ModelAttribute @Valid Sidang sidang, Authentication authentication, MultipartFile draft, MultipartFile pendaftaran,
-                               MultipartFile persetujuan, MultipartFile cv, MultipartFile kehadiran, MultipartFile plagiat) throws IOException {
+                               MultipartFile persetujuan, MultipartFile cv, MultipartFile kehadiran, MultipartFile plagiat, MultipartFile perbaikan) throws IOException {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -757,6 +757,34 @@ public class SidangController {
             sidang.setFileTurnitin(idFile + "." + extension);
         }else{
             sidang.setFileTurnitin(sidang.getFileTurnitin());
+        }
+
+        if (!perbaikan.isEmpty() || perbaikan != null){
+            String namaFile = perbaikan.getName();
+            String jenisFile = perbaikan.getContentType();
+            String namaAsli = perbaikan.getOriginalFilename();
+            Long ukuran = perbaikan.getSize();
+
+            // Memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p){
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            perbaikan.transferTo(tujuan);
+
+            sidang.setFilePerbaikan(idFile + "." + extension);
+
+        }else{
+            sidang.setFilePerbaikan(sidang.getFilePerbaikan());
         }
 
         sidang.setTanggalInput(LocalDate.now());
@@ -1537,6 +1565,32 @@ public class SidangController {
             } else if (sidang.getFileTurnitin().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (sidang.getFileTurnitin().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/upload/{sidang}/perbaikan/")
+    public ResponseEntity<byte[]> perbaikan(@PathVariable Sidang sidang, Model model) throws Exception {
+        String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
+                + File.separator + sidang.getFilePerbaikan();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (sidang.getFilePerbaikan().toLowerCase().endsWith("jpeg") || sidang.getFilePerbaikan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (sidang.getFilePerbaikan().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (sidang.getFilePerbaikan().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
             } else {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
