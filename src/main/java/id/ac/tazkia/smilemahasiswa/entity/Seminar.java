@@ -179,4 +179,8 @@ public class Seminar {
     @Column(columnDefinition = "LONGTEXT")
     private String komentar;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarAkademik;
+
 }

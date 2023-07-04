@@ -1205,7 +1205,7 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/approvedakademik")
     public String approvedAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan){
-        seminar.setKomentar(keterangan);
+        seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.APPROVED_AKADEMIK);
         seminarDao.save(seminar);
 
@@ -1214,8 +1214,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/rejectakademik")
     public String rejectAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan){
+        seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.REJECTED);
-        seminar.setKomentar(keterangan);
         seminarDao.save(seminar);
 
         return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();

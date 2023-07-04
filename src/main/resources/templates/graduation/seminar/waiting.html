@@ -275,21 +275,71 @@
                         <div class="row" th:each="data : ${list}" style="padding: 16px;">
                             <div class="col-md-12 card">
                                 <p th:if="${data.status.WAITING == data.status}"><b class="text-title">Please wait for your seminar to be validated by admin</b></p>
+                                <p th:if="${data.status.APPROVED_AKADEMIK == data.status}"><b class="text-title">Please wait for your seminar to be validated by admin</b></p>
                                 <p th:if="${data.status.REJECTED == data.status}"><b class="text-title" th:text="${data.komentar}">Your seminar has been rejected, please reupload your seminar</b></p>
                                 <button class="btn-status" th:if="${data.status.REJECTED == data.status}">
                                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                     <b>Rejected</b>
                                 </button>
 
-                                <button class="btn-status-warning" th:if="${data.status.WAITING == data.status}">
+                                <button class="btn-status-warning" th:if="${data.status.WAITING == data.status}" data-toggle="modal" th:data-target="${'#modal-komentar'+data.id}">
                                     <i class="fa fa-hourglass-start" aria-hidden="true"></i>
                                     <b>Waiting</b>
                                 </button>
 
-                                <button class="btn-status-warning" th:if="${data.status.APPROVED_AKADEMIK == data.status}">
+                                <button class="btn-status-warning" th:if="${data.status.APPROVED_AKADEMIK == data.status}" data-toggle="modal" th:data-target="${'#modal-komentar'+data.id}">
                                     <i class="fa fa-hourglass-start" aria-hidden="true"></i>
                                     <b>Waiting</b>
                                 </button>
+
+                                <div class="modal fade" th:id="${'modal-komentar'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th><center>Keterangan</center></th>
+                                                        <th><center>Status</center></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr class="danger">
+                                                        <td align="center">Akademik</td>
+                                                        <td align="center" th:text="${data.komentarAkademik}">Akademik</td>
+                                                        <td align="center">
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.APPROVED}" th:text="${data.status}">Approved</span>
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.APPROVED_AKADEMIK}" th:text="${'APPROVED'}">Approved</span>
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.WAITING}" th:text="${data.status}">Approved</span>
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.REJECTED}" th:text="${data.status}">Approved</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="info">
+                                                        <td align="center">Prodi</td>
+                                                        <td align="center" th:text="${data.komentar}">-</td>
+                                                        <td align="center">
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.APPROVED}" th:text="${data.status}">Approved</span>
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.APPROVED_AKADEMIK}" th:text="${'WAITING'}">Approved</span>
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.WAITING}" th:text="${data.status}">Approved</span>
+                                                            <span class="badge badge-danger" th:if="${data.status == data.status.REJECTED}" th:text="${data.status}">Approved</span>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <button class="btn-status-sucess" th:if="${data.status.APPROVED == data.status}">
                                     <i class="fa fa-check-circle" aria-hidden="true"></i>
