@@ -9,6 +9,7 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -1329,6 +1330,25 @@ public class StudyActivityController {
         }
 
         return "redirect:../study/comingsoon";
+    }
+
+    @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
+    public void aktifasiCutiMahasiswa(){
+
+        List<Cuti> listPengaktifanCuti = cutiDao.findByStatusAndDosenWaliApprovedAndKpsApprovedAndStatusPengajuaanAndTanggalBerakhirCuti(StatusRecord.AKTIF,
+                StatusApprove.APPROVED, StatusApprove.APPROVED, StatusApprove.APPROVED, LocalDate.now());
+
+        for (Cuti list : listPengaktifanCuti){
+            Mahasiswa mhs = list.getMahasiswa();
+
+            mhs.setStatusAktif("AKTIF");
+            mahasiswaDao.save(mhs);
+
+            list.setStatus(StatusRecord.FINISHED);
+            cutiDao.save(list);
+
+        }
+
     }
 
 
