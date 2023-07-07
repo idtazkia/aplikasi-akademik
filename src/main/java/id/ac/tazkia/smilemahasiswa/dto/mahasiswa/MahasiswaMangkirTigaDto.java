@@ -8,4 +8,6 @@ public interface MahasiswaMangkirTigaDto {
     String getIdJadwal();
     String getEmail();
     String getIdNumberElearning();
+
+    String getNim();
 }
