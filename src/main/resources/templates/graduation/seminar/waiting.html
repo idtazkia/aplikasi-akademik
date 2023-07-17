@@ -277,7 +277,7 @@
                                 <p th:if="${data.status.WAITING == data.status}"><b class="text-title">Please wait for your seminar to be validated by admin</b></p>
                                 <p th:if="${data.status.APPROVED_AKADEMIK == data.status}"><b class="text-title">Please wait for your seminar to be validated by admin</b></p>
                                 <p th:if="${data.status.REJECTED == data.status}"><b class="text-title" th:text="${data.komentar}">Your seminar has been rejected, please reupload your seminar</b></p>
-                                <button class="btn-status" th:if="${data.status.REJECTED == data.status}">
+                                <button class="btn-status" th:if="${data.status.REJECTED == data.status}" data-toggle="modal" th:data-target="${'#modal-komentar'+data.id}">
                                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                     <b>Rejected</b>
                                 </button>

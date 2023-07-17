@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
@@ -26,6 +27,6 @@ public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
             "inner join mahasiswa as e on a.id_mahasiswa=e.id where d.id = ?1 and a.status = 'AKTIF' and a.dosen_wali_approved = 'APPROVED' order by a.tanggal_pengajuaan desc", nativeQuery = true)
     List<Object[]> listCutiKps(User user);
 
-
+    List<Cuti> findByStatusAndDosenWaliApprovedAndKpsApprovedAndStatusPengajuaanAndTanggalBerakhirCuti(StatusRecord status, StatusApprove approveDosen, StatusApprove approveKps, StatusApprove approve, LocalDate tglBerakhirCuti);
 
 }
