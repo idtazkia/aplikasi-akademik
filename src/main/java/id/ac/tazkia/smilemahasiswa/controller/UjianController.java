@@ -1,6 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
@@ -105,8 +104,9 @@ public class UjianController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianTahfidz");
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TAHFIDZ, true);
-        model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa,"UjianTahfidz"));
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TAHFIDZ,
+                true);
+        model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa, "UjianTahfidz"));
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
@@ -114,10 +114,8 @@ public class UjianController {
 
         int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-
         BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
 
         BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
 
@@ -125,29 +123,31 @@ public class UjianController {
         model.addAttribute("data", mahasiswa);
         model.addAttribute("check", checkRejected);
         model.addAttribute("ipk", ipk);
-        model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjianOrderByTanggalPengajuanDescStatusApprovalAdminAsc(StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
-
+        model.addAttribute("list",
+                ujianTahfidzKompreDao
+                        .findByStatusAndMahasiswaAndJenisUjianOrderByTanggalPengajuanDescStatusApprovalAdminAsc(
+                                StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
 
         return "ujian/tahfidz";
     }
 
     @GetMapping("/get-pendaftaran-tahfidz")
     @ResponseBody
-    public List<Tahfidz> listTahfidzAdmin(@RequestParam String ujian){
+    public List<Tahfidz> listTahfidzAdmin(@RequestParam String ujian) {
         UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(ujian).get();
-        return ujianTahfidzKompreDao.getListMahasiswaTahfidz(ujianTahfidzKompre.getMahasiswa(),"UjianTahfidz");
+        return ujianTahfidzKompreDao.getListMahasiswaTahfidz(ujianTahfidzKompre.getMahasiswa(), "UjianTahfidz");
     }
 
     @GetMapping("/get-pendaftaran-kompre")
     @ResponseBody
-    public List<Tahfidz> listKompreAdmin(@RequestParam String ujian){
+    public List<Tahfidz> listKompreAdmin(@RequestParam String ujian) {
         UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(ujian).get();
-        return ujianTahfidzKompreDao.getListMahasiswaTahfidz(ujianTahfidzKompre.getMahasiswa(),"UjianKomprehensif");
+        return ujianTahfidzKompreDao.getListMahasiswaTahfidz(ujianTahfidzKompre.getMahasiswa(), "UjianKomprehensif");
     }
 
     @GetMapping("/get-detail-tahfidz/{id}")
     @ResponseBody
-    public UjianTahfidzKompre detailTahfidzAdmin(@PathVariable String id){
+    public UjianTahfidzKompre detailTahfidzAdmin(@PathVariable String id) {
         return ujianTahfidzKompreDao.findById(id).get();
     }
 
@@ -157,29 +157,21 @@ public class UjianController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianKomprehensif");
         Integer checkNilai = ujianTahfidzKompreDao.jumlahNilaiD(mahasiswa);
-        model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa,"UjianKomprehensif"));
+        model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa, "UjianKomprehensif"));
 
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.KOMPRE, true);
-
-        BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
         listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
         int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-
-        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-
-        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
-
         model.addAttribute("totalSks", sks);
-//        model.addAttribute("totalSks", 139);
         model.addAttribute("jumlahNilaiD", checkNilai);
         model.addAttribute("data", mahasiswa);
         model.addAttribute("check", checkRejected);
-        model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjianOrderByTanggalPengajuanDescStatusApprovalAdminAsc(StatusRecord.AKTIF, mahasiswa, "UjianKomprehensif"));
+        model.addAttribute("list",
+                ujianTahfidzKompreDao
+                        .findByStatusAndMahasiswaAndJenisUjianOrderByTanggalPengajuanDescStatusApprovalAdminAsc(
+                                StatusRecord.AKTIF, mahasiswa, "UjianKomprehensif"));
 
         return "ujian/kompre";
     }
@@ -203,13 +195,13 @@ public class UjianController {
     }
 
     @PostMapping("/tahfidz/kirim")
-    public String kirimPendaftaran(@Valid UjianTahfidzKompre ujianTahfidzKompre, @RequestParam("image") MultipartFile file,
-                                   Authentication authentication) throws Exception {
+    public String kirimPendaftaran(@Valid UjianTahfidzKompre ujianTahfidzKompre,
+            @RequestParam("image") MultipartFile file,
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Dosen dosen = dosenDao.findById(mahasiswa.getIdProdi().getDosen().getId()).get();
         Prodi prodi = prodiDao.findById(mahasiswa.getIdProdi().getId()).get();
-
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
@@ -239,27 +231,28 @@ public class UjianController {
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
 
-        if (!ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa,"UjianTahfidz").isEmpty()) {
-            if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa,"UjianTahfidz").getStatusLulus().equals(StatusRecord.TIDAK_LULUS)){
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa,"UjianTahfidz") + 1);
-            }else {
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa,"UjianTahfidz"));
+        if (!ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianTahfidz").isEmpty()) {
+            if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa, "UjianTahfidz").getStatusLulus()
+                    .equals(StatusRecord.TIDAK_LULUS)) {
+                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz") + 1);
+            } else {
+                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz"));
             }
-        }else {
-            ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa,"UjianTahfidz"));
+        } else {
+            ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz"));
         }
         ujianTahfidzKompre.setStatusLulus(StatusRecord.NOT_YET_SCHEDULED);
         ujianTahfidzKompre.setTahunAkademik(tahunAkademik);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
-
 
         return "redirect:/tahfidz";
 
     }
 
     @PostMapping("/kompre/kirim")
-    public String kirimPendaftaranKompre(@Valid UjianTahfidzKompre ujianTahfidzKompre, @RequestParam("image") MultipartFile file,
-                                         Authentication authentication) throws Exception {
+    public String kirimPendaftaranKompre(@Valid UjianTahfidzKompre ujianTahfidzKompre,
+            @RequestParam("image") MultipartFile file,
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Dosen dosen = dosenDao.findById(mahasiswa.getIdProdi().getDosen().getId()).get();
@@ -267,7 +260,6 @@ public class UjianController {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianKomprehensif");
-
 
         if (!file.isEmpty() || file != null) {
             String namaAsli = file.getOriginalFilename();
@@ -288,7 +280,6 @@ public class UjianController {
 
             ujianTahfidzKompre.setFileSurat(idFile + "." + extension);
         }
-
 
         ujianTahfidzKompre.setDosenKps(dosen);
         ujianTahfidzKompre.setProdi(prodi);
@@ -298,14 +289,15 @@ public class UjianController {
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setStatusApprovalKps("WAITING");
 
-        if (!ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa,"UjianKomprehensif").isEmpty()) {
-            if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa,"UjianKomprehensif").getStatusLulus().equals(StatusRecord.TIDAK_LULUS)){
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa,"UjianKomprehensif") + 1);
-            }else {
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa,"UjianKomprehensif"));
+        if (!ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianKomprehensif").isEmpty()) {
+            if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa, "UjianKomprehensif").getStatusLulus()
+                    .equals(StatusRecord.TIDAK_LULUS)) {
+                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif") + 1);
+            } else {
+                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif"));
             }
-        }else {
-            ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa,"UjianKomprehensif"));
+        } else {
+            ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif"));
         }
 
         ujianTahfidzKompre.setStatusLulus(StatusRecord.NOT_YET_SCHEDULED);
@@ -317,7 +309,8 @@ public class UjianController {
     }
 
     @GetMapping("/formulirtahfidz")
-    public void formulitTahfidz(@RequestParam(name = "id") Mahasiswa mahasiswa, HttpServletResponse response) throws IOException {
+    public void formulitTahfidz(@RequestParam(name = "id") Mahasiswa mahasiswa, HttpServletResponse response)
+            throws IOException {
 
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
@@ -329,7 +322,8 @@ public class UjianController {
     }
 
     @GetMapping("/formulirkompre")
-    public void formulirKompre(@RequestParam(name = "id") Mahasiswa mahasiswa, HttpServletResponse response) throws IOException {
+    public void formulirKompre(@RequestParam(name = "id") Mahasiswa mahasiswa, HttpServletResponse response)
+            throws IOException {
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=Formulir_Kompre_" + mahasiswa.getNim() + ".pdf";
@@ -340,18 +334,23 @@ public class UjianController {
 
     @GetMapping("/ujianTahfidz")
     public String listUjianTahfidz(Model model,
-                                   @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                                   @RequestParam(required = false) String search, @PageableDefault(size = 20) Pageable pageable) {
-
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String search, @PageableDefault(size = 20) Pageable pageable) {
 
         if (prodi != null && tahunAkademik != null) {
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("ruangan", ruanganDao.findByStatus(StatusRecord.AKTIF));
             if (StringUtils.hasText(search)) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminNotInAndProdiAndJenisUjianAndTahunAkademikAndMahasiswaNimOrderByTanggalPengajuanDesc(StatusRecord.AKTIF,Arrays.asList("REJECTED"), prodi, "UjianTahfidz", tahunAkademik, search, pageable));
+                model.addAttribute("list", ujianTahfidzKompreDao
+                        .findByStatusAndStatusApprovalAdminNotInAndProdiAndJenisUjianAndTahunAkademikAndMahasiswaNimOrderByTanggalPengajuanDesc(
+                                StatusRecord.AKTIF, Arrays.asList("REJECTED"), prodi, "UjianTahfidz", tahunAkademik,
+                                search, pageable));
             } else {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndProdiAndJenisUjianAndTahunAkademikOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, prodi, "UjianTahfidz", tahunAkademik, pageable));
+                model.addAttribute("list",
+                        ujianTahfidzKompreDao
+                                .findByStatusAndProdiAndJenisUjianAndTahunAkademikOrderByTanggalPengajuanDesc(
+                                        StatusRecord.AKTIF, prodi, "UjianTahfidz", tahunAkademik, pageable));
             }
         }
 
@@ -361,28 +360,33 @@ public class UjianController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/get-list-tahfidz/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TableUjian listTahfidz(@PathVariable String id, @RequestParam String prodi, @RequestParam(required = false) String search,
-                                    @RequestParam(required = false) String sort,
-                                    @RequestParam(required = false) String order,
-                                    @RequestParam(required = false) Integer offset,
-                                    @RequestParam(required = false) Integer limit) {
-
+    public TableUjian listTahfidz(@PathVariable String id, @RequestParam String prodi,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(id).get();
         Prodi p = prodiDao.findById(prodi).get();
 
         if (search.isEmpty()) {
             TableUjian table = new TableUjian();
-            table.setTotal(ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik,"UjianTahfidz", p).size());
-            table.setTotalNotFiltered(ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik,"UjianTahfidz", p).size());
-            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminLimit(tahunAkademik,"UjianTahfidz", p,limit,offset));
+            table.setTotal(ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik, "UjianTahfidz", p).size());
+            table.setTotalNotFiltered(
+                    ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik, "UjianTahfidz", p).size());
+            table.setRows(
+                    ujianTahfidzKompreDao.getListTahfidzAdminLimit(tahunAkademik, "UjianTahfidz", p, limit, offset));
             return table;
 
         } else {
             TableUjian table = new TableUjian();
-            table.setTotal(ujianTahfidzKompreDao.getListTahfidzAdminSearch(tahunAkademik,"UjianTahfidz", p, search).size());
-            table.setTotalNotFiltered(ujianTahfidzKompreDao.getListTahfidzAdminSearchLimit(tahunAkademik,"UjianTahfidz", p, search, limit, offset).size());
-            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminSearchLimit(tahunAkademik,"UjianTahfidz", p, search, limit, offset));
+            table.setTotal(
+                    ujianTahfidzKompreDao.getListTahfidzAdminSearch(tahunAkademik, "UjianTahfidz", p, search).size());
+            table.setTotalNotFiltered(ujianTahfidzKompreDao
+                    .getListTahfidzAdminSearchLimit(tahunAkademik, "UjianTahfidz", p, search, limit, offset).size());
+            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminSearchLimit(tahunAkademik, "UjianTahfidz", p, search,
+                    limit, offset));
             return table;
         }
 
@@ -391,28 +395,34 @@ public class UjianController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/get-list-kompre/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TableUjian listKompre(@PathVariable String id, @RequestParam String prodi, @RequestParam(required = false) String search,
-                                    @RequestParam(required = false) String sort,
-                                    @RequestParam(required = false) String order,
-                                    @RequestParam(required = false) Integer offset,
-                                    @RequestParam(required = false) Integer limit) {
-
+    public TableUjian listKompre(@PathVariable String id, @RequestParam String prodi,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(id).get();
         Prodi p = prodiDao.findById(prodi).get();
 
         if (search.isEmpty()) {
             TableUjian table = new TableUjian();
-            table.setTotal(ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik,"UjianKomprehensif", p).size());
-            table.setTotalNotFiltered(ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik,"UjianKomprehensif", p).size());
-            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminLimit(tahunAkademik,"UjianKomprehensif", p,limit,offset));
+            table.setTotal(ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik, "UjianKomprehensif", p).size());
+            table.setTotalNotFiltered(
+                    ujianTahfidzKompreDao.getListTahfidzAdmin(tahunAkademik, "UjianKomprehensif", p).size());
+            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminLimit(tahunAkademik, "UjianKomprehensif", p, limit,
+                    offset));
             return table;
 
         } else {
             TableUjian table = new TableUjian();
-            table.setTotal(ujianTahfidzKompreDao.getListTahfidzAdminSearch(tahunAkademik,"UjianKomprehensif", p, search).size());
-            table.setTotalNotFiltered(ujianTahfidzKompreDao.getListTahfidzAdminSearchLimit(tahunAkademik,"UjianKomprehensif", p, search, limit, offset).size());
-            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminSearchLimit(tahunAkademik,"UjianKomprehensif", p, search, limit, offset));
+            table.setTotal(ujianTahfidzKompreDao
+                    .getListTahfidzAdminSearch(tahunAkademik, "UjianKomprehensif", p, search).size());
+            table.setTotalNotFiltered(ujianTahfidzKompreDao
+                    .getListTahfidzAdminSearchLimit(tahunAkademik, "UjianKomprehensif", p, search, limit, offset)
+                    .size());
+            table.setRows(ujianTahfidzKompreDao.getListTahfidzAdminSearchLimit(tahunAkademik, "UjianKomprehensif", p,
+                    search, limit, offset));
             return table;
         }
 
@@ -420,8 +430,8 @@ public class UjianController {
 
     @GetMapping("/komprehensif")
     public String list(Model model, Authentication authentication,
-                       @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                       @RequestParam(required = false) String search, @PageableDefault(size = 20) Pageable pageable) {
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String search, @PageableDefault(size = 20) Pageable pageable) {
         if (prodi != null && tahunAkademik != null) {
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("selectedTahun", tahunAkademik);
@@ -429,31 +439,39 @@ public class UjianController {
 
         }
 
-
         return "ujian/admin/kompre";
     }
 
     @GetMapping("/ujianTahfidKompre")
-    public String listUTahfidzKompre(Model model, @RequestParam(required = false) String status, Authentication authentication) {
+    public String listUTahfidzKompre(Model model, @RequestParam(required = false) String status,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         model.addAttribute("status", status);
         if (user.getRole().getName().equals("Superuser")) {
             if (status.equals("APPROVED")) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, "APPROVED_ADMIN"));
+                model.addAttribute("list",
+                        ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(
+                                StatusRecord.AKTIF, "APPROVED_ADMIN"));
             } else if (status.equals("REJECTED")) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, "REJECTED"));
+                model.addAttribute("list", ujianTahfidzKompreDao
+                        .findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, "REJECTED"));
             } else if (status.equals("All")) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndUrutanOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, 1));
+                model.addAttribute("list",
+                        ujianTahfidzKompreDao.findByStatusAndUrutanOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, 1));
             }
         } else if (user.getRole().getName().equals("Kps")) {
             if (status.equals("APPROVED")) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, "APPROVED_KPS"));
+                model.addAttribute("list",
+                        ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(
+                                StatusRecord.AKTIF, "APPROVED_KPS"));
             } else if (status.equals("REJECTED")) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, "REJECTED"));
+                model.addAttribute("list", ujianTahfidzKompreDao
+                        .findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, "REJECTED"));
             } else if (status.equals("All")) {
-                model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndUrutanAndDosenKpsOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, 2, dosen));
+                model.addAttribute("list", ujianTahfidzKompreDao
+                        .findByStatusAndUrutanAndDosenKpsOrderByTanggalPengajuanDesc(StatusRecord.AKTIF, 2, dosen));
             }
         }
 
@@ -462,7 +480,8 @@ public class UjianController {
 
     @PostMapping("/penjadwalan-ujian")
     @ResponseBody
-    public ResponseEntity<BaseResponse> pernjadwalanTahfidzh(@RequestBody TahfidzRequest request,@RequestParam String jenisUjian) {
+    public ResponseEntity<BaseResponse> pernjadwalanTahfidzh(@RequestBody TahfidzRequest request,
+            @RequestParam String jenisUjian) {
         UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(request.getId()).get();
         ujianTahfidzKompre.setTanggalUjian(LocalDate.parse(request.getTanggal()));
         ujianTahfidzKompre.setRuangan(ruanganDao.findById(request.getRuangan()).get());
@@ -471,23 +490,24 @@ public class UjianController {
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
         String jenis = "";
-        if (jenisUjian.equals("UjianTahfidz")){
+        if (jenisUjian.equals("UjianTahfidz")) {
             jenis = "Tahfidz";
-        }else {
+        } else {
             jenis = "Komprehensif";
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponse.builder()
                         .code("200")
-                        .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Dijadwalkan")
-                        .build()
-        );
+                        .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama()
+                                + " Berhasil Dijadwalkan")
+                        .build());
     }
 
     @PostMapping("/rejected/{id}")
     @ResponseBody
-    public ResponseEntity<BaseResponse> rejecteUjian(@PathVariable String id, @RequestParam String komentar, @RequestParam String jenisUjian) {
+    public ResponseEntity<BaseResponse> rejecteUjian(@PathVariable String id, @RequestParam String komentar,
+            @RequestParam String jenisUjian) {
         UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(id).get();
 
         ujianTahfidzKompre.setStatusApprovalAdmin("REJECTED");
@@ -496,24 +516,26 @@ public class UjianController {
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
         String jenis = "";
-        if (jenisUjian.equals("UjianTahfidz")){
+        if (jenisUjian.equals("UjianTahfidz")) {
             jenis = "Tahfidz";
-        }else {
+        } else {
             jenis = "Komprehensif";
         }
 
-        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), jenisUjian, "REJECTED");
+        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), jenisUjian,
+                "REJECTED");
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponse.builder()
                         .code("200")
-                        .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Ditolak")
-                        .build()
-        );
+                        .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama()
+                                + " Berhasil Ditolak")
+                        .build());
     }
 
     @PostMapping("/approve/{id}")
     @ResponseBody
-    public ResponseEntity<BaseResponse> approveUjian(@PathVariable String id, @RequestParam String komentar, @RequestParam String jenisUjian) {
+    public ResponseEntity<BaseResponse> approveUjian(@PathVariable String id, @RequestParam String komentar,
+            @RequestParam String jenisUjian) {
         UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(id).get();
 
         ujianTahfidzKompre.setStatusApprovalAdmin("APPROVED");
@@ -522,9 +544,9 @@ public class UjianController {
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
         String jenis = "";
-        if (jenisUjian.equals("UjianTahfidz")){
+        if (jenisUjian.equals("UjianTahfidz")) {
             jenis = "Tahfidz";
-        }else {
+        } else {
             jenis = "Komprehensif";
         }
 
@@ -532,10 +554,10 @@ public class UjianController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponse.builder()
                         .code("200")
-                        .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Disetujui")
+                        .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama()
+                                + " Disetujui")
 
-                        .build()
-        );
+                        .build());
     }
 
     @PostMapping("/penilaian/kompre/{id}")
@@ -546,15 +568,15 @@ public class UjianController {
         ujianTahfidzKompre.setStatusLulus(StatusRecord.valueOf(status));
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
-
-//        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), jenis, "APPROVED");
+        // ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(),
+        // jenis, "APPROVED");
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponse.builder()
                         .code("200")
-                        .message("Ujian Kompre Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Dinilai")
+                        .message("Ujian Kompre Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama()
+                                + " Berhasil Dinilai")
 
-                        .build()
-        );
+                        .build());
     }
 
     @PostMapping("/penilaian/tahfidz/{id}")
@@ -564,22 +586,22 @@ public class UjianController {
 
         BigDecimal nilaiUjian = new BigDecimal(nilai);
         ujianTahfidzKompre.setNilai(nilaiUjian);
-        if (nilaiUjian.compareTo(new BigDecimal(70)) >= 0){
+        if (nilaiUjian.compareTo(new BigDecimal(70)) >= 0) {
             ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
-        }else {
+        } else {
             ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
         }
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
-
-//        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), jenis, "APPROVED");
+        // ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(),
+        // jenis, "APPROVED");
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponse.builder()
                         .code("200")
-                        .message("Ujian Tahfidz Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Dinilai")
+                        .message("Ujian Tahfidz Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama()
+                                + " Berhasil Dinilai")
 
-                        .build()
-        );
+                        .build());
     }
 
     @GetMapping("/formulir/{file}")
@@ -588,7 +610,8 @@ public class UjianController {
         System.out.println("Test : " + lokasiFile);
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (file.getFileSurat().toLowerCase().endsWith("jpeg") || file.getFileSurat().toLowerCase().endsWith("jpg")) {
+            if (file.getFileSurat().toLowerCase().endsWith("jpeg")
+                    || file.getFileSurat().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (file.getFileSurat().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);

@@ -1,36 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout}">
+
 <head>
   <meta charset="UTF-8">
   <title>KOMPREHENSIF</title>
 </head>
+
 <body>
-<section layout:fragment="main" class="content">
-  <div class="breadcomb-area">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 col-xs-12">
-          <div class="breadcomb-list">
-            <div class="row">
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <div class="breadcomb-wp">
-                  <div class="breadcomb-icon">
-                    <i class="notika-icon notika-form"></i>
-                  </div>
-                  <div class="breadcomb-ctn">
-                    <h2>Form Pendaftaran</h2>
-                    <p>UJIAN TAHFIDZ & KOMPREHENSIF</p>
+  <section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 col-xs-12">
+            <div class="breadcomb-list">
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-xs-12">
+                  <div class="breadcomb-wp">
+                    <div class="breadcomb-icon">
+                      <i class="notika-icon notika-form"></i>
+                    </div>
+                    <div class="breadcomb-ctn">
+                      <h2>Form Pendaftaran</h2>
+                      <p>UJIAN TAHFIDZ & KOMPREHENSIF</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <div class="breadcomb-report">
-                  <a th:href="@{/dashboard}">
-                    <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
-                  </a>
+                <div class="col-lg-6 col-md-6 col-xs-12">
+                  <div class="breadcomb-report">
+                    <a th:href="@{/dashboard}">
+                      <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -38,83 +39,87 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="container">
-    <div class="bounceIn">
-      <div class="row">
-        <div class="col-md-12 col-xs-12">
-          <div class="normal-table-list mg-t-30">
-            <div class="bsc-tbl-st" style="padding: 10px;">
-              <div class="row">
-                <div class="col-md-6">
-                  <a th:href="@{/tahfidz}" class="btn btn-warning btn-block">Ujian Tahfidz</a>
-                </div>
-                <div class="col-md-6">
-                  <a th:href="@{/kompre}" class="btn btn-primary btn-block">Sidang Komperehensif</a>
-                </div>
-              </div>
-<!--              <div th:if="${enable == false}">-->
-<!--                <div class="row" style="margin-top: 20px;">-->
-<!--                  <div class="col-md-12 alert alert-danger">Fitur pendaftaran komperhensif tidak bisa di akses. Silahkan hubungi bagian keuangan.</div>-->
-<!--                </div>-->
-<!--              </div>-->
-              <div>
-                <div th:if="${totalSks < 138 || jumlahNilaiD >= 1}">
-                  <div class="row" style="margin-top: 20px;">
-                    <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks < 138}">
-                      <p>Jumlah SKS Anda belum memenuhi syarat untuk melaksanakan ujian komprehensif.</p>
-                      <p>Syarat untuk mengikuti ujian komprehensif adalah menyelesaikan minimal <b>138 SKS</b>. Jumlah SKS Anda <b th:text="${totalSks}"></b></p>
-                    </div>
+    <div class="container">
+      <div class="bounceIn">
+        <div class="row">
+          <div class="col-md-12 col-xs-12">
+            <div class="normal-table-list mg-t-30">
+              <div class="bsc-tbl-st" style="padding: 10px;">
+                <div class="row">
+                  <div class="col-md-6">
+                    <a th:href="@{/tahfidz}" class="btn btn-warning btn-block">Ujian Tahfidz</a>
+                  </div>
+                  <div class="col-md-6">
+                    <a th:href="@{/kompre}" class="btn btn-primary btn-block">Sidang Komperehensif</a>
                   </div>
                 </div>
-
-                <div th:if="${totalSks >= 138}">
-                  <div class="row" style="margin-top: 20px;" th:if="${dataTerakhir == null || dataTerakhir.statusApprovalAdmin == 'REJECTED' || dataTerakhir.statusLulus == dataTerakhir.statusLulus.TIDAK_LULUS}">
-                    <div class="col-md-12">
-                      <a th:href="@{/formulirkompre(id = ${data.getId()})}" class="btn btn-warning">Download Formulir Sidang Komprehensif</a>
+                <!--              <div th:if="${enable == false}">-->
+                <!--                <div class="row" style="margin-top: 20px;">-->
+                <!--                  <div class="col-md-12 alert alert-danger">Fitur pendaftaran komperhensif tidak bisa di akses. Silahkan hubungi bagian keuangan.</div>-->
+                <!--                </div>-->
+                <!--              </div>-->
+                <div>
+                  <div th:if="${totalSks < 138 || jumlahNilaiD > 1}">
+                    <div class="row" style="margin-top: 20px;">
+                      <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks < 138}">
+                        <p>Jumlah SKS Anda belum memenuhi syarat untuk melaksanakan ujian komprehensif.</p>
+                        <p>Syarat untuk mengikuti ujian komprehensif adalah menyelesaikan minimal <b>138 SKS</b>. Jumlah
+                          SKS Anda <b th:text="${totalSks}"></b></p>
+                      </div>
                     </div>
-                    <div class="col-md-12" style="margin-top: 20px;">
-                      <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <label>Nama Mahasiswa</label>
-                              <input type="text" disabled class="form-control" th:value="${data.getNama()}">
-                            </div>
-                            <div class="col-md-6">
-                              <label>Nim</label>
-                              <input type="text" disabled class="form-control" th:value="${data.getNim()}">
-                              <input type="hidden" name="jenisUjian" value="UjianKomprehensif">
+                  </div>
+
+                  <div th:if="${totalSks >= 138 || || jumlahNilaiD < 2}">
+                    <div class="row" style="margin-top: 20px;"
+                      th:if="${dataTerakhir == null || dataTerakhir.statusApprovalAdmin == 'REJECTED' || dataTerakhir.statusLulus == dataTerakhir.statusLulus.TIDAK_LULUS}">
+                      <div class="col-md-12">
+                        <a th:href="@{/formulirkompre(id = ${data.getId()})}" class="btn btn-warning">Download Formulir
+                          Sidang Komprehensif</a>
+                      </div>
+                      <div class="col-md-12" style="margin-top: 20px;">
+                        <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data">
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label>Nama Mahasiswa</label>
+                                <input type="text" disabled class="form-control" th:value="${data.getNama()}">
+                              </div>
+                              <div class="col-md-6">
+                                <label>Nim</label>
+                                <input type="text" disabled class="form-control" th:value="${data.getNim()}">
+                                <input type="hidden" name="jenisUjian" value="UjianKomprehensif">
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="form-group">
-                          <label>Upload Form Pendaftaran yang sudah diisi dan di TTD <span style="color: red">*</span></label>
-                          <input type="file" name="image" class="form-control">
-                        </div>
-                        <div class="form-group">
-                          <button class="btn btn-success">Kirim</button>
-                        </div>
-                      </form>
+                          <div class="form-group">
+                            <label>Upload Form Pendaftaran yang sudah diisi dan di TTD <span
+                                style="color: red">*</span></label>
+                            <input type="file" name="image" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <button class="btn btn-success">Kirim</button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row" style="margin-top: 20px;" th:if="${list.size() != 0}">
-                    <div class="col-md-12">
-                      <div class="table-responsive">
-                        <table class="table table-striped">
-                          <thead>
-                          <tr>
-                            <th>Dokumen</th>
-                            <th>Tanggal Pengajuan</th>
-                            <th>Status</th>
-                            <th>Keterangan</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr th:each="data, row:${list}">
-                            <td><a th:href="@{/formulir/{file}(file = ${data.id})}" target="_blank">Lihat Formulir</a></a></td>
-                            <td th:text="${#temporals.format(data.tanggalPengajuan, 'dd-MMMM-yyyy')}"></td>
+                    <div class="row" style="margin-top: 20px;" th:if="${list.size() != 0}">
+                      <div class="col-md-12">
+                        <div class="table-responsive">
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Dokumen</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Status</th>
+                                <th>Keterangan</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr th:each="data, row:${list}">
+                                <td><a th:href="@{/formulir/{file}(file = ${data.id})}" target="_blank">Lihat
+                                    Formulir</a></a></td>
+                                <td th:text="${#temporals.format(data.tanggalPengajuan, 'dd-MMMM-yyyy')}"></td>
                             <td>
                               <span th:if="${data.statusApprovalAdmin == 'WAITING'}" class="btn btn-warning btn-sm">Menunggu Approval</span>
                               <span th:if="${data.statusApprovalAdmin == 'APPROVED' && data.statusLulus == data.statusLulus.NOT_YET_SCHEDULED }" class="btn btn-warning btn-sm">Belum Dijadwalkan</span>
