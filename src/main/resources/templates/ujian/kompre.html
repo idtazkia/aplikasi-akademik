@@ -70,7 +70,7 @@
                     </div>
                   </div>
 
-                  <div th:if="${totalSks >= 138 || jumlahNilaiD < 2}">
+                  <div th:if="${totalSks >= 138 && jumlahNilaiD < 2}">
                     <div class="row" style="margin-top: 20px;"
                       th:if="${dataTerakhir == null || dataTerakhir.statusApprovalAdmin == 'REJECTED' || dataTerakhir.statusLulus == dataTerakhir.statusLulus.TIDAK_LULUS}">
                       <div class="col-md-12">
