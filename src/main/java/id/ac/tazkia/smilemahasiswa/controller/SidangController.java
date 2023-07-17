@@ -12,6 +12,7 @@ import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.FormulirService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import id.ac.tazkia.smilemahasiswa.service.SidangService;
 import org.apache.poi.ss.usermodel.*;
@@ -104,6 +105,9 @@ public class SidangController {
     @Autowired
     EnableFitureDao enableFitureDao;
 
+    @Autowired
+    private FormulirService formulirService;
+
     @Value("classpath:sample/filesidang.odt")
     private Resource fileNilai;
 
@@ -162,34 +166,15 @@ public class SidangController {
     public void formulirSempro(@RequestParam(name = "id") Seminar seminar,
                                HttpServletResponse response){
         try {
-            // 0. Setup converter
-            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 
-            // 1. Load template dari file
-            InputStream in = formulirSkripsi.getInputStream();
+            response.setContentType("application/pdf");
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment; filename=Formulir_Skripsi-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf";
 
-            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
-            IXDocReport report = XDocReportRegistry.getRegistry().
-                    loadReport(in, TemplateEngineKind.Freemarker);
+            response.setHeader(headerKey, headerValue);
 
-            // 3. Context object, untuk mengisi variabel
-            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(seminar.getNote().getMahasiswa().getId());
-            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(seminar.getNote().getMahasiswa().getId());
+            formulirService.formulirSidangReguler(seminar, response);
 
-            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
-
-            IContext ctx = report.createContext();
-            ctx.put("nama", seminar.getNote().getMahasiswa().getNama());
-            ctx.put("nim", seminar.getNote().getMahasiswa().getNim());
-            ctx.put("prodi",seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi());
-            ctx.put("ipk", ipk);
-            ctx.put("sks", totalSKS);
-            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
-
-            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Skripsi-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf");
-            OutputStream out = response.getOutputStream();
-            report.convert(ctx, options, out);
-            out.flush();
         } catch (Exception err){
 //            logger.error(err.getMessage(), err);
         }
@@ -199,34 +184,15 @@ public class SidangController {
     public void formulirTesis(@RequestParam(name = "id") Seminar seminar,
                                HttpServletResponse response){
         try {
-            // 0. Setup converter
-            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 
-            // 1. Load template dari file
-            InputStream in = formulirSkripsiPasca.getInputStream();
+            response.setContentType("application/pdf");
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment;filename=Formulir_Tesis-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf";
 
-            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
-            IXDocReport report = XDocReportRegistry.getRegistry().
-                    loadReport(in, TemplateEngineKind.Freemarker);
+            response.setHeader(headerKey, headerValue);
 
-            // 3. Context object, untuk mengisi variabel
-            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(seminar.getNote().getMahasiswa().getId());
-            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(seminar.getNote().getMahasiswa().getId());
+            formulirService.formulirSidangPasca(seminar, response);
 
-            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
-
-            IContext ctx = report.createContext();
-            ctx.put("nama", seminar.getNote().getMahasiswa().getNama());
-            ctx.put("nim", seminar.getNote().getMahasiswa().getNim());
-            ctx.put("prodi",seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi());
-            ctx.put("ipk", ipk);
-            ctx.put("sks", totalSKS);
-            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
-
-            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Skripsi-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf");
-            OutputStream out = response.getOutputStream();
-            report.convert(ctx, options, out);
-            out.flush();
         } catch (Exception err){
 //            logger.error(err.getMessage(), err);
         }
