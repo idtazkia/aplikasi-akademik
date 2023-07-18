@@ -96,25 +96,27 @@ public class TugasAkhirController {
     // PERIODE WISUDA
 
     @GetMapping("/graduation/periodeWisuda/list")
-    public void listPeriode(Model model, @PageableDefault(size = 10) Pageable page, String search){
+    public void listPeriode(Model model, @PageableDefault(size = 10) Pageable page, String search) {
 
-        if (StringUtils.hasText(search)){
+        if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listPeriode", periodeWisudaDao.findByStatusNotInAndNamaContainingIgnoreCase(Arrays.asList(StatusRecord.HAPUS), search, page));
-        }else{
-            model.addAttribute("listPeriode", periodeWisudaDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
+            model.addAttribute("listPeriode", periodeWisudaDao
+                    .findByStatusNotInAndNamaContainingIgnoreCase(Arrays.asList(StatusRecord.HAPUS), search, page));
+        } else {
+            model.addAttribute("listPeriode",
+                    periodeWisudaDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
         }
     }
 
     @GetMapping("/graduation/periodeWisuda/form")
-    public void formPeriode(Model model, @RequestParam(required = false) String id){
+    public void formPeriode(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("newPeriode", new PeriodeWisuda());
 
-        if (id != null && !id.isEmpty()){
+        if (id != null && !id.isEmpty()) {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findById(id).get();
-            if (periodeWisuda != null){
+            if (periodeWisuda != null) {
                 model.addAttribute("newPeriode", periodeWisuda);
-                if (periodeWisuda.getStatus() == null){
+                if (periodeWisuda.getStatus() == null) {
                     periodeWisuda.setStatus(StatusRecord.NONAKTIF);
                 }
             }
@@ -123,7 +125,7 @@ public class TugasAkhirController {
     }
 
     @PostMapping("/graduation/periodeWisuda/new")
-    public String inputPeriode(@Valid PeriodeWisuda wisuda){
+    public String inputPeriode(@Valid PeriodeWisuda wisuda) {
 
         periodeWisudaDao.save(wisuda);
         return "redirect:list";
@@ -131,7 +133,7 @@ public class TugasAkhirController {
     }
 
     @PostMapping("/graduation/periodeWisuda/delete")
-    public String deletePeriode(@RequestParam PeriodeWisuda wisuda){
+    public String deletePeriode(@RequestParam PeriodeWisuda wisuda) {
 
         wisuda.setStatus(StatusRecord.HAPUS);
         periodeWisudaDao.save(wisuda);
@@ -142,13 +144,17 @@ public class TugasAkhirController {
     // KETEGORI TUGAS AKHIR
 
     @GetMapping("/graduation/kategori/list")
-    public void listKategori(Model model, @RequestParam(required = false) Prodi prodi, @PageableDefault(size = 10) Pageable page){
+    public void listKategori(Model model, @RequestParam(required = false) Prodi prodi,
+            @PageableDefault(size = 10) Pageable page) {
 
         model.addAttribute("selectProdi", prodi);
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listNote", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.NOTE, Arrays.asList(StatusRecord.HAPUS), page));
-        model.addAttribute("listSeminar", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.SEMINAR, Arrays.asList(StatusRecord.HAPUS), page));
-        model.addAttribute("listSidang", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.SIDANG, Arrays.asList(StatusRecord.HAPUS), page));
+        model.addAttribute("listNote", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.NOTE,
+                Arrays.asList(StatusRecord.HAPUS), page));
+        model.addAttribute("listSeminar", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.SEMINAR,
+                Arrays.asList(StatusRecord.HAPUS), page));
+        model.addAttribute("listSidang", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.SIDANG,
+                Arrays.asList(StatusRecord.HAPUS), page));
 
         // modal add kategori
         model.addAttribute("jenis", Jenis.values());
@@ -157,10 +163,11 @@ public class TugasAkhirController {
     }
 
     @PostMapping("/graduation/kategori/new")
-    public String saveKategori(@RequestParam(required = false) String[] prodi, @RequestParam(required = false) String nama,
-                               @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi){
+    public String saveKategori(@RequestParam(required = false) String[] prodi,
+            @RequestParam(required = false) String nama,
+            @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi) {
 
-        for (String p : prodi){
+        for (String p : prodi) {
             Prodi prod = prodiDao.findById(p).get();
             KategoriTugasAkhir kategori = new KategoriTugasAkhir();
             kategori.setNama(nama);
@@ -174,8 +181,9 @@ public class TugasAkhirController {
         return "redirect:list";
 
     }
+
     @GetMapping("/graduation/sidang/mahasiswa/wisuda")
-    public void daftarWisuda(Model model,@RequestParam Sidang sidang, Authentication authentication){
+    public void daftarWisuda(Model model, @RequestParam Sidang sidang, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -202,8 +210,8 @@ public class TugasAkhirController {
 
     }
 
-        @GetMapping("/graduation/wisuda/form")
-    public void daftarWisudaPasca(Model model, Authentication authentication){
+    @GetMapping("/graduation/wisuda/form")
+    public void daftarWisudaPasca(Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -230,7 +238,8 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/wisudarevisi")
-    public void revisiWisuda(Model model,@RequestParam(name = "id", value = "id") Wisuda wisuda, Authentication authentication){
+    public void revisiWisuda(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -261,7 +270,8 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/wisuda/revisi")
-    public void revisiWisudaPasca(Model model,@RequestParam(name = "id", value = "id") Wisuda wisuda, Authentication authentication){
+    public void revisiWisudaPasca(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -290,7 +300,8 @@ public class TugasAkhirController {
     }
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-post")
-    public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+    public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -314,13 +325,12 @@ public class TugasAkhirController {
         mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
         mahasiswaDao.save(mahasiswa);
 
-
         ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
         ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
         ayahDao.save(ayah);
         ibuDao.save(ibu);
 
-        if (ukuran >= 1000000){
+        if (ukuran >= 1000000) {
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -330,9 +340,9 @@ public class TugasAkhirController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+                    + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
@@ -351,18 +361,17 @@ public class TugasAkhirController {
             mailService.detailWisuda(wisudaDto);
             return "redirect:waiting";
 
-
-        }else {
+        } else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
-            return "redirect:wisuda?sidang="+wisudaDto.getSidang();
+            return "redirect:wisuda?sidang=" + wisudaDto.getSidang();
 
         }
-
 
     }
 
     @PostMapping("/graduation/wisuda/form-post")
-    public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+    public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -381,13 +390,12 @@ public class TugasAkhirController {
         mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
         mahasiswaDao.save(mahasiswa);
 
-
         ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
         ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
         ayahDao.save(ayah);
         ibuDao.save(ibu);
 
-        if (ukuran >= 1000000){
+        if (ukuran >= 1000000) {
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -397,9 +405,9 @@ public class TugasAkhirController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+                    + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
@@ -417,18 +425,17 @@ public class TugasAkhirController {
             mailService.detailWisuda(wisudaDto);
             return "redirect:../sidang/mahasiswa/waiting?pasca=aktif";
 
-
-        }else {
+        } else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
             return "redirect:form";
 
         }
 
-
     }
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-revisi")
-    public String revisiWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+    public String revisiWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -451,13 +458,12 @@ public class TugasAkhirController {
         mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
         mahasiswaDao.save(mahasiswa);
 
-
         ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
         ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
         ayahDao.save(ayah);
         ibuDao.save(ibu);
 
-        if (ukuran >= 1000000){
+        if (ukuran >= 1000000) {
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -467,9 +473,9 @@ public class TugasAkhirController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+                    + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
@@ -488,18 +494,17 @@ public class TugasAkhirController {
             mailService.detailWisuda(wisudaDto);
             return "redirect:waiting";
 
-
-        }else {
+        } else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
-            return "redirect:wisudarevisi?id="+wisudaDto.getId();
+            return "redirect:wisudarevisi?id=" + wisudaDto.getId();
 
         }
-
 
     }
 
     @PostMapping("/graduation/wisuda/wisuda-revisi")
-    public String revisiWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+    public String revisiWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -519,13 +524,12 @@ public class TugasAkhirController {
         mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
         mahasiswaDao.save(mahasiswa);
 
-
         ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
         ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
         ayahDao.save(ayah);
         ibuDao.save(ibu);
 
-        if (ukuran >= 1000000){
+        if (ukuran >= 1000000) {
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -535,9 +539,9 @@ public class TugasAkhirController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+                    + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
@@ -555,44 +559,42 @@ public class TugasAkhirController {
             mailService.detailWisuda(wisudaDto);
             return "redirect:../sidang/mahasiswa/waiting?pasca=aktif";
 
-
-        }else {
+        } else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
-            return "redirect:revisi?id="+wisudaDto.getId();
+            return "redirect:revisi?id=" + wisudaDto.getId();
 
         }
-
 
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/result")
-    public void resultWisuda(Model model,@RequestParam Wisuda wisuda, Authentication authentication){
+    public void resultWisuda(Model model, @RequestParam Wisuda wisuda, Authentication authentication) {
 
         model.addAttribute("approved", wisuda);
 
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/waiting")
-    public void waitingWisuda(Model model,@RequestParam(required = false)String pasca, Authentication authentication){
+    public void waitingWisuda(Model model, @RequestParam(required = false) String pasca,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-
-        Wisuda waiting = wisudaDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.WAITING);
-        if (waiting != null){
-            if (pasca != null){
+        Wisuda waiting = wisudaDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.WAITING);
+        if (waiting != null) {
+            if (pasca != null) {
                 model.addAttribute("pasca", pasca);
                 model.addAttribute("waiting", waiting);
-            }else {
+            } else {
                 model.addAttribute("waiting", waiting);
             }
-        }else {
-            if (pasca != null){
+        } else {
+            if (pasca != null) {
                 model.addAttribute("pasca", pasca);
                 model.addAttribute("data", wisudaDao.findFirstByMahasiswaAndStatus(mahasiswa, StatusApprove.REJECTED));
                 System.out.println(wisudaDao.findFirstByMahasiswaAndStatus(mahasiswa, StatusApprove.REJECTED));
                 model.addAttribute("reject", "reject");
-            }else {
+            } else {
                 model.addAttribute("data", wisudaDao.findFirstByMahasiswaAndStatus(mahasiswa, StatusApprove.REJECTED));
                 model.addAttribute("reject", "reject");
             }
@@ -602,15 +604,16 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/valid")
-    public String resultWisuda(Model model,@RequestParam(name = "id", value = "id") Mahasiswa mahasiswa, Authentication authentication){
-        Wisuda wisuda = wisudaDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.APPROVED);
+    public String resultWisuda(Model model, @RequestParam(name = "id", value = "id") Mahasiswa mahasiswa,
+            Authentication authentication) {
+        Wisuda wisuda = wisudaDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
 
-        if (wisuda != null){
+        if (wisuda != null) {
             return "redirect:result?wisuda=" + wisuda.getId();
-        }else {
+        } else {
             if (mahasiswa.getIdProdi().getIdJenjang().getId().equals("02")) {
                 return "redirect:waiting?pasca=aktif";
-            }else {
+            } else {
                 return "redirect:waiting";
             }
         }
@@ -618,29 +621,33 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/admin/listwisuda")
-    public void resultWisuda(Model model,@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) PeriodeWisuda periode,@PageableDefault(size = 30) Pageable page){
-        model.addAttribute("periode", periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("selectedProdi",prodi);
-        model.addAttribute("selectedPeriode",periode);
+    public void resultWisuda(Model model, @RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
+        model.addAttribute("periode",
+                periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("selectedPeriode", periode);
 
-        if (prodi == null){
-            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndStatusNotInOrderByStatusDescMahasiswaIdProdiAsc(periode,Arrays.asList(StatusApprove.REJECTED,StatusApprove.HAPUS), page));
-        }else {
-            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndMahasiswaIdProdiAndStatusNotInOrderByStatusDesc(periode,prodi,Arrays.asList(StatusApprove.REJECTED,StatusApprove.HAPUS),page));
+        if (prodi == null) {
+            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndStatusNotInOrderByStatusDescMahasiswaIdProdiAsc(
+                    periode, Arrays.asList(StatusApprove.REJECTED, StatusApprove.HAPUS), page));
+        } else {
+            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndMahasiswaIdProdiAndStatusNotInOrderByStatusDesc(
+                    periode, prodi, Arrays.asList(StatusApprove.REJECTED, StatusApprove.HAPUS), page));
         }
-
 
     }
 
     @GetMapping("/graduation/sidang/admin/wisuda")
-    public void detailWisuda(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda){
+    public void detailWisuda(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda) {
         model.addAttribute("wisuda", wisuda);
     }
 
     @GetMapping("/graduation/sidang/admin/approve")
-    public String approveWisuda(@RequestParam Wisuda wisuda,@RequestParam String komentar) throws Exception{
-        String lokasiUpload = wisudaFolder + File.separator + wisuda.getMahasiswa().getNim();
-        Path  lokasiFoto = Path.of(lokasiUpload + File.separator + wisuda.getFoto());
+    public String approveWisuda(@RequestParam Wisuda wisuda, @RequestParam String komentar) throws Exception {
+        String lokasiUpload = wisudaFolder + File.separator + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
+                + File.separator + wisuda.getMahasiswa().getNim();
+        Path lokasiFoto = Path.of(lokasiUpload + File.separator + wisuda.getFoto());
 
         String extension = "";
 
@@ -651,22 +658,24 @@ public class TugasAkhirController {
             extension = wisuda.getFoto().substring(i + 1);
         }
 
-//        Files.move(lokasiFoto, lokasiFoto.resolveSibling( wisuda.getMahasiswa().getNim() + "_" +  wisuda.getMahasiswa().getNama() + "." + extension));
+        // Files.move(lokasiFoto, lokasiFoto.resolveSibling(
+        // wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+        // + extension));
         wisuda.setStatus(StatusApprove.APPROVED);
         wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);
 
         mailService.successWisuda(wisuda);
-        return "redirect:listwisuda?periode="+ wisuda.getPeriodeWisuda().getId();
+        return "redirect:listwisuda?periode=" + wisuda.getPeriodeWisuda().getId();
     }
 
     @GetMapping("/graduation/sidang/admin/reject")
-    public String rejectWisuda(@RequestParam Wisuda wisuda,@RequestParam String komentar){
+    public String rejectWisuda(@RequestParam Wisuda wisuda, @RequestParam String komentar) {
         wisuda.setStatus(StatusApprove.REJECTED);
         wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);
 
-        return "redirect:listwisuda?periode="+ wisuda.getPeriodeWisuda().getId();
+        return "redirect:listwisuda?periode=" + wisuda.getPeriodeWisuda().getId();
     }
 
     @GetMapping("/upload/{wisuda}/fotowisuda/")
@@ -690,48 +699,45 @@ public class TugasAkhirController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
 
     @GetMapping("/graduation/info")
-    public void detailWisuda(Model model, Authentication authentication){
+    public void detailWisuda(Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
     }
 
-
     @RequestMapping("/downloadwisuda/{wisuda}")
-    public void downloadImage( HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     @PathVariable("wisuda") Wisuda wisuda)
-    {
-        //If user is not authorized - he should be thrown out from here itself
+    public void downloadImage(HttpServletRequest request,
+            HttpServletResponse response,
+            @PathVariable("wisuda") Wisuda wisuda) {
+        // If user is not authorized - he should be thrown out from here itself
 
-        //Authorized user will download the file
-        String lokasi = wisudaFolder + File.separator + wisuda.getMahasiswa().getNim()
+        // Authorized user will download the file
+        String lokasi = wisudaFolder + File.separator + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
+                + File.separator + wisuda.getMahasiswa().getNim()
                 + File.separator + wisuda.getFoto();
         String dataDirectory = request.getServletContext().getRealPath(lokasi);
         Path file = Paths.get(lokasi, wisuda.getFoto());
         System.out.println(file);
-        if (Files.exists(file))
-        {
+        if (Files.exists(file)) {
             response.setContentType("image/jpeg");
-            response.addHeader("Content-Disposition", "attachment; filename="+wisuda.getFoto());
-            try
-            {
+            response.addHeader("Content-Disposition", "attachment; filename=" + wisuda.getFoto());
+            try {
                 Files.copy(file, response.getOutputStream());
                 response.getOutputStream().flush();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
     @GetMapping("/report/wisuda")
-    public void wisudaExcel (@RequestParam(required = false, name = "periode", value = "periode") PeriodeWisuda periodeWisuda,HttpServletResponse response) throws IOException {
+    public void wisudaExcel(
+            @RequestParam(required = false, name = "periode", value = "periode") PeriodeWisuda periodeWisuda,
+            HttpServletResponse response) throws IOException {
 
         InputStream file = getContohExcelWisuda.getInputStream();
 
@@ -788,15 +794,15 @@ public class TugasAkhirController {
         styleDataCenter.setBorderLeft(BorderStyle.THIN);
         styleDataCenter.setBorderTop(BorderStyle.THIN);
 
-        int header1 = 0 ;
-        int header2 = 1 ;
-        int header3 = 2 ;
+        int header1 = 0;
+        int header2 = 1;
+        int header3 = 2;
         String namaFile = "Data Wisudawan & " + periodeWisuda.getNama();
 
-        List<String> listWisudaMbs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"01");
+        List<String> listWisudaMbs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), "01");
         List<Object[]> mbs = wisudaDao.getDetailWisuda(listWisudaMbs);
 
-        int dataWisudaMbs = 5 ;
+        int dataWisudaMbs = 5;
         int noMbs = 1;
         for (Object[] data : mbs) {
             Row row = sheet.createRow(dataWisudaMbs);
@@ -814,13 +820,13 @@ public class TugasAkhirController {
             row.getCell(4).setCellStyle(styleData);
             row.getCell(5).setCellStyle(styleData);
 
-                row.createCell(6).setCellValue("Sarjana Strata Satu");
-                row.getCell(6).setCellStyle(styleData);
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.getCell(6).setCellStyle(styleData);
 
             if (data[6].toString() != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -844,24 +850,23 @@ public class TugasAkhirController {
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
@@ -870,10 +875,10 @@ public class TugasAkhirController {
             dataWisudaMbs++;
         }
 
-        List<String> listWisudaAs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"02");
+        List<String> listWisudaAs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), "02");
         List<Object[]> asList = wisudaDao.getDetailWisuda(listWisudaAs);
 
-        int dataWisudaAs = 5 ;
+        int dataWisudaAs = 5;
         int noAs = 1;
         for (Object[] data : asList) {
             Row row = as.createRow(dataWisudaAs);
@@ -897,7 +902,7 @@ public class TugasAkhirController {
             if (data[6] != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -921,36 +926,35 @@ public class TugasAkhirController {
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
-row.createCell(18).setCellValue(data[17].toString());
+            row.createCell(18).setCellValue(data[17].toString());
             row.getCell(18).setCellStyle(styleData);
             dataWisudaAs++;
         }
 
-        List<String> listWisudaEs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"03");
+        List<String> listWisudaEs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), "03");
         List<Object[]> esList = wisudaDao.getDetailWisuda(listWisudaEs);
 
-        int dataWisudaEs = 5 ;
+        int dataWisudaEs = 5;
         int noEs = 1;
         for (Object[] data : esList) {
             Row row = es.createRow(dataWisudaEs);
@@ -974,7 +978,7 @@ row.createCell(18).setCellValue(data[17].toString());
             if (data[6] != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -998,24 +1002,23 @@ row.createCell(18).setCellValue(data[17].toString());
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
@@ -1024,11 +1027,10 @@ row.createCell(18).setCellValue(data[17].toString());
             dataWisudaEs++;
         }
 
-
-        List<String> listWisudaHes = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"06");
+        List<String> listWisudaHes = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), "06");
         List<Object[]> hesList = wisudaDao.getDetailWisuda(listWisudaHes);
 
-        int dataWisudaHEs = 5 ;
+        int dataWisudaHEs = 5;
         int noHes = 1;
         for (Object[] data : hesList) {
             Row row = hes.createRow(dataWisudaHEs);
@@ -1052,7 +1054,7 @@ row.createCell(18).setCellValue(data[17].toString());
             if (data[6] != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -1076,24 +1078,23 @@ row.createCell(18).setCellValue(data[17].toString());
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
@@ -1102,10 +1103,11 @@ row.createCell(18).setCellValue(data[17].toString());
             dataWisudaHEs++;
         }
 
-        List<String> listWisudaDiploma = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"04");
+        List<String> listWisudaDiploma = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),
+                "04");
         List<Object[]> diplomaList = wisudaDao.getDetailWisuda(listWisudaDiploma);
 
-        int dataWisudaDiplomaa = 5 ;
+        int dataWisudaDiplomaa = 5;
         int noDiploma = 1;
         for (Object[] data : diplomaList) {
             Row row = d3.createRow(dataWisudaDiplomaa);
@@ -1129,7 +1131,7 @@ row.createCell(18).setCellValue(data[17].toString());
             if (data[6] != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -1153,24 +1155,23 @@ row.createCell(18).setCellValue(data[17].toString());
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
@@ -1179,10 +1180,11 @@ row.createCell(18).setCellValue(data[17].toString());
             dataWisudaDiplomaa++;
         }
 
-        List<String> listWisudaTips = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"08");
+        List<String> listWisudaTips = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),
+                "08");
         List<Object[]> tipsList = wisudaDao.getDetailWisuda(listWisudaTips);
 
-        int dataWisudaTips = 5 ;
+        int dataWisudaTips = 5;
         int noTips = 1;
         for (Object[] data : tipsList) {
             Row row = tips.createRow(dataWisudaTips);
@@ -1206,7 +1208,7 @@ row.createCell(18).setCellValue(data[17].toString());
             if (data[6] != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -1230,24 +1232,23 @@ row.createCell(18).setCellValue(data[17].toString());
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
@@ -1256,10 +1257,11 @@ row.createCell(18).setCellValue(data[17].toString());
             dataWisudaTips++;
         }
 
-        List<String> listWisudaPasca = wisudaDao.cariIdMahasiswaJenjang(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"02");
+        List<String> listWisudaPasca = wisudaDao
+                .cariIdMahasiswaJenjang(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), "02");
         List<Object[]> pascaList = wisudaDao.getDetailWisuda(listWisudaPasca);
 
-        int dataWisudaPasca = 5 ;
+        int dataWisudaPasca = 5;
         int noPasca = 1;
         for (Object[] data : pascaList) {
             Row row = pasca.createRow(dataWisudaPasca);
@@ -1283,7 +1285,7 @@ row.createCell(18).setCellValue(data[17].toString());
             if (data[6] != null) {
                 row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
@@ -1307,24 +1309,23 @@ row.createCell(18).setCellValue(data[17].toString());
 
             Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate.equals(0)){
+            if (validate.equals(0)) {
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
-            }else {
-                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+            } else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0) {
                     row.createCell(16).setCellValue("Sangat Memuaskan");
                     row.getCell(16).setCellStyle(styleDataCenter);
-                }else {
+                } else {
                     row.createCell(16).setCellValue(data[16].toString());
                     row.getCell(16).setCellStyle(styleDataCenter);
                 }
             }
 
-
             if (data[14] != null) {
                 row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
-            }else {
+            } else {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
@@ -1335,20 +1336,22 @@ row.createCell(18).setCellValue(data[17].toString());
 
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
     @GetMapping("/graduation/wisuda/foto")
-    public void setWisudaFoto(Model model,RedirectAttributes attributes,@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) PeriodeWisuda periode){
-        model.addAttribute("periode", periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("selectedProdi",prodi);
-        model.addAttribute("selectedPeriode",periode);
+    public void setWisudaFoto(Model model, RedirectAttributes attributes, @RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) PeriodeWisuda periode) {
+        model.addAttribute("periode",
+                periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("selectedPeriode", periode);
 
-        if (periode != null){
-            List<Wisuda> wisudaList = wisudaDao.cariWisudaProdi(periode,prodi.getId());
-            for (Wisuda wisuda : wisudaList){
+        if (periode != null) {
+            List<Wisuda> wisudaList = wisudaDao.cariWisudaProdi(periode, prodi.getId());
+            for (Wisuda wisuda : wisudaList) {
                 String extension = "";
 
                 int i = wisuda.getFoto().lastIndexOf('.');
@@ -1357,9 +1360,10 @@ row.createCell(18).setCellValue(data[17].toString());
                 if (i > p) {
                     extension = wisuda.getFoto().substring(i + 1);
                 }
-                String namaFile = wisuda.getMahasiswa().getNim() + "_" +  wisuda.getMahasiswa().getNama() + "." + extension;
+                String namaFile = wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+                        + extension;
 
-                if (!wisuda.getFoto().equals(namaFile)){
+                if (!wisuda.getFoto().equals(namaFile)) {
                     System.out.println(wisuda.getMahasiswa().getNim() + " - " + namaFile);
                     wisuda.setFoto(namaFile);
                     wisudaDao.save(wisuda);
