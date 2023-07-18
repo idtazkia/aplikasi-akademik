@@ -340,14 +340,16 @@ public class TugasAkhirController {
                 extension = namaAsli.substring(i + 1);
             }
 
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+            String lokasiUpload = wisudaFolder + File.separator + periodeWisuda.getNama() + File.separator
+                    + mahasiswa.getIdProdi().getNamaProdi()
+                    + File.separator
                     + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
-
-            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             Wisuda wisuda = new Wisuda();
             wisuda.setMahasiswa(mahasiswa);
@@ -404,15 +406,15 @@ public class TugasAkhirController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+            String lokasiUpload = wisudaFolder + File.separator + periodeWisuda.getNama() + File.separator
+                    + mahasiswa.getIdProdi().getNamaProdi() + File.separator
                     + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
-
-            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             Wisuda wisuda = new Wisuda();
             wisuda.setMahasiswa(mahasiswa);
@@ -472,15 +474,15 @@ public class TugasAkhirController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+            String lokasiUpload = wisudaFolder + File.separator + periodeWisuda.getNama() + File.separator
+                    + mahasiswa.getIdProdi().getNamaProdi() + File.separator
                     + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
-
-            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             Wisuda wisuda = wisudaDao.findById(wisudaDto.getId()).get();
             wisuda.setMahasiswa(mahasiswa);
@@ -538,15 +540,15 @@ public class TugasAkhirController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             String namaFile = UUID.randomUUID().toString();
-            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getIdProdi().getNamaProdi() + File.separator
+            String lokasiUpload = wisudaFolder + File.separator + periodeWisuda.getNama() + File.separator
+                    + mahasiswa.getIdProdi().getNamaProdi() + File.separator
                     + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
             foto.transferTo(tujuan);
-
-            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             Wisuda wisuda = wisudaDao.findById(wisudaDto.getId()).get();
             wisuda.setMahasiswa(mahasiswa);
@@ -645,7 +647,8 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/admin/approve")
     public String approveWisuda(@RequestParam Wisuda wisuda, @RequestParam String komentar) throws Exception {
-        String lokasiUpload = wisudaFolder + File.separator + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
+        String lokasiUpload = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
                 + File.separator + wisuda.getMahasiswa().getNim();
         Path lokasiFoto = Path.of(lokasiUpload + File.separator + wisuda.getFoto());
 
@@ -680,7 +683,8 @@ public class TugasAkhirController {
 
     @GetMapping("/upload/{wisuda}/fotowisuda/")
     public ResponseEntity<byte[]> fotoWisuda(@PathVariable Wisuda wisuda, Model model) throws Exception {
-        String lokasiFile = wisudaFolder + File.separator + wisuda.getMahasiswa().getNim()
+        String lokasiFile = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                + wisuda.getMahasiswa().getNim()
                 + File.separator + wisuda.getFoto();
 
         try {
@@ -716,7 +720,8 @@ public class TugasAkhirController {
         // If user is not authorized - he should be thrown out from here itself
 
         // Authorized user will download the file
-        String lokasi = wisudaFolder + File.separator + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
+        String lokasi = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
                 + File.separator + wisuda.getMahasiswa().getNim()
                 + File.separator + wisuda.getFoto();
         String dataDirectory = request.getServletContext().getRealPath(lokasi);
