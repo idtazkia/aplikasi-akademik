@@ -156,16 +156,20 @@ public class UjianController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianKomprehensif");
-        Integer checkNilai = ujianTahfidzKompreDao.jumlahNilaiD(mahasiswa);
         model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa, "UjianKomprehensif"));
 
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+        long checkNilai = listTranskript
+                .stream()
+                .filter(c -> c.getBobot().compareTo(new BigDecimal(1)) <= 0)
+                .count();
+        model.addAttribute("jumlahNilaiD", checkNilai);
+
         listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
         int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
         model.addAttribute("totalSks", sks);
-        model.addAttribute("jumlahNilaiD", checkNilai);
         model.addAttribute("data", mahasiswa);
         model.addAttribute("check", checkRejected);
         model.addAttribute("list",
