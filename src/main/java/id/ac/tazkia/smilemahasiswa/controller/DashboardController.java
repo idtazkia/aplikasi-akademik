@@ -913,8 +913,15 @@ public class DashboardController {
     @PostMapping("/admin/updateCuti")
     public String updateStatus(@RequestParam Cuti cuti, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
-        String idMahasiswa = cuti.getMahasiswa().getNim();
-        Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
+        Mahasiswa mahasiswa = cuti.getMahasiswa();
+        Dosen dosen = dosenDao.findByKaryawanIdUser(user);
+
+        if (cuti.getDosenWali() == dosen && cuti.getKps() == dosen) {
+            mahasiswa.setStatusAktif("CUTI");
+            cuti.setKpsApproved(StatusApprove.APPROVED);
+            cuti.setStatusPengajuaan(StatusApprove.APPROVED);
+            log.info("Auto Approved Cuti {} ", mahasiswa.getNama());
+        }
 
         cuti.setDosenWaliApproved(StatusApprove.APPROVED);
         cutiDao.save(cuti);

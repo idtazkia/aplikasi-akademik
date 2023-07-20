@@ -565,12 +565,12 @@
                                                         <td th:text="${data[1]}"></td>
                                                         <td th:text="${data[2]}"></td>
                                                         <td>
-                                                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data[0]}">
+                                                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" th:data-target="${'#exampleModal1' + data[0]}">
                                                                 <i class="fa fa-eye"></i> Lihat Alasan Cuti
                                                             </button>
 
                                                             <!-- Modal -->
-                                                            <div class="modal fade" th:id="${'exampleModal' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal fade" th:id="${'exampleModal1' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
