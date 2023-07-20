@@ -139,7 +139,7 @@ public class ImporNilaiElearningService {
 
     public void imporNilaiTugas(@RequestParam(required = true) String prodi, @RequestParam(required = true) String ta, @RequestParam(required = true) ProsesBackground prosesBackground) {
 
-        System.out.println("Masuk Prodi Jalan");
+        System.out.println("Masuk Import Prodi Jalan");
         List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
         if (listJadwalDtos != null){
             for (ListJadwalDto listJadwalDto : listJadwalDtos){
@@ -249,6 +249,8 @@ public class ImporNilaiElearningService {
     }
 
     public void imporNilaiUts(@RequestParam(required = true) String prodi, @RequestParam(required = true) String ta, @RequestParam(required = true) ProsesBackground prosesBackground) {
+
+        System.out.println("Masuk Import Prodi Jalan");
         List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
         if (listJadwalDtos != null){
             for (ListJadwalDto listJadwalDto : listJadwalDtos){
@@ -346,6 +348,8 @@ public class ImporNilaiElearningService {
     }
 
     public void imporNilaiUas(@RequestParam(required = true) String prodi, @RequestParam(required = true) String ta, @RequestParam(required = true) ProsesBackground prosesBackground) {
+
+        System.out.println("Masuk Import Prodi Jalan");
         List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
         if (listJadwalDtos != null){
             for (ListJadwalDto listJadwalDto : listJadwalDtos){
@@ -354,7 +358,41 @@ public class ImporNilaiElearningService {
                 Jadwal jadwal2 = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, listJadwalDto.getIdNumberElearning(), listJadwalDto.getId());
                 if (daftarNilaiUas != null){
                     for(MdlGradeGradesDto listNilaiUas : daftarNilaiUas){
-                        if  (mahasiswaMangkirTigaDtos != null ) {
+                        if  (mahasiswaMangkirTigaDtos.isEmpty() ) {
+                            System.out.println("NIM : " + listNilaiUas.getMahasiswa());
+                            System.out.println("Nilai_UAS  == "  + listNilaiUas.getNilaiAkhir());
+                            BigDecimal nilaiUts = BigDecimal.ZERO;
+                            BigDecimal nilaiTugas = BigDecimal.ZERO;
+                            BigDecimal nilaiUas = BigDecimal.ZERO;
+                            BigDecimal nilaiUasFinal = BigDecimal.ZERO;
+                            KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, listNilaiUas.getMahasiswa(), jadwal2);
+                            if (krsDetail != null) {
+                                if (krsDetail.getNilaiUtsFinal() != null) {
+                                    nilaiUts = krsDetail.getNilaiUtsFinal();
+                                }
+                                if (krsDetail.getNilaiTugas() != null) {
+                                    nilaiTugas = krsDetail.getNilaiTugas();
+                                }
+                                if (krsDetail.getNilaiUas() != null) {
+                                    nilaiUas = krsDetail.getNilaiUas();
+                                }
+                                if (listNilaiUas.getFinalgrade() != null){
+                                    nilaiUas = listNilaiUas.getFinalgrade();
+                                }
+                                if (listNilaiUas.getNilaiAkhir() != null){
+                                    nilaiUasFinal = listNilaiUas.getNilaiAkhir();
+                                }
+                                krsDetail.setNilaiUas(nilaiUas);
+                                krsDetail.setNilaiUasFinal(listNilaiUas.getNilaiAkhir());
+                                BigDecimal nilaiAkhir = nilaiUts.add(nilaiTugas.add(nilaiUasFinal));
+                                GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
+                                krsDetail.setNilaiAkhir(nilaiAkhir);
+                                krsDetail.setGrade(gradeDto.getGrade());
+                                krsDetail.setBobot(gradeDto.getBobot());
+                                krsDetailDao.save(krsDetail);
+                                System.out.println("Status  : DONE");
+                            }
+                        }else {
                             for (MahasiswaMangkirTigaDto mahasiswaMangkirTigaDto : mahasiswaMangkirTigaDtos) {
                                 if (listNilaiUas.getMahasiswa().equals(mahasiswaMangkirTigaDto.getIdMahasiswa())) {
                                     System.out.println("NIM = " + mahasiswaMangkirTigaDto.getIdMahasiswa() + " = MANGKIR LEBIH DARI 3");
@@ -393,40 +431,6 @@ public class ImporNilaiElearningService {
                                         System.out.println("Status  : DONE");
                                     }
                                 }
-                            }
-                        }else {
-                            System.out.println("NIM : " + listNilaiUas.getMahasiswa());
-                            System.out.println("Nilai_UAS  == "  + listNilaiUas.getNilaiAkhir());
-                            BigDecimal nilaiUts = BigDecimal.ZERO;
-                            BigDecimal nilaiTugas = BigDecimal.ZERO;
-                            BigDecimal nilaiUas = BigDecimal.ZERO;
-                            BigDecimal nilaiUasFinal = BigDecimal.ZERO;
-                            KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, listNilaiUas.getMahasiswa(), jadwal2);
-                            if (krsDetail != null) {
-                                if (krsDetail.getNilaiUtsFinal() != null) {
-                                    nilaiUts = krsDetail.getNilaiUtsFinal();
-                                }
-                                if (krsDetail.getNilaiTugas() != null) {
-                                    nilaiTugas = krsDetail.getNilaiTugas();
-                                }
-                                if (krsDetail.getNilaiUas() != null) {
-                                    nilaiUas = krsDetail.getNilaiUas();
-                                }
-                                if (listNilaiUas.getFinalgrade() != null){
-                                    nilaiUas = listNilaiUas.getFinalgrade();
-                                }
-                                if (listNilaiUas.getNilaiAkhir() != null){
-                                    nilaiUasFinal = listNilaiUas.getNilaiAkhir();
-                                }
-                                krsDetail.setNilaiUas(nilaiUas);
-                                krsDetail.setNilaiUasFinal(listNilaiUas.getNilaiAkhir());
-                                BigDecimal nilaiAkhir = nilaiUts.add(nilaiTugas.add(nilaiUasFinal));
-                                GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
-                                krsDetail.setNilaiAkhir(nilaiAkhir);
-                                krsDetail.setGrade(gradeDto.getGrade());
-                                krsDetail.setBobot(gradeDto.getBobot());
-                                krsDetailDao.save(krsDetail);
-                                System.out.println("Status  : DONE");
                             }
 
                         }
