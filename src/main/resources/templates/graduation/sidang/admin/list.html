@@ -158,6 +158,7 @@
                                                 <th scope="col">NIM</th>
                                                 <th scope="col">Nama</th>
                                                 <th scope="col">Pembimbing 1</th>
+                                                <th scope="col">Tanggal Ujian</th>
                                                 <th scope="col">Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -171,6 +172,8 @@
                                                 <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                                 <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad
                                                     Rafizki</td>
+                                                <td th:if="${data.tanggalUjian != null}" th:text="${#temporals.format(data.tanggalUjian, 'EE, dd - MMM - yyyy')}"></td>
+                                                <td th:if="${data.tanggalUjian == null}" th:text="${'-'}"></td>
                                                 <td>
                                                     <button class="btn btn-warning btn-sm"
                                                         th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">Menunggu
