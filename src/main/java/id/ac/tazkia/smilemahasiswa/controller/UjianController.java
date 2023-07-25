@@ -159,17 +159,18 @@ public class UjianController {
         model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa, "UjianKomprehensif"));
 
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
-        long checkNilai = listTranskript
+        List<DataTranskript> nilai = krsDetailDao.listTranskript(mahasiswa);
+
+        listTranskript.removeIf(e -> e.getGrade().equals("E"));
+        int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+
+        long checkNilai = nilai
                 .stream()
                 .filter(c -> c.getBobot().compareTo(new BigDecimal(1)) <= 0)
                 .count();
-        model.addAttribute("jumlahNilaiD", checkNilai);
-
-        listTranskript.removeIf(e -> e.getGrade().equals("E"));
-
-        int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
         model.addAttribute("totalSks", sks);
+        model.addAttribute("jumlahNilaiD", checkNilai);
         model.addAttribute("data", mahasiswa);
         model.addAttribute("check", checkRejected);
         model.addAttribute("list",

@@ -70,14 +70,14 @@
                     </div>
                   </div>
 
-                  <div th:if="${totalSks >= 138 && jumlahNilaiD < 2}">
+                  <div>
                     <div class="row" style="margin-top: 20px;"
                       th:if="${dataTerakhir == null || dataTerakhir.statusApprovalAdmin == 'REJECTED' || dataTerakhir.statusLulus == dataTerakhir.statusLulus.TIDAK_LULUS}">
                       <div class="col-md-12">
                         <a th:href="@{/formulirkompre(id = ${data.getId()})}" class="btn btn-warning">Download Formulir
                           Sidang Komprehensif</a>
                       </div>
-                      <div class="col-md-12" style="margin-top: 20px;">
+                      <div class="col-md-12" style="margin-top: 20px;" th:if="${totalSks >= 138}">
                         <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data">
                           <div class="form-group">
                             <div class="row">
