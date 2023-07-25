@@ -96,41 +96,9 @@
                                     <span th:text="${data.jamSelesai}"></span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}"><i class="fas fa-eye"></i> Show</button>
-
-                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content">
-
-                                                <div class="modal-body p-0">
-
-
-                                                    <div class="card bg-secondary shadow border-0">
-
-                                                        <div class="card-header bg-transparent pb-5">
-                                                            <div class="text-muted text-center mt-2 mb-3"><small>BKD</small></div>
-                                                            <div class="btn-wrapper text-center">
-                                                                <a target="_blank" th:href="@{/studiesActivity/assesment/topic(jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
-                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Topic</span>
-                                                                </a>
-                                                                <a target="_blank" th:href="@{/studiesActivity/assesment/attendance(jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
-                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Attendance</span>
-                                                                </a>
-                                                                <a target="_blank" th:href="@{/studiesActivity/assesment/nilai(jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
-                                                                    <span class="btn-inner--icon"><i class="fa fa-book"></i></span>
-                                                                    <span class="btn-inner--text">Score</span>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <button class="btn btn-primary btn-sm " type="button">
+                                        <a class="text-white" th:href="@{/studiesActivity/assesment/report(jadwal = ${data.id})}"><i class="fa fa-download"></i> Download</a>
+                                    </button>
                                 </td>
                             </tr>
                         </table>

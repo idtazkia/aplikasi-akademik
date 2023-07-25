@@ -141,19 +141,9 @@
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>BKD</small></div>
                                                             <div class="btn-wrapper text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/nilai(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
-                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Nilai</span>
-                                                                </a>
-                                                                <a th:href="@{/studiesActivity/assesment/topic(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
-                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Berita Acara</span>
-                                                                </a>
-                                                                <a th:href="@{/studiesActivity/assesment/attendance(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
-                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Presensi</span>
-                                                                </a>
-
+                                                                <button class="btn btn-primary btn-lg " type="button">
+                                                                    <a class="text-white" th:href="@{/studiesActivity/assesment/report(jadwal = ${data.id})}"><i class="fas fa-download"></i> Download</a>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                         <div class="card-body px-lg-5 py-lg-5">
