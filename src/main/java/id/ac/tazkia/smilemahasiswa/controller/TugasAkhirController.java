@@ -683,7 +683,7 @@ public class TugasAkhirController {
 
     @GetMapping("/upload/{wisuda}/fotowisuda/")
     public ResponseEntity<byte[]> fotoWisuda(@PathVariable Wisuda wisuda, Model model) throws Exception {
-        String lokasiFile = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+        String lokasiFile = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator + wisuda.getMahasiswa().getIdProdi().getNamaProdi() + File.separator
                 + wisuda.getMahasiswa().getNim()
                 + File.separator + wisuda.getFoto();
 
