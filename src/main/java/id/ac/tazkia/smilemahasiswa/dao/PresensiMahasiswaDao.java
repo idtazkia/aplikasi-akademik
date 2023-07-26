@@ -173,7 +173,7 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
                 "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
                 "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
                 "inner join mahasiswa as ma on pm.id_mahasiswa = ma.id\n" +
-                "where jd.id_tahun_akademik = ?1 and jd.id_number_elearning = ?2 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF'\n" +
+                "where jd.id_tahun_akademik = ?1 and jd.id_number_elearning = ?2 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n" +
                 "group by pm.id_mahasiswa, jd.id\n" +
                 "having count(pm.id) > 3\n" +
                 "order by count(pm.id) DESC", nativeQuery = true)
