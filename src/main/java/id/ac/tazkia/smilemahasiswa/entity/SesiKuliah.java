@@ -37,4 +37,10 @@ public class SesiKuliah {
     @JoinColumn(name = "id_presensi_dosen")
     @NotNull
     private PresensiDosen presensiDosen;
+
+    private Integer pertemuanKe;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String rps;
 }
