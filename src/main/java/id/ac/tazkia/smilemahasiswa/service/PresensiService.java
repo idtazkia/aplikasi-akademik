@@ -8,6 +8,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import id.ac.tazkia.smilemahasiswa.controller.EquipmentController;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +55,12 @@ public class PresensiService {
     @Value("${upload.barcode}")
     private String uploadFolder;
 
-    public PresensiDosen inputPresensiPengganti(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime, String pertemuan, Sesi sesi) throws Exception {
+    public PresensiDosen inputPresensiPengganti(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime,
+            String pertemuan, Sesi sesi) throws Exception {
 
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(),sesi.getJamSelesai()));
+        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), sesi.getJamSelesai()));
         presensiDosen.setWaktuMasuk(dateTime);
         presensiDosen.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         presensiDosen.setJadwal(j);
@@ -66,12 +68,11 @@ public class PresensiService {
         if (presensiDosen.getWaktuMasuk().toLocalTime().compareTo(sesi.getJamMulai().plusMinutes(15)) >= 0) {
             presensiDosen.setStatusPresensi(StatusPresensi.TERLAMBAT);
             presensiDosenDao.save(presensiDosen);
-//            notifikasiService.kirimNotifikasiTelat(presensiDosen);
+            // notifikasiService.kirimNotifikasiTelat(presensiDosen);
             Integer qrCodeSize = 300;
             Date date = Calendar.getInstance().getTime();
             DateFormat dateFormat = new SimpleDateFormat("ss");
             String productCode = dateFormat.format(date);
-
 
             Date date1 = Calendar.getInstance().getTime();
             DateFormat dateFormat1 = new SimpleDateFormat("mm");
@@ -90,9 +91,10 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
-                BufferedImage qrCode = generateQRcode(barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+                BufferedImage qrCode = generateQRcode(
+                        barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
                 ImageIO.write(qrCode, "png",
                         new File(folderOutput + File.separator
                                 + presensiBarcode + ".png"));
@@ -110,7 +112,7 @@ public class PresensiService {
             }
 
             SesiKuliah sesiKuliah = new SesiKuliah();
-            sesiKuliah.setBeritaAcara(beritaAcara == null? "" : beritaAcara.trim());
+            sesiKuliah.setBeritaAcara(beritaAcara == null ? "" : beritaAcara.trim());
             sesiKuliah.setJadwal(j);
             sesiKuliah.setPresensiDosen(presensiDosen);
             sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
@@ -118,8 +120,9 @@ public class PresensiService {
             sesiKuliah.setPertemuan(pertemuan);
             sesiKuliahDao.save(sesiKuliah);
 
-            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,StatusRecord.AKTIF);
-            for (KrsDetail kd : krsDetail){
+            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
+                    StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
@@ -132,7 +135,7 @@ public class PresensiService {
                 presensiMahasiswaDao.save(presensiMahasiswa);
             }
 
-        }else {
+        } else {
             presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
             presensiDosenDao.save(presensiDosen);
 
@@ -140,7 +143,6 @@ public class PresensiService {
             Date date = Calendar.getInstance().getTime();
             DateFormat dateFormat = new SimpleDateFormat("ss");
             String productCode = dateFormat.format(date);
-
 
             Date date1 = Calendar.getInstance().getTime();
             DateFormat dateFormat1 = new SimpleDateFormat("mm");
@@ -159,10 +161,12 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
-//                BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
-                BufferedImage qrCode = generateQRcode(barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+                // BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" +
+                // presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+                BufferedImage qrCode = generateQRcode(
+                        barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
                 ImageIO.write(qrCode, "png",
                         new File(folderOutput + File.separator
                                 + presensiBarcode + ".png"));
@@ -177,11 +181,11 @@ public class PresensiService {
                     presensiDosenDao.save(presensiDosen);
 
                 }
-//            aset.setBarcode(productCode + productCode2 + "/" +productNumber + ".png");
+                // aset.setBarcode(productCode + productCode2 + "/" +productNumber + ".png");
             }
 
             SesiKuliah sesiKuliah = new SesiKuliah();
-            sesiKuliah.setBeritaAcara(beritaAcara == null? "" : beritaAcara.trim());
+            sesiKuliah.setBeritaAcara(beritaAcara == null ? "" : beritaAcara.trim());
             sesiKuliah.setJadwal(j);
             sesiKuliah.setPresensiDosen(presensiDosen);
             sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
@@ -189,8 +193,9 @@ public class PresensiService {
             sesiKuliah.setPertemuan(pertemuan);
             sesiKuliahDao.save(sesiKuliah);
 
-            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,StatusRecord.AKTIF);
-            for (KrsDetail kd : krsDetail){
+            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
+                    StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
@@ -206,25 +211,25 @@ public class PresensiService {
         return presensiDosen;
     }
 
-    public PresensiDosen inputPresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime, String pertemuan)throws Exception {
-
+    public PresensiDosen inputPresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime, String pertemuan)
+            throws Exception {
 
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(),j.getJamSelesai()));
+        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), j.getJamSelesai()));
         presensiDosen.setWaktuMasuk(dateTime);
         presensiDosen.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         presensiDosen.setJadwal(j);
 
-        if (presensiDosen.getWaktuMasuk().toLocalTime().compareTo(presensiDosen.getJadwal().getJamMulai().plusMinutes(15)) >= 0) {
+        if (presensiDosen.getWaktuMasuk().toLocalTime()
+                .compareTo(presensiDosen.getJadwal().getJamMulai().plusMinutes(15)) >= 0) {
             presensiDosen.setStatusPresensi(StatusPresensi.TERLAMBAT);
             presensiDosenDao.save(presensiDosen);
-//            notifikasiService.kirimNotifikasiTelat(presensiDosen);
+            // notifikasiService.kirimNotifikasiTelat(presensiDosen);
             Integer qrCodeSize = 300;
             Date date = Calendar.getInstance().getTime();
             DateFormat dateFormat = new SimpleDateFormat("ss");
             String productCode = dateFormat.format(date);
-
 
             Date date1 = Calendar.getInstance().getTime();
             DateFormat dateFormat1 = new SimpleDateFormat("mm");
@@ -243,9 +248,10 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
-                BufferedImage qrCode = generateQRcode(barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+                BufferedImage qrCode = generateQRcode(
+                        barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
                 ImageIO.write(qrCode, "png",
                         new File(folderOutput + File.separator
                                 + presensiBarcode + ".png"));
@@ -263,7 +269,7 @@ public class PresensiService {
             }
 
             SesiKuliah sesiKuliah = new SesiKuliah();
-            sesiKuliah.setBeritaAcara(beritaAcara == null? "" : beritaAcara.trim());
+            sesiKuliah.setBeritaAcara(beritaAcara == null ? "" : beritaAcara.trim());
             sesiKuliah.setJadwal(j);
             sesiKuliah.setPresensiDosen(presensiDosen);
             sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
@@ -271,8 +277,9 @@ public class PresensiService {
             sesiKuliah.setPertemuan(pertemuan);
             sesiKuliahDao.save(sesiKuliah);
 
-            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,StatusRecord.AKTIF);
-            for (KrsDetail kd : krsDetail){
+            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
+                    StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
@@ -285,7 +292,7 @@ public class PresensiService {
                 presensiMahasiswaDao.save(presensiMahasiswa);
             }
 
-        }else {
+        } else {
             presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
             presensiDosenDao.save(presensiDosen);
 
@@ -293,7 +300,6 @@ public class PresensiService {
             Date date = Calendar.getInstance().getTime();
             DateFormat dateFormat = new SimpleDateFormat("ss");
             String productCode = dateFormat.format(date);
-
 
             Date date1 = Calendar.getInstance().getTime();
             DateFormat dateFormat1 = new SimpleDateFormat("mm");
@@ -312,10 +318,12 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
-//                BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
-            BufferedImage qrCode = generateQRcode(barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+                // BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" +
+                // presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+                BufferedImage qrCode = generateQRcode(
+                        barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
                 ImageIO.write(qrCode, "png",
                         new File(folderOutput + File.separator
                                 + presensiBarcode + ".png"));
@@ -330,11 +338,11 @@ public class PresensiService {
                     presensiDosenDao.save(presensiDosen);
 
                 }
-//            aset.setBarcode(productCode + productCode2 + "/" +productNumber + ".png");
+                // aset.setBarcode(productCode + productCode2 + "/" +productNumber + ".png");
             }
 
             SesiKuliah sesiKuliah = new SesiKuliah();
-            sesiKuliah.setBeritaAcara(beritaAcara == null? "" : beritaAcara.trim());
+            sesiKuliah.setBeritaAcara(beritaAcara == null ? "" : beritaAcara.trim());
             sesiKuliah.setJadwal(j);
             sesiKuliah.setPresensiDosen(presensiDosen);
             sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
@@ -342,8 +350,9 @@ public class PresensiService {
             sesiKuliah.setPertemuan(pertemuan);
             sesiKuliahDao.save(sesiKuliah);
 
-            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,StatusRecord.AKTIF);
-            for (KrsDetail kd : krsDetail){
+            Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
+                    StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
@@ -356,11 +365,36 @@ public class PresensiService {
 
         }
 
+        return presensiDosen;
+    }
+
+    public PresensiDosen generatePresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime,
+            Integer pertemuan) throws Exception {
+
+        PresensiDosen presensiDosen = new PresensiDosen();
+        presensiDosen.setDosen(d);
+        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), j.getJamSelesai()));
+        presensiDosen.setWaktuMasuk(dateTime);
+        presensiDosen.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        presensiDosen.setJadwal(j);
+        presensiDosen.setStatusPresensi(StatusPresensi.BELUM_MENGAJAR);
+        presensiDosen.setStatus(StatusRecord.NONAKTIF);
+        presensiDosenDao.save(presensiDosen);
+
+        SesiKuliah sesiKuliah = new SesiKuliah();
+        sesiKuliah.setBeritaAcara(beritaAcara);
+        sesiKuliah.setJadwal(j);
+        sesiKuliah.setPresensiDosen(presensiDosen);
+        sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
+        sesiKuliah.setWaktuSelesai(presensiDosen.getWaktuSelesai());
+        sesiKuliah.setPertemuan("Belum Mengajar");
+        sesiKuliah.setPertemuanKe(pertemuan);
+        sesiKuliahDao.save(sesiKuliah);
 
         return presensiDosen;
     }
 
-    public PresensiDosen inputPresensi(Dosen d, Jadwal j, LocalDateTime dateTime, String pertemuan)throws Exception{
+    public PresensiDosen inputPresensi(Dosen d, Jadwal j, LocalDateTime dateTime, String pertemuan) throws Exception {
         return inputPresensi(d, j, null, dateTime, pertemuan);
     }
 
@@ -382,6 +416,39 @@ public class PresensiService {
         FontMetrics fm = g.getFontMetrics();
         g.drawString(barcodeText, (qrCode.getWidth() / 2) - (fm.stringWidth(barcodeText) / 2), startingYposition);
         return qrCode;
+    }
+
+    public BaseResponse generateSesi(Jadwal jadwal) throws Exception {
+        BaseResponse response = null;
+        Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
+        Integer valueJadwal = null;
+        if (jadwal.getHari().getId().equals("0")) {
+            valueJadwal = 7;
+        } else {
+            valueJadwal = Integer.parseInt(jadwal.getHari().getId());
+        }
+
+        Integer valueDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().getDayOfWeek().getValue() - valueJadwal;
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueDate);
+
+        if (totalPresensi == 0) {
+            int attend = 16;
+
+            for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
+
+                generatePresensi(jadwal.getDosen(),
+                        jadwal, "-",
+                        LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                        pertemuan);
+
+            }
+        }
+        response = BaseResponse.builder()
+                .code("200").message("Berhasil Generate")
+                .build();
+
+        return response;
+
     }
 
 }

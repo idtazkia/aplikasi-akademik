@@ -95,15 +95,25 @@
                                         <td th:text="${data.masuk}">Jam</td>
                                         <td style="white-space:pre-wrap; word-wrap:break-word" th:utext="${data.dosen}">
                                             Jam</td>
-                                        <td><span class="badge badge-info" th:text="${data.pertemuan}"></span></td>
+                                        <td>
+                                            <a class="btn btn-info text-white btn-sm">
+                                                <span
+                                                    th:text="${data.pertemuan + ' ( ' + data.pertemuanke + ' )'}">Notifications</span>
+                                                <!-- <span
+                                                    class="badge badge-md badge-circle badge-floating badge-danger border-white"
+                                                    th:text="${data.pertemuanke}">4</span> -->
+                                            </a>
+                                        </td>
                                         <td style="white-space:pre-wrap; word-wrap:break-word" th:text="${data.berita}">
                                             Dosen</td>
                                         <td>
-                                            <button type="button"
-                                                class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-cog"></i>
-                                                Attendence</button>
+                                            <a th:href="@{/studiesActivity/attendance/form (id = ${data.sesi})}"
+                                                th:if="${data.pertemuan == 'Belum Mengajar'}"
+                                                class="btn text-darker btn-info btn-outline-info btn-sm"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-play"></i>
+                                                Mulai Mengajar</a>
+
                                             <div class="dropdown-menu">
                                                 <a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.sesi})}"
                                                     class="dropdown-item"> Kehadiran Mahasiswa</a>
@@ -113,10 +123,7 @@
                                                     class="dropdown-item"> Edit Topic</a>
                                             </div>
 
-                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                                th:data-target="${'#modal-notification'+data.sesi}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+
 
                                             <div class="modal fade" th:id="${'modal-notification'+data.sesi}"
                                                 tabindex="-1" role="dialog" aria-labelledby="modal-notification"
@@ -268,6 +275,83 @@
                     'Pengganti Online'));
             }
         });
+    }
+
+    function formatTanggal(date) {
+        var date = new Date(date);
+        var tahun = date.getFullYear();
+        var bulan = date.getMonth();
+        var tanggal = date.getDate();
+        var hari = date.getDay();
+        var jam = date.getHours();
+        var menit = date.getMinutes();
+        var detik = date.getSeconds();
+        switch (hari) {
+            case 0:
+                hari = "Minggu";
+                break;
+            case 1:
+                hari = "Senin";
+                break;
+            case 2:
+                hari = "Selasa";
+                break;
+            case 3:
+                hari = "Rabu";
+                break;
+            case 4:
+                hari = "Kamis";
+                break;
+            case 5:
+                hari = "Jum'at";
+                break;
+            case 6:
+                hari = "Sabtu";
+                break;
+        }
+        switch (bulan) {
+            case 0:
+                bulan = "Januari";
+                break;
+            case 1:
+                bulan = "Februari";
+                break;
+            case 2:
+                bulan = "Maret";
+                break;
+            case 3:
+                bulan = "April";
+                break;
+            case 4:
+                bulan = "Mei";
+                break;
+            case 5:
+                bulan = "Juni";
+                break;
+            case 6:
+                bulan = "Juli";
+                break;
+            case 7:
+                bulan = "Agustus";
+                break;
+            case 8:
+                bulan = "September";
+                break;
+            case 9:
+                bulan = "Oktober";
+                break;
+            case 10:
+                bulan = "November";
+                break;
+            case 11:
+                bulan = "Desember";
+                break;
+        }
+
+        var tampilTanggal = "Tanggal: " + hari + ", " + tanggal + " " + bulan + " " + tahun;
+        return tampilTanggal;
+
+
     }
 
     function savePresensi() {
