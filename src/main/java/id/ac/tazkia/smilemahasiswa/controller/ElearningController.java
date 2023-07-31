@@ -367,6 +367,19 @@ public class ElearningController {
 
     }
 
+    @GetMapping("/elearning/statusImportDosen")
+    public void statusImportDosen(Model model, @PageableDefault(size = 10) Pageable page, String search){
+        TahunAkademik tahunAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("statusImportDosen", krsDao.findStatusImportNilaiDosenByDosen(tahunAktif,search, page));
+        } else {
+            model.addAttribute("statusImportDosen", krsDao.findStatusImportNilaiDosen(tahunAktif, page));
+        }
+    }
+
     @GetMapping("/elearning/enrollKelas")
     public void enrollKelas(Model model){
 
@@ -2171,7 +2184,5 @@ public class ElearningController {
         return "redirect:importAbsenProdi";
 
     }
-
-
 
 }
