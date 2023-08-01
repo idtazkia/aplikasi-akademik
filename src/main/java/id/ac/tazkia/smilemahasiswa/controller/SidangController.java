@@ -147,153 +147,167 @@ public class SidangController {
 
     @GetMapping("/api/sidang")
     @ResponseBody
-    public Object[] validasiSidang(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
-                                   @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
-                                   @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
-        if (tanggal.getDayOfWeek().getValue() == 7){
+    public Object[] validasiSidang(@RequestParam Ruangan ruangan,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamSelesai) {
+        if (tanggal.getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            return sidangDao.validasiJadwalSidang(ta,hari,ruangan,jamMulai,jamSelesai,tanggal,1);
-        }else {
+            return sidangDao.validasiJadwalSidang(ta, hari, ruangan, jamMulai, jamSelesai, tanggal, 1);
+        } else {
             Hari hari = hariDao.findById(String.valueOf(tanggal.getDayOfWeek().getValue())).get();
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            return sidangDao.validasiJadwalSidang(tahunAkademik,hari,ruangan,jamMulai,jamSelesai,tanggal, 1);
+            return sidangDao.validasiJadwalSidang(tahunAkademik, hari, ruangan, jamMulai, jamSelesai, tanggal, 1);
 
         }
     }
 
     @GetMapping("/graduation/sidang/formulir")
     public void formulirSempro(@RequestParam(name = "id") Seminar seminar,
-                               HttpServletResponse response){
+            HttpServletResponse response) {
         try {
 
             response.setContentType("application/pdf");
             String headerKey = "Content-Disposition";
-            String headerValue = "attachment; filename=Formulir_Skripsi-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf";
+            String headerValue = "attachment; filename=Formulir_Skripsi-"
+                    + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-"
+                    + seminar.getNote().getMahasiswa().getNim() + ".pdf";
 
             response.setHeader(headerKey, headerValue);
 
             formulirService.formulirSidangReguler(seminar, response);
 
-        } catch (Exception err){
-//            logger.error(err.getMessage(), err);
+        } catch (Exception err) {
+            // logger.error(err.getMessage(), err);
         }
     }
 
     @GetMapping("/graduation/sidang/formulirpasca")
     public void formulirTesis(@RequestParam(name = "id") Seminar seminar,
-                               HttpServletResponse response){
+            HttpServletResponse response) {
         try {
 
             response.setContentType("application/pdf");
             String headerKey = "Content-Disposition";
-            String headerValue = "attachment;filename=Formulir_Tesis-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf";
+            String headerValue = "attachment;filename=Formulir_Tesis-"
+                    + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-"
+                    + seminar.getNote().getMahasiswa().getNim() + ".pdf";
 
             response.setHeader(headerKey, headerValue);
 
             formulirService.formulirSidangPasca(seminar, response);
 
-        } catch (Exception err){
-//            logger.error(err.getMessage(), err);
+        } catch (Exception err) {
+            // logger.error(err.getMessage(), err);
         }
     }
 
-//    Mahasiswa
+    // Mahasiswa
 
     @GetMapping("/graduation/sidang/mahasiswa/info")
-    public void infoPenutupan(Model model){
+    public void infoPenutupan(Model model) {
         PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
         model.addAttribute("periode", periodeWisuda);
 
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/pendaftaran")
-    public String pendaftaranSidang(@RequestParam(name = "id", value = "id",required = false) Seminar seminar, Model model, Authentication authentication){
+    public String pendaftaranSidang(@RequestParam(name = "id", value = "id", required = false) Seminar seminar,
+            Model model, Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String jenjang = mahasiswa.getIdProdi().getIdJenjang().getId();
 
-        if (jenjang.equals("01")){
+        if (jenjang.equals("01")) {
             model.addAttribute("S1", "Mahasiswa S1");
-        }else if (jenjang.equals("02")){
+        } else if (jenjang.equals("02")) {
             model.addAttribute("S2", "Mahasisw S2");
-        }else{
+        } else {
             model.addAttribute("kosong", "null");
         }
 
-        if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0){
-            return "redirect:../../seminar/nilai?id="+seminar.getId();
-        }else {
-            model.addAttribute("seminar",seminar);
+        if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+            return "redirect:../../seminar/nilai?id=" + seminar.getId();
+        } else {
+            model.addAttribute("seminar", seminar);
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             if (jenjang.equals("02")) {
                 TahunAkademik ta = null;
                 TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-                TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+                TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
+                        mahasiswa.getIdProdi());
 
-                if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK){
-                    String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-                }else {
-                    if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))){
+                if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK) {
+                    String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                            kode);
+                } else {
+                    if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))) {
                         ta = tahunAkademik;
-                    }else {
+                    } else {
                         int last = tahunAkademik.getKodeTahunAkademik().length();
                         String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
 
-                        if (lastKode.equals("1")){
+                        if (lastKode.equals("1")) {
                             Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
                             String kode = String.valueOf(tahun) + "2";
-                            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-                        }else {
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        } else {
                             String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
-                            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
                         }
 
                     }
                 }
 
-                KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,ta);
+                KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
                 if (krsDetail != null) {
                     return "graduation/sidang/mahasiswa/pendaftaran";
-                }else {
+                } else {
                     return "graduation/info";
                 }
-            }else {
-                if (LocalDate.now().isAfter(periodeWisuda.getTutupSidang()) && LocalDate.now().isBefore(periodeWisuda.getBukaSidang())){
+            } else {
+                if (LocalDate.now().isAfter(periodeWisuda.getTutupSidang())
+                        && LocalDate.now().isBefore(periodeWisuda.getBukaSidang())) {
                     return "redirect:info";
                 } else {
                     TahunAkademik ta = null;
                     TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-                    if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-                        String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-                    }else {
-                        if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+                    if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+                        String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                                kode);
+                    } else {
+                        if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0) {
                             ta = tahunAkademik;
-                        }else {
+                        } else {
                             int last = tahunAkademik.getKodeTahunAkademik().length();
                             String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
 
-                            if (lastKode.equals("1")){
+                            if (lastKode.equals("1")) {
                                 Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
                                 String kode = String.valueOf(tahun) + "2";
-                                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-                            }else {
+                                ta = tahunAkademikDao
+                                        .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                            } else {
                                 String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
-                                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                                ta = tahunAkademikDao
+                                        .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
                             }
 
                         }
                     }
 
-                    KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,ta);
+                    KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
                     if (krsDetail != null) {
                         return "graduation/sidang/mahasiswa/pendaftaran";
-                    }else {
+                    } else {
                         return "graduation/info";
                     }
                 }
@@ -302,26 +316,29 @@ public class SidangController {
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/revisi")
-    public void revisiSidang(@RequestParam(name = "id", value = "id",required = false) Sidang sidang, Model model, Authentication authentication){
+    public void revisiSidang(@RequestParam(name = "id", value = "id", required = false) Sidang sidang, Model model,
+            Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String jenjang = mahasiswa.getIdProdi().getIdJenjang().getId();
 
-        if (jenjang.equals("01")){
+        if (jenjang.equals("01")) {
             model.addAttribute("S1", "Mahasiswa S1");
-        }else if (jenjang.equals("02")){
+        } else if (jenjang.equals("02")) {
             model.addAttribute("S2", "Mahasisw S2");
-        }else{
+        } else {
             model.addAttribute("kosong", "null");
         }
 
-        model.addAttribute("sidang",sidang);
+        model.addAttribute("sidang", sidang);
     }
 
     @PostMapping("/graduation/sidang/mahasiswa/pendaftaran")
-    public String saveSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp, Authentication authentication,
-                             MultipartFile kartu,MultipartFile plagiat, MultipartFile draft,MultipartFile pendaftaran,MultipartFile berita) throws Exception{
+    public String saveSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp,
+            Authentication authentication,
+            MultipartFile kartu, MultipartFile plagiat, MultipartFile draft, MultipartFile pendaftaran,
+            MultipartFile berita) throws Exception {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -332,7 +349,7 @@ public class SidangController {
             String namaAsli = pendaftaran.getOriginalFilename();
             Long ukuran = pendaftaran.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -341,7 +358,6 @@ public class SidangController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
@@ -349,10 +365,9 @@ public class SidangController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             pendaftaran.transferTo(tujuan);
 
-
             sidang.setFilePendaftaran(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFilePendaftaran(sidang.getFilePendaftaran());
         }
 
@@ -360,8 +375,7 @@ public class SidangController {
 
             String namaAsli = berita.getOriginalFilename();
 
-
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -371,17 +385,15 @@ public class SidangController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             berita.transferTo(tujuan);
 
-
             sidang.setFileBerita(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFileBerita(sidang.getFileBerita());
         }
 
@@ -391,7 +403,7 @@ public class SidangController {
             String namaAsli = kartu.getOriginalFilename();
             Long ukuran = kartu.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -401,17 +413,15 @@ public class SidangController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             kartu.transferTo(tujuan);
 
-
             sidang.setFileBimbingan(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFileBimbingan(sidang.getFileBimbingan());
         }
 
@@ -421,7 +431,7 @@ public class SidangController {
             String namaAsli = ijazah.getOriginalFilename();
             Long ukuran = ijazah.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -431,17 +441,15 @@ public class SidangController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             ijazah.transferTo(tujuan);
 
-
             sidang.setFileIjazah(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFileIjazah(sidang.getFileIjazah());
         }
 
@@ -451,7 +459,7 @@ public class SidangController {
             String namaAsli = ktp.getOriginalFilename();
             Long ukuran = ktp.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -461,17 +469,15 @@ public class SidangController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             ktp.transferTo(tujuan);
 
-
             sidang.setFileKtp(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFileKtp(sidang.getFileKtp());
         }
 
@@ -481,7 +487,7 @@ public class SidangController {
             String namaAsli = plagiat.getOriginalFilename();
             Long ukuran = plagiat.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -491,17 +497,15 @@ public class SidangController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             plagiat.transferTo(tujuan);
 
-
             sidang.setFileTurnitin(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFileTurnitin(sidang.getFileTurnitin());
         }
 
@@ -511,7 +515,7 @@ public class SidangController {
             String namaAsli = draft.getOriginalFilename();
             Long ukuran = draft.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -521,17 +525,15 @@ public class SidangController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             draft.transferTo(tujuan);
 
-
             sidang.setFileSidang(idFile + "." + extension);
 
-        }else {
+        } else {
             sidang.setFileSidang(sidang.getFileSidang());
         }
         sidang.setTanggalInput(LocalDate.now());
@@ -540,10 +542,10 @@ public class SidangController {
         sidang.setPublish(StatusRecord.NONAKTIF);
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-            String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-        }else {
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
             ta = tahunAkademik;
         }
         sidang.setTahunAkademik(ta);
@@ -552,17 +554,19 @@ public class SidangController {
         mahasiswaDao.save(mahasiswa);
         sidangDao.save(sidang);
 
-        return "redirect:list?id="+sidang.getSeminar().getId();
+        return "redirect:list?id=" + sidang.getSeminar().getId();
 
     }
 
     @PostMapping("/graduation/sidang/mahasiswa/pendaftaranS2")
-    public String saveSidangS2(@ModelAttribute @Valid Sidang sidang, Authentication authentication, MultipartFile draft, MultipartFile pendaftaran,
-                               MultipartFile persetujuan, MultipartFile cv, MultipartFile kehadiran, MultipartFile plagiat, MultipartFile perbaikan) throws IOException {
+    public String saveSidangS2(@ModelAttribute @Valid Sidang sidang, Authentication authentication, MultipartFile draft,
+            MultipartFile pendaftaran,
+            MultipartFile persetujuan, MultipartFile cv, MultipartFile kehadiran, MultipartFile plagiat,
+            MultipartFile perbaikan) throws IOException {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        if (!draft.isEmpty() || draft != null){
+        if (!draft.isEmpty() || draft != null) {
             String namaFile = draft.getName();
             String jenisFile = draft.getContentType();
             String namaAsli = draft.getOriginalFilename();
@@ -574,7 +578,7 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
 
@@ -586,7 +590,7 @@ public class SidangController {
 
             sidang.setFileSidang(idFile + "." + extension);
 
-        }else{
+        } else {
             sidang.setFileSidang(sidang.getFileBimbingan());
         }
 
@@ -602,8 +606,8 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
-                extension = namaAsli.substring(i+1);
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
             }
 
             String idFile = UUID.randomUUID().toString();
@@ -613,11 +617,11 @@ public class SidangController {
             pendaftaran.transferTo(tujuan);
 
             sidang.setFilePendaftaran(idFile + "." + extension);
-        }else{
+        } else {
             sidang.setFilePendaftaran(sidang.getFilePendaftaran());
         }
 
-        if (!persetujuan.isEmpty() || persetujuan != null){
+        if (!persetujuan.isEmpty() || persetujuan != null) {
             String namaFile = persetujuan.getName();
             String jenisFile = persetujuan.getContentType();
             String namaAsli = persetujuan.getOriginalFilename();
@@ -629,8 +633,8 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
-                extension = namaAsli.substring(i+1);
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
             }
 
             String idFile = UUID.randomUUID().toString();
@@ -640,11 +644,11 @@ public class SidangController {
             persetujuan.transferTo(tujuan);
 
             sidang.setFilePersetujuan(idFile + "." + extension);
-        }else{
+        } else {
             sidang.setFilePersetujuan(sidang.getFilePersetujuan());
         }
 
-        if (!cv.isEmpty() || cv != null){
+        if (!cv.isEmpty() || cv != null) {
             String namaFile = cv.getName();
             String jenisFile = cv.getContentType();
             String namaAsli = cv.getOriginalFilename();
@@ -656,7 +660,7 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
 
@@ -667,11 +671,11 @@ public class SidangController {
             cv.transferTo(tujuan);
 
             sidang.setFileKtp(idFile + "." + extension);
-        }else{
+        } else {
             sidang.setFileKtp(sidang.getFileKtp());
         }
 
-        if (!kehadiran.isEmpty() || kehadiran != null){
+        if (!kehadiran.isEmpty() || kehadiran != null) {
             String namaFile = kehadiran.getName();
             String jenisFile = kehadiran.getContentType();
             String namaAsli = kehadiran.getOriginalFilename();
@@ -683,7 +687,7 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
 
@@ -694,11 +698,11 @@ public class SidangController {
             kehadiran.transferTo(tujuan);
 
             sidang.setFileBimbingan(idFile + "." + extension);
-        }else{
+        } else {
             sidang.setFileBimbingan(sidang.getFileBimbingan());
         }
 
-        if (!plagiat.isEmpty() || plagiat != null){
+        if (!plagiat.isEmpty() || plagiat != null) {
             String namaFile = plagiat.getName();
             String jenisFile = plagiat.getContentType();
             String namaAsli = plagiat.getOriginalFilename();
@@ -710,8 +714,8 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
-                extension = namaAsli.substring(i+1);
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
             }
 
             String idFile = UUID.randomUUID().toString();
@@ -721,11 +725,11 @@ public class SidangController {
             plagiat.transferTo(tujuan);
 
             sidang.setFileTurnitin(idFile + "." + extension);
-        }else{
+        } else {
             sidang.setFileTurnitin(sidang.getFileTurnitin());
         }
 
-        if (!perbaikan.isEmpty() || perbaikan != null){
+        if (!perbaikan.isEmpty() || perbaikan != null) {
             String namaFile = perbaikan.getName();
             String jenisFile = perbaikan.getContentType();
             String namaAsli = perbaikan.getOriginalFilename();
@@ -737,7 +741,7 @@ public class SidangController {
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
 
@@ -749,7 +753,7 @@ public class SidangController {
 
             sidang.setFilePerbaikan(idFile + "." + extension);
 
-        }else{
+        } else {
             sidang.setFilePerbaikan(sidang.getFilePerbaikan());
         }
 
@@ -759,10 +763,10 @@ public class SidangController {
         sidang.setPublish(StatusRecord.NONAKTIF);
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-            String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-        }else {
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
             ta = tahunAkademik;
         }
         sidang.setTahunAkademik(ta);
@@ -771,21 +775,23 @@ public class SidangController {
         mahasiswaDao.save(mahasiswa);
         sidangDao.save(sidang);
 
-        return "redirect:list?id="+sidang.getSeminar().getId();
+        return "redirect:list?id=" + sidang.getSeminar().getId();
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/success")
-    public String successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
+    public String successPage(Model model, @RequestParam(name = "id", value = "id", required = false) Sidang sidang) {
         model.addAttribute("sidang", sidang);
-        /*if (LocalDate.now().plusDays(1).compareTo(sidang.getTanggalUjian()) > 0){
-            System.out.println("lewat");
-            model.addAttribute("waiting","waiting");
-        }*/
+        /*
+         * if (LocalDate.now().plusDays(1).compareTo(sidang.getTanggalUjian()) > 0){
+         * System.out.println("lewat");
+         * model.addAttribute("waiting","waiting");
+         * }
+         */
 
         if (sidang.getPublish() == StatusRecord.AKTIF) {
             System.out.println("aktif");
-            return "redirect:nilai?id="+sidang.getId();
-        }else {
+            return "redirect:nilai?id=" + sidang.getId();
+        } else {
             return "graduation/sidang/mahasiswa/success";
 
         }
@@ -793,29 +799,32 @@ public class SidangController {
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/nilai")
-    public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
+    public void nilaiPage(Model model, @RequestParam(name = "id", value = "id", required = false) Sidang sidang) {
         model.addAttribute("sidang", sidang);
 
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/list")
-    public String waitingPageMahasiswa(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar, Authentication authentication) {
+    public String waitingPageMahasiswa(Model model,
+            @RequestParam(name = "id", value = "id", required = false) Seminar seminar, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("seminar", seminar);
-        if (seminar.getStatusSempro().equals(StatusApprove.APPROVED)  && seminar.getPublish().equals("AKTIF") && seminar.getNilai().compareTo(new BigDecimal(70)) >= 0) {
-            Sidang sidang = sidangDao.findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(seminar,StatusApprove.APPROVED);
+        if (seminar.getStatusSempro().equals(StatusApprove.APPROVED) && seminar.getPublish().equals("AKTIF")
+                && seminar.getNilai().compareTo(new BigDecimal(70)) >= 0) {
+            Sidang sidang = sidangDao.findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(seminar,
+                    StatusApprove.APPROVED);
             if (sidang != null) {
                 return "redirect:success?id=" + sidang.getId();
             } else {
 
                 List<Sidang> sidangList = sidangDao.findBySeminarOrderByAkademikDescTanggalInputDesc(seminar);
-                Sidang waiting = sidangDao.findBySeminarAndAkademik(seminar,StatusApprove.WAITING);
+                Sidang waiting = sidangDao.findBySeminarAndAkademik(seminar, StatusApprove.WAITING);
                 if (waiting != null) {
                     model.addAttribute("waiting", waiting);
                 }
-//
+                //
                 model.addAttribute("list", sidangList);
                 return "graduation/sidang/mahasiswa/list";
             }
@@ -824,85 +833,107 @@ public class SidangController {
         }
     }
 
-//    Akademik & Prodi
+    // Akademik & Prodi
 
     @GetMapping("/graduation/sidang/admin/list")
-    public void listApproval(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi, Pageable page, Model model){
-        model.addAttribute("selectedTahun",tahunAkademik);
-        model.addAttribute("selectedProdi",prodi);
+    public void listApproval(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
 
-        if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),Arrays.asList(StatusApprove.REJECTED),page));
+        if (tahunAkademik != null) {
+            model.addAttribute("listSidang", sidangDao
+                    .findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
+                            tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),
+                            Arrays.asList(StatusApprove.REJECTED), page));
         }
     }
 
     @GetMapping("/graduation/sidang/prodi/list")
-    public void listJadwal (@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi, Pageable page, Model model){
-        model.addAttribute("selectedTahun",tahunAkademik);
-        model.addAttribute("selectedProdi",prodi);
+    public void listJadwal(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
 
-        if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(tahunAkademik,prodi,StatusApprove.APPROVED,Arrays.asList(StatusApprove.REJECTED),page));
+        if (tahunAkademik != null) {
+            model.addAttribute("listSidang", sidangDao
+                    .findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
+                            tahunAkademik, prodi, StatusApprove.APPROVED, Arrays.asList(StatusApprove.REJECTED), page));
         }
     }
 
     @GetMapping("/graduation/sidang/admin/approval")
-    public void approval(){}
+    public void approval() {
+    }
 
     @GetMapping("/graduation/sidang/admin/view")
-    public void viewSidang(){}
+    public void viewSidang() {
+    }
 
     @GetMapping("/graduation/sidang/prodi/penjadwalan")
-    public void penjadwalan(@RequestParam(name = "id", value = "id") Sidang sidang,Model model){
-        model.addAttribute("sidang",sidang);
+    public void penjadwalan(@RequestParam(name = "id", value = "id") Sidang sidang, Model model) {
+        model.addAttribute("sidang", sidang);
         List<String> dosenList = new ArrayList<>();
         dosenList.add(sidang.getSeminar().getNote().getDosen().getId());
-        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS),dosenList));
+        model.addAttribute("listDosen",
+                dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS), dosenList));
     }
 
     @PostMapping("/graduation/sidang/prodi/penjadwalan")
-    public String saveJadwal(@ModelAttribute @Valid Sidang sidang){
-        sidang.setAkademik(StatusApprove.APPROVED);
-        sidang.setStatusSidang(StatusApprove.APPROVED);
-        sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
+    public String saveJadwal(@ModelAttribute @Valid Sidang sidang) {
+        Sidang sidangById = sidangDao.findById(sidang.getId()).get();
+        sidangById.setAkademik(StatusApprove.APPROVED);
+        sidangById.setStatusSidang(StatusApprove.APPROVED);
+        sidangById.setPembimbing(sidang.getSeminar().getNote().getDosen());
 
-        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")){
-            sidang.setPembimbing2(sidang.getSeminar().getNote().getDosen2());
+        if (sidangById.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
+            sidangById.setPembimbing2(sidang.getSeminar().getNote().getDosen2());
         }
-        sidangDao.save(sidang);
+        sidangDao.save(sidangById);
 
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidangById.getTahunAkademik().getId() + "&prodi="
+                + sidangById.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/admin/tolak")
-    public String tolakSidang(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarAkademik){
+    public String tolakSidang(@RequestParam(name = "id", value = "id") Sidang sidang,
+            @RequestParam(required = false) String komentarAkademik) {
         sidang.setAkademik(StatusApprove.REJECTED);
         sidang.setKomentarAkademik(komentarAkademik);
         sidangDao.save(sidang);
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/prodi/tolak")
-    public String tolakSidangProdi(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarProdi){
+    public String tolakSidangProdi(@RequestParam(name = "id", value = "id") Sidang sidang,
+            @RequestParam(required = false) String komentarProdi) {
         sidang.setStatusSidang(StatusApprove.REJECTED);
         sidang.setKomentarProdi(komentarProdi);
         sidangDao.save(sidang);
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/admin/terima")
-    public String terimaSidang(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarAkademik){
+    public String terimaSidang(@RequestParam(name = "id", value = "id") Sidang sidang,
+            @RequestParam(required = false) String komentarAkademik) {
         sidang.setAkademik(StatusApprove.APPROVED);
         sidang.setKomentarAkademik(komentarAkademik);
         sidangDao.save(sidang);
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @GetMapping("/sidang/download")
-    public void downloadLulusSidang(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi, HttpServletResponse response) throws IOException {
-        String[] colums = {"No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua", "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu"};
+    public void downloadLulusSidang(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi,
+            HttpServletResponse response) throws IOException {
+        String[] colums = { "No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua",
+                "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu" };
 
-        List<Sidang> listSidang = sidangDao.findByStatusSidangAndAkademikAndTahunAkademikAndSeminarNoteMahasiswaIdProdiAndNilaiIsGreaterThanEqual(StatusApprove.APPROVED, StatusApprove.APPROVED, tahunAkademik, prodi, new BigDecimal(70));
+        List<Sidang> listSidang = sidangDao
+                .findByStatusSidangAndAkademikAndTahunAkademikAndSeminarNoteMahasiswaIdProdiAndNilaiIsGreaterThanEqual(
+                        StatusApprove.APPROVED, StatusApprove.APPROVED, tahunAkademik, prodi, new BigDecimal(70));
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Sidang");
@@ -947,7 +978,7 @@ public class SidangController {
 
         Row headerRow = sheet.createRow(4);
 
-        for (int i = 0; i < colums.length; i++){
+        for (int i = 0; i < colums.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(colums[i]);
             cell.setCellStyle(headerStyle);
@@ -970,123 +1001,180 @@ public class SidangController {
         int rowNum = 5;
         int baris = 1;
 
-        for (Sidang data : listSidang){
+        for (Sidang data : listSidang) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(data.getSeminar().getNote().getMahasiswa().getNim());
             row.createCell(2).setCellValue(data.getSeminar().getNote().getMahasiswa().getNama());
-            if (data.getTanggalUjian() == null){
+            if (data.getTanggalUjian() == null) {
                 row.createCell(3).setCellValue("-");
             }
             if (data.getTanggalUjian() != null) {
                 LocalDate tanggalSidang = data.getTanggalUjian();
-                if (tanggalSidang.getDayOfWeek().getValue() != 7){
-                    if (tanggalSidang.getMonthValue() == 1){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Januari " + tanggalSidang.getYear());
+                if (tanggalSidang.getDayOfWeek().getValue() != 7) {
+                    if (tanggalSidang.getMonthValue() == 1) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Januari "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 2){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Februari " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 2) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Februari "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 3){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Maret " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 3) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Maret "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 4){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " April " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 4) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " April "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 5){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Mei " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 5) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Mei "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 6){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Juni " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 6) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Juni "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 7){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Juli " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 7) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Juli "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 8){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Agustus " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 8) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Agustus "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 9){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " September " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 9) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " September "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 10){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Oktober " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 10) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Oktober "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 11){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " November " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 11) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " November "
+                                        + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 12){
-                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Desember " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 12) {
+                        row.createCell(3)
+                                .setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Desember "
+                                        + tanggalSidang.getYear());
                     }
-                }else {
-                    if (tanggalSidang.getMonthValue() == 1){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Januari " + tanggalSidang.getYear());
+                } else {
+                    if (tanggalSidang.getMonthValue() == 1) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Januari " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 2){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Februari " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 2) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Februari " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 3){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Maret " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 3) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Maret " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 4){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " April " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 4) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " April " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 5){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Mei " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 5) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Mei " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 6){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Juni " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 6) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Juni " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 7){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Juli " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 7) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Juli " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 8){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Agustus " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 8) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Agustus " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 9){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " September " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 9) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " September " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 10){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Oktober " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 10) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Oktober " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 11){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " November " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 11) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " November " + tanggalSidang.getYear());
                     }
-                    if (tanggalSidang.getMonthValue() == 12){
-                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Desember " + tanggalSidang.getYear());
+                    if (tanggalSidang.getMonthValue() == 12) {
+                        row.createCell(3).setCellValue(
+                                "Sabtu , " + tanggalSidang.getDayOfMonth() + " Desember " + tanggalSidang.getYear());
                     }
                 }
             }
-            //        {"No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua", "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu"};
+            // {"No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua",
+            // "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu"};
             row.createCell(4).setCellValue(data.getKetuaPenguji().getKaryawan().getNamaKaryawan());
             row.createCell(5).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
             row.createCell(6).setCellValue(data.getPembimbing().getKaryawan().getNamaKaryawan());
             row.createCell(7).setCellValue(data.getJamMulai() + " - " + data.getJamSelesai());
             row.createCell(8).setCellValue(data.getNilai().toString());
-            if (data.getNilai().compareTo(new BigDecimal(80)) >= 0 && data.getNilai().compareTo(new BigDecimal(85)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(80)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(85)) < 0) {
                 row.createCell(9).setCellValue("A-");
             }
-            if (data.getNilai().compareTo(new BigDecimal(75)) >= 0 && data.getNilai().compareTo(new BigDecimal(80)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(75)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(80)) < 0) {
                 row.createCell(9).setCellValue("B+");
             }
-            if (data.getNilai().compareTo(new BigDecimal(70)) >= 0 && data.getNilai().compareTo(new BigDecimal(75)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(70)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(75)) < 0) {
                 row.createCell(9).setCellValue("B");
             }
-            if (data.getNilai().compareTo(new BigDecimal(65)) >= 0 && data.getNilai().compareTo(new BigDecimal(70)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(65)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(70)) < 0) {
                 row.createCell(9).setCellValue("B-");
             }
-            if (data.getNilai().compareTo(new BigDecimal(60)) >= 0 && data.getNilai().compareTo(new BigDecimal(65)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(60)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(65)) < 0) {
                 row.createCell(9).setCellValue("C+");
             }
-            if (data.getNilai().compareTo(new BigDecimal(55)) >= 0 && data.getNilai().compareTo(new BigDecimal(60)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(55)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(60)) < 0) {
                 row.createCell(9).setCellValue("C");
             }
-            if (data.getNilai().compareTo(new BigDecimal(50)) >= 0 && data.getNilai().compareTo(new BigDecimal(55)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(50)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(55)) < 0) {
                 row.createCell(9).setCellValue("D");
             }
-            if (data.getNilai().compareTo(new BigDecimal(0)) >= 0 && data.getNilai().compareTo(new BigDecimal(50)) < 0){
+            if (data.getNilai().compareTo(new BigDecimal(0)) >= 0
+                    && data.getNilai().compareTo(new BigDecimal(50)) < 0) {
                 row.createCell(9).setCellValue("E");
             }
-            if (data.getNilai().compareTo(new BigDecimal(85)) >= 0){
+            if (data.getNilai().compareTo(new BigDecimal(85)) >= 0) {
                 row.createCell(9).setCellValue("A");
             }
 
@@ -1103,117 +1191,117 @@ public class SidangController {
 
         }
 
-        for (int i = 0; i<colums.length; i++){
+        for (int i = 0; i < colums.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data_Sidang_"+prodi.getKodeProdi()+"_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Data_Sidang_" + prodi.getKodeProdi() + "_"
+                + tahunAkademik.getNamaTahunAkademik() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
     }
 
-
-//    Dosen
+    // Dosen
 
     @GetMapping("/graduation/sidang/dosen/list")
-    public void listDosen(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
-                          Model model,Authentication authentication){
+    public void listDosen(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi,
+            Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-
-
         if (tahunAkademik != null) {
-            List<Sidang> sidang = sidangDao.listDosenSidang(tahunAkademik,dosen);
+            List<Sidang> sidang = sidangDao.listDosenSidang(tahunAkademik, dosen);
 
             model.addAttribute("selectedTahun", tahunAkademik);
-            model.addAttribute("listSidang",sidang);
+            model.addAttribute("listSidang", sidang);
             model.addAttribute("dosen", dosen);
             model.addAttribute("selectedProdi", prodi);
-
 
         }
     }
 
     @GetMapping("/graduation/sidang/dosen/penilaian")
-    public void penilaiaanSidang(Model model,@RequestParam Sidang sidang,Authentication authentication){
+    public void penilaiaanSidang(Model model, @RequestParam Sidang sidang, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue());
-        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7){
+        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
 
-        }else {
+        } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
 
         }
         model.addAttribute("dosen", dosen);
-        model.addAttribute("sidang",sidang);
+        model.addAttribute("sidang", sidang);
 
-        if (sidang.getKetuaPenguji() == dosen){
+        if (sidang.getKetuaPenguji() == dosen) {
             model.addAttribute("data", sidangService.getKetua(sidang));
         }
 
-        if (sidang.getDosenPenguji() == dosen){
+        if (sidang.getDosenPenguji() == dosen) {
             model.addAttribute("data", sidangService.getPenguji(sidang));
         }
 
-        if (sidang.getPembimbing() == dosen){
+        if (sidang.getPembimbing() == dosen) {
             model.addAttribute("data", sidangService.getPembimbing(sidang));
         }
 
-        if (sidang.getPembimbing2() == dosen){
+        if (sidang.getPembimbing2() == dosen) {
             model.addAttribute("data", sidangService.getPembimbing2(sidang));
         }
 
     }
 
     @GetMapping("/graduation/sidang/dosen/penilaianpasca")
-    public void penilaiaanSidangTesis(Model model,@RequestParam Sidang sidang,Authentication authentication){
+    public void penilaiaanSidangTesis(Model model, @RequestParam Sidang sidang, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue());
-        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7){
+        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
 
-        }else {
+        } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
 
         }
         model.addAttribute("dosen", dosen);
-        model.addAttribute("sidang",sidang);
+        model.addAttribute("sidang", sidang);
 
-        if (sidang.getKetuaPenguji() == dosen){
+        if (sidang.getKetuaPenguji() == dosen) {
             model.addAttribute("data", sidangService.getKetua(sidang));
         }
 
-        if (sidang.getDosenPenguji() == dosen){
+        if (sidang.getDosenPenguji() == dosen) {
             model.addAttribute("data", sidangService.getPenguji(sidang));
         }
 
-        if (sidang.getPembimbing() == dosen){
+        if (sidang.getPembimbing() == dosen) {
             model.addAttribute("data", sidangService.getPembimbing(sidang));
         }
 
-        if (sidang.getPembimbing2() == dosen){
+        if (sidang.getPembimbing2() == dosen) {
             model.addAttribute("data", sidangService.getPembimbing2(sidang));
         }
 
     }
 
     @PostMapping("/graduation/sidang/dosen/penilaian")
-    public String saveKetua(@RequestParam Sidang sidang,@RequestParam(required = false) BigDecimal nilaiA,Authentication authentication,
-                            @RequestParam(required = false) BigDecimal nilaiB,@RequestParam(required = false) BigDecimal nilaiC,
-                            @RequestParam(required = false) BigDecimal nilaiD,@RequestParam(required = false) String beritaAcara,@RequestParam(required = false) String komentar){
+    public String saveKetua(@RequestParam Sidang sidang, @RequestParam(required = false) BigDecimal nilaiA,
+            Authentication authentication,
+            @RequestParam(required = false) BigDecimal nilaiB, @RequestParam(required = false) BigDecimal nilaiC,
+            @RequestParam(required = false) BigDecimal nilaiD, @RequestParam(required = false) String beritaAcara,
+            @RequestParam(required = false) String komentar) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -1227,30 +1315,32 @@ public class SidangController {
         sidangDto.setNilaiC(nilaiC);
         sidangDto.setNilaiD(nilaiD);
 
-        if (sidang.getKetuaPenguji() == dosen){
+        if (sidang.getKetuaPenguji() == dosen) {
             sidangService.saveKetua(sidangDto);
         }
 
-        if (sidang.getDosenPenguji() == dosen){
+        if (sidang.getDosenPenguji() == dosen) {
             sidangService.savePenguji(sidangDto);
         }
 
-        if (sidang.getPembimbing() == dosen){
+        if (sidang.getPembimbing() == dosen) {
             sidangService.savePembimbing(sidangDto);
         }
 
-        if (sidang.getPembimbing2() == dosen){
+        if (sidang.getPembimbing2() == dosen) {
             sidangService.savePembimbing2(sidangDto);
         }
 
-
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/dosen/penilaianpasca")
-    public String savePasca(@RequestParam Sidang sidang,@RequestParam(required = false) BigDecimal nilaiA,Authentication authentication,
-                            @RequestParam(required = false) BigDecimal nilaiB,@RequestParam(required = false) BigDecimal nilaiC,
-                            @RequestParam(required = false) BigDecimal nilaiD,@RequestParam(required = false) String beritaAcara,@RequestParam(required = false) String komentar){
+    public String savePasca(@RequestParam Sidang sidang, @RequestParam(required = false) BigDecimal nilaiA,
+            Authentication authentication,
+            @RequestParam(required = false) BigDecimal nilaiB, @RequestParam(required = false) BigDecimal nilaiC,
+            @RequestParam(required = false) BigDecimal nilaiD, @RequestParam(required = false) String beritaAcara,
+            @RequestParam(required = false) String komentar) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -1264,39 +1354,39 @@ public class SidangController {
         sidangDto.setNilaiC(nilaiC);
         sidangDto.setNilaiD(nilaiD);
 
-        if (sidang.getKetuaPenguji() == dosen){
+        if (sidang.getKetuaPenguji() == dosen) {
             sidangService.saveKetuaPasca(sidangDto);
         }
 
-        if (sidang.getDosenPenguji() == dosen){
+        if (sidang.getDosenPenguji() == dosen) {
             sidangService.savePengujiPasca(sidangDto);
         }
 
-        if (sidang.getPembimbing() == dosen){
+        if (sidang.getPembimbing() == dosen) {
             sidangService.savePembimbingPasca(sidangDto);
         }
 
-        if (sidang.getPembimbing2() == dosen){
+        if (sidang.getPembimbing2() == dosen) {
             sidangService.savePembimbing2(sidangDto);
         }
 
-
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/dosen/publish")
     @ResponseBody
-    public String publishSidang(@RequestParam Sidang sidang){
+    public String publishSidang(@RequestParam Sidang sidang) {
         Object nilaiKosong = null;
-        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")){
-            nilaiKosong = sidangDao.validasiPublishNilai(sidang,BigDecimal.ZERO);
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
+            nilaiKosong = sidangDao.validasiPublishNilai(sidang, BigDecimal.ZERO);
         }
-        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")){
-            nilaiKosong = sidangDao.validasiPublishNilaiPasca(sidang,BigDecimal.ZERO);
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
+            nilaiKosong = sidangDao.validasiPublishNilaiPasca(sidang, BigDecimal.ZERO);
         }
         if (nilaiKosong == null) {
 
-            if (sidang.getNilai().compareTo(new BigDecimal(70))>= 0){
+            if (sidang.getNilai().compareTo(new BigDecimal(70)) >= 0) {
                 Mahasiswa mahasiswa = mahasiswaDao.findById(sidang.getSeminar().getNote().getMahasiswa().getId()).get();
                 mahasiswa.setTanggalLulus(LocalDate.now());
                 mahasiswa.setStatusAktif("LULUS");
@@ -1306,38 +1396,40 @@ public class SidangController {
                 sidangDao.save(sidang);
 
                 KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
-                if (cariThesis != null){
-                    if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")){
-                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(60)).divide(new BigDecimal(100));
-                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(40)).divide(new BigDecimal(100));
+                if (cariThesis != null) {
+                    if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
+                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(60))
+                                .divide(new BigDecimal(100));
+                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(40))
+                                .divide(new BigDecimal(100));
                         BigDecimal nilaiAKhir = nilaiSidang.add(nilaiSempro).setScale(2, RoundingMode.HALF_UP);
                         cariThesis.setNilaiAkhir(nilaiAKhir);
                         scoreService.hitungNilaiAkhir(cariThesis);
 
                     }
-                    if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")){
-                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(50)).divide(new BigDecimal(100));
-                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(50)).divide(new BigDecimal(100));
+                    if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
+                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(50))
+                                .divide(new BigDecimal(100));
+                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(50))
+                                .divide(new BigDecimal(100));
                         BigDecimal nilaiAKhir = nilaiSidang.add(nilaiSempro).setScale(2, RoundingMode.HALF_UP);
                         cariThesis.setNilaiAkhir(nilaiAKhir);
                         scoreService.hitungNilaiAkhir(cariThesis);
                     }
                 }
 
-
-
-            }else {
+            } else {
                 return "nilai tidak ada";
             }
             return "berhasil";
 
-        }else {
+        } else {
             return "lengkapi";
         }
 
     }
 
-    //    file
+    // file
     @GetMapping("/upload/{sidang}/sidang/")
     public ResponseEntity<byte[]> sidang(@PathVariable Sidang sidang, Model model) throws Exception {
         String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
@@ -1345,7 +1437,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFileSidang().toLowerCase().endsWith("jpeg") || sidang.getFileSidang().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFileSidang().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileSidang().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFileSidang().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1359,7 +1452,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
     }
 
@@ -1370,7 +1462,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFileBerita().toLowerCase().endsWith("jpeg") || sidang.getFileBerita().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFileBerita().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileBerita().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFileBerita().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1384,7 +1477,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
     }
 
@@ -1395,7 +1487,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFilePendaftaran().toLowerCase().endsWith("jpeg") || sidang.getFilePendaftaran().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFilePendaftaran().toLowerCase().endsWith("jpeg")
+                    || sidang.getFilePendaftaran().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFilePendaftaran().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1409,7 +1502,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1421,7 +1513,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFileIjazah().toLowerCase().endsWith("jpeg") || sidang.getFileIjazah().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFileIjazah().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileIjazah().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFileIjazah().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1435,7 +1528,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1447,7 +1539,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFilePersetujuan().toLowerCase().endsWith("jpeg") || sidang.getFilePersetujuan().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFilePersetujuan().toLowerCase().endsWith("jpeg")
+                    || sidang.getFilePersetujuan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFilePersetujuan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1461,7 +1554,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1473,7 +1565,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFileKtp().toLowerCase().endsWith("jpeg") || sidang.getFileKtp().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFileKtp().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileKtp().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFileKtp().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1487,7 +1580,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1499,7 +1591,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFileBimbingan().toLowerCase().endsWith("jpeg") || sidang.getFileBimbingan().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFileBimbingan().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileBimbingan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFileBimbingan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1513,11 +1606,9 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
-
 
     @GetMapping("/upload/{sidang}/turnitin/")
     public ResponseEntity<byte[]> turnitin(@PathVariable Sidang sidang, Model model) throws Exception {
@@ -1526,7 +1617,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFileTurnitin().toLowerCase().endsWith("jpeg") || sidang.getFileTurnitin().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFileTurnitin().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileTurnitin().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFileTurnitin().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1540,7 +1632,6 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1552,7 +1643,8 @@ public class SidangController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (sidang.getFilePerbaikan().toLowerCase().endsWith("jpeg") || sidang.getFilePerbaikan().toLowerCase().endsWith("jpg")) {
+            if (sidang.getFilePerbaikan().toLowerCase().endsWith("jpeg")
+                    || sidang.getFilePerbaikan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (sidang.getFilePerbaikan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1566,19 +1658,17 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
 
     @GetMapping("/graduation/sidang/download")
-    public void nilaiSidang(@RequestParam(name = "id")String nim, HttpServletResponse response){
+    public void nilaiSidang(@RequestParam(name = "id") String nim, HttpServletResponse response) {
         try {
             Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
             InputStream in = fileNilai.getInputStream();
 
-            IXDocReport report = XDocReportRegistry.getRegistry().
-                    loadReport(in, TemplateEngineKind.Freemarker);
+            IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Freemarker);
 
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
             IContext ctx = report.createContext();
@@ -1589,65 +1679,68 @@ public class SidangController {
             report.convert(ctx, options, out);
             out.flush();
 
-        }catch (Exception err){
+        } catch (Exception err) {
 
         }
     }
 
     @GetMapping("/graduation/sidang/admin/score")
-    public void nilaiProdi(Model model,@RequestParam Sidang sidang,@RequestParam(required = false) String kosong,
-                           @RequestParam(required = false) String akses,Authentication authentication){
+    public void nilaiProdi(Model model, @RequestParam Sidang sidang, @RequestParam(required = false) String kosong,
+            @RequestParam(required = false) String akses, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue());
-        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7){
+        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
 
-        }else {
+        } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
 
         }
 
-        if (kosong != null){
-            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        if (kosong != null) {
+            model.addAttribute("kosong",
+                    "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
         }
         model.addAttribute("dosen", dosen);
         model.addAttribute("akses", akses);
-        model.addAttribute("sidang",sidang);
+        model.addAttribute("sidang", sidang);
 
     }
 
     @PostMapping("/graduation/sidang/updatescore")
-    public String updatePublish(@RequestParam(required = false) String akses , Model model, Authentication authentication,
-                                @RequestParam Sidang sidang ,@Valid SeminarDto seminarDto,@RequestParam(required = false) String jenjang ){
+    public String updatePublish(@RequestParam(required = false) String akses, Model model,
+            Authentication authentication,
+            @RequestParam Sidang sidang, @Valid SeminarDto seminarDto, @RequestParam(required = false) String jenjang) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        model.addAttribute("dosen" , dosen);
+        model.addAttribute("dosen", dosen);
 
-        if (jenjang.equals("sarjana")){
-            sidangService.updateSidang(sidang,seminarDto);
+        if (jenjang.equals("sarjana")) {
+            sidangService.updateSidang(sidang, seminarDto);
         }
-        if (jenjang.equals("pascasarjana")){
-            sidangService.updateSidangPasca(sidang,seminarDto);
-        }
-
-
-        if (akses.equals("prodi")){
-            return "redirect:../sidang/prodi/list?tahunAkademik=" + sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
-
+        if (jenjang.equals("pascasarjana")) {
+            sidangService.updateSidangPasca(sidang, seminarDto);
         }
 
-        if (akses.equals("admin")){
-            return "redirect:../sidang/admin/list?tahunAkademik=" + sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        if (akses.equals("prodi")) {
+            return "redirect:../sidang/prodi/list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                    + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
 
         }
 
-        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        if (akses.equals("admin")) {
+            return "redirect:../sidang/admin/list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                    + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
 
+        }
+
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
 
     }
 
@@ -1661,10 +1754,11 @@ public class SidangController {
         String kode = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang();
         if ("S1".equalsIgnoreCase(kode)) {
             jenis = "Stripsi";
-        }else if ("S2".equalsIgnoreCase(kode)){
+        } else if ("S2".equalsIgnoreCase(kode)) {
             jenis = "Thesis";
         }
-        String headerValue = "attachment; filename=ST Menguji " + jenis + " " + sidang.getSeminar().getNote().getMahasiswa().getNama() + ".pdf";
+        String headerValue = "attachment; filename=ST Menguji " + jenis + " "
+                + sidang.getSeminar().getNote().getMahasiswa().getNama() + ".pdf";
 
         response.setHeader(headerKey, headerValue);
 
