@@ -1,10 +1,13 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.hibernate.sql.Update;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, String> {
     List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord aktif);
@@ -38,4 +41,15 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     @Query(value = "SELECT sk.* FROM sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen = pd.id where sk.id_jadwal = ?1 " +
             " and pd.status = 'AKTIF' and sk.pertemuan in ('Offline','Online') and pd.waktu_masuk = now() order by sk.waktu_mulai desc limit 1", nativeQuery = true)
     SesiKuliah cariSesiKuliahHariIni(Jadwal jadwal);
+
+    Optional<SesiKuliah> findByJadwalAndPertemuanKe(Jadwal jadwal, Integer pertemuan);
+
+    List<SesiKuliah> findByJadwalAndPresensiDosenStatusAndRps(Jadwal jadwal, StatusRecord statusRecord, String rps);
+
+    List<SesiKuliah> findByJadwalAndPresensiDosenStatusAndRpsIsNull(Jadwal jadwal, StatusRecord statusRecord);
+
+    @Modifying
+    @Query(value = "update sesi_kuliah set rps = '' where id_jadwal = ?1", nativeQuery = true)
+    void updateRps(String idJadwal);
+
 }

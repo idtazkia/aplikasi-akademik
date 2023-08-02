@@ -203,6 +203,9 @@ public class StudiesActivityController {
         @Value("${upload.rps}")
         private String uploadRps;
 
+        @Value("classpath:sample/contohRps.xlsx")
+        private Resource exampleRps;
+
         // Attribute
 
         @ModelAttribute("prodi")
@@ -309,10 +312,82 @@ public class StudiesActivityController {
 
         @GetMapping("/studiesActivity/attendance/detail")
         public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
+
+                List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusAndRpsIsNull(jadwal, StatusRecord.AKTIF);
+                if (!cekRps.isEmpty()){
+                        model.addAttribute("gagal", "Submit RPS terlebih dahulu!");
+                }
                 model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
                 model.addAttribute("dosenUtama", jadwal.getDosen());
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
                 model.addAttribute("jadwal", jadwal);
+
+        }
+
+        @GetMapping("/sample/rps")
+        public void downloadContohFileInputRPS(HttpServletResponse response) throws IOException {
+
+                response.setContentType("application/vns.ms-excel");
+                response.setHeader("Content-Disposition", "attahment; filename=Example-RPS.xlsx");
+                FileCopyUtils.copy(exampleRps.getInputStream(), response.getOutputStream());
+                response.getOutputStream().flush();
+
+        }
+
+        @Transactional
+        @PostMapping("/studiesActivity/attendance/rps/upload")
+        public String prosesInputRpsFromExcel(MultipartFile file, RedirectAttributes attributes, @RequestParam Jadwal jadwal){
+
+                log.debug("Nama file : {}", file.getOriginalFilename());
+                log.debug("Ukuran file : {} bytes", file.getSize());
+
+                try{
+                        Workbook workbook = new XSSFWorkbook(file.getInputStream());
+                        Sheet sheet1 = workbook.getSheetAt(0);
+
+                        int row = 5;
+
+                        for (int n = 0; n<=15; n++){
+                                Row baris = sheet1.getRow(row + n);
+
+                                Cell num = baris.getCell(0);
+                                num.setCellType(CellType.STRING);
+                                Cell data = baris.getCell(1);
+                                data.setCellType(CellType.STRING);
+
+                                System.out.println("data no. : " + num);
+                                System.out.println("data isi : " + data);
+
+                                Optional<SesiKuliah> optSesi = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal, Integer.parseInt(num.getStringCellValue()));
+                                if (optSesi.isEmpty()) {
+                                        log.debug("Sesi kuliah tidak di temukan {}", jadwal.getId());
+                                }
+                                SesiKuliah sesiKuliah = optSesi.get();
+                                sesiKuliah.setRps(data.getStringCellValue());
+                                sesiKuliahDao.save(sesiKuliah);
+
+                        }
+
+                        List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusAndRps(jadwal, StatusRecord.AKTIF, "");
+                        log.info("RPS : {}", cekRps);
+                        if (!cekRps.isEmpty()){
+                                List<String> kosong = new ArrayList<>();
+                                for (SesiKuliah list : cekRps){
+                                        log.info("sesi kuliah : {}", list.toString());
+                                        kosong.add(list.getPertemuanKe().toString());
+                                }
+                                log.info("Kosong : {}", kosong);
+                                String set = kosong.toString().replace("[", "").replace("]", "");
+                                attributes.addFlashAttribute("gagal", "Keterangan pada pertemuan ke " + set + " kosong, harap isi terlebih dahulu!");
+                                sesiKuliahDao.updateRps(jadwal.getId());
+                                return "redirect:/studiesActivity/attendance/detail?jadwal="+jadwal.getId();
+                        }
+
+                }catch (IOException e){
+                        log.error(e.getMessage(), e);
+                }
+
+                return "redirect:/studiesActivity/attendance/detail?jadwal="+jadwal.getId();
 
         }
 
