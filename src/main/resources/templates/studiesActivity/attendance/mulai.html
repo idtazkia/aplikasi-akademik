@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Presensi</title>
+</head>
+
+<body>
+    <div layout:fragment="main">
+        <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+            <div class="container-fluid">
+                <div class="header-body">
+                    <!-- Card stats -->
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card card-stats mb-4 mb-xl-0">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                            <span class="h2 font-weight-bold mb-0">Presensi</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div
+                                                class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                                <i class="fas fa-user-astronaut"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid mt--7">
+            <!-- Table -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Form</h3>
+                                    </div>
+                                    <div class="col text-right">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/studiesActivity/attendance/mulai}" method="post"
+                                    th:object="${sesi}">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Pertemuan :</label>
+                                                <select id="pertemuan" name="pertemuan" class="form-control">
+                                                    <option id="pertemuan-value" value="Online">Online</option>
+                                                    <option id="pertemuan-value" value="Offline">Offline</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Dosen :</label>
+                                                <select name="dosen" th:field="*{dosen}" class="form-control">
+                                                    <option value=""></option>
+                                                    <option th:each="dosen : ${teamTeaching}"
+                                                        th:text="${dosen.dosen.karyawan.namaKaryawan}"
+                                                        th:value="${dosen.dosen.id}">sdasd</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tanggal :</label>
+                                                <input type="date" th:field="*{tanggal}" id="tanggalSesi" name="tanggal"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Jam Mulai :</label>
+                                                <input type="text" th:field="*{jamMulai}" id="input-a" required
+                                                    placeholder="07:00:00" max="8" name="jamMulai" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Jam Selesai :</label>
+                                                <input type="text" id="input-b" th:field="*{jamSelesai}" required
+                                                    placeholder="09:30:00" name="jamSelesai" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Berita Acara :</label>
+                                                <textarea name="beritaAcara" th:field="*{beritaAcara}"
+                                                    class="form-control" id=""></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                                <!--                                        <a href="" class="btn btn-danger">Batal</a>-->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Detail RPS</h3>
+                                    </div>
+                                    <div class="col text-right">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <form th:object="${sesiKuliah}">
+                                            <label>RPS :</label>
+                                            <textarea style="height: 450px;" disabled class="form-control"
+                                                th:field="*{rps}"></textarea>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    var input = $('#input-a');
+    input.clockpicker({
+        autoclose: true
+    });
+
+    var input = $('#input-b');
+    input.clockpicker({
+        autoclose: true
+    });
+</script>

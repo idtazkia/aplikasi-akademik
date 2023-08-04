@@ -1,26 +1,45 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import com.github.mustachejava.MustacheFactory;
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
-import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
-import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
-import id.ac.tazkia.smilemahasiswa.dto.attendance.DetailPresensiDto;
-import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
-import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDosenDto;
-import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.krs.SpDto;
-import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
-import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
-import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
-import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.*;
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.chrono.HijrahDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderExtent;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.PropertyTemplate;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -41,29 +60,100 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.chrono.HijrahDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import com.github.mustachejava.MustacheFactory;
+
+import id.ac.tazkia.smilemahasiswa.dao.BobotTugasDao;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EdomMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KelasDao;
+import id.ac.tazkia.smilemahasiswa.dao.KelasMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.MatakuliahKurikulumDao;
+import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
+import id.ac.tazkia.smilemahasiswa.dao.PraKrsSpDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
+import id.ac.tazkia.smilemahasiswa.dao.RpsDao;
+import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahDao;
+import id.ac.tazkia.smilemahasiswa.dao.SoalDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.SoalDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.DetailPresensiDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.krs.SpDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
+import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
+import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
+import id.ac.tazkia.smilemahasiswa.entity.Akses;
+import id.ac.tazkia.smilemahasiswa.entity.BobotTugas;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Hari;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.JadwalDosen;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.Kelas;
+import id.ac.tazkia.smilemahasiswa.entity.KelasMahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Krs;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
+import id.ac.tazkia.smilemahasiswa.entity.NilaiTugas;
+import id.ac.tazkia.smilemahasiswa.entity.PraKrsSp;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiMahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Rps;
+import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
+import id.ac.tazkia.smilemahasiswa.entity.Soal;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
+import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
+import id.ac.tazkia.smilemahasiswa.service.PresensiService;
+import id.ac.tazkia.smilemahasiswa.service.ReportService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.TranscriptService;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
@@ -313,8 +403,9 @@ public class StudiesActivityController {
         @GetMapping("/studiesActivity/attendance/detail")
         public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
 
-                List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusAndRpsIsNull(jadwal, StatusRecord.AKTIF);
-                if (!cekRps.isEmpty()){
+                List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusAndRpsIsNull(jadwal,
+                                StatusRecord.AKTIF);
+                if (!cekRps.isEmpty()) {
                         model.addAttribute("gagal", "Submit RPS terlebih dahulu!");
                 }
                 model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
@@ -336,18 +427,19 @@ public class StudiesActivityController {
 
         @Transactional
         @PostMapping("/studiesActivity/attendance/rps/upload")
-        public String prosesInputRpsFromExcel(MultipartFile file, RedirectAttributes attributes, @RequestParam Jadwal jadwal){
+        public String prosesInputRpsFromExcel(MultipartFile file, RedirectAttributes attributes,
+                        @RequestParam Jadwal jadwal) {
 
                 log.debug("Nama file : {}", file.getOriginalFilename());
                 log.debug("Ukuran file : {} bytes", file.getSize());
 
-                try{
+                try {
                         Workbook workbook = new XSSFWorkbook(file.getInputStream());
                         Sheet sheet1 = workbook.getSheetAt(0);
 
                         int row = 5;
 
-                        for (int n = 0; n<=15; n++){
+                        for (int n = 0; n <= 15; n++) {
                                 Row baris = sheet1.getRow(row + n);
 
                                 Cell num = baris.getCell(0);
@@ -358,7 +450,8 @@ public class StudiesActivityController {
                                 System.out.println("data no. : " + num);
                                 System.out.println("data isi : " + data);
 
-                                Optional<SesiKuliah> optSesi = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal, Integer.parseInt(num.getStringCellValue()));
+                                Optional<SesiKuliah> optSesi = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal,
+                                                Integer.parseInt(num.getStringCellValue()));
                                 if (optSesi.isEmpty()) {
                                         log.debug("Sesi kuliah tidak di temukan {}", jadwal.getId());
                                 }
@@ -368,26 +461,28 @@ public class StudiesActivityController {
 
                         }
 
-                        List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusAndRps(jadwal, StatusRecord.AKTIF, "");
+                        List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusAndRps(jadwal,
+                                        StatusRecord.AKTIF, "");
                         log.info("RPS : {}", cekRps);
-                        if (!cekRps.isEmpty()){
+                        if (!cekRps.isEmpty()) {
                                 List<String> kosong = new ArrayList<>();
-                                for (SesiKuliah list : cekRps){
+                                for (SesiKuliah list : cekRps) {
                                         log.info("sesi kuliah : {}", list.toString());
                                         kosong.add(list.getPertemuanKe().toString());
                                 }
                                 log.info("Kosong : {}", kosong);
                                 String set = kosong.toString().replace("[", "").replace("]", "");
-                                attributes.addFlashAttribute("gagal", "Keterangan pada pertemuan ke " + set + " kosong, harap isi terlebih dahulu!");
+                                attributes.addFlashAttribute("gagal", "Keterangan pada pertemuan ke " + set
+                                                + " kosong, harap isi terlebih dahulu!");
                                 sesiKuliahDao.updateRps(jadwal.getId());
-                                return "redirect:/studiesActivity/attendance/detail?jadwal="+jadwal.getId();
+                                return "redirect:/studiesActivity/attendance/detail?jadwal=" + jadwal.getId();
                         }
 
-                }catch (IOException e){
+                } catch (IOException e) {
                         log.error(e.getMessage(), e);
                 }
 
-                return "redirect:/studiesActivity/attendance/detail?jadwal="+jadwal.getId();
+                return "redirect:/studiesActivity/attendance/detail?jadwal=" + jadwal.getId();
 
         }
 
@@ -718,41 +813,33 @@ public class StudiesActivityController {
 
         }
 
+        @GetMapping("/studiesActivity/attendance/mulai")
+        public void mulaiAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah) {
+                PresensiDto jadwalDto = new PresensiDto();
+                jadwalDto.setId(sesiKuliah.getId());
+                jadwalDto.setJadwal(sesiKuliah.getJadwal());
+                jadwalDto.setBeritaAcara(sesiKuliah.getBeritaAcara());
+                jadwalDto.setDosen(sesiKuliah.getPresensiDosen().getDosen());
+                jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());
+                jadwalDto.setTanggal(sesiKuliah.getWaktuMulai().toLocalDate());
+                jadwalDto.setId(sesiKuliah.getId());
+                jadwalDto.setJamMulai(sesiKuliah.getWaktuMulai().toLocalTime());
+                jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
+
+                model.addAttribute("sesi", jadwalDto);
+                model.addAttribute("sesiKuliah", sesiKuliah);
+                model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sesiKuliah.getJadwal()));
+
+        }
+
         @PostMapping("/studiesActivity/attendance/form")
         public String prosesEdit(@ModelAttribute JadwalDto jadwalDto) {
 
                 SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
                 sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
 
-                // String date = jadwalDto.getTanggal().toString();
-                // String time1 = jadwalDto.getWaktuMulai();
-                // String time2 = jadwalDto.getWaktuSelesai();
-
-                // String jammulai = time1.substring(0,5) + ":00";
-                // String jamselsai = time2.substring(0,5) + ":00";
-                //
-                // LocalTime jammu = LocalTime.parse(jammulai);
-                // LocalTime jamse = LocalTime.parse(jamselsai);
-                //
-                // String tanggalan = date + ' ' + time1 + ':' + "00";
-                // String tanggalan2 = date + ' ' + time2 + ':' + "00";
-                //
-                // DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd
-                // HH:mm:ss");
-                // LocalDateTime localDate1 = LocalDateTime.parse(tanggalan, formatter1);
-                // LocalDateTime localDate2 = LocalDateTime.parse(tanggalan2, formatter1);
-                //// pejabatMatrikulasi.setTanggalSelesai(localDate1.plusDays(0));
-                //
-
-                // sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jammu));
-                // sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jamse));
-
                 sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
                 sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamSelesai()));
-
-                // sesiKuliah.setWaktuMulai(localDate1);
-                // sesiKuliah.setWaktuSelesai(localDate2);
-
                 PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
                 presensiDosen.setDosen(jadwalDto.getDosen());
                 presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
@@ -760,6 +847,75 @@ public class StudiesActivityController {
 
                 sesiKuliahDao.save(sesiKuliah);
                 presensiDosenDao.save(presensiDosen);
+
+                return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
+
+        }
+
+        @PostMapping("/studiesActivity/attendance/mulai")
+        public String prosesMulai(@ModelAttribute PresensiDto jadwalDto) {
+
+                LocalDateTime waktuMasukSebelum = null;
+                LocalDateTime waktuSelesaiSebelum = null;
+                SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
+                waktuMasukSebelum = sesiKuliah.getWaktuMulai();
+                waktuSelesaiSebelum = sesiKuliah.getWaktuSelesai();
+
+                sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+                sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
+                sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamSelesai()));
+
+                PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
+                presensiDosen.setDosen(jadwalDto.getDosen());
+                presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
+                presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
+                presensiDosen.setStatus(StatusRecord.AKTIF);
+
+                if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0
+                                && waktuSelesaiSebelum.compareTo(sesiKuliah.getWaktuSelesai()) == 0) {
+                        if (presensiDosen.getWaktuMasuk().toLocalTime()
+                                        .compareTo(presensiDosen.getWaktuMasuk().toLocalTime().plusMinutes(15)) >= 0) {
+                                presensiDosen.setStatusPresensi(StatusPresensi.TERLAMBAT);
+                        } else {
+                                presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+                        }
+                        sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+                } else {
+                        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+                }
+
+                if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0
+                                && waktuSelesaiSebelum.compareTo(sesiKuliah.getWaktuSelesai()) == 0) {
+                        sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+                } else {
+                        sesiKuliah.setPertemuan("Pengganti " + jadwalDto.getPertemuan());
+                }
+
+                sesiKuliahDao.save(sesiKuliah);
+                presensiDosenDao.save(presensiDosen);
+
+                StatusPresensi statusMahasiswa = null;
+                if (presensiDosen.getStatusPresensi() == StatusPresensi.HADIR) {
+                        statusMahasiswa = StatusPresensi.MANGKIR;
+                } else {
+                        statusMahasiswa = StatusPresensi.HADIR;
+                }
+
+                Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(
+                                presensiDosen.getJadwal(),
+                                StatusRecord.AKTIF);
+                for (KrsDetail kd : krsDetail) {
+                        PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
+                        presensiMahasiswa.setStatusPresensi(statusMahasiswa);
+                        presensiMahasiswa.setSesiKuliah(sesiKuliah);
+                        presensiMahasiswa.setKrsDetail(kd);
+                        presensiMahasiswa.setCatatan("Manual");
+                        presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
+                        presensiMahasiswa.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
+                        presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
+                        presensiMahasiswa.setRating(0);
+                        presensiMahasiswaDao.save(presensiMahasiswa);
+                }
 
                 return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
