@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
 
     List<SesiKuliah> findByJadwalAndPresensiDosenStatusAndRps(Jadwal jadwal, StatusRecord statusRecord, String rps);
 
-    List<SesiKuliah> findByJadwalAndPresensiDosenStatusAndRpsIsNull(Jadwal jadwal, StatusRecord statusRecord);
+    List<SesiKuliah> findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(Jadwal jadwal, List<StatusRecord> status);
 
     @Modifying
     @Query(value = "update sesi_kuliah set rps = '' where id_jadwal = ?1", nativeQuery = true)

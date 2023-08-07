@@ -385,9 +385,11 @@
                                                     <a th:if="${data.statusAktif == 'AKTIF'}" href="" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
                                                     <a th:if="${data.statusAktif == 'CUTI'}" href="" class="btn btn-info btn-sm"><i class="fa fa-plus"></i></a>
                                                     <a th:if="${data.statusAktif == 'LULUS'}" href="" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
-                                                    <a th:if="${data.statusAktif == 'NONAKTIF'}" href="" class="btn btn-danger btn-sm"><i class="fa fa-close"></i></a>
+                                                    <a th:if="${data.statusAktif == 'KELUAR'}" href="" class="btn btn-danger btn-sm"><i class="fa fa-close"></i></a>
+                                                    <a th:if="${data.statusAktif == 'MENGUNDURKAN_DIRI'}" href="" class="btn btn-danger btn-sm"><i class="fa fa-close"></i></a>
 
-                                                    <td th:if="${data.statusAktif == 'NONAKTIF'}"><span class="btn btn-danger btn-sm">NONAKTIF</span></td>
+                                                    <td th:if="${data.statusAktif == 'MENGUNDURKAN_DIRI'}"><span class="btn btn-danger btn-sm">MENGUNDURKAN DIRI</span></td>
+                                                    <td th:if="${data.statusAktif == 'KELUAR'}"><span class="btn btn-danger btn-sm">KELUAR</span></td>
                                                     <td th:if="${data.statusAktif == 'LULUS'}"><span class="btn btn-success btn-sm">LULUS</span></td>
                                                     <td th:if="${data.statusAktif == 'CUTI'}"><span class="btn btn-info btn-sm">CUTI</span></td>
                                                     <td th:if="${data.statusAktif == 'AKTIF'}"><span class="btn btn-primary btn-sm">AKTIF</span></td>
@@ -407,8 +409,7 @@
                                                     <br>
 
                                                     <a th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i> Lihat Lebih Detail</a>
-                                                    <a href="!#" data-toggle="modal" class="btn btn-primary btn-sm" th:data-target="${'#exampleModal' + data.id}"
-                                                       sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')"><i class="fa fa-pencil"></i> Ubah Status</a>
+                                                    <a href="!#" data-toggle="modal" class="btn btn-primary btn-sm" th:data-target="${'#exampleModal' + data.id}"><i class="fa fa-pencil"></i> Ubah Status</a>
                                                     </a>
 
 
@@ -454,9 +455,13 @@
                                                                 <span class="btn-inner--icon"><i class="fas fa-check"></i></span>
                                                                 <span class="btn-inner--text">AKTIF</span>
                                                             </a>
-                                                            <a th:href="@{/mahasiswa/nonaktif(mahasiswa = ${data.id})}" class="btn btn-danger text-white btn-icon">
+                                                            <a th:href="@{/mahasiswa/keluar(mahasiswa = ${data.id})}" class="btn btn-danger text-white btn-icon">
                                                                 <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
-                                                                <span class="btn-inner--text">NONAKTIF</span>
+                                                                <span class="btn-inner--text">KELUAR</span>
+                                                            </a>
+                                                            <a th:href="@{/mahasiswa/mengundurkandiri(mahasiswa = ${data.id})}" class="btn btn-danger text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
+                                                                <span class="btn-inner--text">Mengundurkan Diri</span>
                                                             </a>
                                                             <a onclick="myFunction()" class="btn btn-warning text-dark btn-icon">
                                                                 <span class="btn-inner--icon"><i class="fas fa-hourglass-start"></i></span>

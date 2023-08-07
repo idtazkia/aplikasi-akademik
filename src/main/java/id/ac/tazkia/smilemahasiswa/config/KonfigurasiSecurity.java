@@ -187,7 +187,8 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/mahasiswa/aktif")
                 .antMatchers("/api/dosen/aktif")
                 .antMatchers("/api/performance/mahasiswa")
-                .antMatchers("/api/enrollKrsMahasiswa");
+                .antMatchers("/api/enrollKrsMahasiswa")
+                .antMatchers("/generate-sesikuliah/{id}");
     }
 
     @Bean

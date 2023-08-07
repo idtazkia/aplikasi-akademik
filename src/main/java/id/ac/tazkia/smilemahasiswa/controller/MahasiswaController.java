@@ -344,6 +344,13 @@ public class MahasiswaController {
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
+    @GetMapping("/mahasiswa/mengundurkandiri")
+    public String statusMengundurkanDiri(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("MENGUNDURKAN_DIRI");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list?search="+ mahasiswa.getNama();
+    }
+
     @GetMapping("/mahasiswa/lulus")
     public String statusLulus(@RequestParam Mahasiswa mahasiswa){
         mahasiswa.setStatusAktif("LULUS");
@@ -373,7 +380,7 @@ public class MahasiswaController {
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
-    @PostMapping("/mahasiswa/keluar")
+    @GetMapping("/mahasiswa/keluar")
     public String statusKeluar(@RequestParam Mahasiswa mahasiswa){
         mahasiswa.setStatusAktif("KELUAR");
         mahasiswaDao.save(mahasiswa);

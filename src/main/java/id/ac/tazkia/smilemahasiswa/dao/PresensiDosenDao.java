@@ -28,6 +28,14 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
                         "where pd.status in ('AKTIF','NONAKTIF') and pd.id_jadwal = ?1 order by pd.waktu_masuk desc", nativeQuery = true)
         List<PresensiDosenDto> listPresensiDosen(Jadwal jadwal);
 
+        @Query(value = "SELECT pd.id as idPresensi, sk.id as sesi,pd.waktu_masuk as masuk, pd.waktu_selesai as selesai,k.nama_karyawan as dosen,sk.berita_acara as berita\n"
+                +
+                "FROM presensi_dosen as pd inner join sesi_kuliah as sk on pd.id = sk.id_presensi_dosen inner join dosen as d on pd.id_dosen = d.id inner join karyawan as k on d.id_karyawan = k.id\n"
+                +
+                "where pd.status = 'AKTIF' and pd.id_jadwal = ?1 order by pd.waktu_masuk desc", nativeQuery = true)
+        List<PresensiDosenDto> listPresensiDosen2(Jadwal jadwal);
+
+
         @Query(value = "\tselect d.nama_karyawan as dosen, e.nama_kelas as kelas, nama_matakuliah as matkul,b.jam_mulai as mulai, a.waktu_masuk as realisasi,\n"
                         +
                         "\tTIMEDIFF(a.waktu_masuk,STR_TO_DATE(concat(date(a.waktu_masuk),' ',b.jam_mulai), '%Y-%m-%d %T')) as rangeWaktu, pertemuan, \n"
