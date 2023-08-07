@@ -264,7 +264,7 @@ public class SidangController {
 
                     }
                 }
-
+                //
                 KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
                 if (krsDetail != null) {
                     return "graduation/sidang/mahasiswa/pendaftaran";
@@ -1753,7 +1753,7 @@ public class SidangController {
         String jenis = null;
         String kode = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang();
         if ("S1".equalsIgnoreCase(kode)) {
-            jenis = "Stripsi";
+            jenis = "Skripsi";
         } else if ("S2".equalsIgnoreCase(kode)) {
             jenis = "Thesis";
         }
