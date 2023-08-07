@@ -666,7 +666,7 @@ public class StudiesActivityController {
                                 jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
                                 LocalDateTime.of(jadwalDto.getTanggal(), jamMulai1), jadwalDto.getPertemuan());
 
-                return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
+                return "redirect:detail2?jadwal=" + jadwalDto.getJadwal().getId();
 
         }
 
@@ -848,7 +848,7 @@ public class StudiesActivityController {
                 sesiKuliahDao.save(sesiKuliah);
                 presensiDosenDao.save(presensiDosen);
 
-                return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
+                return "redirect:detail2?jadwal=" + sesiKuliah.getJadwal().getId();
 
         }
 
@@ -934,7 +934,7 @@ public class StudiesActivityController {
                         presensiMahasiswaDao.save(pm);
                 }
 
-                return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
+                return "redirect:detail2?jadwal=" + sesiKuliah.getJadwal().getId();
 
         }
 
