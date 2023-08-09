@@ -881,24 +881,17 @@ public class SidangController {
 
     @PostMapping("/graduation/sidang/prodi/penjadwalan")
     public String saveJadwal(@ModelAttribute @Valid Sidang sidang) {
-        Sidang sidangById = sidangDao.findById(sidang.getId()).get();
-        sidangById.setAkademik(StatusApprove.APPROVED);
-        sidangById.setStatusSidang(StatusApprove.APPROVED);
-        sidangById.setPembimbing(sidang.getSeminar().getNote().getDosen());
-        sidang.setTanggalUjian(sidang.getTanggalUjian());
-        sidang.setJamMulai(sidang.getJamMulai());
-        sidang.setJamSelesai(sidang.getJamSelesai());
-        sidang.setRuangan(sidang.getRuangan());
-        sidang.setKetuaPenguji(sidang.getKetuaPenguji());
-        sidang.setDosenPenguji(sidang.getDosenPenguji());
+        sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setStatusSidang(StatusApprove.APPROVED);
+        sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
 
-        if (sidangById.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
-            sidangById.setPembimbing2(sidang.getSeminar().getNote().getDosen2());
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
+            sidang.setPembimbing2(sidang.getSeminar().getNote().getDosen2());
         }
-        sidangDao.save(sidangById);
+        sidangDao.save(sidang);
 
-        return "redirect:list?tahunAkademik=" + sidangById.getTahunAkademik().getId() + "&prodi="
-                + sidangById.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/admin/tolak")
