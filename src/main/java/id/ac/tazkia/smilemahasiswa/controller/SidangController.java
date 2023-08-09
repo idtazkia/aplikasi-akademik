@@ -885,6 +885,12 @@ public class SidangController {
         sidangById.setAkademik(StatusApprove.APPROVED);
         sidangById.setStatusSidang(StatusApprove.APPROVED);
         sidangById.setPembimbing(sidang.getSeminar().getNote().getDosen());
+        sidang.setTanggalUjian(sidang.getTanggalUjian());
+        sidang.setJamMulai(sidang.getJamMulai());
+        sidang.setJamSelesai(sidang.getJamSelesai());
+        sidang.setRuangan(sidang.getRuangan());
+        sidang.setKetuaPenguji(sidang.getKetuaPenguji());
+        sidang.setDosenPenguji(sidang.getDosenPenguji());
 
         if (sidangById.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
             sidangById.setPembimbing2(sidang.getSeminar().getNote().getDosen2());
