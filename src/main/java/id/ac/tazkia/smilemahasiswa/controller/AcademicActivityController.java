@@ -135,6 +135,18 @@ public class  AcademicActivityController {
     @Autowired
     private EdomQuestionDao edomQuestionDao;
 
+    @Autowired
+    private PresensiDosenDao presensiDosenDao;
+
+    @Autowired
+    private SesiKuliahDao sesiKuliahDao;
+
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
+
+    @Autowired
+    private SeminarDao seminarDao;
+
 
     @Value("classpath:/sample/jadwalUjian.xlsx")
     private Resource getContohExcelJadwalUjian;
@@ -1932,5 +1944,56 @@ public class  AcademicActivityController {
 
         return "redirect:ujian";
     }
+
+
+    @GetMapping("/analytics/dosen/list")
+    public void analitikDosen(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable pageable, String search) {
+
+        TahunAkademik tahunAkademikAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        model.addAttribute("selectedTahun", tahunAkademik);
+
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+
+        model.addAttribute("jmlDosen", dosenDao.countDosenByStatus(StatusRecord.AKTIF));
+
+
+        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademikAktif, StatusPresensi.HADIR.toString()));
+        model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademikAktif, StatusPresensi.TERLAMBAT.toString()));
+
+        model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademikAktif, StatusKelas.Online.toString()));
+        model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademikAktif, StatusKelas.Offline.toString()));
+
+
+        if (StringUtils.hasText(search) && tahunAkademik == null) {
+            model.addAttribute("search", search);
+            model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademikAktif, search, pageable));
+        } else if (StringUtils.hasText(search)){
+            model.addAttribute("search", search);
+            model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademik, search, pageable));
+        } else if (tahunAkademik != null){
+            model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik, pageable));
+        } else {
+            model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademikAktif, pageable));
+        }
+
+    }
+
+    @GetMapping("/analytics/mahasiswa/list")
+    public void analitikMahasiswa(Model model, @PageableDefault(size = 10) Pageable pageable) {
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        model.addAttribute("jmlMhsA", krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik, StatusRecord.AKTIF));
+
+//        model.addAttribute("jmlMahasiswaOntime", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.HADIR.toString()));
+//        model.addAttribute("jmlMahasiswaTerlambat", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
+//
+//        model.addAttribute("jmlSempro", seminarDao.jmlSempro("20192",StatusApprove.APPROVED.toString()));
+//
+//        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
+
+    }
+
 
 }
