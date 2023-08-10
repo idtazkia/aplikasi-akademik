@@ -261,33 +261,37 @@
                 <br>
 
 <!--                table dosen-->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card mb-4">
-                            <div class="card-header pb-0">
-                                <h4>Kehadiran Dosen Terbaik</h4>
-                            </div>
-                            <div class="card-body px-0 pt-0 pb-2">
-                                <div class="table-responsive p-0">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
-                                            <th class="opacity-7"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="data, row : ${klasemenDosen}">
-                                            <td th:text="${(row.index + 1)}"></td>
-                                            <td th:text="${data[4]}"></td>
-                                            <td th:text="${data[5]}">
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+<!--                <div class="row">-->
+<!--                    <div class="col-12">-->
+<!--                        <div class="card mb-4">-->
+<!--                            <div class="card-header pb-0">-->
+<!--                                <h4>Kehadiran Dosen Terbaik</h4>-->
+<!--                            </div>-->
+<!--                            <div class="card-body px-0 pt-0 pb-2">-->
+<!--                                <div class="table-responsive p-0">-->
+<!--                                    <table class="table align-items-center mb-0">-->
+<!--                                        <thead>-->
+<!--                                        <tr>-->
+<!--                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>-->
+<!--                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama</th>-->
+<!--                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>-->
+<!--                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Sesi Tepat Waktu</th>-->
+<!--                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total Semua Sesi</th>-->
+<!--                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Persentase</th>-->
+<!--                                        </tr>-->
+<!--                                        </thead>-->
+<!--                                        <tbody>-->
+<!--                                        <tr th:each="data, row : ${klasemenDosen}">-->
+<!--                                            <td th:text="${(row.index + 1)}"></td>-->
+<!--                                            <td th:text="${data.getDosen}"></td>-->
+<!--                                            <td th:text="${data.getNamaProdi}"></td>-->
+<!--                                            <td th:text="${data.getSesiTepatWaktu}"></td>-->
+<!--                                            <td th:text="${data.getSemuaSesi}"></td>-->
+<!--                                            <td th:text="${data.getPersentase} + '%'"></td>-->
+<!--                                        </tr>-->
+<!--                                        </tbody>-->
+<!--                                    </table>-->
+<!--                                </div>-->
 <!--                                <div class="card-footer py-4">-->
 <!--                                    <nav aria-label="...">-->
 <!--                                        <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
@@ -376,6 +380,7 @@
                                                             <th>SKS</th>
                                                             <th>Dosen</th>
                                                             <th>Status</th>
+                                                            <th></th>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="list">

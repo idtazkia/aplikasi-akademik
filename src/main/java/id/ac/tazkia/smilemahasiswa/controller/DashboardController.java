@@ -10,9 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -857,6 +861,26 @@ public class DashboardController {
         }
     }
 
+//    @Bean
+//    public PageableHandlerMethodArgumentResolverCustomizer customize() {
+//        return pageableResolver -> {
+//            pageableResolver.setOneIndexedParameters(true); // Optional: Start page numbers from 1
+//            pageableResolver.setMaxPageSize(100); // Optional: Set max page size
+//        };
+//    }
+//
+//    @Bean
+//    @Qualifier("pageableDashboard1")
+//    public Pageable pageableDashboard1() {
+//        return PageRequest.of(0, 15); // Example: Page 0, Size 10
+//    }
+//
+//    @Bean
+//    @Qualifier("pageableDashboard2")
+//    public Pageable pageableDashboard2() {
+//        return PageRequest.of(0, 10); // Example: Page 0, Size 20
+//    }
+
     @GetMapping("/admin")
     public String adminDashboard(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable pageable) {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -902,7 +926,7 @@ public class DashboardController {
         model.addAttribute("jmlSempro", seminarDao.jmlSempro(tahunAkademik,StatusApprove.APPROVED.toString()));
 
 
-        model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik,StatusPresensi.HADIR.toString(), pageable));
+//        model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik, pageableDashboard2));
 //        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
 
 
