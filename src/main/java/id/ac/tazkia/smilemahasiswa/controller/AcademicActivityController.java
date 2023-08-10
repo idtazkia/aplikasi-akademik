@@ -1724,11 +1724,11 @@ public class  AcademicActivityController {
     }
 
     @Transactional
-    @Scheduled(cron = "0 59 23 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
     public void setFinal(){
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (LocalDate.now().compareTo(tahun.getTanggalSelesaiNilai().plusDays(2)) == 0){
+        if (LocalDate.now().compareTo(tahun.getTanggalSelesaiNilai().plusDays(1)) == 0){
             krsDetailDao.updateFinalisasi(tahun.getId());
             jadwalDao.updateFinalStatus(tahun.getId());
             System.out.println("TerUpdate final.");
