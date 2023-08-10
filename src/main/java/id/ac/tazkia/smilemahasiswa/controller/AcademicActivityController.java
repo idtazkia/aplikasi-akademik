@@ -1952,7 +1952,6 @@ public class  AcademicActivityController {
         TahunAkademik tahunAkademikAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         model.addAttribute("selectedTahun", tahunAkademik);
-
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         model.addAttribute("jmlDosen", dosenDao.countDosenByStatus(StatusRecord.AKTIF));
