@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.RekapPresensiDto;
+import id.ac.tazkia.smilemahasiswa.dto.elearning.KlasemenDosenIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -68,28 +69,47 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
                         "where pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF' and pd.status_presensi = ?2", nativeQuery = true)
         Object jmlKelas(TahunAkademik tahunAkademik, String statusPresensi);
 
-        @Query(value = "SELECT pd.id, pd.id_tahun_akademik, pd.id_jadwal, pd.id_dosen,kr.nama_karyawan,pr.nama_prodi, count(pd.id) as kehadiran\n"
-                        +
-                        "FROM presensi_dosen as pd\n" +
-                        "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
-                        "inner join dosen as ds on pd.id_dosen = ds.id\n" +
-                        "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
-                        "inner join prodi as pr on jd.id_prodi = pr.id\n" +
-                        "where pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF' and pd.status_presensi = ?2\n" +
-                        "group by id_dosen\n" +
-                        "order by count(pd.id) DESC", countQuery = "SELECT COUNT(id) as id FROM \n" +
-                                        "(SELECT pd.id, pd.id_tahun_akademik, pd.id_jadwal, pd.waktu_masuk, pd.waktu_selesai,pd.status_presensi, pd.status, pd.id_dosen,kr.nama_karyawan,pr.nama_prodi, jd.jam_mulai, jd.jam_selesai, count(pd.id) as kehadiran\n"
-                                        +
-                                        "FROM presensi_dosen as pd\n" +
-                                        "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
-                                        "inner join dosen as ds on pd.id_dosen = ds.id\n" +
-                                        "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
-                                        "inner join prodi as pr on jd.id_prodi = pr.id\n" +
-                                        "where pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF' and pd.status_presensi = ?2\n"
-                                        +
-                                        "group by id_dosen\n" +
-                                        "order by count(pd.id) DESC) as a", nativeQuery = true)
-        Page<Object[]> klasemenDosen(TahunAkademik tahunAkademik, String statusPresensi, Pageable pageable);
+        @Query(value = "SELECT pd.id, pd.id_tahun_akademik, pd.id_jadwal, pd.waktu_masuk, pd.waktu_selesai,pd.status_presensi, pd.status, pd.id_dosen,kr.nama_karyawan as dosen,pr.nama_prodi as namaProdi, \n" +
+                "jd.jam_mulai, jd.jam_selesai, sum(if(pd.status_presensi = 'HADIR', 1, 0)) as sesiTepatWaktu, COUNT(pd.id) as semuaSesi, round((sum(if(pd.status_presensi = 'HADIR', 1, 0)) * 100)/count(pd.id),2) as persentase\n" +
+                "FROM presensi_dosen as pd\n" +
+                "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
+                "inner join dosen as ds on pd.id_dosen = ds.id\n" +
+                "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
+                "inner join prodi as pr on jd.id_prodi = pr.id\n" +
+                "where pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF'\n" +
+                "group by pd.id_dosen\n" +
+                "having count(pd.id) >= 32\n" +
+                "order by persentase DESC,sesiTepatWaktu DESC",countQuery = "SELECT COUNT(id) as jml from (select pd.id as id\n" +
+                "FROM presensi_dosen as pd\n" +
+                "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
+                "inner join dosen as ds on pd.id_dosen = ds.id\n" +
+                "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
+                "inner join prodi as pr on jd.id_prodi = pr.id\n" +
+                "where pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF'\n" +
+                "group by pd.id_dosen\n" +
+                "having count(pd.id) >= 32) as a", nativeQuery = true)
+        Page<KlasemenDosenIntDto> klasemenDosen(TahunAkademik tahunAkademik, Pageable pageable);
+
+        @Query(value = "SELECT pd.id, pd.id_tahun_akademik, pd.id_jadwal, pd.waktu_masuk, pd.waktu_selesai,pd.status_presensi, pd.status, pd.id_dosen,kr.nama_karyawan as dosen,pr.nama_prodi as namaProdi, \n" +
+                "jd.jam_mulai, jd.jam_selesai, sum(if(pd.status_presensi = 'HADIR', 1, 0)) as sesiTepatWaktu, COUNT(pd.id) as semuaSesi, round((sum(if(pd.status_presensi = 'HADIR', 1, 0)) * 100)/count(pd.id),2) as persentase\n" +
+                "FROM presensi_dosen as pd\n" +
+                "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
+                "inner join dosen as ds on pd.id_dosen = ds.id\n" +
+                "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
+                "inner join prodi as pr on jd.id_prodi = pr.id\n" +
+                "where pd.id_tahun_akademik = ?1 and kr.nama_karyawan LIKE %?2% and pd.status = 'AKTIF'\n" +
+                "group by pd.id_dosen\n" +
+                "having count(pd.id) >= 32\n" +
+                "order by persentase DESC,sesiTepatWaktu DESC",countQuery = "SELECT COUNT(id) as jml from (select pd.id as id\n" +
+                "FROM presensi_dosen as pd\n" +
+                "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
+                "inner join dosen as ds on pd.id_dosen = ds.id\n" +
+                "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
+                "inner join prodi as pr on jd.id_prodi = pr.id\n" +
+                "where pd.id_tahun_akademik = ?1 and kr.nama_karyawan LIKE %?2% and pd.status = 'AKTIF'\n" +
+                "group by pd.id_dosen\n" +
+                "having count(pd.id) >= 32) as a", nativeQuery = true)
+        Page<KlasemenDosenIntDto> klasemenDosenByTahunDanSearch(TahunAkademik tahunAkademik,String dosen, Pageable pageable);
 
         @Query(value = "select a.id_jadwal as jadwal,a.id_dosen as dosen,a.nama_karyawan as nama,a.email as email,a.nama_matakuliah as matkul,a.nama_kelas as kelas,a.sks as sks,a.month as bulan,a.day as hari,a.date as tanggal,a.total_sesi as totalsesi,a.total_sks as totalsks,coalesce(total_seluruh_sesi,0) as totalseluruhsesi, sks * coalesce(total_seluruh_sesi,0) as totalseluruhsks,idprodi,prodi,idjenjang,jenjang, sdosen from\n"
                         +
