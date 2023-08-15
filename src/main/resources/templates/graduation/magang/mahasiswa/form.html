@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Magang</title>
+    <style type="text/css">
+        .card {
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        .card-header {
+            padding: 15px;
+            border-bottom: 1px solid #eeeeee;
+            color: #4285f4;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <section layout:fragment="main" class="content">
+        <div class="breadcomb-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="breadcomb-list">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-xs-12">
+                                    <div class="breadcomb-wp">
+                                        <div class="breadcomb-icon">
+                                            <i class="notika-icon notika-form"></i>
+                                        </div>
+                                        <div class="breadcomb-ctn">
+                                            <h2>Upload Laporan Magang</h2>
+                                            <!--                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-xs-12">
+                                    <!--<div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row" style="padding: 15px">
+                <div class="col-md-12 col-xs-12 card">
+                    <div class="card-header">
+                        Upload Magang
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-6 col-xs-12">
+                            <img src="https://img.freepik.com/free-vector/illustrated-woman-being-intern-company_23-2148726151.jpg?w=826&t=st=1691978704~exp=1691979304~hmac=8d7889b73f40babe4bf670efdc47f5084d788e89fd2e861ffd8a9002669eb1c7"
+                                alt="">
+                        </div>
+                        <div class="col-md-6 col-xs-12" style="padding-top: 15px;">
+                            <form th:action="@{/graduation/magang}" method="post" enctype="multipart/form-data"
+                                th:object="${magang}">
+                                <input type="hidden" name="id" th:field="*{id}">
+                                <input type="hidden" name="komentar" th:field="*{komentar}">
+                                <input type="hidden" name="status" th:field="*{status}">
+                                <div class="form-group float-lb">
+                                    <label>File Laporan Magang</label>
+                                    <div class="nk-int-st">
+                                        <input type="file" required accept="application/pdf" name="laporan"
+                                            class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group float-lb">
+                                    <label>File Lembar Penilaian Magang</label>
+                                    <div class="nk-int-st">
+                                        <input type="file" required accept="application/pdf" name="penilaian"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group float-lb">
+                                    <div class="nk-int-st">
+                                        <button type="submit"
+                                            class="btn btn-primary notika-btn-primary btn-sm waves-effect">Simpan</button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

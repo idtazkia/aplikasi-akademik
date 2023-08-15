@@ -1,8 +1,6 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      class="no-js" lang="">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" class="no-js" lang="">
 
 <head>
     <meta charset="utf-8">
@@ -71,22 +69,23 @@
 </head>
 
 <body>
-<!--[if lt IE 8]>
+    <!--[if lt IE 8]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
-<!-- Start Header Top Area -->
-<div class="header-top-area">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                <div class="logo-area">
-                    <b style="color: white; font-size: 24px;">Smile</b>
+    <!-- Start Header Top Area -->
+    <div class="header-top-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="logo-area">
+                        <b style="color: white; font-size: 24px;">Smile</b>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                <div class="header-top-menu">
-                    <ul class="nav navbar-nav notika-top-nav">
-                        <li class="nav-item"><a th:href="@{/user/profile(type = 'profile')}" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><span th:text="${#authentication.principal.fullName}"><i class="fa fa-user"></i></span>
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <div class="header-top-menu">
+                        <ul class="nav navbar-nav notika-top-nav">
+                            <li class="nav-item"><a th:href="@{/user/profile(type = 'profile')}" role="button"
+                                    aria-expanded="false" class="nav-link dropdown-toggle"><span th:text="${#authentication.principal.fullName}"><i class="fa fa-user"></i></span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -126,6 +125,7 @@
                                 <ul id="d" class="collapse dropdown-header-top">
                                     <li><a th:href="@{/graduation/register}">Tugas Akhir</a></li>
                                     <li><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
+                                    <li><a th:href="@{/tahfidz}">Laporan Magang</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -172,6 +172,7 @@
                                 <a th:href="@{/graduation/register}">Tugas Akhir</a>
                             </li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/graduation/daftar-magang}">Laporan Magang</a></li>
                         </ul>
                     </div>
                     <div id="Adm" class="tab-pane notika-tab-menu-bg animated flipInX">

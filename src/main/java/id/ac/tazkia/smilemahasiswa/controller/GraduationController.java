@@ -1,22 +1,36 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import com.lowagie.text.DocumentException;
-import fr.opensagres.xdocreport.converter.ConverterTypeTo;
-import fr.opensagres.xdocreport.converter.Options;
-import fr.opensagres.xdocreport.core.document.DocumentKind;
-import fr.opensagres.xdocreport.document.IXDocReport;
-import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
-import fr.opensagres.xdocreport.template.IContext;
-import fr.opensagres.xdocreport.template.TemplateEngineKind;
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.ScoreService;
-import id.ac.tazkia.smilemahasiswa.service.SidangService;
-import org.apache.poi.ss.usermodel.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,28 +50,67 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.lowagie.text.DocumentException;
+
+import fr.opensagres.xdocreport.converter.ConverterTypeTo;
+import fr.opensagres.xdocreport.converter.Options;
+import fr.opensagres.xdocreport.core.document.DocumentKind;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.FileMagangDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.NoteDao;
+import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
+import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
+import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dao.TagihanDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.WisudaDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.EnableFiture;
+import id.ac.tazkia.smilemahasiswa.entity.FileMagang;
+import id.ac.tazkia.smilemahasiswa.entity.Hari;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Note;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Ruangan;
+import id.ac.tazkia.smilemahasiswa.entity.Seminar;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.SidangService;
 
 @Controller
 public class GraduationController {
@@ -68,6 +121,9 @@ public class GraduationController {
 
     @Value("${upload.seminar}")
     private String seminarFolder;
+
+    @Value("${upload.magang}")
+    private String magangFolder;
 
     @Autowired
     private DosenDao dosenDao;
@@ -105,7 +161,8 @@ public class GraduationController {
     @Autowired
     private JenjangDao jenjangDao;
 
-    @Autowired private ScoreService scoreService;
+    @Autowired
+    private ScoreService scoreService;
 
     @Autowired
     private RuanganDao ruanganDao;
@@ -126,6 +183,9 @@ public class GraduationController {
     private TagihanDao tagihanDao;
 
     @Autowired
+    private FileMagangDao fileMagangDao;
+
+    @Autowired
     private SidangService sidangService;
 
     @Value("classpath:sample/example.xlsx")
@@ -134,7 +194,7 @@ public class GraduationController {
     @Value("classpath:sample/sempro1.odt")
     private Resource formulirSempro1;
 
-//    Attribute
+    // Attribute
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -156,25 +216,26 @@ public class GraduationController {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
     }
 
-    //    API
+    // API
     @GetMapping("/api/seminar")
     @ResponseBody
-    public Object[] validasiSeminar(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
-                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
-                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
-        if (tanggal.getDayOfWeek().getValue() == 7){
+    public Object[] validasiSeminar(@RequestParam Ruangan ruangan,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamSelesai) {
+        if (tanggal.getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            return seminarDao.validasiJadwalSeminar(ta,hari,ruangan,jamMulai,jamSelesai,tanggal,1);
-        }else {
+            return seminarDao.validasiJadwalSeminar(ta, hari, ruangan, jamMulai, jamSelesai, tanggal, 1);
+        } else {
             Hari hari = hariDao.findById(String.valueOf(tanggal.getDayOfWeek().getValue())).get();
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            return seminarDao.validasiJadwalSeminar(tahunAkademik,hari,ruangan,jamMulai,jamSelesai,tanggal, 1);
+            return seminarDao.validasiJadwalSeminar(tahunAkademik, hari, ruangan, jamMulai, jamSelesai, tanggal, 1);
 
         }
     }
 
-//    Graduation Mahasiswa
+    // Graduation Mahasiswa
     @GetMapping("/graduation/finance")
     public void alertFinance() {
 
@@ -187,49 +248,48 @@ public class GraduationController {
 
         KrsDetail krsDetail = krsDetailDao.cariNilaiThesis(mahasiswa);
 
+        List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
 
-
-
-            List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
-
-            if (empty == null || empty.isEmpty()) {
-                if (krsDetail != null) {
-                    List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
-                    if (wisuda.isEmpty()) {
-                        return "redirect:wisuda/form";
-                    }else {
-                        return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
-                    }
-                }else {
-                    return "graduation/register";
+        if (empty == null || empty.isEmpty()) {
+            if (krsDetail != null) {
+                List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+                if (wisuda.isEmpty()) {
+                    return "redirect:wisuda/form";
+                } else {
+                    return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
                 }
             } else {
-                List<Object> cekSidang = sidangDao.cekSidang(mahasiswa);
-                if (cekSidang == null || cekSidang.isEmpty()) {
-                    List<Object> seminar = seminarDao.cekSeminar(mahasiswa);
-                    if (seminar == null || seminar.isEmpty()) {
-                        return "redirect:list";
-                    } else {
-                        Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
-
-                        return "redirect:seminar/waiting?id=" + approve.getId();
-
-                    }
+                return "graduation/register";
+            }
+        } else {
+            List<Object> cekSidang = sidangDao.cekSidang(mahasiswa);
+            if (cekSidang == null || cekSidang.isEmpty()) {
+                List<Object> seminar = seminarDao.cekSeminar(mahasiswa);
+                if (seminar == null || seminar.isEmpty()) {
+                    return "redirect:list";
                 } else {
-                    List<Wisuda> wisuda = wisudaDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
-                    if (wisuda.isEmpty()) {
-                        Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove.APPROVED, "AKTIF", new BigDecimal(70), mahasiswa);
-                        return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
-                    } else {
-                        return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                    Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
 
-                    }
+                    return "redirect:seminar/waiting?id=" + approve.getId();
+
+                }
+            } else {
+                List<Wisuda> wisuda = wisudaDao.findByMahasiswaAndStatusNotIn(mahasiswa,
+                        Arrays.asList(StatusApprove.HAPUS));
+                if (wisuda.isEmpty()) {
+                    Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(
+                            StatusApprove.APPROVED, "AKTIF", new BigDecimal(70), mahasiswa);
+                    return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
+                } else {
+                    return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+
                 }
             }
+        }
     }
 
     @GetMapping("/graduation/alert")
-    public void alert(@RequestParam(required = false) String matkul,Model model){
+    public void alert(@RequestParam(required = false) String matkul, Model model) {
         model.addAttribute("matkul", matkul);
     }
 
@@ -243,18 +303,18 @@ public class GraduationController {
         Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
         model.addAttribute("note", new Note());
 
-        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
                 System.out.println(magang.length);
                 System.out.println(metolit.length);
-                if (magang.length == 0){
+                if (magang.length == 0) {
                     return "redirect:alert?matkul=Magang";
-                }else {
+                } else {
                     if (metolit.length == 0) {
                         return "redirect:alert?matkul=Metolit";
                     } else {
                         model.addAttribute("note", new Note());
-                    return "graduation/form";
+                        return "graduation/form";
                     }
                 }
             } else {
@@ -266,11 +326,11 @@ public class GraduationController {
             }
         }
 
-        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")){
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")) {
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-                if (metolit.length == 0){
+                if (metolit.length == 0) {
                     return "redirect:alert?matkul=Metolit";
-                }else {
+                } else {
 
                     model.addAttribute("note", new Note());
                     return "graduation/form";
@@ -290,8 +350,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/form")
     public String uploadBukti(@Valid Note note,
-                              BindingResult error, MultipartFile file,
-                              Authentication currentUser) throws Exception {
+            BindingResult error, MultipartFile file,
+            Authentication currentUser) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -301,7 +361,7 @@ public class GraduationController {
             String namaAsli = file.getOriginalFilename();
             Long ukuran = file.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -311,13 +371,11 @@ public class GraduationController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = uploadFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             file.transferTo(tujuan);
-
 
             note.setMahasiswa(mahasiswa);
             note.setFileUpload(idFile + "." + extension);
@@ -325,25 +383,25 @@ public class GraduationController {
             note.setStatus(StatusApprove.WAITING);
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-            }else {
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+            } else {
                 ta = tahunAkademik;
             }
             note.setTahunAkademik(ta);
             noteDao.save(note);
-        }else {
+        } else {
             note.setMahasiswa(mahasiswa);
             note.setFileUpload(note.getFileUpload());
             note.setTanggalInput(LocalDate.now());
             note.setStatus(StatusApprove.WAITING);
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-            }else {
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+            } else {
                 ta = tahunAkademik;
             }
             note.setTahunAkademik(ta);
@@ -362,7 +420,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (note.getFileUpload().toLowerCase().endsWith("jpeg") || note.getFileUpload().toLowerCase().endsWith("jpg")) {
+            if (note.getFileUpload().toLowerCase().endsWith("jpeg")
+                    || note.getFileUpload().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (note.getFileUpload().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -377,7 +436,6 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -390,7 +448,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileSkripsi().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -405,26 +464,24 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
 
     @GetMapping("/graduation/list")
-    public String waitingPage(Model model, Authentication authentication){
+    public String waitingPage(Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        Note waiting = noteDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.WAITING);
-        Note approved = noteDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.APPROVED);
+        Note waiting = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.WAITING);
+        Note approved = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
 
-
-        if (waiting != null){
-            model.addAttribute("waiting",waiting);
+        if (waiting != null) {
+            model.addAttribute("waiting", waiting);
         }
 
-        if (approved != null){
-            model.addAttribute("approved",approved);
-            return "redirect:success?note="+approved.getId();
+        if (approved != null) {
+            model.addAttribute("approved", approved);
+            return "redirect:success?note=" + approved.getId();
         }
 
         List<Note> rejected = noteDao.findByMahasiswaOrderByTanggalInputDesc(mahasiswa);
@@ -433,22 +490,23 @@ public class GraduationController {
             return "redirect:register";
 
         }
-        model.addAttribute("mahasiswa" , mahasiswa);
-        model.addAttribute("rejected" , rejected);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("rejected", rejected);
 
         return "graduation/list";
 
     }
 
     @GetMapping("/graduation/success")
-    public String success(Model model, @RequestParam Note note){
+    public String success(Model model, @RequestParam Note note) {
         List<Seminar> seminar = seminarDao.findByNote(note);
         model.addAttribute("note", note);
-        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),StatusRecord.SEMPRO,true);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),
+                StatusRecord.SEMPRO, true);
         if (enableFiture != null) {
             model.addAttribute("sempro", enableFiture);
-        }else {
-            if (tagihanDao.cekTagihanLunas(note.getMahasiswa().getNim()).isEmpty()){
+        } else {
+            if (tagihanDao.cekTagihanLunas(note.getMahasiswa().getNim()).isEmpty()) {
                 EnableFiture fiture = new EnableFiture();
                 fiture.setEnable(true);
                 fiture.setFitur(StatusRecord.SEMPRO);
@@ -463,29 +521,31 @@ public class GraduationController {
 
         }
 
-        if (!seminar.isEmpty()){
-            return "redirect:seminar/waiting?id="+note.getId();
-        }else {
+        if (!seminar.isEmpty()) {
+            return "redirect:seminar/waiting?id=" + note.getId();
+        } else {
             return "graduation/success";
         }
     }
 
-//    Graduation Admin
+    // Graduation Admin
 
     @GetMapping("/graduation/admin/list")
     public void list(Model model, @RequestParam(required = false) TahunAkademik tahun, Pageable pageable,
-                     @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) StatusApprove status){
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) StatusApprove status) {
 
-        if (tahun != null){
-            if(status != null) {
-                model.addAttribute("selectedTahun",tahun);
-                model.addAttribute("selectedProdi",prodi);
-                model.addAttribute("status",status);
-                model.addAttribute("listNote", noteDao.findByTahunAkademikAndMahasiswaIdProdiAndStatus(tahun,prodi,status,pageable));
-            }else {
-                model.addAttribute("selectedTahun",tahun);
-                model.addAttribute("selectedProdi",prodi);
-                model.addAttribute("listNote", noteDao.findByTahunAkademikAndMahasiswaIdProdiAndStatusNotIn(tahun,prodi, Arrays.asList(StatusApprove.HAPUS),pageable));
+        if (tahun != null) {
+            if (status != null) {
+                model.addAttribute("selectedTahun", tahun);
+                model.addAttribute("selectedProdi", prodi);
+                model.addAttribute("status", status);
+                model.addAttribute("listNote",
+                        noteDao.findByTahunAkademikAndMahasiswaIdProdiAndStatus(tahun, prodi, status, pageable));
+            } else {
+                model.addAttribute("selectedTahun", tahun);
+                model.addAttribute("selectedProdi", prodi);
+                model.addAttribute("listNote", noteDao.findByTahunAkademikAndMahasiswaIdProdiAndStatusNotIn(tahun,
+                        prodi, Arrays.asList(StatusApprove.HAPUS), pageable));
             }
 
         }
@@ -493,14 +553,14 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/admin/form")
-    public void formAdmin(Model model,@RequestParam(value = "id", name = "id") Note note){
+    public void formAdmin(Model model, @RequestParam(value = "id", name = "id") Note note) {
         model.addAttribute("note", note);
     }
 
     @PostMapping("/graduation/admin/approve")
     public String Approve(Authentication authentication,
-                          @RequestParam String idnote,
-                          @ModelAttribute Note note,@RequestParam(required = false) String keterangan){
+            @RequestParam String idnote,
+            @ModelAttribute Note note, @RequestParam(required = false) String keterangan) {
         User user = currentUserService.currentUser(authentication);
 
         Note note1 = noteDao.findById(idnote).get();
@@ -512,11 +572,12 @@ public class GraduationController {
         note1.setUserApprove(user);
         noteDao.save(note1);
 
-        return "redirect:list?tahun="+note1.getTahunAkademik().getId()+"&prodi="+note1.getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahun=" + note1.getTahunAkademik().getId() + "&prodi="
+                + note1.getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/admin/reject")
-    public String Reject(Authentication authentication,@RequestParam String id,@RequestParam String keterangan){
+    public String Reject(Authentication authentication, @RequestParam String id, @RequestParam String keterangan) {
         User user = currentUserService.currentUser(authentication);
         Note note = noteDao.findById(id).get();
         note.setStatus(StatusApprove.REJECTED);
@@ -525,11 +586,13 @@ public class GraduationController {
         note.setUserReject(user);
         noteDao.save(note);
 
-        return "redirect:list?tahun="+note.getTahunAkademik().getId()+"&prodi="+note.getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahun=" + note.getTahunAkademik().getId() + "&prodi="
+                + note.getMahasiswa().getIdProdi().getId();
     }
 
     @GetMapping("/graduation/admin/score")
-    public void uploadScore(@RequestParam(required = false)String list){}
+    public void uploadScore(@RequestParam(required = false) String list) {
+    }
 
     @PostMapping("/graduation/admin/score")
     public String prosesFormUploadUTS(MultipartFile file, RedirectAttributes attributes) throws Exception {
@@ -578,8 +641,7 @@ public class GraduationController {
                         tahunDtos.add(tahunDto);
                     }
 
-
-                }else {
+                } else {
                 }
 
             }
@@ -594,34 +656,36 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/admin/inputscore")
-    public void scoreInput(@RequestParam(required = false)String nim,@RequestParam(required = false)BigDecimal nilai,Model model){
-        model.addAttribute("nim" , nim);
+    public void scoreInput(@RequestParam(required = false) String nim, @RequestParam(required = false) BigDecimal nilai,
+            Model model) {
+        model.addAttribute("nim", nim);
     }
 
     @PostMapping("/graduation/admin/inputscore")
-    public String prosesScoreInput(@RequestParam(required = false)String nim,@RequestParam(required = false)BigDecimal nilai,
-                                   RedirectAttributes attributes){
+    public String prosesScoreInput(@RequestParam(required = false) String nim,
+            @RequestParam(required = false) BigDecimal nilai,
+            RedirectAttributes attributes) {
 
         String krsDetail = null;
-        if (mahasiswaDao.findByNim(nim).getIdProdi().getId().equals("08")){
-            krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Praktek Pengajaran Lapangan");
+        if (mahasiswaDao.findByNim(nim).getIdProdi().getId().equals("08")) {
+            krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF,
+                    "Praktek Pengajaran Lapangan");
 
-        }else {
+        } else {
             krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Magang");
 
         }
-        if (StringUtils.hasText(krsDetail)){
+        if (StringUtils.hasText(krsDetail)) {
             KrsDetail kd = krsDetailDao.findById(krsDetail).get();
             kd.setNilaiAkhir(nilai);
 
             scoreService.hitungNilaiAkhir(kd);
             attributes.addFlashAttribute("success", "success");
 
-        }else {
+        } else {
             attributes.addFlashAttribute("unsuccess", "unsuccess");
         }
-        return "redirect:/graduation/admin/inputscore?nim="+nim;
-
+        return "redirect:/graduation/admin/inputscore?nim=" + nim;
 
     }
 
@@ -633,133 +697,132 @@ public class GraduationController {
         response.getOutputStream().flush();
     }
 
-//    Lecturer
+    // Lecturer
 
     @PreAuthorize("hasAnyAuthority('VIEW_DOSEN','VIEW_KPS')")
     @GetMapping("/graduation/lecture/list")
-    public void listLecture(Authentication authentication, Model model){
+    public void listLecture(Authentication authentication, Model model) {
         User user = currentUserService.currentUser(authentication);
         Dosen dosen = dosenDao.findByKaryawanIdUser(user);
 
         model.addAttribute("listDosen", noteDao.cariDosenPembimbing(dosen));
 
-
     }
 
     @RequestMapping("/graduation/{fileName}")
-    public void downloadPDFResource( HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     @RequestParam Note note,
-                                     @PathVariable("fileName") String fileName)
-    {
-        //If user is not authorized - he should be thrown out from here itself
+    public void downloadPDFResource(HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam Note note,
+            @PathVariable("fileName") String fileName) {
+        // If user is not authorized - he should be thrown out from here itself
 
-        //Authorized user will download the file
-        String lokasi = uploadFolder+File.separator+note.getMahasiswa().getNim();
+        // Authorized user will download the file
+        String lokasi = uploadFolder + File.separator + note.getMahasiswa().getNim();
         String dataDirectory = request.getServletContext().getRealPath(lokasi);
         Path file = Paths.get(lokasi, fileName);
-        if (Files.exists(file))
-        {
+        if (Files.exists(file)) {
             response.setContentType("application/pdf");
-            response.addHeader("Content-Disposition", "attachment; filename="+fileName);
-            try
-            {
+            response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+            try {
                 Files.copy(file, response.getOutputStream());
                 response.getOutputStream().flush();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-//    Seminar Proposal
+    // Seminar Proposal
 
     @GetMapping("/graduation/sempro")
-    public String sempro(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
-        if (note.getStatus() == StatusApprove.APPROVED){
+    public String sempro(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
+        if (note.getStatus() == StatusApprove.APPROVED) {
             model.addAttribute("note", note);
-            Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
 
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-            }else {
-                if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+            } else {
+                if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0) {
                     ta = tahunAkademik;
-                }else {
+                } else {
                     int last = tahunAkademik.getKodeTahunAkademik().length();
                     String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
 
-                    if (lastKode.equals("1")){
+                    if (lastKode.equals("1")) {
                         Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
                         String kode = String.valueOf(tahun) + "2";
-                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-                    }else {
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                                kode);
+                    } else {
                         String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
-                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                                kode);
                     }
 
                 }
             }
 
-            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),ta);
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
 
             if (krsDetail != null) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
-                }else {
+                } else {
                     model.addAttribute("seminar", new Seminar());
                 }
                 return "graduation/sempro";
-            }else {
+            } else {
                 return "redirect:info";
             }
 
-        }else {
+        } else {
 
             return "redirect:register";
         }
 
-
     }
 
     @GetMapping("/graduation/sempropasca")
-    public String semproPasca(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
-        if (note.getStatus() == StatusApprove.APPROVED){
+    public String semproPasca(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
+        if (note.getStatus() == StatusApprove.APPROVED) {
             model.addAttribute("note", note);
-            Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
 
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, note.getMahasiswa().getIdProdi());
+            TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
+                    note.getMahasiswa().getIdProdi());
 
-            if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK){
-                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-            }else {
-                if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))){
+            if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK) {
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+            } else {
+                if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))) {
                     ta = tahunAkademik;
-                }else {
+                } else {
                     int last = tahunAkademik.getKodeTahunAkademik().length();
                     String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
 
-                    if (lastKode.equals("1")){
+                    if (lastKode.equals("1")) {
                         Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
                         String kode = String.valueOf(tahun) + "2";
-                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-                    }else {
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                                kode);
+                    } else {
                         String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
-                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                                kode);
                     }
 
                 }
             }
 
-            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),ta);
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
             if (krsDetail != null) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
@@ -767,68 +830,66 @@ public class GraduationController {
                     model.addAttribute("seminar", new Seminar());
                 }
                 return "graduation/sempropasca";
-            }else {
+            } else {
                 return "redirect:info";
             }
-        }else {
+        } else {
 
             return "redirect:register";
         }
-
 
     }
 
     @GetMapping("/graduation/seminar/ulang")
-    public String daftarUlang(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
-        if (note.getStatus() == StatusApprove.APPROVED){
+    public String daftarUlang(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
+        if (note.getStatus() == StatusApprove.APPROVED) {
             model.addAttribute("note", note);
-            Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
             if (waiting != null) {
                 model.addAttribute("waiting", waiting);
-            }else {
+            } else {
                 model.addAttribute("waiting", new Seminar());
             }
             return "graduation/seminar/ulang";
-        }else {
+        } else {
 
             return "redirect:register";
         }
 
-
     }
 
     @GetMapping("/graduation/seminar/waiting")
-    public String waiting(Model model,@RequestParam(name = "id", value = "id", required = false) Note note, Authentication authentication){
+    public String waiting(Model model, @RequestParam(name = "id", value = "id", required = false) Note note,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("note", note);
-        if (noteDao.findByMahasiswaAndStatus(note.getMahasiswa(),StatusApprove.APPROVED) != null) {
+        if (noteDao.findByMahasiswaAndStatus(note.getMahasiswa(), StatusApprove.APPROVED) != null) {
             Seminar seminar = seminarDao.findByNoteAndStatus(note, StatusApprove.APPROVED);
             if (seminar != null) {
-                return "redirect:success?id="+seminar.getId();
+                return "redirect:success?id=" + seminar.getId();
             } else {
-                Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+                Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
                 model.addAttribute("waiting", waiting);
 
                 model.addAttribute("list", seminarDao.findByNote(note));
                 return "graduation/seminar/waiting";
             }
-        }else {
+        } else {
             return "redirect:../register";
         }
-
 
     }
 
     @GetMapping("/graduation/seminar/success")
-    public String successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
+    public String successPage(Model model, @RequestParam(name = "id", value = "id", required = false) Seminar seminar) {
         model.addAttribute("seminar", seminar);
 
         if (seminar.getPublish() != null) {
 
             if (seminar.getPublish().equals("AKTIF")) {
-                return "redirect:nilai?id="+seminar.getId();
+                return "redirect:nilai?id=" + seminar.getId();
             }
         }
 
@@ -836,11 +897,13 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/seminar/nilai")
-    public String nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
+    public String nilaiPage(Model model, @RequestParam(name = "id", value = "id", required = false) Seminar seminar) {
         model.addAttribute("seminar", seminar);
         List<Sidang> sidang = sidangDao.findBySeminar(seminar);
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SKRIPSI,Boolean.TRUE);
-        EnableFiture semprop = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SEMPRO,Boolean.TRUE);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),
+                StatusRecord.SKRIPSI, Boolean.TRUE);
+        EnableFiture semprop = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),
+                StatusRecord.SEMPRO, Boolean.TRUE);
         if (semprop != null) {
             model.addAttribute("sempro", semprop);
             if (enableFiture != null) {
@@ -848,19 +911,18 @@ public class GraduationController {
                 System.out.println(enableFiture);
             }
         }
-        if (sidang.isEmpty()){
+        if (sidang.isEmpty()) {
             return "graduation/seminar/nilai";
-        }else {
-            return "redirect:../sidang/mahasiswa/list?id="+seminar.getId();
+        } else {
+            return "redirect:../sidang/mahasiswa/list?id=" + seminar.getId();
         }
-
 
     }
 
     @PostMapping("/graduation/sempro")
     public String prosesSeminar(@Valid Seminar seminar,
-                                BindingResult error, MultipartFile kartu,MultipartFile skripsi,MultipartFile pengesahan,
-                                Authentication currentUser,MultipartFile formulir) throws Exception {
+            BindingResult error, MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
+            Authentication currentUser, MultipartFile formulir) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -870,7 +932,7 @@ public class GraduationController {
             String namaAsli = kartu.getOriginalFilename();
             Long ukuran = kartu.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -879,7 +941,6 @@ public class GraduationController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
@@ -887,17 +948,16 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             kartu.transferTo(tujuan);
 
-
             seminar.setFileBimbingan(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileBimbingan(seminar.getFileBimbingan());
         }
 
         if (!formulir.isEmpty() || formulir != null) {
             String namaAsli = formulir.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -907,17 +967,15 @@ public class GraduationController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             formulir.transferTo(tujuan);
 
-
             seminar.setFileFormulir(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileFormulir(seminar.getFileBimbingan());
         }
 
@@ -927,7 +985,7 @@ public class GraduationController {
             String namaAsli = pengesahan.getOriginalFilename();
             Long ukuran = pengesahan.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -937,17 +995,15 @@ public class GraduationController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             pengesahan.transferTo(tujuan);
 
-
             seminar.setFilePengesahan(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFilePengesahan(seminar.getFilePengesahan());
         }
 
@@ -957,7 +1013,7 @@ public class GraduationController {
             String namaAsli = skripsi.getOriginalFilename();
             Long ukuran = skripsi.getSize();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -967,17 +1023,15 @@ public class GraduationController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             skripsi.transferTo(tujuan);
 
-
             seminar.setFileSkripsi(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileSkripsi(seminar.getFileSkripsi());
         }
 
@@ -987,30 +1041,30 @@ public class GraduationController {
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-            String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-        }else {
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
             ta = tahunAkademik;
         }
         seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
 
-        return "redirect:seminar/waiting?id="+seminar.getNote().getId();
+        return "redirect:seminar/waiting?id=" + seminar.getNote().getId();
 
     }
 
     @PostMapping("/graduation/sempropasca")
-    public String prosesSeminarPasca(@Valid Seminar seminar,MultipartFile turnitin,MultipartFile coverNote,
-                                     BindingResult error, MultipartFile kartu,MultipartFile skripsi,MultipartFile pengesahan,
-                                     Authentication currentUser,MultipartFile formulir) throws Exception {
+    public String prosesSeminarPasca(@Valid Seminar seminar, MultipartFile turnitin, MultipartFile coverNote,
+            BindingResult error, MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
+            Authentication currentUser, MultipartFile formulir) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         if (kartu.getSize() > 0) {
             String namaAsli = kartu.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -1019,7 +1073,6 @@ public class GraduationController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
@@ -1027,17 +1080,16 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             kartu.transferTo(tujuan);
 
-
             seminar.setFileBimbingan(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileBimbingan(seminar.getFileBimbingan());
         }
 
         if (formulir.getSize() > 0) {
             String namaAsli = formulir.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -1046,7 +1098,6 @@ public class GraduationController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
@@ -1054,17 +1105,16 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             formulir.transferTo(tujuan);
 
-
             seminar.setFileFormulir(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileFormulir(seminar.getFileBimbingan());
         }
 
         if (pengesahan.getSize() > 0) {
             String namaAsli = pengesahan.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -1073,7 +1123,6 @@ public class GraduationController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
@@ -1081,17 +1130,16 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             pengesahan.transferTo(tujuan);
 
-
             seminar.setFilePengesahan(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFilePengesahan(seminar.getFilePengesahan());
         }
 
         if (skripsi.getSize() > 0) {
             String namaAsli = skripsi.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -1100,7 +1148,6 @@ public class GraduationController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
@@ -1108,17 +1155,16 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             skripsi.transferTo(tujuan);
 
-
             seminar.setFileSkripsi(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileSkripsi(seminar.getFileSkripsi());
         }
 
         if (turnitin.getSize() > 0) {
             String namaAsli = turnitin.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -1127,7 +1173,6 @@ public class GraduationController {
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
-
 
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
@@ -1135,17 +1180,16 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             turnitin.transferTo(tujuan);
 
-
             seminar.setFileTurnitin(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileTurnitin(seminar.getFileSkripsi());
         }
 
         if (coverNote.getSize() > 0) {
             String namaAsli = coverNote.getOriginalFilename();
 
-//        memisahkan extensi
+            // memisahkan extensi
             String extension = "";
 
             int i = namaAsli.lastIndexOf('.');
@@ -1155,17 +1199,15 @@ public class GraduationController {
                 extension = namaAsli.substring(i + 1);
             }
 
-
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             coverNote.transferTo(tujuan);
 
-
             seminar.setFileCoverNote(idFile + "." + extension);
 
-        }else {
+        } else {
             seminar.setFileCoverNote(seminar.getFileSkripsi());
         }
 
@@ -1175,97 +1217,107 @@ public class GraduationController {
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
-            String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
-            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
-        }else {
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
             ta = tahunAkademik;
         }
         seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
 
-        return "redirect:seminar/waiting?id="+seminar.getNote().getId();
+        return "redirect:seminar/waiting?id=" + seminar.getNote().getId();
 
     }
 
     @GetMapping("/graduation/seminar/list")
     public void seminarList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                            @RequestParam(required = false) Prodi prodi, Pageable pageable, Authentication authentication){
+            @RequestParam(required = false) Prodi prodi, Pageable pageable, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
             if ("kps".equalsIgnoreCase(user.getRole().getName())) {
-                model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED, StatusApprove.WAITING),pageable));
-            }else{
-                model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),pageable));
+                model.addAttribute("listSempro", seminarDao
+                        .findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(
+                                tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED, StatusApprove.WAITING),
+                                pageable));
+            } else {
+                model.addAttribute("listSempro", seminarDao
+                        .findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(
+                                tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED), pageable));
             }
         }
     }
 
     @PostMapping("/graduation/seminar/approvedakademik")
-    public String approvedAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan){
+    public String approvedAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
         seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.APPROVED_AKADEMIK);
         seminarDao.save(seminar);
 
-        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/seminar/rejectakademik")
-    public String rejectAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan){
+    public String rejectAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
         seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.REJECTED);
         seminarDao.save(seminar);
 
-        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @GetMapping("/graduation/seminar/view")
-    public void viewSeminar(Model model, @RequestParam(name = "id", value = "id") Seminar seminar){
+    public void viewSeminar(Model model, @RequestParam(name = "id", value = "id") Seminar seminar) {
         model.addAttribute("seminar", seminar);
-
-
 
     }
 
     @GetMapping("/graduation/seminar/approved")
-    public void approvedSeminar(@RequestParam(name = "id", value = "id") Seminar seminar,Model model){
-        model.addAttribute("seminar",seminar);
+    public void approvedSeminar(@RequestParam(name = "id", value = "id") Seminar seminar, Model model) {
+        model.addAttribute("seminar", seminar);
         List<String> dosenList = new ArrayList<>();
         dosenList.add(seminar.getNote().getDosen().getId());
-        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS,StatusRecord.NONAKTIF),dosenList));
+        model.addAttribute("listDosen", dosenDao
+                .findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), dosenList));
 
     }
 
     @GetMapping("/graduation/seminar/approvalpasca")
-    public void approvalSeminarPasca(@RequestParam(name = "id", value = "id") Seminar seminar,Model model){
-        model.addAttribute("seminar",seminar);
+    public void approvalSeminarPasca(@RequestParam(name = "id", value = "id") Seminar seminar, Model model) {
+        model.addAttribute("seminar", seminar);
         List<String> dosenList = new ArrayList<>();
         dosenList.add(seminar.getNote().getDosen().getId());
-        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.NONAKTIF,StatusRecord.HAPUS),dosenList));
+        model.addAttribute("listDosen", dosenDao
+                .findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.NONAKTIF, StatusRecord.HAPUS), dosenList));
 
     }
 
     @PostMapping("/graduation/seminar/approved")
-    public String prosesApprove(@Valid Seminar seminar,Authentication authentication){
+    public String prosesApprove(@Valid Seminar seminar, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         seminar.setUserApprove(user);
         seminar.setStatus(StatusApprove.APPROVED);
         seminarDao.save(seminar);
 
-        return "redirect:list?tahunAkademik="+seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/seminar/reject")
-    public String prosesReject(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan, Authentication authentication){
+    public String prosesReject(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         seminar.setUserApprove(user);
         seminar.setKomentar(keterangan);
         seminar.setStatus(StatusApprove.REJECTED);
         seminarDao.save(seminar);
 
-        return "redirect:list?tahunAkademik="+seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @GetMapping("/upload/{seminar}/pengesahan/")
@@ -1276,7 +1328,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFilePengesahan().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFilePengesahan().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFilePengesahan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1291,7 +1344,6 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1304,7 +1356,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFileFormulir().toLowerCase().endsWith("jpeg") || seminar.getFileFormulir().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFileFormulir().toLowerCase().endsWith("jpeg")
+                    || seminar.getFileFormulir().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileFormulir().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1319,7 +1372,6 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1332,7 +1384,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileSkripsi().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1347,7 +1400,6 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1360,7 +1412,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFileBimbingan().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFileBimbingan().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileBimbingan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1375,7 +1428,6 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1388,7 +1440,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFileCoverNote().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFileCoverNote().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileCoverNote().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1403,7 +1456,6 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
@@ -1416,7 +1468,8 @@ public class GraduationController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (seminar.getFileTurnitin().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+            if (seminar.getFileTurnitin().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileTurnitin().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1431,91 +1484,94 @@ public class GraduationController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
 
-
-
     @GetMapping("/graduation/seminar/detail")
-    public void detailSempro(Model model, @RequestParam Seminar seminar, Authentication authentication){
+    public void detailSempro(Model model, @RequestParam Seminar seminar, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        model.addAttribute("seminar",seminar);
+        model.addAttribute("seminar", seminar);
         model.addAttribute("dosen", dosen);
 
     }
 
     @GetMapping("/graduation/seminar/penilaian")
-    public void penilaianSeminar(Model model,@RequestParam Seminar seminar,@RequestParam(required = false) String kosong,Authentication authentication){
+    public void penilaianSeminar(Model model, @RequestParam Seminar seminar,
+            @RequestParam(required = false) String kosong, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
-        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
+        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
 
-        }else {
+        } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
 
         }
 
-        if (kosong != null){
-            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        if (kosong != null) {
+            model.addAttribute("kosong",
+                    "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
         }
         model.addAttribute("dosen", dosen);
-        model.addAttribute("seminar",seminar);
+        model.addAttribute("seminar", seminar);
 
     }
 
     @GetMapping("/graduation/seminar/penilaianpasca")
-    public void penilaianSeminarPasca(Model model,@RequestParam Seminar seminar,@RequestParam(required = false) String kosong,Authentication authentication){
+    public void penilaianSeminarPasca(Model model, @RequestParam Seminar seminar,
+            @RequestParam(required = false) String kosong, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
-        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
+        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
 
-        }else {
+        } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
 
         }
 
-        if (kosong != null){
-            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        if (kosong != null) {
+            model.addAttribute("kosong",
+                    "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
         }
         model.addAttribute("dosen", dosen);
-        model.addAttribute("seminar",seminar);
+        model.addAttribute("seminar", seminar);
 
-        if (seminar.getKetuaPenguji() == dosen){
+        if (seminar.getKetuaPenguji() == dosen) {
             model.addAttribute("data", sidangService.getKetuaSempro(seminar));
         }
 
-        if (seminar.getDosenPenguji() == dosen){
+        if (seminar.getDosenPenguji() == dosen) {
             model.addAttribute("data", sidangService.getPengujiSempro(seminar));
         }
 
-        if (seminar.getNote().getDosen() == dosen){
+        if (seminar.getNote().getDosen() == dosen) {
             model.addAttribute("data", sidangService.getPembimbingSempro1(seminar));
         }
 
-        if (seminar.getNote().getDosen2() == dosen){
+        if (seminar.getNote().getDosen2() == dosen) {
             model.addAttribute("data", sidangService.getPembimbingSempro2(seminar));
         }
 
     }
 
     @PostMapping("/graduation/seminar/penilaianPasca")
-    public String saveKetua(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal nilaiA,Authentication authentication,
-                            @RequestParam(required = false) BigDecimal nilaiB,@RequestParam(required = false) BigDecimal nilaiC,
-                            @RequestParam(required = false) BigDecimal nilaiD,@RequestParam(required = false) BigDecimal nilaiE,@RequestParam(required = false) String beritaAcara,@RequestParam(required = false) String komentar){
+    public String saveKetua(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal nilaiA,
+            Authentication authentication,
+            @RequestParam(required = false) BigDecimal nilaiB, @RequestParam(required = false) BigDecimal nilaiC,
+            @RequestParam(required = false) BigDecimal nilaiD, @RequestParam(required = false) BigDecimal nilaiE,
+            @RequestParam(required = false) String beritaAcara, @RequestParam(required = false) String komentar) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -1530,72 +1586,76 @@ public class GraduationController {
         semproDto.setNilaiD(nilaiD);
         semproDto.setNilaiE(nilaiE);
 
-        if (seminar.getKetuaPenguji() == dosen){
+        if (seminar.getKetuaPenguji() == dosen) {
             sidangService.saveKetuaSeminar(semproDto);
         }
 
-        if (seminar.getDosenPenguji() == dosen){
+        if (seminar.getDosenPenguji() == dosen) {
             sidangService.savePengujiSempro(semproDto);
         }
 
-        if (seminar.getNote().getDosen() == dosen){
+        if (seminar.getNote().getDosen() == dosen) {
             sidangService.savePembimbingSempro(semproDto);
         }
 
-        if (seminar.getNote().getDosen2() == dosen){
+        if (seminar.getNote().getDosen2() == dosen) {
             sidangService.savePembimbing2Sempro(semproDto);
         }
 
-
-        return "redirect:detail?seminar="+seminar.getId();
+        return "redirect:detail?seminar=" + seminar.getId();
     }
 
     @GetMapping("/graduation/seminar/score")
-    public void nilaiProdi(Model model,@RequestParam Seminar seminar,@RequestParam(required = false) String kosong,Authentication authentication){
+    public void nilaiProdi(Model model, @RequestParam Seminar seminar, @RequestParam(required = false) String kosong,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
-        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
+        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
 
-        }else {
+        } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
 
         }
 
-        if (kosong != null){
-            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        if (kosong != null) {
+            model.addAttribute("kosong",
+                    "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
         }
         model.addAttribute("dosen", dosen);
-        model.addAttribute("seminar",seminar);
+        model.addAttribute("seminar", seminar);
 
     }
 
     @PostMapping("/graduation/seminar/updatescore")
-    public String updatePublish(Model model, Authentication authentication,@RequestParam Seminar seminar ,@Valid SeminarDto seminarDto){
+    public String updatePublish(Model model, Authentication authentication, @RequestParam Seminar seminar,
+            @Valid SeminarDto seminarDto) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        model.addAttribute("dosen" , dosen);
+        model.addAttribute("dosen", dosen);
 
-        sidangService.updatePublish(seminar,seminarDto);
+        sidangService.updatePublish(seminar, seminarDto);
 
-        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
-
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
 
     }
 
     @GetMapping("/graduation/lecture/sempro")
-    public void listSeminar(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model, Authentication authentication){
+    public void listSeminar(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        if(tahunAkademik != null){
-            List<Seminar> seminarS1 = seminarDao.cariSeminar(dosen,dosen,dosen,dosen,tahunAkademik);
-            List<Seminar> seminarPasca = seminarDao.cariSeminarPasca(dosen,jenjangDao.findById("02").get(),tahunAkademik);
+        if (tahunAkademik != null) {
+            List<Seminar> seminarS1 = seminarDao.cariSeminar(dosen, dosen, dosen, dosen, tahunAkademik);
+            List<Seminar> seminarPasca = seminarDao.cariSeminarPasca(dosen, jenjangDao.findById("02").get(),
+                    tahunAkademik);
             List<Seminar> daftarSeminar = new ArrayList<>();
             daftarSeminar.addAll(seminarS1);
             daftarSeminar.addAll(seminarPasca);
@@ -1609,34 +1669,36 @@ public class GraduationController {
     }
 
     @PostMapping("/graduation/seminar/detailPost")
-    public String saveComment(@RequestParam Seminar seminar, @RequestParam(required = false) String komentarDosen1 ,@RequestParam(required = false) String komentarDosen2,
-                              @RequestParam(required = false) String komentarDosen3){
+    public String saveComment(@RequestParam Seminar seminar, @RequestParam(required = false) String komentarDosen1,
+            @RequestParam(required = false) String komentarDosen2,
+            @RequestParam(required = false) String komentarDosen3) {
 
-        if (komentarDosen1 != null){
+        if (komentarDosen1 != null) {
             seminar.setKomentarDosen1(komentarDosen1);
-//            seminarDao.save(seminar);
+            // seminarDao.save(seminar);
         }
 
-        if (komentarDosen2 != null){
+        if (komentarDosen2 != null) {
             seminar.setKomentarDosen2(komentarDosen2);
             seminarDao.save(seminar);
         }
 
-        if (komentarDosen3 != null){
+        if (komentarDosen3 != null) {
             seminar.setKomentarDosen3(komentarDosen3);
             seminarDao.save(seminar);
         }
 
-        return "redirect:detail?seminar="+seminar.getId();
+        return "redirect:detail?seminar=" + seminar.getId();
 
     }
 
     @PostMapping("/graduation/seminar/ketua")
-    public String saveKetua(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal ka,
-                            @RequestParam(required = false) BigDecimal kb,@RequestParam(required = false) BigDecimal kc,
-                            @RequestParam(required = false) BigDecimal kd,@RequestParam(required = false) BigDecimal ke,@RequestParam(required = false) String beritaAcara,
-                            @RequestParam(required = false) BigDecimal kf,@RequestParam(required = false) String komentarKetua){
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+    public String saveKetua(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal ka,
+            @RequestParam(required = false) BigDecimal kb, @RequestParam(required = false) BigDecimal kc,
+            @RequestParam(required = false) BigDecimal kd, @RequestParam(required = false) BigDecimal ke,
+            @RequestParam(required = false) String beritaAcara,
+            @RequestParam(required = false) BigDecimal kf, @RequestParam(required = false) String komentarKetua) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
             seminar.setKa(ka);
             seminar.setKb(kb);
             seminar.setKc(kc);
@@ -1645,12 +1707,18 @@ public class GraduationController {
             seminar.setKf(kf);
             seminar.setBeritaAcara(beritaAcara);
             seminar.setKomentarKetua(komentarKetua);
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
             seminar.setNilaiA(nilaiA);
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
@@ -1658,15 +1726,15 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
-            if (seminarDao.validasiSemproSKripsi(seminar,BigDecimal.ZERO) == null) {
+            if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusApprove.APPROVED);
-            }else {
+            } else {
                 seminar.setStatusSempro(StatusApprove.WAITING);
             }
             seminarDao.save(seminar);
         }
 
-        if(seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN) {
             seminar.setKa(ka);
             seminar.setKb(kb);
             seminar.setKc(kc);
@@ -1674,34 +1742,39 @@ public class GraduationController {
             seminar.setKe(ke);
             seminar.setBeritaAcara(beritaAcara);
             seminar.setKomentarKetua(komentarKetua);
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
             seminar.setNilaiA(nilaiA);
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            if (seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO) == null) {
+            if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusApprove.APPROVED);
-            }else {
+            } else {
                 seminar.setStatusSempro(StatusApprove.WAITING);
             }
             seminarDao.save(seminar);
         }
 
-        return "redirect:detail?seminar="+seminar.getId();
+        return "redirect:detail?seminar=" + seminar.getId();
     }
 
     @PostMapping("/graduation/seminar/dosen")
-    public String saveDosen(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal ua,
-                            @RequestParam(required = false) BigDecimal ub,@RequestParam(required = false) BigDecimal uc,
-                            @RequestParam(required = false) BigDecimal ud,@RequestParam(required = false) BigDecimal ue,
-                            @RequestParam(required = false) BigDecimal uf,@RequestParam(required = false) String komentarPenguji){
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+    public String saveDosen(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal ua,
+            @RequestParam(required = false) BigDecimal ub, @RequestParam(required = false) BigDecimal uc,
+            @RequestParam(required = false) BigDecimal ud, @RequestParam(required = false) BigDecimal ue,
+            @RequestParam(required = false) BigDecimal uf, @RequestParam(required = false) String komentarPenguji) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
             seminar.setUa(ua);
             seminar.setUb(ub);
             seminar.setUc(uc);
@@ -1709,12 +1782,18 @@ public class GraduationController {
             seminar.setUe(ue);
             seminar.setUf(uf);
             seminar.setKomentarPenguji(komentarPenguji);
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
             seminar.setNilaiA(nilaiA);
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
@@ -1722,48 +1801,53 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
-            if (seminarDao.validasiSemproSKripsi(seminar,BigDecimal.ZERO) == null) {
+            if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusApprove.APPROVED);
-            }else {
+            } else {
                 seminar.setStatusSempro(StatusApprove.WAITING);
             }
             seminarDao.save(seminar);
         }
 
-        if(seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN) {
             seminar.setUa(ua);
             seminar.setUb(ub);
             seminar.setUc(uc);
             seminar.setUd(ud);
             seminar.setUe(ue);
             seminar.setKomentarPenguji(komentarPenguji);
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            if (seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO) == null) {
+            if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusApprove.APPROVED);
-            }else {
+            } else {
                 seminar.setStatusSempro(StatusApprove.WAITING);
             }
             seminarDao.save(seminar);
         }
 
-        return "redirect:detail?seminar="+seminar.getId();
+        return "redirect:detail?seminar=" + seminar.getId();
     }
 
     @PostMapping("/graduation/seminar/pembimbing")
-    public String savePembimbing(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal pa,
-                                 @RequestParam(required = false) BigDecimal pb,@RequestParam(required = false) BigDecimal pc,
-                                 @RequestParam(required = false) BigDecimal pd,@RequestParam(required = false) BigDecimal pe,
-                                 @RequestParam(required = false) BigDecimal pf,@RequestParam(required = false) String komentarPembimbing){
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+    public String savePembimbing(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal pa,
+            @RequestParam(required = false) BigDecimal pb, @RequestParam(required = false) BigDecimal pc,
+            @RequestParam(required = false) BigDecimal pd, @RequestParam(required = false) BigDecimal pe,
+            @RequestParam(required = false) BigDecimal pf, @RequestParam(required = false) String komentarPembimbing) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
             seminar.setPa(pa);
             seminar.setPb(pb);
             seminar.setPc(pc);
@@ -1771,12 +1855,18 @@ public class GraduationController {
             seminar.setPe(pe);
             seminar.setPf(pf);
             seminar.setKomentarPembimbing(komentarPembimbing);
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
             seminar.setNilaiA(nilaiA);
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
@@ -1784,62 +1874,68 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
-            if (seminarDao.validasiSemproSKripsi(seminar,BigDecimal.ZERO) == null) {
+            if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusApprove.APPROVED);
-            }else {
+            } else {
                 seminar.setStatusSempro(StatusApprove.WAITING);
             }
             seminarDao.save(seminar);
         }
 
-        if(seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN) {
             seminar.setPa(pa);
             seminar.setPb(pb);
             seminar.setPc(pc);
             seminar.setPd(pd);
             seminar.setPe(pe);
             seminar.setKomentarPembimbing(komentarPembimbing);
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            if (seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO) == null) {
+            if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusApprove.APPROVED);
-            }else {
+            } else {
                 seminar.setStatusSempro(StatusApprove.WAITING);
             }
             seminarDao.save(seminar);
         }
 
-        return "redirect:detail?seminar="+seminar.getId();
+        return "redirect:detail?seminar=" + seminar.getId();
     }
 
     @GetMapping("/graduation/seminar/mahasiswa")
-    public void seminarMahasiswa(Model model, Authentication authentication){
+    public void seminarMahasiswa(Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        model.addAttribute("mahasiswa" , mahasiswa);
+        model.addAttribute("mahasiswa", mahasiswa);
 
-        List<Seminar> seminars = seminarDao.findByNoteMahasiswaAndStatusSemproNotInAndStatus(mahasiswa,Arrays.asList(StatusApprove.WAITING),StatusApprove.APPROVED);
+        List<Seminar> seminars = seminarDao.findByNoteMahasiswaAndStatusSemproNotInAndStatus(mahasiswa,
+                Arrays.asList(StatusApprove.WAITING), StatusApprove.APPROVED);
         model.addAttribute("seminar", seminars);
 
     }
 
     @GetMapping("/graduation/lecture/finalisasi")
-    public String finalisasiSeminar(Model model, Authentication authentication, @RequestParam Seminar seminar){
+    public String finalisasiSeminar(Model model, Authentication authentication, @RequestParam Seminar seminar) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        model.addAttribute("dosen" , dosen);
+        model.addAttribute("dosen", dosen);
 
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
-            Object skripsi = seminarDao.validasiSemproSKripsi(seminar,BigDecimal.ZERO);
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
+            Object skripsi = seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO);
 
             if (skripsi == null) {
                 if (seminar.getKetuaPenguji() == dosen) {
@@ -1847,24 +1943,25 @@ public class GraduationController {
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                         seminar.setStatusSempro(StatusApprove.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
-                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                                seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
                         if (enableFiture != null) {
                             enableFiture.setEnable(Boolean.FALSE);
                             enableFitureDao.save(enableFiture);
                         }
-                    }else {
+                    } else {
                         seminar.setStatusSempro(StatusApprove.APPROVED);
                     }
                     seminarDao.save(seminar);
                 }
 
                 return "redirect:sempro?tahunAkademik=" + seminar.getTahunAkademik().getId();
-            }else {
-                return "redirect:../seminar/penilaian?seminar=" + seminar.getId()+"&kosong=true";
+            } else {
+                return "redirect:../seminar/penilaian?seminar=" + seminar.getId() + "&kosong=true";
 
             }
-        }else if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
-            Object study = seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO);
+        } else if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN) {
+            Object study = seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO);
 
             if (study == null) {
                 if (seminar.getKetuaPenguji() == dosen) {
@@ -1872,36 +1969,36 @@ public class GraduationController {
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                         seminar.setStatusSempro(StatusApprove.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
-                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                                seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
                         if (enableFiture != null) {
                             enableFiture.setEnable(Boolean.FALSE);
                             enableFitureDao.save(enableFiture);
                         }
-                    }else {
+                    } else {
                         seminar.setStatusSempro(StatusApprove.APPROVED);
                     }
                     seminarDao.save(seminar);
                 }
 
                 return "redirect:sempro?tahunAkademik=" + seminar.getTahunAkademik().getId();
-            }else {
-                return "redirect:../seminar/penilaian?seminar=" + seminar.getId()+"&kosong=true";
+            } else {
+                return "redirect:../seminar/penilaian?seminar=" + seminar.getId() + "&kosong=true";
 
             }
-        }else {
+        } else {
             return "redirect:sempro?tahunAkademik=" + seminar.getTahunAkademik().getId();
         }
-
 
     }
 
     @PostMapping("/graduation/seminar/finalisasi")
-    public String finalisasiSeminar(@RequestParam Seminar seminar){
+    public String finalisasiSeminar(@RequestParam Seminar seminar) {
         Object jenis = null;
-        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
-            jenis = seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO);
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN) {
+            jenis = seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO);
         }
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
             jenis = seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO);
         }
         if (jenis == null) {
@@ -1910,16 +2007,18 @@ public class GraduationController {
             if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                 seminar.setStatusSempro(StatusApprove.FAILED);
                 seminar.setStatus(StatusApprove.FAILED);
-                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                        seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
                 if (enableFiture != null) {
                     enableFiture.setEnable(Boolean.FALSE);
                     enableFitureDao.save(enableFiture);
                 }
             }
             seminarDao.save(seminar);
-            return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+            return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                    + seminar.getNote().getMahasiswa().getIdProdi().getId();
 
-        }else {
+        } else {
             return "lengkapi";
         }
 
@@ -1927,7 +2026,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/formulir")
     public void formulirSempro(@RequestParam(name = "id") Note note,
-                               HttpServletResponse response){
+            HttpServletResponse response) {
         try {
             // 0. Setup converter
             Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
@@ -1936,34 +2035,34 @@ public class GraduationController {
             InputStream in = formulirSempro1.getInputStream();
 
             // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
-            IXDocReport report = XDocReportRegistry.getRegistry().
-                    loadReport(in, TemplateEngineKind.Freemarker);
+            IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Freemarker);
 
             // 3. Context object, untuk mengisi variabel
             BigDecimal totalSKS = krsDetailDao.totalSksAkhir(note.getMahasiswa().getId());
             BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(note.getMahasiswa().getId());
 
-            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+            BigDecimal ipk = totalMuti.divide(totalSKS, 2, BigDecimal.ROUND_HALF_DOWN);
 
             IContext ctx = report.createContext();
             ctx.put("nama", note.getMahasiswa().getNama());
             ctx.put("nim", note.getMahasiswa().getNim());
-            ctx.put("prodi",note.getMahasiswa().getIdProdi().getNamaProdi());
+            ctx.put("prodi", note.getMahasiswa().getIdProdi().getNamaProdi());
             ctx.put("ipk", ipk);
             ctx.put("sks", totalSKS);
             ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
 
-            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Sempro-"+ note.getMahasiswa().getIdProdi().getKodeProdi() + "-" + note.getMahasiswa().getNim() +".pdf");
+            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Sempro-"
+                    + note.getMahasiswa().getIdProdi().getKodeProdi() + "-" + note.getMahasiswa().getNim() + ".pdf");
             OutputStream out = response.getOutputStream();
             report.convert(ctx, options, out);
             out.flush();
-        } catch (Exception err){
-//            logger.error(err.getMessage(), err);
+        } catch (Exception err) {
+            // logger.error(err.getMessage(), err);
         }
     }
 
     protected static String tampilkanTanggalDanWaktu(LocalDate tanggalDanWaktu,
-                                                     String pola) {
+            String pola) {
         String tanggalStr = null;
         SimpleDateFormat formatter = null;
         formatter = new SimpleDateFormat(pola);
@@ -1973,10 +2072,14 @@ public class GraduationController {
     }
 
     @GetMapping("/dowload/dataSeminar")
-    public void downloadDataSeminar(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi, HttpServletResponse response) throws IOException{
-        String[] colums = {"No", "Nim", "Nama", "Judul Seminar","Pembimbing", "Ketua Penguji", "Dosen Penguji","Tanggal","Waktu"};
+    public void downloadDataSeminar(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi,
+            HttpServletResponse response) throws IOException {
+        String[] colums = { "No", "Nim", "Nama", "Judul Seminar", "Pembimbing", "Ketua Penguji", "Dosen Penguji",
+                "Tanggal", "Waktu" };
 
-        List<Seminar> seminar = seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED));
+        List<Seminar> seminar = seminarDao
+                .findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputDesc(
+                        tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED));
 
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Seminar");
@@ -1991,7 +2094,7 @@ public class GraduationController {
 
         Row headerRow = sheet.createRow(0);
 
-        for (int i = 0; i < colums.length; i++){
+        for (int i = 0; i < colums.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(colums[i]);
             cell.setCellStyle(headerStyle);
@@ -2000,196 +2103,262 @@ public class GraduationController {
         int rowNum = 1;
         int baris = 1;
 
-        for (Seminar data : seminar){
+        for (Seminar data : seminar) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(data.getNote().getMahasiswa().getNim());
             row.createCell(2).setCellValue(data.getNote().getMahasiswa().getNama());
             row.createCell(3).setCellValue(data.getNote().getJudul());
             row.createCell(4).setCellValue(data.getNote().getDosen().getKaryawan().getNamaKaryawan());
-            if (data.getKetuaPenguji() == null){
+            if (data.getKetuaPenguji() == null) {
                 row.createCell(5).setCellValue("-");
-            }else {
+            } else {
                 row.createCell(5).setCellValue(data.getKetuaPenguji().getKaryawan().getNamaKaryawan());
             }
-            if (data.getDosenPenguji() == null){
+            if (data.getDosenPenguji() == null) {
                 row.createCell(6).setCellValue("-");
-            }else{
+            } else {
                 row.createCell(6).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
             }
 
-
-            if(data.getTanggalUjian() != null) {
+            if (data.getTanggalUjian() != null) {
                 if (data.getTanggalUjian().getDayOfWeek().getValue() != 7) {
                     if (data.getTanggalUjian().getMonthValue() == 1) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Januari " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " Januari " + data.getTanggalUjian().getYear());
                     }
                     if (data.getTanggalUjian().getMonthValue() == 2) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Februari " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " Februari " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 3) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Maret " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Maret "
+                                        + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 4) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " April " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " April "
+                                        + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 5) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Mei " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Mei "
+                                        + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 6) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Juni " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Juni "
+                                        + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 7) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Juli " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Juli "
+                                        + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 8) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Agustus " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " Agustus " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 9) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " September " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " September " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 10) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Oktober " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " Oktober " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 11) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " November " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " November " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 12) {
-                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Desember " + data.getTanggalUjian().getYear());
+                        row.createCell(7)
+                                .setCellValue(hariDao
+                                        .findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue()))
+                                        .get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth()
+                                        + " Desember " + data.getTanggalUjian().getYear());
 
                     }
 
                 } else {
                     if (data.getTanggalUjian().getMonthValue() == 1) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Januari " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Januari "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 2) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Februari " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth()
+                                + " Februari " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 3) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Maret " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Maret "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 4) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " April " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " April "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 5) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Mei " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Mei "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 6) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Juni " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Juni "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 7) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Juli " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Juli "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 8) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Agustus " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Agustus "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 9) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " September " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth()
+                                + " September " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 10) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Oktober " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Oktober "
+                                + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 11) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " November " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth()
+                                + " November " + data.getTanggalUjian().getYear());
 
                     }
                     if (data.getTanggalUjian().getMonthValue() == 12) {
-                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Desember " + data.getTanggalUjian().getYear());
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth()
+                                + " Desember " + data.getTanggalUjian().getYear());
 
                     }
                 }
-            }else {
+            } else {
                 row.createCell(7).setCellValue("-");
             }
 
-            if (data.getJamMulai() != null){
+            if (data.getJamMulai() != null) {
                 row.createCell(8).setCellValue(data.getJamMulai() + " - " + data.getJamSelesai());
-            }else {
+            } else {
                 row.createCell(8).setCellValue("-");
             }
 
-            /*if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.WAITING && data.getPublish() == "NONAKTIF"){
-                row.createCell(9).setCellValue("Menunggu Penilaian Lengkap");
-            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "NONAKTIF"){
-                row.createCell(9).setCellValue("Menunggu Publish");
-            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "AKTIF"){
-                row.createCell(9).setCellValue("Seminar Sudah Publish");
-            }else if(data.getStatus() == StatusApprove.WAITING){
-                row.createCell(9).setCellValue("Menunggu Persetujuan");
-            }else if (data.getStatus() == StatusApprove.REJECTED){
-                row.createCell(9).setCellValue("Ditolak");
-            }*/
+            /*
+             * if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() ==
+             * StatusApprove.WAITING && data.getPublish() == "NONAKTIF"){
+             * row.createCell(9).setCellValue("Menunggu Penilaian Lengkap");
+             * }else if (data.getStatus() == StatusApprove.APPROVED &&
+             * data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() ==
+             * "NONAKTIF"){
+             * row.createCell(9).setCellValue("Menunggu Publish");
+             * }else if (data.getStatus() == StatusApprove.APPROVED &&
+             * data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() ==
+             * "AKTIF"){
+             * row.createCell(9).setCellValue("Seminar Sudah Publish");
+             * }else if(data.getStatus() == StatusApprove.WAITING){
+             * row.createCell(9).setCellValue("Menunggu Persetujuan");
+             * }else if (data.getStatus() == StatusApprove.REJECTED){
+             * row.createCell(9).setCellValue("Ditolak");
+             * }
+             */
         }
 
-        for (int i = 0; i < colums.length; i++){
+        for (int i = 0; i < colums.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename;Data_Seminar_"+LocalDate.now()+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename;Data_Seminar_" + LocalDate.now() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
     @PostMapping("/graduation/seminar/dosen/publish")
     @ResponseBody
-    public String publishSeminar(@RequestParam Seminar seminar){
-        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
-            Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar,BigDecimal.ZERO);
+    public String publishSeminar(@RequestParam Seminar seminar) {
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN) {
+            Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
                 seminar.setStatusSempro(StatusApprove.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
-            }else {
+            } else {
                 return "lengkapi";
             }
         }
 
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
-            Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar,BigDecimal.ZERO);
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
+            Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
                 seminar.setStatusSempro(StatusApprove.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
-            }else {
+            } else {
                 return "lengkapi";
             }
         }
 
-        if (seminar.getNote().getJenis() == StatusRecord.TESIS){
-            Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,BigDecimal.ZERO);
+        if (seminar.getNote().getJenis() == StatusRecord.TESIS) {
+            Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
                 seminar.setStatusSempro(StatusApprove.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
-            }else {
+            } else {
                 return "lengkapi";
             }
         }
@@ -2198,17 +2367,24 @@ public class GraduationController {
 
     }
 
-    @GetMapping("/graduation/chat")
-    public void chatForm(){
-
+    @GetMapping("/graduation/magang/admin/list")
+    public void listMagangAdmin(@RequestParam(required = false) TahunAkademik tahunAkademik, Pageable pageable,
+            @RequestParam(required = false) Prodi prodi, Model model) {
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("list",
+                fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDesc(prodi,
+                        Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik, pageable));
     }
 
     @GetMapping("/suratTugas/seminar/pdf")
-    public String pdfSuratTugas(Model model, @RequestParam Seminar seminar, HttpServletResponse response) throws IOException, DocumentException {
+    public String pdfSuratTugas(Model model, @RequestParam Seminar seminar, HttpServletResponse response)
+            throws IOException, DocumentException {
 
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=ST Menguji Seminar " + seminar.getNote().getMahasiswa().getNama() + ".pdf";
+        String headerValue = "attachment; filename=ST Menguji Seminar " + seminar.getNote().getMahasiswa().getNama()
+                + ".pdf";
 
         response.setHeader(headerKey, headerValue);
 
@@ -2216,6 +2392,192 @@ public class GraduationController {
 
         return "dashboardadmin";
 
+    }
+
+    @GetMapping("/graduation/daftar-magang")
+    public String daftarMagang(Authentication authentication) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        List<FileMagang> dataMagang = fileMagangDao.findByMahasiswa(mahasiswa);
+
+        if (dataMagang.isEmpty()) {
+            return "redirect:magang";
+
+        } else {
+            return "redirect:waiting-magang";
+        }
+    }
+
+    @GetMapping("/graduation/magang")
+    public String pendaftaranMagang(Model model, Authentication authentication,
+            @RequestParam(required = false) String id) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+
+        if (!StringUtils.hasText(id)) {
+            model.addAttribute("magang", new FileMagang());
+            return "graduation/magang/mahasiswa/form";
+
+        } else {
+            model.addAttribute("magang", fileMagangDao.findById(id).get());
+            return "graduation/magang/mahasiswa/form";
+
+        }
+    }
+
+    @GetMapping("/graduation/waiting-magang")
+    public String listMagang(Model model, Authentication authentication,
+            @RequestParam(required = false) String id) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+
+        List<FileMagang> list = fileMagangDao.findByMahasiswaAndStatusInOrderByStatusDesc(mahasiswa,
+                Arrays.asList(StatusApprove.WAITING, StatusApprove.REJECTED));
+
+        FileMagang waiting = fileMagangDao.findByStatusAndMahasiswa(StatusApprove.WAITING, mahasiswa);
+        if (waiting != null) {
+            model.addAttribute("waiting", waiting);
+        }
+
+        model.addAttribute("list", list);
+        return "graduation/magang/mahasiswa/list";
+
+    }
+
+    @PostMapping("/graduation/magang")
+    public String uploadMagang(@Valid FileMagang fileMagang,
+            BindingResult error, MultipartFile laporan, MultipartFile penilaian,
+            Authentication currentUser) throws Exception {
+        User user = currentUserService.currentUser(currentUser);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (!laporan.isEmpty() || laporan != null) {
+            String namaFile = laporan.getName();
+            String jenisFile = laporan.getContentType();
+            String namaAsli = laporan.getOriginalFilename();
+            Long ukuran = laporan.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = magangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            laporan.transferTo(tujuan);
+            fileMagang.setFileMagang(idFile + "." + extension);
+
+        }
+
+        if (!penilaian.isEmpty() || penilaian != null) {
+            String namaFile = penilaian.getName();
+            String jenisFile = penilaian.getContentType();
+            String namaAsli = penilaian.getOriginalFilename();
+            Long ukuran = penilaian.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = magangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            penilaian.transferTo(tujuan);
+            fileMagang.setFilePenilaian(idFile + "." + extension);
+
+        }
+        fileMagang.setMahasiswa(mahasiswa);
+        fileMagang.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        fileMagangDao.save(fileMagang);
+
+        return "redirect:waiting-magang";
+
+    }
+
+    @GetMapping("/upload/{fileMagang}/penilaian/")
+    public ResponseEntity<byte[]> penilaianMagang(@PathVariable FileMagang fileMagang, Model model) throws Exception {
+        String lokasiFile = magangFolder + File.separator + fileMagang.getMahasiswa().getNim()
+                + File.separator + fileMagang.getFilePenilaian();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (fileMagang.getFilePenilaian().toLowerCase().endsWith("jpeg")
+                    || fileMagang.getFilePenilaian().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (fileMagang.getFilePenilaian().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (fileMagang.getFilePenilaian().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
+    }
+
+    @GetMapping("/upload/{fileMagang}/fileMagang/")
+    public ResponseEntity<byte[]> fileMagang(@PathVariable FileMagang fileMagang, Model model) throws Exception {
+        String lokasiFile = magangFolder + File.separator + fileMagang.getMahasiswa().getNim()
+                + File.separator + fileMagang.getFileMagang();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (fileMagang.getFileMagang().toLowerCase().endsWith("jpeg")
+                    || fileMagang.getFileMagang().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (fileMagang.getFileMagang().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (fileMagang.getFileMagang().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
+    }
+
+    @PostMapping("/graduation/magang/admin/tolak")
+    public String tolakMagang(@RequestParam(name = "id", value = "id") FileMagang fileMagang,
+            @RequestParam(required = false) String komentar) {
+        fileMagang.setKomentar(komentar);
+        fileMagang.setStatus(StatusApprove.REJECTED);
+        fileMagangDao.save(fileMagang);
+        return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
+                + fileMagang.getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/magang/admin/terima")
+    public String terimaMagang(@RequestParam(name = "id", value = "id") FileMagang fileMagang,
+            @RequestParam(required = false) String komentar) {
+        fileMagang.setKomentar(komentar);
+        fileMagang.setStatus(StatusApprove.APPROVED);
+        fileMagangDao.save(fileMagang);
+        return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
+                + fileMagang.getMahasiswa().getIdProdi().getId();
     }
 
 }
