@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,7 +28,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-@Controller
+@Controller @Slf4j
 public class StudyActivityController {
 
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
@@ -112,6 +113,9 @@ public class StudyActivityController {
 
     @Autowired
     private DaftarUlangDao daftarUlangDao;
+
+    @Autowired
+    private KrsApprovalDao krsApprovalDao;
 
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
@@ -285,6 +289,16 @@ public class StudyActivityController {
             model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
 
             model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
+
+            KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswa(k, mahasiswa);
+            if (ka != null) {
+                if (ka.getStatus() == StatusApprove.WAITING) {
+                    model.addAttribute("waiting", "Menunggu persetujuan dosen wali");
+                }
+                if (ka.getStatus() == StatusApprove.REJECTED) {
+                    model.addAttribute("reject", "KRS di reject, silahkan hubungi dosen wali");
+                }
+            }
         }
 
         return "study/krs";
@@ -436,6 +450,14 @@ public class StudyActivityController {
         }
 
         if (validasi.isEmpty()){
+            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatus(k, mahasiswa, StatusApprove.WAITING);
+            if (cek == null) {
+                KrsApproval ka = new KrsApproval();
+                ka.setKrs(k);
+                ka.setMahasiswa(mahasiswa);
+                ka.setStatus(StatusApprove.WAITING);
+                krsApprovalDao.save(ka);
+            }
             return "redirect:krs";
 
         }else {
@@ -1350,6 +1372,44 @@ public class StudyActivityController {
         }
 
     }
-
+//    @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
+//    public void OtomatisCutiMahasiswa(){
+//        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenisNot(StatusRecord.AKTIF, StatusRecord.PENDEK);
+//        if (tahun != null) {
+//            if (LocalDate.now().equals(tahun.getTanggalSelesaiKrs().plusWeeks(3))) {
+//                List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndStatusAktif(StatusRecord.AKTIF, "AKTIF");
+//                for (Mahasiswa mhs : mahasiswa){
+//                    List<KrsDetail> cekKrs = krsDetailDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+//                    if (cekKrs.isEmpty()) {
+//                        Cuti cuti = new Cuti();
+//                        cuti.setMahasiswa(mhs);
+//                        cuti.setDosenWali(mhs.getDosen());
+//                        cuti.setKps(mhs.getIdProdi().getDosen());
+//                        cuti.setTanggalPengajuaan(LocalDate.now());
+//                        cuti.setTahunAkademik(tahun);
+//                        cuti.setStatusPengajuaan(StatusApprove.WAITING);
+//                        cuti.setDosenWaliApproved(StatusApprove.WAITING);
+//                        cuti.setKeterangan("Otomatis cuti karna belum mengisi krs");
+//                        cutiDao.save(cuti);
+//
+//                        log.info("Mahasiswa a.n {} otomatis cuti ", mhs.getNama());
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    @Scheduled(cron = "0 00 03 * * *", zone = "Asia/Jakarta")
+//    public void hapusCicilanEdited(){
+//        List<RequestCicilan> edited = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.EDITED, LocalDate.now().minusDays(1));
+//        if (!edited.isEmpty()) {
+//            for (RequestCicilan rc : edited){
+//                rc.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+//                rc.setStatusApprove(StatusApprove.HAPUS);
+//                rc.setStatus(StatusRecord.HAPUS);
+//                requestCicilanDao.save(rc);
+//            }
+//        }
+//    }
 
 }

@@ -625,6 +625,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     List<KrsDetail> findByMahasiswaAndTahunAkademikAndStatusAndKrsNull(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord status);
 
+    // untuk otomatis cuti
+//    List<KrsDetail> findByMahasiswaAndTahunAkademikAndStatus(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord status);
+
     List<KrsDetail> findByStatusAndJadwalOrderByMahasiswaNim(StatusRecord status, Jadwal jadwal);
 
     KrsDetail findByStatusAndMahasiswaAndJadwal(StatusRecord statusRecord, Mahasiswa mahasiswa, Jadwal jadwal);
@@ -823,4 +826,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join prodi as b on a.id_prodi = b.id order by total desc", nativeQuery = true)
     List<MahasiswaAktifDto> cariMahasiswaAktif();
 
+    List<KrsDetail> findByStatusAndTahunAkademikAndKrs(StatusRecord statusRecord, TahunAkademik tahunAkademik, Krs krs);
+
+    List<KrsDetail> findByStatusAndKrsAndMahasiswa(StatusRecord status, Krs krs, Mahasiswa mahasiswa);
 }

@@ -47,6 +47,14 @@
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
                         <div class="row">
+                            <div class="col-md-12">
+                                <div th:if="${reject}" class="alert alert-danger">
+                                    <h5 class="text-white text-center" th:text="${reject}"></h5>
+                                </div>
+                                <div th:if="${waiting}" class="alert alert-warning">
+                                    <h5 class="text-white text-center" th:text="${waiting}"></h5>
+                                </div>
+                            </div>
                             <div class="col-md-6 col-xs-12">
                                <strong>Daftar KRS</strong>
                             </div>

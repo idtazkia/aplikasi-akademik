@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.BorderExtent;
@@ -75,32 +77,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.mustachejava.MustacheFactory;
 
-import id.ac.tazkia.smilemahasiswa.dao.BobotTugasDao;
-import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.EdomMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionDao;
-import id.ac.tazkia.smilemahasiswa.dao.HariDao;
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
-import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
-import id.ac.tazkia.smilemahasiswa.dao.KelasDao;
-import id.ac.tazkia.smilemahasiswa.dao.KelasMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.MatakuliahKurikulumDao;
-import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
-import id.ac.tazkia.smilemahasiswa.dao.PraKrsSpDao;
-import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
-import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
-import id.ac.tazkia.smilemahasiswa.dao.RpsDao;
-import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahDao;
-import id.ac.tazkia.smilemahasiswa.dao.SoalDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
@@ -119,34 +95,6 @@ import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
-import id.ac.tazkia.smilemahasiswa.entity.Akses;
-import id.ac.tazkia.smilemahasiswa.entity.BobotTugas;
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.Hari;
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.JadwalDosen;
-import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
-import id.ac.tazkia.smilemahasiswa.entity.Kelas;
-import id.ac.tazkia.smilemahasiswa.entity.KelasMahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.Krs;
-import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
-import id.ac.tazkia.smilemahasiswa.entity.NilaiTugas;
-import id.ac.tazkia.smilemahasiswa.entity.PraKrsSp;
-import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
-import id.ac.tazkia.smilemahasiswa.entity.PresensiMahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.Rps;
-import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
-import id.ac.tazkia.smilemahasiswa.entity.Soal;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
-import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
-import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
@@ -259,6 +207,9 @@ public class StudiesActivityController {
 
         @Autowired
         private ReportService reportService;
+
+        @Autowired
+        private KrsApprovalDao krsApprovalDao;
 
         @Value("classpath:sample/soal.doc")
         private Resource contohSoal;
@@ -1238,6 +1189,60 @@ public class StudiesActivityController {
                 return "redirect:list?nim=" + krsDetail.getMahasiswa().getNim() + "&tahunAkademik="
                                 + krsDetail.getTahunAkademik().getId();
 
+        }
+
+        @GetMapping("/studiesActivity/krs/approval/list")
+        public void krsApprovalDosenWali(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page){
+                User user = currentUserService.currentUser(authentication);
+                Karyawan karyawan = karyawanDao.findByIdUser(user);
+                Dosen dosen = dosenDao.findByKaryawan(karyawan);
+                TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+                model.addAttribute("tahun", tahun);
+
+                Page<KrsApproval> krs = krsApprovalDao.findByMahasiswaDosen(dosen, page);
+                model.addAttribute("listKrs", krs);
+        }
+
+        @GetMapping("/studiesActivity/krs/approval/form")
+        public void krsApprovalForm(Model model, Authentication authentication, @RequestParam KrsApproval krsApproval){
+
+                BigDecimal totalSKS = krsDetailDao.totalSksAkhir(krsApproval.getMahasiswa().getId());
+                List<DataTranskript> listTranskript = krsDetailDao.listTranskript(krsApproval.getMahasiswa());
+                listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+                int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+
+                BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
+
+                TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+                model.addAttribute("ipk", ipk);
+                model.addAttribute("krsApproval", krsApproval);
+                model.addAttribute("listKrsDetail", krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krsApproval.getKrs()));
+        }
+
+        @PostMapping("/studiesActivity/krs/approval/approve")
+        public String approvedKrs(@RequestParam KrsApproval krsApproval){
+
+                krsApproval.setStatus(StatusApprove.APPROVED);
+                krsApprovalDao.save(krsApproval);
+
+                return "redirect:list";
+        }
+        @PostMapping("/studiesActivity/krs/approval/reject")
+        public String rejectedKrs(@RequestParam KrsApproval krsApproval){
+
+                krsApproval.setStatus(StatusApprove.REJECTED);
+                krsApprovalDao.save(krsApproval);
+
+                List<KrsDetail> setDetail = krsDetailDao.findByStatusAndKrsAndMahasiswa(StatusRecord.AKTIF, krsApproval.getKrs(), krsApproval.getMahasiswa());
+                for (KrsDetail krs : setDetail){
+                        krs.setStatus(StatusRecord.REJECTED);
+                        krsDetailDao.save(krs);
+                }
+                return "redirect:list";
         }
 
         // Assesment
