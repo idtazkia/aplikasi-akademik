@@ -118,6 +118,7 @@
                                                                 <th>Dokumen</th>
                                                                 <th>Tanggal Pengajuan</th>
                                                                 <th>Status</th>
+                                                                <th>Nilai</th>
                                                                 <th>Keterangan</th>
                                                             </tr>
                                                         </thead>
@@ -133,6 +134,10 @@
                                                             <span th:if="${data.statusApprovalAdmin == 'APPROVED' && data.statusLulus == data.statusLulus.LULUS }" class="btn btn-success btn-sm">Lulus</span>
                                                             <span th:if="${data.statusApprovalAdmin == 'APPROVED' && data.statusLulus == data.statusLulus.TIDAK_LULUS }" class="btn btn-danger btn-sm">Tidal Lulus</span>
                                                             <span th:if="${data.statusApprovalAdmin == 'REJECTED'}" class="btn btn-danger btn-sm">REJECTED</span>
+                                                        </td>
+                                                        <td>
+                                                            <p th:if="${data.nilai != null}" th:text="${data.nilai}"></p>
+                                                            <p th:if="${data.nilai == null}">Belum Dinilai</p>
                                                         </td>
                                                         <td>
                                                             <p th:if="${data.statusApprovalAdmin == 'WAITING'}">Menunggu Approval Akademik</p>
