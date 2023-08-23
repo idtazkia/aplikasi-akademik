@@ -451,4 +451,34 @@ public class PresensiService {
 
     }
 
+    public BaseResponse generatePresensiMangkir(SesiKuliah sesiKuliah) throws Exception {
+
+        sesiKuliah.setBeritaAcara("Otomatis Mangkir, karena tidak absen");
+        sesiKuliah.setPertemuan("Mangkir");
+        sesiKuliahDao.save(sesiKuliah);
+
+        PresensiDosen presensiDosen = sesiKuliah.getPresensiDosen();
+        presensiDosen.setStatusPresensi(StatusPresensi.MANGKIR);
+        presensiDosen.setStatus(StatusRecord.AKTIF);
+        presensiDosenDao.save(presensiDosen);
+
+        Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(
+                presensiDosen.getJadwal(),
+                StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail) {
+            PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
+            presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
+            presensiMahasiswa.setSesiKuliah(sesiKuliah);
+            presensiMahasiswa.setKrsDetail(kd);
+            presensiMahasiswa.setCatatan("System");
+            presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
+            presensiMahasiswa.setRating(0);
+            presensiMahasiswaDao.save(presensiMahasiswa);
+        }
+
+        return BaseResponse.builder()
+                .code("200").message("Berhasil Generate")
+                .build();
+    }
+
 }
