@@ -55,6 +55,9 @@ public class Krs {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    private String ipk;
+    private Integer semester;
+
     @OneToMany(mappedBy = "krs")
     @JsonBackReference
     private List<KrsDetail> krsDetails= new ArrayList<>();

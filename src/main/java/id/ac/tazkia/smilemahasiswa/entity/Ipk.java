@@ -22,7 +22,5 @@ public class Ipk {
     private Mahasiswa mahasiswa;
 
     private Integer sksTotal;
-    private BigDecimal bobotTotal;
-    private Integer nilaiTotalSks;
     private BigDecimal ipk;
 }
