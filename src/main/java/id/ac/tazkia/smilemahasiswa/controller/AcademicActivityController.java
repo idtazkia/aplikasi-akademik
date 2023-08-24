@@ -315,8 +315,10 @@ public class  AcademicActivityController {
 
         if (tahunAkademik.getJenis() == StatusRecord.GANJIL){
             return matakuliahKurikulumDao.searchPlotingGenap(tahunAkademik,kelas,search);
-        }else {
+        }else if (tahunAkademik.getJenis() == StatusRecord.GENAP){
             return matakuliahKurikulumDao.searchPlotingGanjil(tahunAkademik,kelas,search);
+        }else {
+            return matakuliahKurikulumDao.searchPlotingPendek(tahunAkademik,kelas,search);
         }
 
 
