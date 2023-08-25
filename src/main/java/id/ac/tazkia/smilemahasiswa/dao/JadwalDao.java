@@ -309,7 +309,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "where j.id_tahun_akademik = ?1 and j.id_kelas = ?5 and j.status = 'AKTIF' and j.id_hari = ?2 and j.id not in (?3)) aa on s.sesi = aa.sesi where sks = ?6 group by if(bentrok is not null,trim(s.sesi),id)", nativeQuery = true)
     List<ValidasiSesi> validateSesi(TahunAkademik tahunAkademik, Hari hari, String id, Ruangan ruangan, Kelas kelas, Integer sks, Dosen dosen);
 
-
+    List<Jadwal> findByStatusAndFinalPloting(StatusRecord status, String ploting);
 
 }
 

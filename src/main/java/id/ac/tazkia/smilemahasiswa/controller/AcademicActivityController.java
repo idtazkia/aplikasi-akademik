@@ -10,6 +10,7 @@ import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
 import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -146,6 +147,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private SeminarDao seminarDao;
+
+    @Autowired
+    private MahasiswaService mahasiswaService;
 
 
     @Value("classpath:/sample/jadwalUjian.xlsx")
@@ -1746,6 +1750,9 @@ public class  AcademicActivityController {
             krsDetailDao.updateFinalisasi(tahun.getId());
             jadwalDao.updateFinalStatus(tahun.getId());
             System.out.println("TerUpdate final.");
+
+            mahasiswaService.importIpkSksAuto();
+
         }
 
     }

@@ -117,6 +117,9 @@ public class StudyActivityController {
     @Autowired
     private KrsApprovalDao krsApprovalDao;
 
+    @Autowired
+    private IpkDao ipkDao;
+
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
         return konsentrasiDao.findByStatus(StatusRecord.AKTIF);
@@ -450,13 +453,102 @@ public class StudyActivityController {
         }
 
         if (validasi.isEmpty()){
-            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatus(k, mahasiswa, StatusApprove.WAITING);
+            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.REJECTED));
             if (cek == null) {
-                KrsApproval ka = new KrsApproval();
-                ka.setKrs(k);
-                ka.setMahasiswa(mahasiswa);
-                ka.setStatus(StatusApprove.WAITING);
-                krsApprovalDao.save(ka);
+                Integer tSemester = krsDetailDao.cariSemester(mahasiswa.getId(), tahunAkademik.getId());
+                BigDecimal batas = new BigDecimal(3);
+                Ipk cekIpk = ipkDao.findByMahasiswa(mahasiswa);
+                if (cekIpk.getIpk().compareTo(batas) <= 0){
+                    if (tSemester == 2){
+                        if (cekIpk.getSksTotal() < 24){
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 3){
+                        if (cekIpk.getSksTotal() < 44){
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 4) {
+                        if (cekIpk.getSksTotal() < 64) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 5) {
+                        if (cekIpk.getSksTotal() < 84) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 6){
+                        if (cekIpk.getSksTotal() < 104) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 7){
+                        if (cekIpk.getSksTotal() < 124) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 8){
+                        if (cekIpk.getSksTotal() < 144) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    }
+                } else if (cekIpk.getIpk().compareTo(batas) > 0) {
+                    if (tSemester == 2){
+                        if (cekIpk.getSksTotal() < 24){
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 3){
+                        if (cekIpk.getSksTotal() < 44){
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 4) {
+                        if (cekIpk.getSksTotal() < 64) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 5) {
+                        if (cekIpk.getSksTotal() < 84) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 6){
+                        if (cekIpk.getSksTotal() < 104) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 7){
+                        if (cekIpk.getSksTotal() < 124) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 8){
+                        if (cekIpk.getSksTotal() < 144) {
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    }
+                } else{
+                    createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                }
             }
             return "redirect:krs";
 
@@ -466,6 +558,14 @@ public class StudyActivityController {
             return "redirect:form?validasi=true";
         }
 
+    }
+
+    private void createKrsApproval(Krs k, Mahasiswa mahasiswa, StatusApprove status){
+        KrsApproval ka = new KrsApproval();
+        ka.setKrs(k);
+        ka.setMahasiswa(mahasiswa);
+        ka.setStatus(status);
+        krsApprovalDao.save(ka);
     }
 
     @PostMapping("/study/deleteKrs")

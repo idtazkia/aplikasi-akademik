@@ -27,7 +27,9 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.krs.MatkulMengulangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.*;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.BorderExtent;
@@ -95,12 +97,6 @@ import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.MailService;
-import id.ac.tazkia.smilemahasiswa.service.PresensiService;
-import id.ac.tazkia.smilemahasiswa.service.ReportService;
-import id.ac.tazkia.smilemahasiswa.service.ScoreService;
-import id.ac.tazkia.smilemahasiswa.service.TranscriptService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -210,6 +206,12 @@ public class StudiesActivityController {
 
         @Autowired
         private KrsApprovalDao krsApprovalDao;
+
+        @Autowired
+        private MahasiswaService mahasiswaService;
+
+        @Autowired
+        private KrsService krsService;
 
         @Value("classpath:sample/soal.doc")
         private Resource contohSoal;
@@ -1192,35 +1194,57 @@ public class StudiesActivityController {
         }
 
         @GetMapping("/studiesActivity/krs/approval/list")
-        public void krsApprovalDosenWali(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page){
+        public void krsApprovalDosenWali(Model model, Authentication authentication){
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
                 Dosen dosen = dosenDao.findByKaryawan(karyawan);
                 TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
                 model.addAttribute("tahun", tahun);
 
-                Page<KrsApproval> krs = krsApprovalDao.findByMahasiswaDosen(dosen, page);
+                String jadi;
+                if (tahun.getJenis() == StatusRecord.GANJIL) {
+                        Integer ta = new Integer(tahun.getTahun());
+                        Integer k = ta-1;
+                        jadi = k + "2";
+                }else{
+                        Integer ta = new Integer(tahun.getKodeTahunAkademik());
+                        Integer j = ta - 1;
+                        jadi = j.toString();
+                }
+                TahunAkademik tahunBefore = tahunAkademikDao.findByKodeTahunAkademik(jadi);
+//
+                List<Object[]> krs = krsApprovalDao.krsApproval(tahun, tahunBefore, dosen.getId(), tahun.getKodeTahunAkademik());
+//
+//                model.addAttribute("listKrsDetail", krsDetailDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
+//                model.addAttribute("listMatkulMengulang", krsApprovalDao.listMatkulMengulang(jadi));
                 model.addAttribute("listKrs", krs);
         }
 
-        @GetMapping("/studiesActivity/krs/approval/form")
-        public void krsApprovalForm(Model model, Authentication authentication, @RequestParam KrsApproval krsApproval){
-
-                BigDecimal totalSKS = krsDetailDao.totalSksAkhir(krsApproval.getMahasiswa().getId());
-                List<DataTranskript> listTranskript = krsDetailDao.listTranskript(krsApproval.getMahasiswa());
-                listTranskript.removeIf(e -> e.getGrade().equals("E"));
-
-                int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
-
-                BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
-
+        @GetMapping("/get-matkul-mengulang/{id}")
+        @ResponseBody
+        public List<MatkulMengulangDto> getMatulMengulang(@PathVariable String id){
+                Krs krs = krsDao.findById(id).get();
                 TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-                model.addAttribute("ipk", ipk);
-                model.addAttribute("krsApproval", krsApproval);
-                model.addAttribute("listKrsDetail", krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krsApproval.getKrs()));
+                String jadi;
+                if (tahun.getJenis() == StatusRecord.GANJIL) {
+                        Integer ta = new Integer(tahun.getTahun());
+                        Integer k = ta-1;
+                        jadi = k + "2";
+                }else{
+                        Integer ta = new Integer(tahun.getKodeTahunAkademik());
+                        Integer j = ta - 1;
+                        jadi = j.toString();
+                }
+                return krsApprovalDao.listMatkulMengulang(jadi, krs.getMahasiswa().getId());
+        }
+
+        @GetMapping("/get-request-matkul/{id}")
+        @ResponseBody
+        public List<KrsDetail> getRequestMatkulKrs(@PathVariable String id){
+                TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+                Krs krs = krsDao.findById(id).get();
+
+                return krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krs);
         }
 
         @PostMapping("/studiesActivity/krs/approval/approve")
@@ -12785,6 +12809,27 @@ public class StudiesActivityController {
 
                 return response;
 
+        }
+
+        @PostMapping("/import-ipk-sks")
+        @ResponseBody
+        public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse importIpkSks(){
+
+                List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByStatusAndStatusAktif(StatusRecord.AKTIF, "AKTIF");
+                id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = mahasiswaService.importIpkSks(mahasiswaAktif);
+
+                return response;
+        }
+
+        @PostMapping("/import-ipk-krs/{angkatan}")
+        @ResponseBody
+        public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse importIpkKrs(@PathVariable String angkatan){
+
+
+                List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF, angkatan);
+                id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = krsService.updateIpKrsApi(mahasiswa);
+
+                return response;
         }
 
 }

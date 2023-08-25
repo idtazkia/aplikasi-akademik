@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.dto.EnrollMahasiswaIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.StatusImportNilaiDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.StatusImportNilaiDosenIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -220,6 +221,21 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
             "group by jd.id_number_elearning\n" +
             "order by jd.id_number_elearning DESC" ,nativeQuery = true)
     Page<StatusImportNilaiDosenIntDto> findStatusImportNilaiDosenByDosen(TahunAkademik ta, String dosen, Pageable page);
+
+    List<Krs> findByMahasiswaAndStatusOrderByTahunAkademikKodeTahunAkademik(Mahasiswa mahasiswa, StatusRecord status);
+
+    @Query(value = "SELECT coalesce(ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2), 0)AS ipk \n" +
+            "FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b  ON a.id_matakuliah_kurikulum=b.id inner join mahasiswa as c on a.id_mahasiswa=c.id \n" +
+            "inner join krs as d on a.id_krs = d.id inner join tahun_akademik as e on d.id_tahun_akademik = e.id\n" +
+            "WHERE a.status='AKTIF' AND d.id_tahun_akademik=?1 \n" +
+            "AND b.jumlah_sks > 0 AND a.id_mahasiswa = ?2", nativeQuery = true)
+    IpkDto cariIpSemester(String idTahunAkademik, String idMahasiswa);
+
+    @Query(value = "SELECT COALESCE(ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2), 0)AS ipk \n" +
+            "FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id \n" +
+            "inner join krs as c on a.id_krs = c.id inner join tahun_akademik as d on c.id_tahun_akademik = d.id\n" +
+            "WHERE a.status='AKTIF' AND b.jumlah_sks > 0 AND a.finalisasi = 'FINAL' AND a.id_mahasiswa = ?1 and d.kode_tahun_akademik <= ?2", nativeQuery = true)
+    IpkDto cariIpkTotalPerSemester(String idMahasiswa, String kodeTahunAkademik);
 
 
 }
