@@ -477,31 +477,31 @@
                                                     <div id="formCuti" class="card-header bg-transparent pb-5" style="display:none;">
                                                         <div class="text-muted text-center mt-2 mb-3"><small>Form Cuti</small></div>
                                                         <form name="cutiForm" th:action="@{/mahasiswa/cuti-approved}" method="post">
-                                                        <div class="btn-wrapper text-center">
-                                                            <div class="form-group">
-                                                                <div class="row">
-                                                                    <div class="col-md-4 ">
-                                                                        <div class="form-group">
-                                                                            <label>Tanggal Mulai</label>
-                                                                            <input type="date" name="tanggalMulaiCuti" class="form-control">
+                                                            <div class="btn-wrapper text-center">
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Tahun Akademik</label>
+                                                                                <select name="tahunAkademik" required class="form-control">
+                                                                                    <option value=""></option>
+                                                                                    <option th:each="data : ${tahunAkademik}"
+                                                                                            th:selected="(${data} == *{selectTahun})"
+                                                                                            th:text="${data.namaTahunAkademik}"
+                                                                                            th:value="${data.id}">STEI TAZKIA</option>
+                                                                                </select>
+                                                                                <input type="hidden" th:value="${data.id}" name="mahasiswa" class="form-control">
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label>Tanggal Berakhir Cuti</label>
-                                                                            <input type="date" name="tanggalBerakhirCuti" class="form-control">
-                                                                            <input type="hidden" th:value="${data.id}" name="mahasiswa" class="form-control">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label>Alasan</label>
-                                                                            <input type="text" class="form-control" name="keterangan">
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Alasan</label>
+                                                                                <input type="text" class="form-control" name="keterangan">
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
                                                         </form>
                                                         <center>
                                                             <a href="javascript: document.cutiForm.submit()" class="btn btn-success text-white btn-icon">

@@ -1457,8 +1457,9 @@ public class StudyActivityController {
     @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
     public void aktifasiCutiMahasiswa(){
 
-        List<Cuti> listPengaktifanCuti = cutiDao.findByStatusAndDosenWaliApprovedAndKpsApprovedAndStatusPengajuaanAndTanggalBerakhirCuti(StatusRecord.AKTIF,
-                StatusApprove.APPROVED, StatusApprove.APPROVED, StatusApprove.APPROVED, LocalDate.now());
+        List<Cuti> listPengaktifanCuti = cutiDao.findByStatusAndDosenWaliApprovedInAndKpsApprovedInAndStatusPengajuaanAndTanggalBerakhirCuti(StatusRecord.AKTIF,
+                Arrays.asList(StatusApprove.APPROVED, StatusApprove.APPROVED_AKADEMIK), Arrays.asList(StatusApprove.APPROVED, StatusApprove.APPROVED_AKADEMIK),
+                StatusApprove.APPROVED, LocalDate.now());
 
         for (Cuti list : listPengaktifanCuti){
             Mahasiswa mhs = list.getMahasiswa();

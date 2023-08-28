@@ -92,6 +92,9 @@ public class MahasiswaController {
     @Autowired
     private CutiDao cutiDao;
 
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
+
 
     @ModelAttribute("penghasilan")
     public Iterable<Penghasilan> penghasilan() {
@@ -116,6 +119,11 @@ public class MahasiswaController {
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
         return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
+    }
+
+    @ModelAttribute("tahunAkademik")
+    public Iterable<TahunAkademik> tahunAkademik() {
+        return tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
     }
     @GetMapping("/mahasiswa/list")
     public void daftarMahasiswa(Model model, @PageableDefault(size = 50) Pageable page, String search,Authentication authentication){
@@ -369,9 +377,13 @@ public class MahasiswaController {
     @PostMapping("/mahasiswa/cuti-approved")
     public String approvedCuti(@Valid Cuti cuti){
         cuti.setTanggalPengajuaan(LocalDate.now());
+        cuti.setTanggalMulaiCuti(cuti.getTahunAkademik().getTanggalMulaiKuliah());
+        cuti.setTanggalBerakhirCuti(cuti.getTahunAkademik().getTanggalSelesaiKuliah());
         cuti.setStatusPengajuaan(StatusApprove.APPROVED);
-        cuti.setKpsApproved(StatusApprove.APPROVED);
-        cuti.setDosenWaliApproved(StatusApprove.APPROVED);
+        cuti.setKpsApproved(StatusApprove.APPROVED_AKADEMIK);
+        cuti.setDosenWaliApproved(StatusApprove.APPROVED_AKADEMIK);
+        cuti.setDosenWali(cuti.getMahasiswa().getDosen());
+        cuti.setKps(cuti.getMahasiswa().getIdProdi().getDosen());
         cutiDao.save(cuti);
 
         Mahasiswa mahasiswa = mahasiswaDao.findById(cuti.getMahasiswa().getId()).get();
