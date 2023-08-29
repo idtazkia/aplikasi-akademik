@@ -5,6 +5,7 @@ import com.lowagie.text.pdf.*;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -885,7 +886,7 @@ public class TranscriptService {
 
         document.add(nLine);
 
-        Paragraph tgl = new Paragraph("Bogor, " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD));
+        Paragraph tgl = new Paragraph("Bogor, " + convertDateIndonesia(LocalDate.now()), FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD));
         document.add(tgl);
 
         Paragraph title = new Paragraph(mhs.getIdProdi().getJabatan(), fNilai);
@@ -1337,6 +1338,56 @@ public class TranscriptService {
 
         document.close();
 
+
+    }
+
+    public String convertDateIndonesia(LocalDate date){
+
+        String result = null;
+
+        switch (date.getMonthValue()){
+            case 1:
+                result = date.getDayOfMonth() + " Januari " + date.getYear();
+                break;
+            case 2:
+                result = date.getDayOfMonth() + " Februari " + date.getYear();
+                break;
+            case 3:
+                result = date.getDayOfMonth() + " Maret " + date.getYear();
+                break;
+            case 4:
+                result = date.getDayOfMonth() + " April " + date.getYear();
+                break;
+            case 5:
+                result = date.getDayOfMonth() + " Mei " + date.getYear();
+                break;
+            case 6:
+                result = date.getDayOfMonth() + " Juni " + date.getYear();
+                break;
+            case 7:
+                result = date.getDayOfMonth() + " Juli " + date.getYear();
+                break;
+            case 8:
+                result = date.getDayOfMonth() + " Agustus " + date.getYear();
+                break;
+            case 9:
+                result = date.getDayOfMonth() + " September " + date.getYear();
+                break;
+            case 10:
+                result = date.getDayOfMonth() + " Oktober " + date.getYear();
+                break;
+            case 11:
+                result = date.getDayOfMonth() + " November " + date.getYear();
+                break;
+            case 12:
+                result = date.getDayOfMonth() + " Desember " + date.getYear();
+                break;
+            default:
+                result = null;
+                break;
+        }
+
+        return result;
 
     }
 
