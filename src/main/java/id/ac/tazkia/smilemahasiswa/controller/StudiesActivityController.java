@@ -354,7 +354,7 @@ public class StudiesActivityController {
                 }
         }
 
-        @GetMapping("/studiesActivity/attendance/detail2")
+        @GetMapping("/studiesActivity/attendance/detail")
         public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
 
                 List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal,
@@ -362,7 +362,7 @@ public class StudiesActivityController {
                 if (!cekRps.isEmpty()) {
                         model.addAttribute("gagal", "Submit RPS terlebih dahulu!");
                 }
-                model.addAttribute("detail", presensiDosenDao.listPresensiDosen2(jadwal));
+                model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
                 model.addAttribute("dosenUtama", jadwal.getDosen());
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
                 model.addAttribute("jadwal", jadwal);
@@ -802,7 +802,7 @@ public class StudiesActivityController {
                 sesiKuliahDao.save(sesiKuliah);
                 presensiDosenDao.save(presensiDosen);
 
-                return "redirect:detail2?jadwal=" + sesiKuliah.getJadwal().getId();
+                return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
         }
 
@@ -888,7 +888,7 @@ public class StudiesActivityController {
                         presensiMahasiswaDao.save(pm);
                 }
 
-                return "redirect:detail2?jadwal=" + sesiKuliah.getJadwal().getId();
+                return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
         }
 
