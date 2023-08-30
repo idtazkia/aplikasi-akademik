@@ -326,7 +326,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/berkas/uploadSoal/list}" class="nav-link">Upload & Download Soal</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_DOSEN')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/studiesActivity/krs/approval/list}" class="nav-link">Approval KRS</a>
                             </li>
                         </ul>
