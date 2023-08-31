@@ -12,35 +12,65 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface SidangDao extends PagingAndSortingRepository<Sidang, String> {
-    Sidang findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(Seminar seminar,StatusApprove statusAppr);
-    List<Sidang> findBySeminarOrderByAkademikDescTanggalInputDesc(Seminar seminar);
-    List<Sidang> findBySeminar(Seminar seminar);
-    Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(TahunAkademik tahunAkademik, Prodi prodi, List<StatusApprove> statusApproves,List<StatusApprove> statusSidang, Pageable page);
-    Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApproves,List<StatusApprove> statusApprove,Pageable page);
-    Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApproves,StatusApprove statusApprove, Pageable page);
-    Page<Sidang> findByTahunAkademikAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(TahunAkademik tahunAkademik, StatusApprove statusApproves,StatusApprove statusApprove, Pageable page);
+        Sidang findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(Seminar seminar, StatusApprove statusAppr);
 
-    List<Sidang> findByStatusSidangAndAkademikAndTahunAkademikAndSeminarNoteMahasiswaIdProdiAndNilaiIsGreaterThanEqual(StatusApprove statusSidang, StatusApprove akademik, TahunAkademik tahunAkademik, Prodi prodi, BigDecimal nilai);
-    @Query(value = "select 'Jadwal_kuliah' as jenis, c.nama_matakuliah as keterangan, e.nama_karyawan as milik  from jadwal as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id inner join matakuliah as c on b.id_matakuliah=c.id inner join dosen as d on a.id_dosen_pengampu=d.id inner join karyawan as e on d.id_karyawan=e.id where id_tahun_akademik=?1 and id_hari = ?2 and id_ruangan=?3 and a.status='AKTIF' and jam_mulai >= ?4 and jam_mulai <= ?5  or id_tahun_akademik=?1 and id_hari = ?2 and id_ruangan=?3 and a.status='AKTIF'  and jam_selesai >= ?4 and jam_selesai <= ?5 union select 'Seminar' as jenis, b.judul as keterangan, c.nama as milik from seminar as a inner join note as b on a.id_note=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where a.status='APPROVED' and tanggal_ujian=?6 and jam_mulai >= ?4 and jam_mulai <= ?5 and ruangan = ?3 or a.status='APPROVED' and tanggal_ujian=?6 and jam_selesai >= ?4 and jam_selesai <= ?5 and ruangan = ?3 union select 'Sidang' as jenis, s.judul_tugas_akhir as keterangan, c.nama as milik from sidang as s inner join seminar as a on s.id_seminar=a.id inner join note as b on a.id_note=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where s.akademik='APPROVED' and s.tanggal_ujian=?6 and s.jam_mulai >= ?4 and s.jam_mulai <= ?5 and s.ruangan = '1.6' or s.akademik='APPROVED' and s.tanggal_ujian=?6 and s.jam_selesai >= ?4 and s.jam_selesai <= ?5 and s.ruangan = ?3 limit ?7", nativeQuery = true)
-    Object[] validasiJadwalSidang(TahunAkademik tahunAkademik, Hari hari, Ruangan ruangan, LocalTime jamMulai, LocalTime jamSelesai, LocalDate tanggalUjian, Integer limit);
-    Sidang findBySeminarAndAkademik(Seminar seminar, StatusApprove waiting);
+        Sidang findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNullAndStatusSidangNotIn(Seminar seminar,
+                        StatusApprove statusAppr, List<StatusApprove> statusApproves);
 
-    @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2)", nativeQuery = true)
-    Object validasiPublishNilai(Sidang sidang, BigDecimal nilai);
+        List<Sidang> findBySeminarOrderByAkademikDescTanggalInputDesc(Seminar seminar);
 
-    @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pa2 = ?2 or pb2 = ?2 or pc2 = ?2 or pd2 = ?2)", nativeQuery = true)
-    Object validasiPublishNilaiPasca(Sidang sidang, BigDecimal nilai);
+        List<Sidang> findBySeminar(Seminar seminar);
 
-    @Query(value = "SELECT s.* FROM sidang as s where id_tahun_akademik = ?1 and akademik = 'APPROVED' and status_sidang = 'APPROVED' and ( ketua_penguji = ?2 or dosen_penguji = ?2 or pembimbing = ?2)\n" +
-            "UNION\n" +
-            "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id inner join mahasiswa as m on n.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where s.id_tahun_akademik = ?1 and akademik = 'APPROVED' and status_sidang = 'APPROVED' and  s.pembimbing2 = ?2\n" +
-            "order by 2", nativeQuery = true)
-    List<Sidang> listDosenSidang(TahunAkademik tahunAkademik,Dosen dosen);
+        Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
+                        TahunAkademik tahunAkademik, Prodi prodi, List<StatusApprove> statusApproves,
+                        List<StatusApprove> statusSidang, Pageable page);
 
-    @Query("select s from Sidang s where s.tahunAkademik = ?1 and s.akademik = ?2 and s.statusSidang = ?2 and s.seminar.note.mahasiswa.idProdi.idJenjang = ?4 and  (s.ketuaPenguji = ?3 or s.pembimbing = ?3 or s.dosenPenguji = ?3 or s.pembimbing2 = ?3) order by s.akademik desc, s.statusSidang desc , s.publish desc")
-    List<Sidang> listDosenSidangThesis(TahunAkademik tahunAkademik,StatusApprove statusApprove,Dosen dosen, Jenjang jenjang);
+        Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
+                        TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApproves,
+                        List<StatusApprove> statusApprove,
+                        Pageable page);
 
-    @Query(value = "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id where n.id_mahasiswa = ?1 and s.status_sidang not in ('HAPUS')", nativeQuery = true)
-    List<Object> cekSidang(Mahasiswa mahasiswa);
+        Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(
+                        TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApproves,
+                        StatusApprove statusApprove,
+                        Pageable page);
+
+        Page<Sidang> findByTahunAkademikAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(
+                        TahunAkademik tahunAkademik, StatusApprove statusApproves, StatusApprove statusApprove,
+                        Pageable page);
+
+        List<Sidang> findByStatusSidangAndAkademikAndTahunAkademikAndSeminarNoteMahasiswaIdProdiAndNilaiIsGreaterThanEqual(
+                        StatusApprove statusSidang, StatusApprove akademik, TahunAkademik tahunAkademik, Prodi prodi,
+                        BigDecimal nilai);
+
+        @Query(value = "select 'Jadwal_kuliah' as jenis, c.nama_matakuliah as keterangan, e.nama_karyawan as milik  from jadwal as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id inner join matakuliah as c on b.id_matakuliah=c.id inner join dosen as d on a.id_dosen_pengampu=d.id inner join karyawan as e on d.id_karyawan=e.id where id_tahun_akademik=?1 and id_hari = ?2 and id_ruangan=?3 and a.status='AKTIF' and jam_mulai >= ?4 and jam_mulai <= ?5  or id_tahun_akademik=?1 and id_hari = ?2 and id_ruangan=?3 and a.status='AKTIF'  and jam_selesai >= ?4 and jam_selesai <= ?5 union select 'Seminar' as jenis, b.judul as keterangan, c.nama as milik from seminar as a inner join note as b on a.id_note=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where a.status='APPROVED' and tanggal_ujian=?6 and jam_mulai >= ?4 and jam_mulai <= ?5 and ruangan = ?3 or a.status='APPROVED' and tanggal_ujian=?6 and jam_selesai >= ?4 and jam_selesai <= ?5 and ruangan = ?3 union select 'Sidang' as jenis, s.judul_tugas_akhir as keterangan, c.nama as milik from sidang as s inner join seminar as a on s.id_seminar=a.id inner join note as b on a.id_note=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where s.akademik='APPROVED' and s.tanggal_ujian=?6 and s.jam_mulai >= ?4 and s.jam_mulai <= ?5 and s.ruangan = '1.6' or s.akademik='APPROVED' and s.tanggal_ujian=?6 and s.jam_selesai >= ?4 and s.jam_selesai <= ?5 and s.ruangan = ?3 limit ?7", nativeQuery = true)
+        Object[] validasiJadwalSidang(TahunAkademik tahunAkademik, Hari hari, Ruangan ruangan, LocalTime jamMulai,
+                        LocalTime jamSelesai, LocalDate tanggalUjian, Integer limit);
+
+        Sidang findBySeminarAndAkademik(Seminar seminar, StatusApprove waiting);
+
+        @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2)", nativeQuery = true)
+        Object validasiPublishNilai(Sidang sidang, BigDecimal nilai);
+
+        @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pa2 = ?2 or pb2 = ?2 or pc2 = ?2 or pd2 = ?2)", nativeQuery = true)
+        Object validasiPublishNilaiPasca(Sidang sidang, BigDecimal nilai);
+
+        @Query(value = "SELECT s.* FROM sidang as s where id_tahun_akademik = ?1 and akademik = 'APPROVED' and status_sidang = 'APPROVED' and ( ketua_penguji = ?2 or dosen_penguji = ?2 or pembimbing = ?2)\n"
+                        +
+                        "UNION\n" +
+                        "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id inner join mahasiswa as m on n.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where s.id_tahun_akademik = ?1 and akademik = 'APPROVED' and status_sidang = 'APPROVED' and  s.pembimbing2 = ?2\n"
+                        +
+                        "order by 2", nativeQuery = true)
+        List<Sidang> listDosenSidang(TahunAkademik tahunAkademik, Dosen dosen);
+
+        @Query("select s from Sidang s where s.tahunAkademik = ?1 and s.akademik = ?2 and s.statusSidang = ?2 and s.seminar.note.mahasiswa.idProdi.idJenjang = ?4 and  (s.ketuaPenguji = ?3 or s.pembimbing = ?3 or s.dosenPenguji = ?3 or s.pembimbing2 = ?3) order by s.akademik desc, s.statusSidang desc , s.publish desc")
+        List<Sidang> listDosenSidangThesis(TahunAkademik tahunAkademik, StatusApprove statusApprove, Dosen dosen,
+                        Jenjang jenjang);
+
+        @Query(value = "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id where n.id_mahasiswa = ?1 and s.status_sidang not in ('HAPUS')", nativeQuery = true)
+        List<Object> cekSidang(Mahasiswa mahasiswa);
+
+        @Query(value = "select COUNT (*) FROM sidang where status_sidang = 'FAILED' AND id_seminar = ?1", nativeQuery = true)
+        Long checkTidakLulus(Seminar seminar);
 
 }

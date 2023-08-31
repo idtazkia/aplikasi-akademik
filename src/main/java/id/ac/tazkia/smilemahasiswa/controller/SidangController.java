@@ -1,21 +1,30 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import fr.opensagres.xdocreport.converter.ConverterTypeTo;
-import fr.opensagres.xdocreport.converter.Options;
-import fr.opensagres.xdocreport.core.document.DocumentKind;
-import fr.opensagres.xdocreport.document.IXDocReport;
-import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
-import fr.opensagres.xdocreport.template.IContext;
-import fr.opensagres.xdocreport.template.TemplateEngineKind;
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.FormulirService;
-import id.ac.tazkia.smilemahasiswa.service.ScoreService;
-import id.ac.tazkia.smilemahasiswa.service.SidangService;
-import org.apache.poi.ss.usermodel.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -31,26 +40,56 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import fr.opensagres.xdocreport.converter.ConverterTypeTo;
+import fr.opensagres.xdocreport.converter.Options;
+import fr.opensagres.xdocreport.core.document.DocumentKind;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
+import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dao.TagihanDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.EnableFiture;
+import id.ac.tazkia.smilemahasiswa.entity.Hari;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Ruangan;
+import id.ac.tazkia.smilemahasiswa.entity.Seminar;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.FormulirService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.SidangService;
 
 @Controller
 public class SidangController {
@@ -315,6 +354,105 @@ public class SidangController {
         }
     }
 
+    @GetMapping("/graduation/sidang/mahasiswa/daftar-ulang")
+    public String daftarUlangSidang(@RequestParam(name = "id", value = "id", required = false) Seminar seminar,
+            Model model, Authentication authentication) {
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String jenjang = mahasiswa.getIdProdi().getIdJenjang().getId();
+
+        if (jenjang.equals("01")) {
+            model.addAttribute("S1", "Mahasiswa S1");
+        } else if (jenjang.equals("02")) {
+            model.addAttribute("S2", "Mahasisw S2");
+        } else {
+            model.addAttribute("kosong", "null");
+        }
+
+        model.addAttribute("seminar", seminar);
+        PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+
+        if (jenjang.equals("02")) {
+            TahunAkademik ta = null;
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
+                    mahasiswa.getIdProdi());
+
+            if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK) {
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                        kode);
+            } else {
+                if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))) {
+                    ta = tahunAkademik;
+                } else {
+                    int last = tahunAkademik.getKodeTahunAkademik().length();
+                    String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                    if (lastKode.equals("1")) {
+                        Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                        String kode = String.valueOf(tahun) + "2";
+                        ta = tahunAkademikDao
+                                .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                    } else {
+                        String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                        ta = tahunAkademikDao
+                                .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                    }
+
+                }
+            }
+            //
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
+            if (krsDetail != null) {
+                return "graduation/sidang/mahasiswa/daftarulang";
+            } else {
+                return "graduation/info";
+            }
+        } else {
+            if (LocalDate.now().isAfter(periodeWisuda.getTutupSidang())
+                    && LocalDate.now().isBefore(periodeWisuda.getBukaSidang())) {
+                return "redirect:info";
+            } else {
+                TahunAkademik ta = null;
+                TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+                if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+                    String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                            kode);
+                } else {
+                    if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0) {
+                        ta = tahunAkademik;
+                    } else {
+                        int last = tahunAkademik.getKodeTahunAkademik().length();
+                        String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                        if (lastKode.equals("1")) {
+                            Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                            String kode = String.valueOf(tahun) + "2";
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        } else {
+                            String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        }
+
+                    }
+                }
+
+                KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
+                if (krsDetail != null) {
+                    return "graduation/sidang/mahasiswa/daftarulang";
+                } else {
+                    return "graduation/info";
+                }
+            }
+        }
+    }
+
     @GetMapping("/graduation/sidang/mahasiswa/revisi")
     public void revisiSidang(@RequestParam(name = "id", value = "id", required = false) Sidang sidang, Model model,
             Authentication authentication) {
@@ -336,6 +474,230 @@ public class SidangController {
 
     @PostMapping("/graduation/sidang/mahasiswa/pendaftaran")
     public String saveSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp,
+            Authentication authentication,
+            MultipartFile kartu, MultipartFile plagiat, MultipartFile draft, MultipartFile pendaftaran,
+            MultipartFile berita) throws Exception {
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (!pendaftaran.isEmpty() || pendaftaran != null) {
+            String namaFile = pendaftaran.getName();
+            String jenisFile = pendaftaran.getContentType();
+            String namaAsli = pendaftaran.getOriginalFilename();
+            Long ukuran = pendaftaran.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            pendaftaran.transferTo(tujuan);
+
+            sidang.setFilePendaftaran(idFile + "." + extension);
+
+        } else {
+            sidang.setFilePendaftaran(sidang.getFilePendaftaran());
+        }
+
+        if (!berita.isEmpty() || berita != null) {
+
+            String namaAsli = berita.getOriginalFilename();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            berita.transferTo(tujuan);
+
+            sidang.setFileBerita(idFile + "." + extension);
+
+        } else {
+            sidang.setFileBerita(sidang.getFileBerita());
+        }
+
+        if (!kartu.isEmpty() || kartu != null) {
+            String namaFile = kartu.getName();
+            String jenisFile = kartu.getContentType();
+            String namaAsli = kartu.getOriginalFilename();
+            Long ukuran = kartu.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kartu.transferTo(tujuan);
+
+            sidang.setFileBimbingan(idFile + "." + extension);
+
+        } else {
+            sidang.setFileBimbingan(sidang.getFileBimbingan());
+        }
+
+        if (!ijazah.isEmpty() || ijazah != null) {
+            String namaFile = ijazah.getName();
+            String jenisFile = ijazah.getContentType();
+            String namaAsli = ijazah.getOriginalFilename();
+            Long ukuran = ijazah.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ijazah.transferTo(tujuan);
+
+            sidang.setFileIjazah(idFile + "." + extension);
+
+        } else {
+            sidang.setFileIjazah(sidang.getFileIjazah());
+        }
+
+        if (!ktp.isEmpty() || ktp != null) {
+            String namaFile = ktp.getName();
+            String jenisFile = ktp.getContentType();
+            String namaAsli = ktp.getOriginalFilename();
+            Long ukuran = ktp.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ktp.transferTo(tujuan);
+
+            sidang.setFileKtp(idFile + "." + extension);
+
+        } else {
+            sidang.setFileKtp(sidang.getFileKtp());
+        }
+
+        if (!plagiat.isEmpty() || plagiat != null) {
+            String namaFile = plagiat.getName();
+            String jenisFile = plagiat.getContentType();
+            String namaAsli = plagiat.getOriginalFilename();
+            Long ukuran = plagiat.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            plagiat.transferTo(tujuan);
+
+            sidang.setFileTurnitin(idFile + "." + extension);
+
+        } else {
+            sidang.setFileTurnitin(sidang.getFileTurnitin());
+        }
+
+        if (!draft.isEmpty() || draft != null) {
+            String namaFile = draft.getName();
+            String jenisFile = draft.getContentType();
+            String namaAsli = draft.getOriginalFilename();
+            Long ukuran = draft.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            draft.transferTo(tujuan);
+
+            sidang.setFileSidang(idFile + "." + extension);
+
+        } else {
+            sidang.setFileSidang(sidang.getFileSidang());
+        }
+        sidang.setTanggalInput(LocalDate.now());
+        sidang.setStatusSidang(StatusApprove.WAITING);
+        sidang.setAkademik(StatusApprove.WAITING);
+        sidang.setPublish(StatusRecord.NONAKTIF);
+        TahunAkademik ta = null;
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
+            ta = tahunAkademik;
+        }
+        sidang.setTahunAkademik(ta);
+        mahasiswa.setJudul(sidang.getJudulTugasAkhir());
+        mahasiswa.setTitle(sidang.getJudulInggris());
+        mahasiswaDao.save(mahasiswa);
+        sidangDao.save(sidang);
+
+        return "redirect:list?id=" + sidang.getSeminar().getId();
+
+    }
+
+    @PostMapping("/graduation/sidang/mahasiswa/daftarulang")
+    public String saveDaftarUlangSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp,
             Authentication authentication,
             MultipartFile kartu, MultipartFile plagiat, MultipartFile draft, MultipartFile pendaftaran,
             MultipartFile berita) throws Exception {
@@ -781,16 +1143,15 @@ public class SidangController {
     @GetMapping("/graduation/sidang/mahasiswa/success")
     public String successPage(Model model, @RequestParam(name = "id", value = "id", required = false) Sidang sidang) {
         model.addAttribute("sidang", sidang);
-        /*
-         * if (LocalDate.now().plusDays(1).compareTo(sidang.getTanggalUjian()) > 0){
-         * System.out.println("lewat");
-         * model.addAttribute("waiting","waiting");
-         * }
-         */
-
+        Long failed = sidangDao.checkTidakLulus(sidang.getSeminar());
         if (sidang.getPublish() == StatusRecord.AKTIF) {
-            System.out.println("aktif");
-            return "redirect:nilai?id=" + sidang.getId();
+            if (failed > 0) {
+                return "redirect:list-daftar-ulang?id=" + sidang.getSeminar().getId();
+
+            } else {
+                return "redirect:nilai?id=" + sidang.getId();
+
+            }
         } else {
             return "graduation/sidang/mahasiswa/success";
 
@@ -801,6 +1162,8 @@ public class SidangController {
     @GetMapping("/graduation/sidang/mahasiswa/nilai")
     public void nilaiPage(Model model, @RequestParam(name = "id", value = "id", required = false) Sidang sidang) {
         model.addAttribute("sidang", sidang);
+        model.addAttribute("fitur", enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                sidang.getSeminar().getNote().getMahasiswa(), StatusRecord.SKRIPSI, true));
 
     }
 
@@ -827,6 +1190,65 @@ public class SidangController {
                 //
                 model.addAttribute("list", sidangList);
                 return "graduation/sidang/mahasiswa/list";
+            }
+        } else {
+            return "redirect:../../register";
+        }
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/waitingdu")
+    public String waitingDuMahasiswa(Model model,
+            @RequestParam(name = "id", value = "id", required = false) Seminar seminar, Authentication authentication) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("seminar", seminar);
+        if (seminar.getStatusSempro().equals(StatusApprove.APPROVED) && seminar.getPublish().equals("AKTIF")
+                && seminar.getNilai().compareTo(new BigDecimal(70)) >= 0) {
+            Sidang sidang = sidangDao.findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(seminar,
+                    StatusApprove.APPROVED);
+            if (sidang != null) {
+                return "redirect:success?id=" + sidang.getId();
+            } else {
+
+                List<Sidang> sidangList = sidangDao.findBySeminarOrderByAkademikDescTanggalInputDesc(seminar);
+                Sidang waiting = sidangDao.findBySeminarAndAkademik(seminar, StatusApprove.WAITING);
+                if (waiting != null) {
+                    model.addAttribute("waiting", waiting);
+                }
+                //
+                model.addAttribute("list", sidangList);
+                return "graduation/sidang/mahasiswa/list";
+            }
+        } else {
+            return "redirect:../../register";
+        }
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/list-daftar-ulang")
+    public String waitingPageMahasiswaDaftarUlang(Model model,
+            @RequestParam(name = "id", value = "id", required = false) Seminar seminar, Authentication authentication) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("seminar", seminar);
+        if (seminar.getStatusSempro().equals(StatusApprove.APPROVED) && seminar.getPublish().equals("AKTIF")
+                && seminar.getNilai().compareTo(new BigDecimal(70)) >= 0) {
+            Sidang sidang = sidangDao.findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNullAndStatusSidangNotIn(
+                    seminar,
+                    StatusApprove.APPROVED, Arrays.asList(StatusApprove.FAILED));
+            if (sidang != null) {
+                return "redirect:success?id=" + sidang.getId();
+            } else {
+
+                List<Sidang> sidangList = sidangDao.findBySeminarOrderByAkademikDescTanggalInputDesc(seminar);
+                Sidang waiting = sidangDao.findBySeminarAndAkademik(seminar, StatusApprove.WAITING);
+                if (waiting != null) {
+                    model.addAttribute("waiting", waiting);
+                }
+                //
+                model.addAttribute("list", sidangList);
+                return "graduation/sidang/mahasiswa/listdu";
             }
         } else {
             return "redirect:../../register";
@@ -1418,7 +1840,14 @@ public class SidangController {
                 }
 
             } else {
-                return "nilai tidak ada";
+                sidang.setPublish(StatusRecord.AKTIF);
+                sidang.setStatusSidang(StatusApprove.FAILED);
+                sidangDao.save(sidang);
+
+                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                        sidang.getSeminar().getNote().getMahasiswa(), StatusRecord.SKRIPSI, true);
+                enableFiture.setEnable(false);
+                enableFitureDao.save(enableFiture);
             }
             return "berhasil";
 

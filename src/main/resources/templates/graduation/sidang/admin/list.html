@@ -972,6 +972,7 @@
         var token = $("input[name='_csrf']").val();
         var url = "/graduation/sidang/dosen/publish";
         e.preventDefault();
+        console.log(id)
 
         $.ajax({
             url: url + '?sidang=' + id,
