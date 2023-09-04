@@ -414,6 +414,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "select count(id) as semester from krs where status = 'AKTIF' and id_mahasiswa = ?1 and id_tahun_akademik = ?2",nativeQuery = true)
     Integer cariSemesterSekarang (String idMaasiswa, String idTahunAKademik);
 
+    Integer countByKrsAndStatus(Krs krs, StatusRecord status);
 
     @Query(value = "select a.id, c.nama_matakuliah, f.nama_karyawan, a.nilai_akhir from krs_detail as a \n" +
             "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +

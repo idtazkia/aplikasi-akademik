@@ -119,7 +119,46 @@
           <br>
           <div class="row">
             <div class="col-md-6">
-              <a th:href="@{/du/cuti/list}" class="hvr-sweep-to-top">Mengajukan Cuti</a>
+
+              <button type="button" class="hvr-sweep-to-top" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Mengajukan Cuti
+              </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form th:action="@{/du/cuti/form}" method="post">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          <b style="font-size: 30px;">
+                            Form Pengajuan Cuti
+                          </b>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <b>Nim</b>
+                          <p th:text="${mahasiswa.nim}">Muhammad Rafizki</p>
+                        </div>
+                        <div class="form-group">
+                          <b>Nama</b>
+                          <p th:text="${mahasiswa.nama}">Muhammad Rafizki</p>
+                        </div>
+                        <div class="form-group">
+                          <b>Alasan mengajukan cuti</b>
+                          <input type="text" required name="keterangan" class="form-control" style="margin-top: 5px; margin-bottom: 5px;">
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary">Ajukan</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-md-6">
               <form th:action="@{/du/register}" method="post">
@@ -137,5 +176,5 @@
   </div>
 </div>
 </body>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>

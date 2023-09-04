@@ -459,7 +459,13 @@ public class StudyActivityController {
                 BigDecimal batas = new BigDecimal(3);
                 Ipk cekIpk = ipkDao.findByMahasiswa(mahasiswa);
                 if (cekIpk.getIpk().compareTo(batas) <= 0){
-                    if (tSemester == 2){
+                    if (tSemester == 1){
+                        if (cekIpk.getSksTotal() < 12){
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 2){
                         if (cekIpk.getSksTotal() < 24){
                             createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                         }else{
@@ -589,6 +595,16 @@ public class StudyActivityController {
             krsDetailDao.save(krsDetail);
             redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
 
+        }
+
+        Integer cekKrs = krsDetailDao.countByKrsAndStatus(krsDetail.getKrs(), StatusRecord.AKTIF);
+        log.info("jumlah krs aktif : {}", cekKrs);
+        if (cekKrs == 0){
+            KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswa(krsDetail.getKrs(), krsDetail.getMahasiswa());
+            if (ka != null) {
+                ka.setStatus(StatusApprove.HAPUS);
+                krsApprovalDao.save(ka);
+            }
         }
 
         return "redirect:krs";
@@ -985,6 +1001,7 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Cuti cuti = cutiDao.findCutiByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("mahasiswa", mahasiswa);
         if (cuti == null){
             return "du/form";
         }else {
@@ -1009,14 +1026,17 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Prodi prodi = prodiDao.findById(mahasiswa.getIdProdi().getId()).get();
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         cuti.setMahasiswa(mahasiswa);
         cuti.setDosenWali(mahasiswa.getDosen());
         cuti.setKps(prodi.getDosen());
+        cuti.setTanggalMulaiCuti(tahun.getTanggalMulaiKuliah());
+        cuti.setTanggalBerakhirCuti(tahun.getTanggalSelesaiKuliah());
         cuti.setTanggalPengajuaan(LocalDate.now());
         cuti.setStatusPengajuaan(StatusApprove.WAITING);
         cuti.setDosenWaliApproved(StatusApprove.WAITING);
-        cuti.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        cuti.setTahunAkademik(tahun);
         cutiDao.save(cuti);
 
         return "redirect:/du/cuti/list";
