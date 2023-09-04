@@ -252,6 +252,11 @@ public class StudiesActivityController {
 
         // Attribute
 
+        @ModelAttribute("dosen")
+        public Iterable<Dosen> dosen() {
+                return dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
+        }
+
         @ModelAttribute("prodi")
         public Iterable<Prodi> prodi() {
                 return prodiDao.findAll();
@@ -7351,6 +7356,26 @@ public class StudiesActivityController {
                 workbook.write(response.getOutputStream());
                 workbook.close();
 
+        }
+
+        // Status KRS
+        @GetMapping("/studiesActivity/krs/status")
+        public void statusKrs(Model model, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) String angkatan,
+                              @RequestParam(required = false) Dosen dosen, @PageableDefault(size = 10) Pageable page){
+
+                TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+                model.addAttribute("selectProdi", prodi);
+                model.addAttribute("selectAngkatan", angkatan);
+                model.addAttribute("selectDosen", dosen);
+
+                if (prodi != null && angkatan != null && dosen == null) {
+                        model.addAttribute("listMahasiswa", krsDao.listKrsAdmin(angkatan, prodi.getId(), tahun.getId(), page));
+                }
+
+                if (prodi != null && angkatan != null && dosen != null){
+                        model.addAttribute("listMahasiswa", krsDao.listKrsAdminByDosenWali(angkatan, prodi.getId(), tahun.getId(), dosen.getId(), page));
+                }
         }
 
         @GetMapping("/studiesActivity/transcript/transkriptindo2")

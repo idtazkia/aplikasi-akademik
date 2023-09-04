@@ -319,7 +319,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Generation</label>
-                                                        <input type="text" name="angkatan"
+                                                        <input readonly type="text" name="angkatan"
                                                                class="form-control" th:field="*{angkatan}"
                                                                placeholder="Generation">
                                                     </div>
@@ -327,14 +327,10 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Program</label>
-                                                        <select name="idProgram" th:field="*{idProgram}"
-                                                                class="form-control js-select2">
-                                                            <option value=""></option>
-                                                            <option th:each="data : ${program}"
-                                                                    th:text="${data.namaProgram}"
-                                                                    th:value="${data.id}">
-                                                            </option>
-                                                        </select>
+                                                        <input readonly type="text" class="form-control" th:value="${mhsw.idProgram.namaProgram}"
+                                                               placeholder="Program">
+                                                        <input readonly type="hidden" name="idProgram" th:field="*{idProgram}">
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -342,14 +338,9 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Study Programs</label>
-                                                        <select name="idProdi" th:field="*{idProdi}"
-                                                                class="form-control js-select2">
-                                                            <option value=""></option>
-                                                            <option th:each="data : ${prodi}"
-                                                                    th:text="${data.namaProdi}"
-                                                                    th:value="${data.id}">
-                                                            </option>
-                                                        </select>
+                                                        <input readonly type="text" class="form-control" th:value="${mhsw.idProdi.namaProdi}" placeholder="Generation" >
+                                                        <input readonly type="hidden" name="idProdi"
+                                                               class="form-control" th:field="*{idProdi}" >
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">

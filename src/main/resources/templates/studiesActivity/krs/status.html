@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KRS</title>
+</head>
+
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Status KRS</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div
+                                                class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Prodi</label>
+                                        <select name="prodi" required class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${prodi}"
+                                                    th:selected="(${data} == *{selectProdi})"
+                                                    th:text="${data.namaProdi}"
+                                                    th:value="${data.id}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Angkatan</label>
+                                        <select name="angkatan" required class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${angkatan}"
+                                                    th:selected="(${data} == *{selectAngkatan})"
+                                                    th:text="${data}"
+                                                    th:value="${data}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Dosen</label>
+                                        <select name="dosen" class="form-control js-example-placeholder-single" id="select2-dosen"
+                                                style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="data: ${dosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:selected="(${data} == *{selectDosen})"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 10px; padding-bottom: 20px;">
+                                <div class="col-md-12" style="text-align: center;">
+                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>
+                                        Cari</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="card shadow" th:if="${selectProdi != null}">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">NIM</th>
+                                            <th scope="col">Nama</th>
+                                            <th scope="col">Program</th>
+                                            <th scope="col">Dosen Wali</th>
+                                            <th scope="col">Status Approve Matkul</th>
+                                            <th scope="col">Status KRS</th>
+                                            <th scope="col">Status Pegisian Matkul</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="data,row : ${listMahasiswa}">
+                                            <td th:text="${(row.index + 1) + (listMahasiswa.number * listMahasiswa.size)}">1</td>
+                                            <td th:text="${data[1]}">Senin</td>
+                                            <td th:text="${data[2]}">13.00</td>
+                                            <td th:text="${data[5]}">Ruang 1.3</td>
+                                            <td th:text="${data[6]}">Ruang 1.3</td>
+                                            <td th:text="${data[7]}">Ini Lecture</td>
+                                            <td th:text="${data[8]}">Ini Lecture</td>
+                                            <td th:text="${data[9]}">Ini Lecture</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer py-4">
+                                <nav aria-label="...">
+                                    <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                        <li class="disabled"><a href="#" aria-label="Previous"><span
+                                                aria-hidden="true">&laquo;</span></a>
+                                        </li>
+                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+
+</html>
+<script>
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function ($){
+        $('#select2-dosen').select2();
+    })(jQuery);
+
+</script>

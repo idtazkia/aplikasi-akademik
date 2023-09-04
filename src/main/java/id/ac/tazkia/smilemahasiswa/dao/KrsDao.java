@@ -277,4 +277,44 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                         "WHERE a.status='AKTIF' AND b.jumlah_sks > 0 AND a.finalisasi = 'FINAL' AND a.id_mahasiswa = ?1 and d.kode_tahun_akademik <= ?2", nativeQuery = true)
         IpkDto cariIpkTotalPerSemester(String idMahasiswa, String kodeTahunAkademik);
 
+        @Query(value = "select a.*, coalesce(ka.status, '-'), if(b.idKrs is not null, 'KRS AKTIF', 'NONAKTIF') as statusKrs, if(kd.id is not null, 'Sudah mengambil matkul', 'Belum mengambil matkul') as statusKrsDetail from\n" +
+                "(select m.id, m.nim, m.nama, p.nama_prodi, m.angkatan, pr.nama_program, k.nama_karyawan from mahasiswa m inner join prodi p on m.id_prodi=p.id " +
+                "inner join dosen d on m.id_dosen_wali=d.id inner join karyawan k on d.id_karyawan=k.id inner join program pr on m.id_program=pr.id " +
+                "where m.status_aktif='AKTIF' and m.angkatan=?1 and m.id_prodi=?2)a\n" +
+                "left join\n" +
+                "(select k.id as idKrs, k.id_mahasiswa from krs k inner join tahun_akademik ta on k.id_tahun_akademik=ta.id " +
+                "where k.id_tahun_akademik=?3 and k.status='AKTIF')b on a.id=b.id_mahasiswa\n" +
+                "left join krs_approval ka on b.idKrs=ka.id_krs\n" +
+                "left join krs_detail kd on b.idKrs=kd.id_krs where kd.status='AKTIF' group by a.id", nativeQuery = true,
+        countQuery = "select count(a.id) from\n" +
+                "(select m.id, m.nim, m.nama, p.nama_prodi, m.angkatan, pr.nama_program, k.nama_karyawan from mahasiswa m inner join prodi p on m.id_prodi=p.id " +
+                "inner join dosen d on m.id_dosen_wali=d.id inner join karyawan k on d.id_karyawan=k.id inner join program pr on m.id_program=pr.id " +
+                "where m.status_aktif='AKTIF' and m.angkatan=?1 and m.id_prodi=?2)a\n" +
+                "left join\n" +
+                "(select k.id as idKrs, k.id_mahasiswa from krs k inner join tahun_akademik ta on k.id_tahun_akademik=ta.id " +
+                "where k.id_tahun_akademik=?3 and k.status='AKTIF')b on a.id=b.id_mahasiswa\n" +
+                "left join krs_approval ka on b.idKrs=ka.id_krs\n" +
+                "left join krs_detail kd on b.idKrs=kd.id_krs where kd.status='AKTIF' group by a.id")
+        Page<Object[]> listKrsAdmin(String angkatan, String idProdi, String idTahun, Pageable page);
+
+        @Query(value = "select a.*, coalesce(ka.status, '-'), if(b.idKrs is not null, 'KRS AKTIF', 'NONAKTIF') as statusKrs, if(kd.id is not null, 'Sudah mengambil matkul', 'Belum mengambil matkul') as statusKrsDetail from\n" +
+                "(select m.id, m.nim, m.nama, p.nama_prodi, m.angkatan, pr.nama_program, k.nama_karyawan from mahasiswa m inner join prodi p on m.id_prodi=p.id " +
+                "inner join dosen d on m.id_dosen_wali=d.id inner join karyawan k on d.id_karyawan=k.id inner join program pr on m.id_program=pr.id " +
+                "where m.status_aktif='AKTIF' and m.angkatan=?1 and m.id_prodi=?2 and m.id_dosen_wali=?4)a\n" +
+                "left join\n" +
+                "(select k.id as idKrs, k.id_mahasiswa from krs k inner join tahun_akademik ta on k.id_tahun_akademik=ta.id " +
+                "where k.id_tahun_akademik=?3 and k.status='AKTIF')b on a.id=b.id_mahasiswa\n" +
+                "left join krs_approval ka on b.idKrs=ka.id_krs\n" +
+                "left join krs_detail kd on b.idKrs=kd.id_krs where kd.status='AKTIF' group by a.id", nativeQuery = true,
+        countQuery = "select count(a.id) from\n" +
+                "(select m.id, m.nim, m.nama, p.nama_prodi, m.angkatan, pr.nama_program, k.nama_karyawan from mahasiswa m inner join prodi p on m.id_prodi=p.id " +
+                "inner join dosen d on m.id_dosen_wali=d.id inner join karyawan k on d.id_karyawan=k.id inner join program pr on m.id_program=pr.id " +
+                "where m.status_aktif='AKTIF' and m.angkatan=?1 and m.id_prodi=?2 and m.id_dosen_wali=?4)a\n" +
+                "left join\n" +
+                "(select k.id as idKrs, k.id_mahasiswa from krs k inner join tahun_akademik ta on k.id_tahun_akademik=ta.id " +
+                "where k.id_tahun_akademik=?3 and k.status='AKTIF')b on a.id=b.id_mahasiswa\n" +
+                "left join krs_approval ka on b.idKrs=ka.id_krs\n" +
+                "left join krs_detail kd on b.idKrs=kd.id_krs where kd.status='AKTIF' group by a.id")
+        Page<Object[]> listKrsAdminByDosenWali(String angkatan, String idProdi, String idTahun, String idDosen, Pageable page);
+
 }
