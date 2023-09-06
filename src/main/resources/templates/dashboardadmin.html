@@ -5,6 +5,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <style>
+
+        th, thead {
+            position: relative;
+            z-index: 2;
+            background-color: white;
+        }
+
+        .marquee {
+            top: 1em;
+            position: relative;
+            box-sizing: border-box;
+            animation: marquee 3500s linear 0s infinite;
+        }
+        .marquee:hover {
+            animation-play-state: paused;
+        }
+        @keyframes marquee {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(0, -100%);
+            }
+        }
+
+
+        .tableFixHead {
+            overflow-y: auto;
+            height: 500px;
+        }
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th,
+        td {
+            padding: 8px 16px;
+        }
+        th {
+            background: #eee;
+        }
+
+        .borderless td, .borderless th {
+            border: none;
+        }
+
+
+    </style>
 </head>
 
 <body>
@@ -255,7 +308,55 @@
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <br>
 
+                    <!--list total sks-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mb-4">
+                                <div class="card-header pb-0">
+                                    <h4>List Total SKS</h4>
+                                </div>
+                                <div class="card-body px-0 pt-0 pb-2">
+<!--                                    <div class="table-responsive p-0">-->
+                                    <div class="tableFixHead ">
+                                        <table class="table align-items-center mb-0 borderless">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nim</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total SKS</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="marquee">
+                                            <tr th:each="data, row : ${listTotalSks}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td th:text="${data.getNim}"></td>
+                                                <td th:text="${data.getNama}"></td>
+                                                <td th:text="${data.getNamaProdi}"></td>
+                                                <td th:text="${data.getTotalSks}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+<!--                                    <div class="card-footer py-4">-->
+<!--                                        <nav aria-label="...">-->
+<!--                                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
+<!--                                                <li class="disabled"><a href="#" aria-label="Previous"><span-->
+<!--                                                        aria-hidden="true">&laquo;</span></a>-->
+<!--                                                </li>-->
+<!--                                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+<!--                                                </li>-->
+<!--                                            </ul>-->
+<!--                                        </nav>-->
+<!--                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 <!--&lt;!&ndash;                                    table dosen&ndash;&gt;-->
 <!--                                    <div class="row">-->
@@ -618,7 +719,5 @@
         </div>
     </div>
 </div>
-
-
 </body>
 </html>

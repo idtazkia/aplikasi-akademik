@@ -930,6 +930,8 @@ public class DashboardController {
 //        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
 
 
+        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
+
 
         return "dashboardadmin";
     }
