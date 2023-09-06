@@ -375,8 +375,8 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Tagihan findByStatusAndStatusTagihanAndMahasiswa(StatusRecord status, StatusTagihan statusTagihan, Mahasiswa mahasiswa);
 
-    @Query(value = "select angkatan, nim, nama, prodi, program, nilai_tagihan, coalesce(nama_beasiswa, '-') as beasiswa from\n" +
-            "(select a.id, c.id as idMahasiswa, c.id_beasiswa, c.nim, c.nama, c.angkatan, a.nilai_tagihan, d.nama_prodi as prodi, e.nama_program as program from tagihan as a inner join " +
+    @Query(value = "select angkatan, nim, nama, prodi, program, nilai_tagihan, coalesce(nama_beasiswa, '-') as beasiswa, status from\n" +
+            "(select a.id, c.id as idMahasiswa, c.id_beasiswa, c.nim, c.nama, c.angkatan, a.nilai_tagihan, d.nama_prodi as prodi, e.nama_program as program, a.status_tagihan as status from tagihan as a inner join " +
             "nilai_jenis_tagihan as b on a.id_nilai_jenis_tagihan=b.id inner join mahasiswa as c on a.id_mahasiswa=c.id inner join prodi as d on b.id_prodi=d.id inner join program as e on b.id_program=e.id " +
             "where a.id_tahun_akademik=?1 and b.id_prodi=?3 and b.id_program=?4 and b.angkatan=?2) as a\n" +
             "left join\n" +

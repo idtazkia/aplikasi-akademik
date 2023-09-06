@@ -60,7 +60,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Program</label>
                                         <select name="program" id="" class="form-control">
@@ -72,7 +72,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Angkatan</label>
                                         <select name="angkatan" required class="form-control">
@@ -96,6 +96,12 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Cicilan</label>
+                                        <input type="number" name="cicilan" class="form-control" placeholder="Cicilan" th:value="${cicilan}">
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12" style="text-align: center">
@@ -112,7 +118,32 @@
 <!--                                    <a class="btn btn-success" th:href="@{/studentBill/billAdmin/form( prodi = ${selectProdi.id})}"><i class="fa fa-plus"></i> One Student Added</a>-->
 <!--                                </div>-->
 <!--                            </div>-->
-                            <form method="post" th:action="@{/studentBill/billAdmin/generate(prodi=${selectProdi.id}, program=${selectProgram.id}, angkatan=${selectAngkatan}, tahun=${selectTahun.id})}">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush table-striped">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Jenis Tagihan</th>
+                                                <th class="text-center">Kode</th>
+                                                <th class="text-center">Nilai</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row:${listJenisTagihan}">
+                                                <td class="text-center" th:text="${(row.index + 1)}">1</td>
+                                                <td class="text-center" th:text="${data.jenisTagihan.nama}"></td>
+                                                <td class="text-center" th:text="${data.jenisTagihan.kode}"></td>
+                                                <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.nilai, 0, 'POINT', 2, 'COMMA')}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <form method="post" th:action="@{/studentBill/billAdmin/generate(prodi=${selectProdi.id}, program=${selectProgram.id}, angkatan=${selectAngkatan}, tahun=${selectTahun.id}, cicilan=${cicilan})}">
                                 <div class="col">
                                     <div class="form-group text-center">
                                         <button type="submit" class="btn btn-success"><i class="fa fa-download"></i> Generate</button>
@@ -143,6 +174,7 @@
                                                 <th>Program</th>
                                                 <th>Tagihan</th>
                                                 <th>Beasiswa</th>
+                                                <th>Status Tagihan</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -155,6 +187,7 @@
                                                 <td th:text="${data[4]}"></td>
                                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data[5], 0, 'POINT', 2, 'COMMA')}"></td>
                                                 <td th:text="${data[6]}"></td>
+                                                <td th:text="${data[7]}"></td>
                                                 <!-- <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>-->
 <!--                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>-->
                                             </tr>

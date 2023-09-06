@@ -18,7 +18,7 @@ public interface KrsApprovalDao extends PagingAndSortingRepository<KrsApproval, 
     @Query(value = "SELECT a.id as idKrs, c.nim,c.nama,d.nama_prodi, c.angkatan, coalesce(e.ipk,0) AS ip_semester, coalesce(b.sks_total,0) as sks_total,coalesce(b.ipk ,0) as ipk, a.approval, a.idApproval \n" +
             "FROM (SELECT a.*, ka.id as idApproval, ka.status as approval FROM krs as a inner join mahasiswa as b on a.id_mahasiswa=b.id \n" +
             "inner join tahun_akademik as c on a.id_tahun_akademik = c.id inner join krs_approval as ka on a.id=ka.id_krs\n" +
-            "WHERE a.STATUS='AKTIF' AND a.id_tahun_akademik=?1 and b.status_aktif='AKTIF' and ka.status <> 'REJECTED' and b.id_dosen_wali=?3)a \n" +
+            "WHERE a.STATUS='AKTIF' AND a.id_tahun_akademik=?1 and b.status_aktif='AKTIF' and ka.status not in('REJECTED', 'HAPUS') and b.id_dosen_wali=?3)a \n" +
             "LEFT JOIN \n" +
             "(SELECT a.id_mahasiswa,ROUND(SUM(b.jumlah_sks),2) AS sks_total,ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk \n" +
             "FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id \n" +
