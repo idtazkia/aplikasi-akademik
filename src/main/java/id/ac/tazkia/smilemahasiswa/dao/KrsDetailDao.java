@@ -2,6 +2,8 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
+import id.ac.tazkia.smilemahasiswa.dto.elearning.KlasemenDosenIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.krs.TotalSksDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
@@ -11,6 +13,8 @@ import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.hibernate.sql.Update;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -830,4 +834,15 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     List<KrsDetail> findByStatusAndTahunAkademikAndKrs(StatusRecord statusRecord, TahunAkademik tahunAkademik, Krs krs);
 
     List<KrsDetail> findByStatusAndKrsAndMahasiswa(StatusRecord status, Krs krs, Mahasiswa mahasiswa);
+
+    @Query(value = "select mh.nim as nim, mh.nama as nama,pr.nama_prodi as namaProdi, sum(mku.jumlah_sks) as totalSks \n" +
+            "from krs_detail as kd\n" +
+            "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
+            "inner join matakuliah_kurikulum as mku on jd.id_matakuliah_kurikulum = mku.id \n" +
+            "inner join mahasiswa as mh on kd.id_mahasiswa = mh.id\n" +
+            "inner join prodi as pr on mh.id_prodi = pr.id\n" +
+            "where kd.id_tahun_akademik = ?1 and kd.status = 'AKTIF'\n" +
+            "group by kd.id_mahasiswa\n" +
+            "order by pr.nama_prodi", nativeQuery = true)
+    List<TotalSksDto> listTotalSks1(TahunAkademik tahunAkademik);
 }
