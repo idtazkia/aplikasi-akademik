@@ -293,7 +293,7 @@ public class StudyActivityController {
 
             model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
 
-            KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswa(k, mahasiswa);
+            KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
             if (ka != null) {
                 if (ka.getStatus() == StatusApprove.WAITING) {
                     model.addAttribute("waiting", "Menunggu persetujuan dosen wali");
@@ -453,7 +453,7 @@ public class StudyActivityController {
         }
 
         if (validasi.isEmpty()){
-            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.REJECTED));
+            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.REJECTED, StatusApprove.HAPUS));
             if (cek == null) {
                 Integer tSemester = krsDetailDao.cariSemester(mahasiswa.getId(), tahunAkademik.getId());
                 BigDecimal batas = new BigDecimal(3);
@@ -509,7 +509,13 @@ public class StudyActivityController {
                         }
                     }
                 } else if (cekIpk.getIpk().compareTo(batas) > 0) {
-                    if (tSemester == 2){
+                    if (tSemester == 1){
+                        if (cekIpk.getSksTotal() < 12){
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        }else{
+                            createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
+                    } else if (tSemester == 2){
                         if (cekIpk.getSksTotal() < 24){
                             createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                         }else{

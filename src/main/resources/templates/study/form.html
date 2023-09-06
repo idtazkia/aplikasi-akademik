@@ -48,7 +48,7 @@
         }
     </style>
 </head>
-<body onload="myFunction()">
+<body>
 <section layout:fragment="main" class="content">
     <div class="breadcomb-area">
         <div class="container">
@@ -137,10 +137,10 @@
                             <h2>Data KRS</h2>
                         </div>
                         <div class="bsc-tbl-st">
-                            <form th:action="@{/study/form}" method="post" id="krs">
+                            <form id="krs" th:action="@{/study/form}" method="post">
                                 <input type="hidden" name="jumlah" th:if="${full == null}" th:value="${'24'}">
                                 <input type="hidden" name="jumlah" th:if="${full != null}" th:value="${'24'}">
-                                <button class="btn btn-primary notika-btn-danger btn-sm waves-effect">Simpan</button>
+                                <button type="submit" onclick="saveKrs()" id="btnKrs" class="btn btn-primary notika-btn-danger btn-sm waves-effect">Simpan</button>
                                 <br>
                                 <br>
                                 <table id="data-table-basic" class="table table-striped">
@@ -211,10 +211,22 @@
     </div>
 </section>
 
+</body>
+</html>
 <script>
     $("#save").click(function(){
         $("#save").hide();
     });
+
+    function saveKrs() {
+
+        $("#btnKrs").removeClass("btn-primary");
+        $("#btnKrs").addClass("btn-warning");
+        $("#btnKrs").prop('disabled', true);
+        $("#btnKrs").html('Loading...');
+
+        $("#krs").submit();
+
+    }
+
 </script>
-</body>
-</html>
