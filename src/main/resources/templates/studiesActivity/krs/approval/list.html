@@ -91,7 +91,7 @@
                                         <i class="fas fa-eye"></i> Detail
                                     </button>
 
-                                    <div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                    <div class="modal fade" th:id="${'modal-detail' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
                                             <div class="modal-content">
 
@@ -209,7 +209,7 @@
 
     function detailMatkul(id){
 
-        $('#modal-detail').modal('show');
+        $('#modal-detail'+id).modal('show');
 
         const urlRequestMatkul = '/get-request-matkul/' + id;
         $.getJSON(urlRequestMatkul, function (data){
