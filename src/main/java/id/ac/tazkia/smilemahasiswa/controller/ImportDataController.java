@@ -72,13 +72,6 @@ public class ImportDataController  {
                     try {
                         mahasiswaService.importMahasiswa(request);
                         Mahasiswa m = mahasiswaDao.findByNim(request.getNim());
-                        if (programS2.contains(m.getIdProgram().getId())){
-                            log.info("create mahasiswa cicilan aktif dari import mahasiswa");
-                            MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
-                            mahasiswaCicilan.setMahasiswa(m);
-                            mahasiswaCicilan.setStatus(StatusRecord.AKTIF);
-                            mahasiswaCicilanDao.save(mahasiswaCicilan);
-                        }
                         if (!request.getCicilan().isEmpty() || request.getCicilan() != null) {
                             createTagihan(request.getCicilan(), m);
                         }
@@ -100,29 +93,10 @@ public class ImportDataController  {
     }
 
     private void createTagihan(List<RequestCicilanDto> cicilans, Mahasiswa mahasiswa){
-        MahasiswaCicilan mc = mahasiswaCicilanDao.findByMahasiswa(mahasiswa);
-        if (programS2.contains(mahasiswa.getIdProgram().getId())) {
-            log.info("create mahasiswa cicilan aktif dari tagihan mahasiswa cicilan");
-            if (mc == null) {
-                MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
-                mahasiswaCicilan.setMahasiswa(mahasiswa);
-                mahasiswaCicilan.setStatus(StatusRecord.AKTIF);
-                mahasiswaCicilanDao.save(mahasiswaCicilan);
-            }else{
-                mc.setStatus(StatusRecord.AKTIF);
-                mahasiswaCicilanDao.save(mc);
-            }
-        }else{
-            if (mc == null) {
-                MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
-                mahasiswaCicilan.setMahasiswa(mahasiswa);
-                mahasiswaCicilan.setStatus(StatusRecord.NONAKTIF);
-                mahasiswaCicilanDao.save(mahasiswaCicilan);
-            }else{
-                mc.setStatus(StatusRecord.NONAKTIF);
-                mahasiswaCicilanDao.save(mc);
-            }
-        }
+        MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
+        mahasiswaCicilan.setMahasiswa(mahasiswa);
+        mahasiswaCicilan.setStatus(StatusRecord.NONAKTIF);
+        mahasiswaCicilanDao.save(mahasiswaCicilan);
 
         JenisTagihan jenisTagihan = jenisTagihanDao.findByKodeAndStatus("02",StatusRecord.AKTIF);
         NilaiJenisTagihan cekNilaiJenis = nilaiJenisTagihanDao.

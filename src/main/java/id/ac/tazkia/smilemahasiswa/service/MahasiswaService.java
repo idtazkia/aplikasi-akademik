@@ -186,7 +186,12 @@ public class MahasiswaService {
         mahasiswa.setIdAbsen(mahasiswaDao.cariMaxAbsen()+1);
         mahasiswa.setUser(user);
         if (importMahasiswaDto.getJenjang().equals("S1")){
-            mahasiswa.setIdProgram(programDao.findById("01").get());
+            if (importMahasiswaDto.getProgram().equalsIgnoreCase("Reguler")) {
+                mahasiswa.setIdProgram(programDao.findById("01").get());
+            }
+            if (importMahasiswaDto.getProgram().equalsIgnoreCase("Karyawan")){
+                mahasiswa.setIdProgram(programDao.findById("3abf660c-e801-4ca3-b6d6-e69f67b9f09c").get());
+            }
         }
 
         if (importMahasiswaDto.getJenjang().equals("S2")){
