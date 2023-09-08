@@ -835,14 +835,44 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     List<KrsDetail> findByStatusAndKrsAndMahasiswa(StatusRecord status, Krs krs, Mahasiswa mahasiswa);
 
-    @Query(value = "select mh.nim as nim, mh.nama as nama,pr.nama_prodi as namaProdi, sum(mku.jumlah_sks) as totalSks \n" +
+    @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n" +
+            "if(c.id is null, 'BELUM BAYAR',\n" +
+            "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs\n" +
+            "from\n" +
+            "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+            "inner join prodi as b on a.id_prodi = b.id\n" +
+            "where a.status = 'AKTIF') as a\n" +
+            "left join\n" +
+            "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
             "from krs_detail as kd\n" +
             "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
             "inner join matakuliah_kurikulum as mku on jd.id_matakuliah_kurikulum = mku.id \n" +
-            "inner join mahasiswa as mh on kd.id_mahasiswa = mh.id\n" +
-            "inner join prodi as pr on mh.id_prodi = pr.id\n" +
             "where kd.id_tahun_akademik = ?1 and kd.status = 'AKTIF'\n" +
-            "group by kd.id_mahasiswa\n" +
-            "order by pr.nama_prodi", nativeQuery = true)
+            "group by kd.id_mahasiswa) as b on a.id = b.id_mahasiswa\n" +
+            "left join \n" +
+            "(select id_mahasiswa,id from krs where status = 'AKTIF' and id_tahun_akademik = ?1) \n" +
+            "as c on a.id = c.id_mahasiswa\n" +
+            "order by a.nim;", nativeQuery = true)
     List<TotalSksDto> listTotalSks1(TahunAkademik tahunAkademik);
+
+    @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n" +
+            "if(c.id is null, 'BELUM BAYAR',\n" +
+            "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs\n" +
+            "from\n" +
+            "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+            "inner join prodi as b on a.id_prodi = b.id\n" +
+            "where a.status = 'AKTIF' and a.id_dosen_wali = ?2) as a\n" +
+            "left join\n" +
+            "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
+            "from krs_detail as kd\n" +
+            "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
+            "inner join matakuliah_kurikulum as mku on jd.id_matakuliah_kurikulum = mku.id \n" +
+            "where kd.id_tahun_akademik = ?1 and kd.status = 'AKTIF'\n" +
+            "group by kd.id_mahasiswa) as b on a.id = b.id_mahasiswa\n" +
+            "left join \n" +
+            "(select id_mahasiswa,id from krs where status = 'AKTIF' and id_tahun_akademik = ?1) \n" +
+            "as c on a.id = c.id_mahasiswa\n" +
+            "order by a.nim;", nativeQuery = true)
+    List<TotalSksDto> listTotalSks2(TahunAkademik tahunAkademik, Dosen dosen);
+
 }

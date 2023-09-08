@@ -6,5 +6,6 @@ public interface TotalSksDto {
     String getNama();
     String getNamaProdi();
     String getTotalSks();
+    String getStatusKrs();
 
 }

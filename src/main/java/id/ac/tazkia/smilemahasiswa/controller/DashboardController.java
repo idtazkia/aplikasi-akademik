@@ -931,6 +931,7 @@ public class DashboardController {
 
 
         model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
+        model.addAttribute("listTotalSks2", krsDetailDao.listTotalSks2(tahunAkademik,dosen));
 
 
         return "dashboardadmin";
