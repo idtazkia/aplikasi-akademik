@@ -49,6 +49,8 @@ public class PresensiService {
     private KrsDetailDao krsDetailDao;
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+    @Autowired
+    private JadwalDao jadwalDao;
     @Value("${presensi.barcode.url}")
     private String barcodeUrl;
 
@@ -391,6 +393,9 @@ public class PresensiService {
         sesiKuliah.setPertemuanKe(pertemuan);
         sesiKuliahDao.save(sesiKuliah);
 
+        j.setFinalPloting("FINISHED");
+        jadwalDao.save(j);
+
         return presensiDosen;
     }
 
@@ -449,6 +454,32 @@ public class PresensiService {
 
         return response;
 
+    }
+
+    public void generateSesi2(Jadwal jadwal) throws Exception {
+        Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
+        Integer valueJadwal = null;
+        if (jadwal.getHari().getId().equals("0")) {
+            valueJadwal = 7;
+        } else {
+            valueJadwal = Integer.parseInt(jadwal.getHari().getId());
+        }
+
+        Integer valueDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().getDayOfWeek().getValue() - valueJadwal;
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueDate);
+
+        if (totalPresensi == 0) {
+            int attend = 16;
+
+            for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
+
+                generatePresensi(jadwal.getDosen(),
+                        jadwal, "-",
+                        LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                        pertemuan);
+
+            }
+        }
     }
 
     public BaseResponse generatePresensiMangkir(SesiKuliah sesiKuliah) throws Exception {

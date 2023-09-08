@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,15 @@ public class JadwalService {
 
     @Autowired private PresensiService presensiService;
 
-    @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
+    @Autowired private TahunAkademikDao tahunAkademikDao;
+
+    @Scheduled(cron = "0 05 10 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal() throws Exception {
 
-        List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndFinalPloting(StatusRecord.AKTIF, "FINAL");
+        List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
         for (Jadwal j : cekJadwal){
 
-            presensiService.generateSesi(j);
+            presensiService.generateSesi2(j);
 
         }
     }
