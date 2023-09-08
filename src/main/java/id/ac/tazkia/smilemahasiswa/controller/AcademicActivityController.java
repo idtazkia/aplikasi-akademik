@@ -24,9 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -1217,6 +1215,7 @@ public class  AcademicActivityController {
             model.addAttribute("plot",plot);
         }
 
+
         model.addAttribute("jadwal",jadwal);
         model.addAttribute("hari", hariDao.findAll());
     }
@@ -1384,31 +1383,24 @@ public class  AcademicActivityController {
 
     @PostMapping("/academic/schedule/form")
     public String prosesSchedule(Model model,
-                                 @ModelAttribute @Valid Jadwal jadwal,
+                                 @ModelAttribute @Valid RequestJadwal request,
                                  RedirectAttributes attributes){
 
+        Jadwal jadwal = jadwalDao.findById(request.getId()).get();
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
 
-        Integer jumlahBentrok = jadwalDao.jumlahBentrok(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
-        List<Object[]> listBentrok = jadwalDao.cariJadwalAKtifDosen(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
-
-        if(jumlahBentrok == null){
-            jumlahBentrok = 0;
-        }
-
-        if (jumlahBentrok > 0){
-
-            model.addAttribute("bentrokJadwal", listBentrok);
-            model.addAttribute("jadwal", jadwal);
-
-            attributes.addFlashAttribute("bentrokJadwal", listBentrok);
-            return "redirect:form?id="+ jadwal.getId();
-
-        }
-
         if (jdwl == null | jdwl.isEmpty()){
-//            jadwal.setJamMulai(sesii.getJamMulai());
-//            jadwal.setJamSelesai(sesii.getJamSelesai());
+            jadwal.setHari(request.getHari());
+            jadwal.setAkses(request.getAkses());
+            jadwal.setRuangan(request.getRuangan());
+            jadwal.setDosen(request.getDosen());
+            jadwal.setKapasitas(request.getKapasitas());
+            jadwal.setFinalStatus("N");
+            if (request.getSesii() != null) {
+                jadwal.setSesi(request.getSesii().getSesi());
+                jadwal.setJamMulai(request.getSesii().getJamMulai());
+                jadwal.setJamSelesai(request.getSesii().getJamSelesai());
+            }
             jadwalDao.save(jadwal);
 
 
@@ -1429,6 +1421,7 @@ public class  AcademicActivityController {
             attributes.addFlashAttribute("validJadwal", jadwal);
             return "redirect:form?id=" + jadwal.getId();
         }
+
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
 

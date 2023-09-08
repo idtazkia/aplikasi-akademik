@@ -154,7 +154,7 @@
                                         <input type="text" name="jamSelesai" th:field="*{jamSelesai}" maxlength="5" readonly id="jamSelesai" class="form-control">
                                         <input type="hidden" id="mulai" name="mulai" th:field="*{jamMulai}">
                                         <input type="hidden" id="selesai" name="selesai" th:field="*{jamSelesai}">
-                                        <input type="hidden" id="sesii" name="sesii">
+                                        <input type="hidden" id="sesii" name="sesii" >
 
                                     </div>
                                 </div>
@@ -185,14 +185,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
+                                    <label>Kapasitas</label>
                                     <div class="form-group">
-                                        <label>Tipe</label>
-                                        <select class="form-control" th:field="*{finalStatus}"
-                                                style="width: 100%!important;" name="finalStatus">
-                                            <option value=""></option>
-                                            <option value="Y">Kuliah</option>
-                                            <option value="N">responsi</option>
-                                        </select>
+                                        <input type="text" required name="kapasitas" th:field="*{kapasitas}" class="form-control">
                                     </div>
                                 </div>
 
@@ -207,34 +202,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Kapasitas</label>
-                                    <div class="form-group">
-                                        <input type="text" required name="kapasitas" th:field="*{kapasitas}" class="form-control">
-                                    </div>
-                                </div>
-
-<!--                                <div class="col-md-6">-->
-<!--                                    <label>Id Number Elearning</label>-->
-<!--                                    <div class="form-group">-->
-<!--                                        <input type="text" name="idNumberElearning" th:field="*{idNumberElearning}" class="form-control">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-                                    <input type="hidden" id="idNumberElearning" name="idNumberElearning" th:field="*{idNumberElearning}">
-                            </div>
 
 
                             <div class="form-group">
                                 <button class="btn btn-primary">Simpan</button>
                             </div>
+                            <input type="hidden" id="idNumberElearning" name="idNumberElearning" th:field="*{idNumberElearning}">
                             <input type="hidden" name="prodi" th:field="*{prodi}">
                             <input type="hidden" name="program" th:field="*{program}">
                             <input type="hidden" name="tahunAkademikProdi" th:field="*{tahunAkademikProdi}">
                             <input type="hidden" name="id" id="id" th:field="*{id}">
-
                             <input name="status" th:field="*{status}" type="hidden"/>
-                            <input type="hidden" name="tahunAkademik" th:field="*{tahunAkademik}">
+                            <input type="hidden" id="tahun" name="tahunAkademik" th:field="*{tahunAkademik}">
                             <input type="hidden" name="jumlahSesi" th:field="*{jumlahSesi}">
                             <input type="hidden" name="bobotUts" th:field="*{bobotUts}">
                             <input type="hidden" name="bobotUas" th:field="*{bobotUas}">
@@ -285,6 +264,31 @@
             console.log('Selecting: ' , e.params.args.data.id);
             $('#idDosen').val(e.params.args.data.id);
         });
+
+        if ($('#sesii').val() != null){
+            let dropdown = $('#locality-dropdown');
+
+            dropdown.empty();
+
+            dropdown.append('<option selected="true" disabled>Pilih Sesi</option>');
+            dropdown.prop('selectedIndex', 0);
+            console.log($('#isiRuangan').val())
+            var url = '/akademik/validasi-sesi/'+$('#id').val()+'?tahun='+$('#tahun').val()+'&hari='+$('#isiHari').val()+'&sks='+$('#sks').val()+'&ruangan='+$('#isiRuangan').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
+
+            $.getJSON(url, function (data) {
+
+                $.each(data, function (key, entry) {
+                    if (entry.bentrok == null){
+                        dropdown.append($('<option></option>').attr('value', entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )'));
+                    }else {
+                        dropdown.append($('<option disabled title="'+ entry.bentrok + ' ( '+ entry.dosen + ' - ' + entry.matkul + ')' + '" ></option>').attr('value', entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )'));
+                    }
+                })
+            });
+
+            waktu()
+        }
+
     })(jQuery);
 
     function mySesi() {
@@ -295,13 +299,17 @@
         dropdown.append('<option selected="true" disabled>Pilih Sesi</option>');
         dropdown.prop('selectedIndex', 0);
         console.log($('#isiRuangan').val())
-        const url = '/api/sesi?idHari='+$('#isiHari').val()+'&idRuangan='+$('#isiRuangan').val()+'&sks='+$('#sks').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
+        var url = '/akademik/validasi-sesi/'+$('#id').val()+'?tahun='+$('#tahun').val()+'&hari='+$('#isiHari').val()+'&sks='+$('#sks').val()+'&ruangan='+$('#isiRuangan').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
+        // const url = '/api/sesi?idHari='+$('#isiHari').val()+'&idRuangan='+$('#isiRuangan').val()+'&sks='+$('#sks').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
 
-        // Populate dropdown with list of provinces
         $.getJSON(url, function (data) {
 
             $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaSesi));
+                if (entry.bentrok == null){
+                    dropdown.append($('<option></option>').attr('value', entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )'));
+                }else {
+                    dropdown.append($('<option disabled title="'+ entry.bentrok + ' ( '+ entry.dosen + ' - ' + entry.matkul + ')' + '" ></option>').attr('value', entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )'));
+                }
             })
         });
     }
