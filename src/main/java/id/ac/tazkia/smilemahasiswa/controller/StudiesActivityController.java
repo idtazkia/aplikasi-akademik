@@ -361,7 +361,6 @@ public class StudiesActivityController {
 
         @GetMapping("/studiesActivity/attendance/detail")
         public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
-
                 List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal,
                                 Arrays.asList(StatusRecord.HAPUS));
                 if (!cekRps.isEmpty()) {
@@ -12735,6 +12734,16 @@ public class StudiesActivityController {
 
                 return response;
 
+        }
+
+        @GetMapping("/updateall-sesikuliah/{tahun}")
+        @ResponseBody
+        public void updatePresensiAll(@PathVariable String tahun)
+                throws Exception {
+                List<Jadwal> jadwals = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF,tahunAkademikDao.findById(tahun).get(),"FINISHED");
+                for (Jadwal jadwal : jadwals) {
+                        presensiService.updateSesi1(jadwal);
+                }
         }
 
         @PostMapping("/import-ipk-sks")

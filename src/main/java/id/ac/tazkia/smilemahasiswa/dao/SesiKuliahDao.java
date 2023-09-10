@@ -1,17 +1,17 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.hibernate.sql.Update;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, String> {
     List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord aktif);
+
+    SesiKuliah findByJadwalAndPertemuanKeAndPresensiDosenStatusNotIn(Jadwal jadwal, Integer pertemuan, List<StatusRecord> stats);
 
     SesiKuliah findByPresensiDosen(PresensiDosen pd);
     @Query(value = "select * from sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen=pd.id inner join jadwal as j on pd.id_jadwal=j.id where " +
@@ -53,4 +53,5 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     @Query(value = "update sesi_kuliah set rps = '' where id_jadwal = ?1", nativeQuery = true)
     void updateRps(String idJadwal);
 
+    SesiKuliah findByJadwalAndPertemuan(Jadwal j, Integer pertemuan);
 }
