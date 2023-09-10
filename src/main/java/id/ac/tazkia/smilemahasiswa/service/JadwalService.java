@@ -29,4 +29,15 @@ public class JadwalService {
 
         }
     }
+
+    @Scheduled(cron = "0 20 06 * * *", zone = "Asia/Jakarta")
+    public void updateJadwal() throws Exception {
+
+        List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINISHED");
+        for (Jadwal j : cekJadwal){
+
+            presensiService.updateSesi1(j);
+
+        }
+    }
 }
