@@ -917,21 +917,14 @@ public class DashboardController {
         model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.HADIR.toString()));
         model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.TERLAMBAT.toString()));
 
-//        model.addAttribute("jmlMahasiswaOntime", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.HADIR.toString()));
-//        model.addAttribute("jmlMahasiswaTerlambat", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
-
         model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Online.toString()));
         model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Offline.toString()));
 
         model.addAttribute("jmlSempro", seminarDao.jmlSempro(tahunAkademik,StatusApprove.APPROVED.toString()));
 
 
-//        model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik, pageableDashboard2));
-//        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
-
-
-        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
-        model.addAttribute("listTotalSks2", krsDetailDao.listTotalSks2(tahunAkademik,dosen));
+//        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
+//        model.addAttribute("listTotalSks2", krsDetailDao.listTotalSks2(tahunAkademik,dosen));
 
 
         return "dashboardadmin";

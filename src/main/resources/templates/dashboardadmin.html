@@ -614,102 +614,102 @@
                     <br>
 
                     <!--list total sks screen admin-->
-                    <div class="row" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAnyAuthority('VIEW_FINANCE')">
-                        <div class="col-12">
-                            <div class="card mb-4">
-                                <div class="card-header pb-0">
-                                    <h4>List Total SKS</h4>
-                                </div>
-                                <div class="card-body px-0 pt-0 pb-2">
-<!--                                    <div class="table-responsive p-0">-->
-                                    <div class="tableFixHead ">
-                                        <table class="table align-items-center mb-0 borderless">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nim</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total SKS</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody class="marquee">
-                                            <tr th:each="data, row : ${listTotalSks}">
-                                                <td th:text="${(row.index + 1)}"></td>
-                                                <td th:text="${data.getNim}"></td>
-                                                <td th:text="${data.getNama}"></td>
-                                                <td th:text="${data.getNamaProdi}"></td>
-                                                <td th:text="${data.getTotalSks}"></td>
-                                                <td th:text="${data.getStatusKrs}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-<!--                                    <div class="card-footer py-4">-->
-<!--                                        <nav aria-label="...">-->
-<!--                                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
-<!--                                                <li class="disabled"><a href="#" aria-label="Previous"><span-->
-<!--                                                        aria-hidden="true">&laquo;</span></a>-->
-<!--                                                </li>-->
-<!--                                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                        </nav>-->
+<!--                    <div class="row" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAnyAuthority('VIEW_FINANCE')">-->
+<!--                        <div class="col-12">-->
+<!--                            <div class="card mb-4">-->
+<!--                                <div class="card-header pb-0">-->
+<!--                                    <h4>List Total SKS</h4>-->
+<!--                                </div>-->
+<!--                                <div class="card-body px-0 pt-0 pb-2">-->
+<!--&lt;!&ndash;                                    <div class="table-responsive p-0">&ndash;&gt;-->
+<!--                                    <div class="tableFixHead ">-->
+<!--                                        <table class="table align-items-center mb-0 borderless">-->
+<!--                                            <thead>-->
+<!--                                            <tr>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nim</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total SKS</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+<!--                                            <tbody class="marquee">-->
+<!--                                            <tr th:each="data, row : ${listTotalSks}">-->
+<!--                                                <td th:text="${(row.index + 1)}"></td>-->
+<!--                                                <td th:text="${data.getNim}"></td>-->
+<!--                                                <td th:text="${data.getNama}"></td>-->
+<!--                                                <td th:text="${data.getNamaProdi}"></td>-->
+<!--                                                <td th:text="${data.getTotalSks}"></td>-->
+<!--                                                <td th:text="${data.getStatusKrs}"></td>-->
+<!--                                            </tr>-->
+<!--                                            </tbody>-->
+<!--                                        </table>-->
 <!--                                    </div>-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--&lt;!&ndash;                                    <div class="card-footer py-4">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <nav aria-label="...">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <li class="disabled"><a href="#" aria-label="Previous"><span&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        aria-hidden="true">&laquo;</span></a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </li>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </li>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </nav>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <!--list total sks screen dosen-->
-                    <div class="row" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
-                        <div class="col-12">
-                            <div class="card mb-4">
-                                <div class="card-header pb-0">
-                                    <h4>List Total SKS</h4>
-                                </div>
-                                <div class="card-body px-0 pt-0 pb-2">
-                                    <!--                                    <div class="table-responsive p-0">-->
-                                    <div class="tableFixHead ">
-                                        <table class="table align-items-center mb-0 borderless">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nim</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total SKS</th>
-                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody class="marquee2">
-                                            <tr th:each="data, row : ${listTotalSks2}">
-                                                <td th:text="${(row.index + 1)}"></td>
-                                                <td th:text="${data.getNim}"></td>
-                                                <td th:text="${data.getNama}"></td>
-                                                <td th:text="${data.getNamaProdi}"></td>
-                                                <td th:text="${data.getTotalSks}"></td>
-                                                <td th:text="${data.getStatusKrs}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!--                                    <div class="card-footer py-4">-->
-                                    <!--                                        <nav aria-label="...">-->
-                                    <!--                                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
-                                    <!--                                                <li class="disabled"><a href="#" aria-label="Previous"><span-->
-                                    <!--                                                        aria-hidden="true">&laquo;</span></a>-->
-                                    <!--                                                </li>-->
-                                    <!--                                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
-                                    <!--                                                </li>-->
-                                    <!--                                            </ul>-->
-                                    <!--                                        </nav>-->
-                                    <!--                                    </div>-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="row" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_DOSEN_AKADEMIK')">-->
+<!--                        <div class="col-12">-->
+<!--                            <div class="card mb-4">-->
+<!--                                <div class="card-header pb-0">-->
+<!--                                    <h4>List Total SKS</h4>-->
+<!--                                </div>-->
+<!--                                <div class="card-body px-0 pt-0 pb-2">-->
+<!--                                    &lt;!&ndash;                                    <div class="table-responsive p-0">&ndash;&gt;-->
+<!--                                    <div class="tableFixHead ">-->
+<!--                                        <table class="table align-items-center mb-0 borderless">-->
+<!--                                            <thead>-->
+<!--                                            <tr>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nim</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total SKS</th>-->
+<!--                                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+<!--                                            <tbody class="marquee2">-->
+<!--                                            <tr th:each="data, row : ${listTotalSks2}">-->
+<!--                                                <td th:text="${(row.index + 1)}"></td>-->
+<!--                                                <td th:text="${data.getNim}"></td>-->
+<!--                                                <td th:text="${data.getNama}"></td>-->
+<!--                                                <td th:text="${data.getNamaProdi}"></td>-->
+<!--                                                <td th:text="${data.getTotalSks}"></td>-->
+<!--                                                <td th:text="${data.getStatusKrs}"></td>-->
+<!--                                            </tr>-->
+<!--                                            </tbody>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash;                                    <div class="card-footer py-4">&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                        <nav aria-label="...">&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                                <li class="disabled"><a href="#" aria-label="Previous"><span&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                                        aria-hidden="true">&laquo;</span></a>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                                </li>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                                </li>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                            </ul>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                        </nav>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
 <!--&lt;!&ndash;                                    table dosen&ndash;&gt;-->
 <!--                                    <div class="row">-->
