@@ -414,16 +414,6 @@ public class  AcademicActivityController {
         return jadwal;
     }
 
-//    @GetMapping("/api/pindah-jadwal")
-//    @ResponseBody
-//    public List<PindahJadwalDto> pindahJadwal() {
-//
-//        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-//        List<PindahJadwalDto> jadwal = jadwalDao.cariSemuaJadwal(tahunAkademik);
-//
-//        return jadwal;
-//    }
-
     @GetMapping("/api/jadwal")
     @ResponseBody
     public KrsDetail krsDetail(@RequestParam(required = false) String id,
@@ -1601,6 +1591,19 @@ public class  AcademicActivityController {
 
     }
 
+    @GetMapping("/academic/equalization/list")
+    public void penyetaraanList(Model model, @RequestParam(required = false)String nim){
+
+        if (nim != null){
+            Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
+            model.addAttribute("nim", nim);
+            model.addAttribute("list", krsDetailDao.listKrsDetailPenyetaraan(dataMahasiswa.getId()));
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            model.addAttribute("mhs", mahasiswa);
+        }
+
+    }
+
     @GetMapping("/academic/conversion/form")
     public void form(Model model, @RequestParam(required = false) String nim,
                      @RequestParam(required = false) Jadwal jadwal){
@@ -1615,6 +1618,21 @@ public class  AcademicActivityController {
 
     }
 
+    @GetMapping("/academic/equalization/form")
+    public void equalizationForm(Model model, @RequestParam(required = false) String nim,
+                     @RequestParam(required = false) Jadwal jadwal){
+
+        model.addAttribute("krsDetail", new KrsDetail());
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+//        Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
+        model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("mahasiswa", mhs);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("matakuliah", matakuliahDao.findByMahasiswaKurikulum(mhs));
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+
+    }
+
     @PostMapping("/academic/conversion/form")
     public String inputForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String ta,
                             @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
@@ -1622,12 +1640,6 @@ public class  AcademicActivityController {
         int jumlahSks;
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
-//        if (krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()) == null){
-//            jumlahSks = 0;
-//        }else {
-//            jumlahSks =krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()).intValue();
-//
-//        }
         Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
@@ -1721,8 +1733,141 @@ public class  AcademicActivityController {
 
     }
 
+    @PostMapping("/academic/equalization/form")
+    public String inputPenyetaraanForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String matakuliah,
+                                       @RequestParam(required = false) String matakuliahLama,
+                                        @RequestParam(required = false) String grade, RedirectAttributes attributes){
+        int jumlahSks;
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Grade grade1 = gradeDao.findByNama(grade);
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
+        Jadwal jadwal = new Jadwal();
+        jadwal.setJumlahSesi(1);
+        jadwal.setBobotUts(BigDecimal.ZERO);
+        jadwal.setBobotUas(BigDecimal.ZERO);
+        jadwal.setBobotTugas(BigDecimal.ZERO);
+        jadwal.setBobotPresensi(BigDecimal.ZERO);
+        jadwal.setKelas(kelasDao.findById("-").get());
+        jadwal.setProdi(mhs.getIdProdi());
+        jadwal.setTahunAkademik(tahunAkademik);
+        jadwal.setTahunAkademikProdi(tahunAkademikProdi);
+        jadwal.setMatakuliahKurikulum(matakuliahKurikulumDao.findById(matakuliah).get());
+        jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
+        jadwal.setProgram(programDao.findById("01").get());
+        jadwal.setAkses(Akses.TERTUTUP);
+        jadwal.setFinalStatus("FINAL");
+        jadwal.setStatus(StatusRecord.KONVERSI);
+        jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
+        jadwalDao.save(jadwal);
+
+
+        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
+        if (krsDetail == null) {
+            if (krs != null) {
+                KrsDetail kd = new KrsDetail();
+                kd.setKrs(krs);
+                kd.setMahasiswa(mhs);
+                kd.setJadwal(jadwal);
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("FINAL");
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                kd.setStatus(StatusRecord.AKTIF);
+                kd.setTahunAkademik(tahunAkademik);
+                kd.setStatusKonversi(StatusRecord.AKTIF);
+                krsDetailDao.save(kd);
+
+                Konversi konversi = new Konversi();
+                konversi.setKrsDetail(kd);
+                konversi.setNamaMatakuliahLama(matakuliahLama);
+                konversi.setStatus(StatusRecord.AKTIF);
+                konversiDao.save(konversi);
+
+            } else {
+
+                Krs krs1 = new Krs();
+                krs1.setTahunAkademik(tahunAkademik);
+                krs1.setTahunAkademikProdi(tahunAkademikProdi);
+                krs1.setProdi(mhs.getIdProdi());
+                krs1.setMahasiswa(mhs);
+                krs1.setNim(mhs.getNim());
+                krs1.setTanggalTransaksi(LocalDateTime.now());
+                krs1.setStatus(StatusRecord.AKTIF);
+                krsDao.save(krs1);
+
+                KrsDetail kd = new KrsDetail();
+                kd.setKrs(krs1);
+                kd.setMahasiswa(mhs);
+                kd.setJadwal(jadwal);
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("FINAL");
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                kd.setStatus(StatusRecord.AKTIF);
+                kd.setTahunAkademik(tahunAkademik);
+                kd.setStatusKonversi(StatusRecord.AKTIF);
+                krsDetailDao.save(kd);
+
+                Konversi konversi = new Konversi();
+                konversi.setKrsDetail(kd);
+                konversi.setNamaMatakuliahLama(matakuliahLama);
+                konversi.setStatus(StatusRecord.KONVERSI);
+                konversiDao.save(konversi);
+
+            }
+        } else {
+            attributes.addFlashAttribute("gagal", "Data sudah ada!");
+            return "redirect:form?nim=" + mhs.getNim() + "&jadwal=" + jadwal.getId();
+        }
+
+
+        return "redirect:list?nim="+mhs.getNim();
+
+    }
+
     @PostMapping("/academic/conversion/delete")
     public String deleteConversion(@RequestParam(required = false) KrsDetail krsDetail){
+
+        krsDetail.setStatus(StatusRecord.HAPUS);
+        krsDetailDao.save(krsDetail);
+
+        Konversi konversi = konversiDao.findByKrsDetailAndStatus(krsDetail, StatusRecord.AKTIF);
+        konversi.setStatus(StatusRecord.HAPUS);
+        konversiDao.save(konversi);
+
+        return "redirect:list?nim="+krsDetail.getMahasiswa().getNim();
+    }
+
+    @PostMapping("/academic/equalization/delete")
+    public String deleteEqualization(@RequestParam(required = false) KrsDetail krsDetail){
 
         krsDetail.setStatus(StatusRecord.HAPUS);
         krsDetailDao.save(krsDetail);

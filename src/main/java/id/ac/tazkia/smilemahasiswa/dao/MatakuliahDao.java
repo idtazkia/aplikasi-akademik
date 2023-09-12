@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.PilihMatakuliahSetaraDto;
 import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.Matakuliah;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import org.springframework.data.domain.Page;
@@ -52,5 +53,14 @@ public interface MatakuliahDao extends PagingAndSortingRepository<Matakuliah,Str
                     "\tWHERE a.status = 'AKTIF' AND b.id IS NULL AND a.id <> ?1)aa")
     Page<PilihMatakuliahSetaraDto> pilihMatakuliahSetara(String idMatakuliah, Pageable page);
 
+    @Query(value = "select mk.id as id,ma.nama_matakuliah as text\n" +
+            "from mahasiswa as m\n" +
+            "         inner join kurikulum as k on m.id_kurikulum = k.id\n" +
+            "         inner join matakuliah_kurikulum as mk on k.id = mk.id_kurikulum\n" +
+            "         inner join matakuliah as ma on mk.id_matakuliah = ma.id\n" +
+            "where m.nim = ?1\n" +
+            "  and mk.status = 'AKTIF'\n" +
+            "  and ma.id_prodi = m.id_prodi", nativeQuery = true)
+    List<CourseDto> findByMahasiswaKurikulum(Mahasiswa mahasiswa);
 
 }

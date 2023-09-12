@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Konversi Nilai</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Konversi Nilai </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Mahasiswa</h3>
+                    </div>
+                    <div class="card-body">
+                        <address>
+                            <table class="table-responsive table">
+                                <tr>
+                                    <td>NIM</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.nim}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Angkatan</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.angkatan}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nama</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.nama}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Prodi</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.idProdi.namaProdi}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Dosen </td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.dosen.karyawan.namaKaryawan}"></td>
+                                </tr>
+                            </table>
+                        </address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form Konversi</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/academic/equalization/list(nim=${mahasiswa.nim})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/academic/equalization/form}" method="post" th:object="${krsDetail}">
+                            <input type="hidden" name="p" id="isiProdi" th:value="${mahasiswa.idProdi.id}">
+                            <input type="hidden" name="nim" id="isiMahasiswa" th:value="${mahasiswa.nim}">
+                            <input type="hidden" name="idMahasiswa" id="idMahasiswa" th:value="${mahasiswa.id}">
+                            <input type="hidden" name="ta" id="isiTahun">
+
+
+                            <div class="form-group">
+                                <label>Nama matakuliah</label>
+                                <select class="form-control js-example-placeholder-single" name="matakuliah">
+                                    <option th:each="data : ${matakuliah}" th:text="${data.text}" th:value="${data.id}"></option>
+                                </select>
+                                <input type="hidden" id="isiJadwal" name="jadwal">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Nama matakuliah lama</label>
+                                        <input type="text" name="matakuliahLama" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label >Grade nilai akhir</label>
+                                        <select required class="form-control" name="grade" id="">
+                                            <option value=""></option>
+                                            <option th:each="data : ${grade}"
+                                                    th:text="${data.nama}"
+                                                    th:value="${data.nama}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="alert alert-warning" id="notif" th:if="${gagal != null}">
+                                    <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                    <span class="alert-inner--text" >Mahasiswa atas nama <text th:text="${mahasiswa.nama}"></text> sudah ada matakuliah <text th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></text></span>
+                                </div>
+
+                                <div class="form-group text-center" id="submit" style="display: block">
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Simpan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+
+</script>
