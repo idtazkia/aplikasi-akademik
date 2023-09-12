@@ -257,6 +257,9 @@
                             <li class="nav-item">
                                 <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/conversion/list}" class="nav-link">Konversi Nilai</a>
                             </li>
+                            <li class="nav-item">
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/equalization/list}" class="nav-link">Penyetaraan Nilai</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
