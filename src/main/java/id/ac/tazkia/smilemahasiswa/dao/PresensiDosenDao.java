@@ -28,7 +28,7 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             +
             "FROM presensi_dosen as pd inner join sesi_kuliah as sk on pd.id = sk.id_presensi_dosen inner join dosen as d on pd.id_dosen = d.id inner join karyawan as k on d.id_karyawan = k.id\n"
             +
-            "where pd.status in ('AKTIF','NONAKTIF') and pd.id_jadwal = ?1 order by pd.waktu_masuk desc", nativeQuery = true)
+            "where pd.status in ('AKTIF','NONAKTIF') and pd.id_jadwal = ?1 order by pd.waktu_masuk asc", nativeQuery = true)
     List<PresensiDosenDto> listPresensiDosen(Jadwal jadwal);
 
     @Query(value = "SELECT pd.id as idPresensi, sk.id as sesi,pd.waktu_masuk as masuk, pd.waktu_selesai as selesai,k.nama_karyawan as dosen,sk.berita_acara as berita\n"
