@@ -383,4 +383,6 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "(select a.id, a.nama_beasiswa, b.id_mahasiswa from beasiswa as a inner join mahasiswa_beasiswa as b on a.id=b.id_beasiswa where a.status='AKTIF') as b on a.idMahasiswa=b.id_mahasiswa", nativeQuery = true)
     List<Object[]> listAfterGenerate(String tahun, String angkatan, String prodi, String program);
 
+    List<Tagihan> findByMahasiswaAndStatusAndTahunAkademikAndLunasAndStatusTagihanNotIn(Mahasiswa mahasiswa, StatusRecord status, TahunAkademik tahun, boolean lunas, List<StatusTagihan> statusTagihan);
+
 }

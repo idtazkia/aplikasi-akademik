@@ -31,7 +31,7 @@ import java.util.*;
 @Controller @Slf4j
 public class StudyActivityController {
 
-    public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
+    public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40", "44");
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -1041,7 +1041,12 @@ public class StudyActivityController {
         cuti.setTanggalBerakhirCuti(tahun.getTanggalSelesaiKuliah());
         cuti.setTanggalPengajuaan(LocalDate.now());
         cuti.setStatusPengajuaan(StatusApprove.WAITING);
-        cuti.setDosenWaliApproved(StatusApprove.WAITING);
+        if (mahasiswa.getDosen() == mahasiswa.getIdProdi().getDosen()) {
+            cuti.setDosenWaliApproved(StatusApprove.APPROVED);
+        }else{
+            cuti.setDosenWaliApproved(StatusApprove.WAITING);
+        }
+        cuti.setKpsApproved(StatusApprove.WAITING);
         cuti.setTahunAkademik(tahun);
         cutiDao.save(cuti);
 
@@ -1061,7 +1066,7 @@ public class StudyActivityController {
             model.addAttribute("cuti", cuti);
             if (cuti.getStatusPengajuaan() == StatusApprove.WAITING) {
                 model.addAttribute("waiting", "Menunggu persetujuan");
-            }else{
+            }else if (cuti.getStatusPengajuaan() == StatusApprove.APPROVED){
                 model.addAttribute("approved", "Cuti di approve");
             }
             return "du/cuti/list";
@@ -1073,7 +1078,7 @@ public class StudyActivityController {
     public String batalCuti(@RequestParam Cuti cuti){
         cuti.setStatus(StatusRecord.HAPUS);
         cutiDao.save(cuti);
-        return "redirect:/du/cuti/form";
+        return "redirect:/du/form";
     }
 
 //    PRA KRS SEMESTER PENDEK
@@ -1499,13 +1504,39 @@ public class StudyActivityController {
         }
 
     }
-//    @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
-//    public void OtomatisCutiMahasiswa(){
-//        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenisNot(StatusRecord.AKTIF, StatusRecord.PENDEK);
-//        if (tahun != null) {
-//            if (LocalDate.now().equals(tahun.getTanggalSelesaiKrs().plusWeeks(3))) {
-//                List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndStatusAktif(StatusRecord.AKTIF, "AKTIF");
-//                for (Mahasiswa mhs : mahasiswa){
+
+    @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
+    public void OtomatisCutiMahasiswa(){
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenisNot(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        if (tahun != null) {
+            if (LocalDate.now().equals(tahun.getTanggalMulaiKuliah().plusWeeks(3))) {
+                List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndStatusAktif(StatusRecord.AKTIF, "AKTIF");
+                for (Mahasiswa mhs : mahasiswa){
+                     List<Tagihan> cekTagihan = tagihanDao.findByMahasiswaAndStatusAndTahunAkademikAndLunasAndStatusTagihanNotIn(mhs, StatusRecord.AKTIF, tahun, false, Arrays.asList(StatusTagihan.NONAKTIF, StatusTagihan.DITANGGUHKAN));
+                    for (Tagihan t : cekTagihan){
+                        if (TAGIHAN_KRS.contains(t.getNilaiJenisTagihan().getJenisTagihan().getKode())){
+                            if (t.getAkumulasiPembayaran() == new BigDecimal(0)){
+                                Cuti cuti = new Cuti();
+                                cuti.setMahasiswa(mhs);
+                                cuti.setDosenWali(mhs.getDosen());
+                                cuti.setKps(mhs.getIdProdi().getDosen());
+                                cuti.setTanggalPengajuaan(LocalDate.now());
+                                cuti.setTahunAkademik(tahun);
+                                cuti.setStatusPengajuaan(StatusApprove.WAITING);
+                                if (mhs.getDosen() == mhs.getIdProdi().getDosen()) {
+                                    cuti.setDosenWaliApproved(StatusApprove.APPROVED);
+                                }else{
+                                    cuti.setDosenWaliApproved(StatusApprove.WAITING);
+                                }
+                                cuti.setKpsApproved(StatusApprove.WAITING);
+                                cuti.setKeterangan("Otomatis cuti karna belum bayar KRS");
+                                cutiDao.save(cuti);
+
+                                log.info("Mahasiswa a.n {} otomatis cuti ", mhs.getNama());
+                            }
+                        }
+                    }
+
 //                    List<KrsDetail> cekKrs = krsDetailDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
 //                    if (cekKrs.isEmpty()) {
 //                        Cuti cuti = new Cuti();
@@ -1521,10 +1552,11 @@ public class StudyActivityController {
 //
 //                        log.info("Mahasiswa a.n {} otomatis cuti ", mhs.getNama());
 //                    }
-//                }
-//            }
-//        }
-//    }
+
+                }
+            }
+        }
+    }
 //
 //    @Scheduled(cron = "0 00 03 * * *", zone = "Asia/Jakarta")
 //    public void hapusCicilanEdited(){

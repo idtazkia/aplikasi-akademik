@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.select2.BaseRequest;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
@@ -192,6 +193,9 @@ public class DashboardController {
 
     @Autowired
     private SeminarDao seminarDao;
+
+    @Autowired
+    private TagihanService tagihanService;
 
 //    @Autowired
 //    private AsuransiMahasiswaDao asuransiMahasiswaDao;
@@ -941,6 +945,7 @@ public class DashboardController {
             cuti.setKpsApproved(StatusApprove.APPROVED);
             cuti.setStatusPengajuaan(StatusApprove.APPROVED);
             log.info("Auto Approved Cuti {} ", mahasiswa.getNama());
+            tagihanService.createTagihanCuti(mahasiswa);
         }
 
         cuti.setDosenWaliApproved(StatusApprove.APPROVED);
@@ -958,6 +963,31 @@ public class DashboardController {
         cuti.setStatusPengajuaan(StatusApprove.APPROVED);
         cuti.setKpsApproved(StatusApprove.APPROVED);
         cutiDao.save(cuti);
+        tagihanService.createTagihanCuti(mahasiswa);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/cuti/dosenWali/reject")
+    public String rejectedDosenWali(@RequestParam Cuti cuti, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = cuti.getMahasiswa();
+
+        cuti.setDosenWaliApproved(StatusApprove.REJECTED);
+        cuti.setStatusPengajuaan(StatusApprove.REJECTED);
+        cutiDao.save(cuti);
+
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/cuti/kps/reject")
+    public String rejectedKps(@RequestParam Cuti cuti, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = cuti.getMahasiswa();
+
+        cuti.setKpsApproved(StatusApprove.REJECTED);
+        cuti.setStatusPengajuaan(StatusApprove.REJECTED);
+        cutiDao.save(cuti);
+
         return "redirect:/admin";
     }
 

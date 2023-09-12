@@ -240,8 +240,8 @@
                   <div class="col-md-12 col-xs-12">
                     <button class="btn btn-primary" th:if="${approved != null}">Approved</button>
                     <div class="wrapper">
-                    <button class="btn-style" th:if="${waiting != null}">
-                      Waiting for Approval by Dosen Wali
+                    <button class="btn-style" th:if="${data.dosenWaliApproved == data.dosenWaliApproved.WAITING}">
+                      Menunggu persetujuan Dosen Wali
                       <span></span>
                       <span></span>
                       <span></span>
@@ -249,8 +249,26 @@
                     </button>
                     </div>
                     <div class="wrapper">
-                      <button class="btn-style" th:if="${data.dosenWaliApproved == 'APPROVED'}">
-                        Waiting for approval by KPS
+                      <button class="btn-style" th:if="${data.dosenWaliApproved == data.dosenWaliApproved.APPROVED && data.statusPengajuaan == data.statusPengajuaan.WAITING}">
+                        Menunggu persetujuan KPS
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </button>
+                    </div>
+                    <div class="wrapper">
+                      <button class="btn-style" th:if="${data.dosenWaliApproved == data.dosenWaliApproved.REJECTED && data.statusPengajuaan == data.statusPengajuaan.REJECTED}">
+                        Ditolak oleh Dosen Wali
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </button>
+                    </div>
+                    <div class="wrapper">
+                      <button class="btn-style" th:if="${data.kpsApproved == data.kpsApproved.REJECTED && data.statusPengajuaan == data.statusPengajuaan.REJECTED}">
+                        Ditolak oleh KPS
                         <span></span>
                         <span></span>
                         <span></span>
@@ -260,7 +278,7 @@
                   </div>
                   <br>
                   <br>
-                  <div class="col-md-6 col-xs-12">
+                  <div th:if="${data.statusPengajuaan == data.statusPengajuaan.WAITING}" class="col-md-6 col-xs-12">
 <!--                    th:if="${waiting != null}"-->
                     <form th:action="@{/du/cuti/batal(cuti = ${data.id})}" method="post">
                       <button class="btn btn-danger">Batal</button>
