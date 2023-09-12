@@ -57,4 +57,6 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
     TahunAkademik findTopByStatusNotInOrderByKodeTahunAkademikDesc(List<StatusRecord> asList);
 
+    TahunAkademik findByStatusAndJenisNot(StatusRecord status, StatusRecord jenis);
+
 }

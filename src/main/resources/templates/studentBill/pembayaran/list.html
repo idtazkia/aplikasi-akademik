@@ -101,6 +101,7 @@
                                     <th scope="col">Nim</th>
                                     <th scope="col">Nama</th>
                                     <th scope="col">Tagihan</th>
+                                    <th scope="col">Tahun Akademik</th>
                                     <th scope="col">Bank</th>
                                     <th scope="col">Jumlah</th>
                                     <th scope="col">Tanggal Transaksi</th>
@@ -114,6 +115,7 @@
                                     <td th:text="${data.Nim}"> Kurikulum 2018</td>
                                     <td th:text="${data.Nama}">2020</td>
                                     <td th:text="${data.JenisTagihan}"></td>
+                                    <td th:text="${data.TahunAkademik}"></td>
                                     <td th:text="${data.Bank}"></td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.jumlah, 0, 'POINT', 2, 'COMMA')}"></td>
                                     <td th:text="${data.TanggalTransaksi}"></td>

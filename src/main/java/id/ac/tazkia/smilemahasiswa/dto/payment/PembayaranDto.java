@@ -12,6 +12,8 @@ public interface PembayaranDto {
     String getNim();
     String getNama();
     String getJenisTagihan();
+
+    String getTahunAkademik();
     String getBank();
     BigDecimal getJumlah();
     LocalDateTime getTanggalTransaksi();

@@ -243,7 +243,7 @@
                                             <th>Nama</th>
                                             <th>Detail</th>
                                             <th>Status</th>
-                                            <th>Approved</th>
+                                            <th colspan="2" class="text-center">Approved</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -275,16 +275,22 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="btn btn-danger btn-sm" th:if="${data[6] == 'WAITING'}">Belum Disetujui</span>
-                                                <span class="btn btn-primary btn-sm" th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">Waiting for approval by KPS</span>
-                                                <span class="btn btn-success btn-sm" th:if="${data[6] == 'APPROVED'}">APPROVED</span>
+                                                <span class="btn btn-info btn-sm" th:if="${data[6] == 'WAITING'}">Belum Disetujui</span>
+                                                <span class="btn btn-primary btn-sm" th:if="${data[6] == 'APPROVED' && data[9] == 'WAITING'}">Waiting for approval by KPS</span>
+                                                <span class="btn btn-success btn-sm" th:if="${data[9] == 'APPROVED'}">APPROVED</span>
+                                                <span class="btn btn-danger btn-sm" th:if="${data[9] == 'REJECTED'}">REJECTED</span>
                                             </td>
-                                            <td th:if="${data[6] == 'WAITING'}">
+                                            <td class="text-center" th:if="${data[6] == 'WAITING'}">
                                                 <form th:action="@{admin/updateCuti(cuti = ${data[0]})}" method="post">
                                                     <button class="btn btn-primary btn-sm">Approved</button>
                                                 </form>
                                             </td>
-                                            <td th:if="${data[6] == 'APPROVED_DOSEN_WALI' or data[6] == 'APPROVED'}">
+                                            <td class="text-center" th:if="${data[6] == 'WAITING'}">
+                                                <form th:action="@{cuti/dosenWali/reject(cuti = ${data[0]})}" method="post">
+                                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            </td>
+                                            <td class="text-center" colspan="2" th:if="${data[6] == 'APPROVED_DOSEN_WALI' or data[6] == 'APPROVED'}">
                                                 -
                                             </td>
                                         </tr>
@@ -315,7 +321,7 @@
                                             <th>Nama</th>
                                             <th>Detail</th>
                                             <th>Status</th>
-                                            <th>Approved</th>
+                                            <th colspan="2" class="text-center">Approved</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -346,15 +352,21 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="btn btn-danger btn-sm" th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">WAITING</span>
+                                                <span class="btn btn-info btn-sm" th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">WAITING</span>
                                                 <span class="btn btn-success btn-sm" th:if="${data[6] == 'APPROVED'}">APPROVED</span>
+                                                <span class="btn btn-danger btn-sm" th:if="${data[6] == 'REJECTED'}">REJECTED</span>
                                             </td>
-                                            <td th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">
+                                            <td class="text-center" th:if="${data[8] == 'APPROVED' && data[6] == 'WAITING'}">
                                                 <form th:action="@{admin/approved(cuti = ${data[0]})}" method="post">
                                                     <button class="btn btn-primary btn-sm">Approved</button>
                                                 </form>
                                             </td>
-                                            <td th:if="${data[6] == 'APPROVED'}">
+                                            <td class="text-center" th:if="${data[8] == 'APPROVED' && data[6] == 'WAITING'}">
+                                                <form th:action="@{cuti/kps/reject(cuti = ${data[0]})}" method="post">
+                                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            </td>
+                                            <td colspan="2" class="text-center" th:if="${data[6] == 'APPROVED'}">
                                                 -
                                             </td>
                                         </tr>

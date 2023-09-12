@@ -135,6 +135,68 @@ public class TagihanService {
         }
     }
 
+    public void createTagihanCuti(Mahasiswa mahasiswa){
+
+        JenisTagihan tagihanCuti = jenisTagihanDao.findByKodeAndStatus("50", StatusRecord.AKTIF);
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        NilaiJenisTagihan cekTagihanCuti = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
+                tahun, mahasiswa.getIdProgram(), StatusRecord.AKTIF, tagihanCuti);
+
+        if (cekTagihanCuti == null) {
+
+            BigDecimal nilai = null;
+            if ("01".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getId())) {
+                nilai = new BigDecimal(250000);
+            }
+            if ("02".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getId())) {
+                nilai = new BigDecimal(1000000);
+            }
+
+            NilaiJenisTagihan jenisTagihanBaru = new NilaiJenisTagihan();
+            jenisTagihanBaru.setJenisTagihan(tagihanCuti);
+            jenisTagihanBaru.setNilai(nilai);
+            jenisTagihanBaru.setTahunAkademik(tahun);
+            jenisTagihanBaru.setProdi(mahasiswa.getIdProdi());
+            jenisTagihanBaru.setProgram(mahasiswa.getIdProgram());
+            jenisTagihanBaru.setAngkatan(mahasiswa.getAngkatan());
+            nilaiJenisTagihanDao.save(jenisTagihanBaru);
+
+            Tagihan tagihan = new Tagihan();
+            tagihan.setMahasiswa(mahasiswa);
+            tagihan.setNilaiJenisTagihan(jenisTagihanBaru);
+            tagihan.setKeterangan("Tagihan " + jenisTagihanBaru.getJenisTagihan().getNama()
+                    + " a.n. " + mahasiswa.getNama());
+            tagihan.setNilaiTagihan(jenisTagihanBaru.getNilai());
+            tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+            tagihan.setTanggalPembuatan(LocalDate.now());
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+            tagihan.setTahunAkademik(tahun);
+            tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+            tagihan.setStatus(StatusRecord.AKTIF);
+            tagihanDao.save(tagihan);
+            requestCreateTagihan(tagihan);
+        }else{
+            Tagihan tagihan = new Tagihan();
+            tagihan.setMahasiswa(mahasiswa);
+            tagihan.setNilaiJenisTagihan(cekTagihanCuti);
+            tagihan.setKeterangan("Tagihan " + cekTagihanCuti.getJenisTagihan().getNama()
+                    + " a.n. " + mahasiswa.getNama());
+            tagihan.setNilaiTagihan(cekTagihanCuti.getNilai());
+            tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+            tagihan.setTanggalPembuatan(LocalDate.now());
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+            tagihan.setTahunAkademik(tahun);
+            tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+            tagihan.setStatus(StatusRecord.AKTIF);
+            tagihanDao.save(tagihan);
+            requestCreateTagihan(tagihan);
+        }
+
+    }
+
     public void requestCreateTagihan(Tagihan tagihan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeBiaya())
@@ -402,17 +464,6 @@ public class TagihanService {
         krs.setTanggalTransaksi(LocalDateTime.now());
         krs.setStatus(StatusRecord.AKTIF);
         krsDao.save(krs);
-    }
-
-    private void createEnableFitur(@RequestParam(required = false) TahunAkademik tahun, Tagihan tgh, StatusRecord status, Boolean enabled) {
-        EnableFiture enableFiture = new EnableFiture();
-        enableFiture.setMahasiswa(tgh.getMahasiswa());
-        enableFiture.setTahunAkademik(tahun);
-        enableFiture.setFitur(status);
-        enableFiture.setEnable(enabled);
-        enableFiture.setKeterangan("-");
-
-        enableFitureDao.save(enableFiture);
     }
 
     public void cretatTagihanMengulang(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, String jenis){
