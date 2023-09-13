@@ -921,8 +921,8 @@ public class DashboardController {
         model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.HADIR.toString()));
         model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.TERLAMBAT.toString()));
 
-        model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Online.toString()));
-        model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Offline.toString()));
+        model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
+        model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
 
         model.addAttribute("jmlSempro", seminarDao.jmlSempro(tahunAkademik,StatusApprove.APPROVED.toString()));
 

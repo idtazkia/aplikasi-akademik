@@ -31,12 +31,22 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     @Query(value = "SELECT COUNT(*) as kelasOnline, COUNT(*) * 100 / (SELECT COUNT(*) as semuaKelas\n" +
             "\tFROM sesi_kuliah as sk\n" +
             "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
-            "\twhere jd.id_tahun_akademik = ?1)\n" +
+            "\twhere jd.id_tahun_akademik = ?1 and sk.pertemuan not in ('Belum Mengajar'))\n" +
             "as persentase\n" +
             "FROM sesi_kuliah as sk\n" +
             "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
-            "where jd.id_tahun_akademik = ?1 and sk.pertemuan = ?2", nativeQuery = true)
-    Object jmlKelasOnlineOffline(TahunAkademik tahunAkademik, String pertemuan);
+            "where jd.id_tahun_akademik = ?1 and sk.pertemuan in ('Online','Pengganti Online')", nativeQuery = true)
+    Object jmlKelasOnline(TahunAkademik tahunAkademik);
+
+    @Query(value = "SELECT COUNT(*) as kelasOnline, COUNT(*) * 100 / (SELECT COUNT(*) as semuaKelas\n" +
+            "\tFROM sesi_kuliah as sk\n" +
+            "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+            "\twhere jd.id_tahun_akademik = ?1 and sk.pertemuan not in ('Belum Mengajar'))\n" +
+            "as persentase\n" +
+            "FROM sesi_kuliah as sk\n" +
+            "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+            "where jd.id_tahun_akademik = ?1 and sk.pertemuan in ('Offline','Pengganti Offline')", nativeQuery = true)
+    Object jmlKelasOffline(TahunAkademik tahunAkademik);
 
 
     @Query(value = "SELECT sk.* FROM sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen = pd.id where sk.id_jadwal = ?1 " +
