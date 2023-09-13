@@ -293,6 +293,10 @@ public class StudyActivityController {
 
             model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
 
+            if (semesterTotal > 8) {
+                model.addAttribute("mbkm", "Pilihan MBKM terbuka");
+            }
+
             KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
             if (ka != null) {
                 if (ka.getStatus() == StatusApprove.WAITING) {
@@ -624,6 +628,12 @@ public class StudyActivityController {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         model.addAttribute("listKrs", krsDao.listKrs(tahunAkademik, mahasiswa));
+    }
+
+    @GetMapping("/study/mbkm")
+    public void listMBKM(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
     }
 
     @GetMapping("/study/jadwal")
