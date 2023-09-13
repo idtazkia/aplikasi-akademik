@@ -120,6 +120,9 @@ public class StudyActivityController {
     @Autowired
     private IpkDao ipkDao;
 
+    @Autowired
+    private PendaftaranMbkmDao pendaftaranMbkmDao;
+
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
         return konsentrasiDao.findByStatus(StatusRecord.AKTIF);
@@ -634,6 +637,27 @@ public class StudyActivityController {
     public void listMBKM(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
 
+    }
+
+    @GetMapping("/study/mbkm/daftar")
+    public String daftarMbkm(Authentication authentication, RedirectAttributes attributes){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mhs = mahasiswaDao.findByUser(user);
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+        if (cek == null) {
+            PendaftaranMbkm daftar = new PendaftaranMbkm();
+            daftar.setMahasiswa(mhs);
+            daftar.setDosen(mhs.getDosen());
+            daftar.setTahunAkademik(tahun);
+            pendaftaranMbkmDao.save(daftar);
+        }else{
+            attributes.addFlashAttribute("mbkmExist", "MBKM sudah ada.");
+            return "redirect:../krs";
+        }
+
+        return "redirect:../krs";
     }
 
     @GetMapping("/study/jadwal")

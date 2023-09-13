@@ -59,7 +59,16 @@
                                <strong>Daftar KRS</strong>
                             </div>
                             <div class="col-md-6 col-xs-12 text-right">
-                                <a th:href="@{/study/form}" th:if="${validasi != null && kelas != null}">
+                                <div class="dropdown-trig-an-list" th:if="${validasi != null && mbkm != null}">
+                                    <div class="dropdown-trig-sgn pull-right">
+                                        <button class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-plus-square"></i> Tambah KRS</button>
+                                        <ul class="dropdown-menu">
+                                            <li><a th:href="@{/study/form}">Tambah Krs</a></li>
+                                            <li><a th:href="@{/study/mbkm/daftar}" class="text-white">MBKM </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <a th:href="@{/study/form}" th:if="${validasi != null && kelas != null && mbkm == null}">
                                     <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Tambah KRS</button>
                                 </a>
                                 <a th:href="@{/study/kartu/hputs}" th:id="mobile" style="display:none;" th:if="${kartuUts != null}">
@@ -91,6 +100,9 @@
                                 Anda belum terdaftar ke kelas, Silahkan hubungi akademik.
                             </strong>
                         </center>
+                    </div>
+                    <div class="alert alert-danger" th:if="${mbkmExist != null}">
+                        Anda sudah mendaftar MBKM di semester ini.
                     </div>
                     <div class="alert alert-danger" th:if="${gagal != null}">
                         Delete data gagal, Krs sudah tidak dapat dihapus karena sudah ada aktifitas perkuliahan yang anda lakukan dengan matakuliah ini...
