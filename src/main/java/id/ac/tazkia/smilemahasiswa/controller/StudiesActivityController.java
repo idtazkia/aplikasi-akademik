@@ -12744,6 +12744,19 @@ public class StudiesActivityController {
 
         }
 
+        @GetMapping("/generate-sesikuliah")
+        @ResponseBody
+        public void generatePresensi()
+                throws Exception {
+                List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
+                for (Jadwal j : cekJadwal){
+                        System.out.println(j.getId() +" : id jadwal");
+                        presensiService.generateSesi2(j);
+
+                }
+
+        }
+
         @GetMapping("/updateall-sesikuliah/{tahun}")
         @ResponseBody
         public void updatePresensiAll(@PathVariable String tahun)
