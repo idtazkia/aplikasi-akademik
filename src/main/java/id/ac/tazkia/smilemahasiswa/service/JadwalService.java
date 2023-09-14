@@ -19,7 +19,7 @@ public class JadwalService {
 
     @Autowired private TahunAkademikDao tahunAkademikDao;
 
-    @Scheduled(cron = "0 05 10 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 20 00 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal() throws Exception {
 
         List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
