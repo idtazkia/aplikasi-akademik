@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Krs </span>
+                                        <span class="h2 font-weight-bold mb-0">KRS </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,147 +49,218 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">NIM</th>
-                                <th scope="col">Nama</th>
-                                <th scope="col">Prodi</th>
-                                <th scope="col">Angkatan</th>
-                                <th scope="col">Ip semester</th>
-                                <th scope="col">Total SKS</th>
-                                <th scope="col">IPK</th>
-                                <th scope="col" width="30px;"></th>
-                                <th scope="col"></th>
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="data,row : ${listKrs}">
-                                <td th:text="${(row.index + 1)}">1</td>
-                                <td th:text="${data[1]}">12</td>
-                                <td th:text="${data[2]}">12</td>
-                                <td th:text="${data[3]}">2020</td>
-                                <td th:text="${data[4]}">2020</td>
-                                <td th:text="${data[5]}">2020</td>
-                                <td th:text="${data[6]}">2020</td>
-                                <td th:text="${data[7]}">2020</td>
-                                <td th:if="${data[8] == 'WAITING'}">
-                                    <button type="button" class="btn btn-warning btn-sm">WAITING</button>
-                                </td>
-                                <td th:if="${data[8] == 'APPROVED'}">
-                                    <button type="button" class="btn btn-success btn-sm">APPROVED</button>
-                                </td>
-                                <td th:if="${data[8] == 'REJECTED'}">
-                                    <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
-                                </td>
-                                <td>
-                                    <!--button-->
-                                    <button type="button" class="btn btn-info btn-sm" th:id="${data[0]}" onclick="detailMatkul(this.id)">
-                                        <i class="fas fa-eye"></i> Detail
-                                    </button>
+                    <div class="card-body">
+                        <div class="nav-wrapper mb-4">
+                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"> KRS</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-4-tab" data-toggle="tab" href="#tabs-icons-text-4" role="tab" aria-controls="tabs-icons-text-2" aria-selected="true"> MBKM</a>
+                                </li>
+                            </ul>
+                        </div>
 
-                                    <div class="modal fade" th:id="${'modal-detail' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
-                                            <div class="modal-content">
+                        <!-- list KRS -->
 
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Detail Matakuliah</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">NIM</th>
+                                            <th scope="col">Nama</th>
+                                            <th scope="col">Prodi</th>
+                                            <th scope="col">Angkatan</th>
+                                            <th scope="col">Ip semester</th>
+                                            <th scope="col">Total SKS</th>
+                                            <th scope="col">IPK</th>
+                                            <th scope="col" width="30px;"></th>
+                                            <th scope="col"></th>
 
-                                                <div class="modal-body">
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="data,row : ${listKrs}">
+                                            <td th:text="${(row.index + 1) + (listKrs.number * listKrs.size)}">1</td>
+                                            <td th:text="${data[1]}">12</td>
+                                            <td th:text="${data[2]}">12</td>
+                                            <td th:text="${data[3]}">2020</td>
+                                            <td th:text="${data[4]}">2020</td>
+                                            <td th:text="${data[5]}">2020</td>
+                                            <td th:text="${data[6]}">2020</td>
+                                            <td th:text="${data[7]}">2020</td>
+                                            <td th:if="${data[8] == 'WAITING'}">
+                                                <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                            </td>
+                                            <td th:if="${data[8] == 'APPROVED'}">
+                                                <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                            </td>
+                                            <td th:if="${data[8] == 'REJECTED'}">
+                                                <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
+                                            </td>
+                                            <td>
+                                                <!--button-->
+                                                <button type="button" class="btn btn-info btn-sm" th:id="${data[0]}" onclick="detailMatkul(this.id)">
+                                                    <i class="fas fa-eye"></i> Detail
+                                                </button>
 
-                                                    <div class="nav-wrapper mb-4">
-                                                        <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                            <li class="nav-item">
-                                                                <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" th:href="${'#tabs-icons-text-1-'+data[0]}" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"> Request KRS</a>
-                                                            </li>
-                                                            <li class="nav-item">
-                                                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" th:href="${'#tabs-icons-text-2-'+data[0]}" role="tab" aria-controls="tabs-icons-text-2" aria-selected="true"> Matakuliah Mengulang</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                <div class="modal fade" th:id="${'modal-detail' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
+                                                        <div class="modal-content">
 
-                                                    <div class="tab-content" id="myTabContent">
-                                                        <div class="tab-pane fade show active" th:id="${'tabs-icons-text-1-'+data[0]}" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                            <div class="table-responsive">
-                                                                <table id="table-request" class="table align-items-center table-flush">
-                                                                    <thead class="thead-light">
-                                                                    <tr>
-                                                                        <th>Matakuliah</th>
-                                                                        <th>SKS</th>
-                                                                        <th>Kelas</th>
-                                                                        <th>Dosen</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-<!--                                                                    <tr >-->
-<!--                                                                         th:each="dataDetail : ${listKrsDetail}" -->
-<!--                                                                        <td th:if="${dataDetail.krs == data[0]}" th:text="${dataDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}">18101040</td>-->
-<!--                                                                        <td th:if="${dataDetail.krs == data[0]}" th:text="${dataDetail.matakuliahKurikulum.jumlahSks}">Rafhatullah</td>-->
-<!--                                                                        <td th:if="${dataDetail.krs == data[0]}" th:text="${dataDetail.jadwal.kelas.namaKelas}">HES</td>-->
-<!--                                                                        <td th:if="${dataDetail.krs == data[0]}" th:text="${dataDetail.jadwal.dosen.karyawan.namaKaryawan}"></td>-->
-<!--                                                                    </tr>-->
-                                                                    </tbody>
-                                                                </table>
+                                                            <div class="modal-header">
+                                                                <h6 class="modal-title" id="modal-title-notification">Detail Matakuliah</h6>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
                                                             </div>
-                                                        </div>
 
-                                                        <!-- list matakuliah mengulang -->
+                                                            <div class="modal-body">
 
-                                                        <div class="tab-pane fade" th:id="${'tabs-icons-text-2-'+data[0]}" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                                            <div class="card-body">
-                                                                <div class="table-responsive">
-                                                                    <table id="table-mengulang" class="table align-items-center table-flush">
-                                                                        <thead class="thead-light">
-                                                                        <tr>
-                                                                            <th>Matakuliah</th>
-                                                                            <th>Nilai Akhir</th>
-                                                                            <th>Bobot</th>
-                                                                            <th>Grade</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-<!--                                                                        <tr >-->
-<!--                                                                             th:each="dataMengulang : ${listMatkulMengulang}" -->
-<!--                                                                            <td th:if="${dataMengulang[0] == data[0]}" th:text="${dataDetail[2]}">18101040</td>-->
-<!--                                                                            <td th:if="${dataMengulang[0] == data[0]}" th:text="${dataDetail[3]}">Rafhatullah</td>-->
-<!--                                                                            <td th:if="${dataMengulang[0] == data[0]}" th:text="${dataDetail[4]}">HES</td>-->
-<!--                                                                            <td th:if="${dataMengulang[0] == data[0]}" th:text="${dataDetail[5]}"></td>-->
-<!--                                                                        </tr>-->
-                                                                        </tbody>
-                                                                    </table>
+                                                                <div class="nav-wrapper mb-4">
+                                                                    <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" th:href="${'#tabs-icons-text-1-'+data[0]}" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"> Request KRS</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" th:href="${'#tabs-icons-text-2-'+data[0]}" role="tab" aria-controls="tabs-icons-text-2" aria-selected="true"> Matakuliah Mengulang</a>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
+
+                                                                <div class="tab-content" id="myTabContent">
+                                                                    <div class="tab-pane fade show active" th:id="${'tabs-icons-text-1-'+data[0]}" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                                                        <div class="table-responsive">
+                                                                            <table id="table-request" class="table align-items-center table-flush">
+                                                                                <thead class="thead-light">
+                                                                                <tr>
+                                                                                    <th>Matakuliah</th>
+                                                                                    <th>SKS</th>
+                                                                                    <th>Kelas</th>
+                                                                                    <th>Dosen</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- list matakuliah mengulang -->
+
+                                                                    <div class="tab-pane fade" th:id="${'tabs-icons-text-2-'+data[0]}" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                                        <div class="card-body">
+                                                                            <div class="table-responsive">
+                                                                                <table id="table-mengulang" class="table align-items-center table-flush">
+                                                                                    <thead class="thead-light">
+                                                                                    <tr>
+                                                                                        <th>Matakuliah</th>
+                                                                                        <th>Nilai Akhir</th>
+                                                                                        <th>Bobot</th>
+                                                                                        <th>Grade</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div th:if="${data[8] == 'WAITING'}">
+                                                                    <form th:action="@{/studiesActivity/krs/approval/approve(krsApproval = ${data[9]})}" method="post">
+                                                                        <button type="submit" class="btn btn-success">Approve</button>
+                                                                    </form>
+                                                                </div>
+                                                                <div th:if="${data[8] == 'WAITING'}">
+                                                                    <form th:action="@{/studiesActivity/krs/approval/reject(krsApproval = ${data[9]})}" method="post">
+                                                                        <button type="submit" class="btn btn-danger">Reject</button>
+                                                                    </form>
+                                                                </div>
+                                                                <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer py-4">
+                                    <nav aria-label="...">
+                                        <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                            <li class="disabled"><a href="#" aria-label="Previous"><span
+                                                    aria-hidden="true">&laquo;</span></a>
+                                            </li>
+                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
 
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <div th:if="${data[8] == 'WAITING'}">
-                                                        <form th:action="@{/studiesActivity/krs/approval/approve(krsApproval = ${data[9]})}" method="post">
-                                                            <button type="submit" class="btn btn-success">Approve</button>
-                                                        </form>
-                                                    </div>
-                                                    <div th:if="${data[8] == 'WAITING'}">
-                                                        <form th:action="@{/studiesActivity/krs/approval/reject(krsApproval = ${data[9]})}" method="post">
-                                                            <button type="submit" class="btn btn-danger">Reject</button>
-                                                        </form>
-                                                    </div>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                            <!-- list MBKM -->
+
+                            <div class="tab-pane fade" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">NIM</th>
+                                            <th scope="col">Nama</th>
+                                            <th scope="col">Prodi</th>
+                                            <th scope="col">Angkatan</th>
+                                            <th scope="col" width="30px;">Status</th>
+                                            <th colspan="2" scope="col" class="text-center">Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="data,row : ${list}">
+                                            <td th:text="${(row.index + 1)}">1</td>
+                                            <td th:text="${data.mahasiswa.nim}">12</td>
+                                            <td th:text="${data.mahasiswa.nama}">12</td>
+                                            <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
+                                            <td th:text="${data.mahasiswa.angkatan}">2020</td>
+                                            <td th:if="${data.statusApproval == data.statusApproval.WAITING}">
+                                                <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                            </td>
+                                            <td th:if="${data.statusApproval == data.statusApproval.APPROVED}">
+                                                <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                            </td>
+                                            <td th:if="${data.statusApproval == data.statusApproval.REJECTED}">
+                                                <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
+                                            </td>
+                                            <td class="text-right" th:if="${data.statusApproval == data.statusApproval.WAITING}">
+                                                <form th:action="@{/mbkm/approved(mbkm = ${data.id})}" method="post">
+                                                    <button class="btn btn-primary btn-sm">Approved</button>
+                                                </form>
+                                            </td>
+                                            <td th:if="${data.statusApproval == data.statusApproval.WAITING}">
+                                                <form th:action="@{/mbkm/reject(mbkm = ${data.id})}" method="post">
+                                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            </td>
+                                            <td colspan="2" class="text-center" th:if="${data.statusApproval != data.statusApproval.WAITING}">
+                                                -
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

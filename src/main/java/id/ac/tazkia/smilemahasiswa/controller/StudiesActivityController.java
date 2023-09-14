@@ -209,6 +209,9 @@ public class StudiesActivityController {
         private KrsApprovalDao krsApprovalDao;
 
         @Autowired
+        private PendaftaranMbkmDao pendaftaranMbkmDao;
+
+        @Autowired
         private MahasiswaService mahasiswaService;
 
         @Autowired
@@ -1199,7 +1202,7 @@ public class StudiesActivityController {
         }
 
         @GetMapping("/studiesActivity/krs/approval/list")
-        public void krsApprovalDosenWali(Model model, Authentication authentication) {
+        public void krsApprovalDosenWali(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page) {
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
                 Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -1218,14 +1221,19 @@ public class StudiesActivityController {
                 }
                 TahunAkademik tahunBefore = tahunAkademikDao.findByKodeTahunAkademik(jadi);
                 //
-                List<Object[]> krs = krsApprovalDao.krsApproval(tahun, tahunBefore, dosen.getId(),
-                                tahun.getKodeTahunAkademik());
+                Page<Object[]> krs = krsApprovalDao.krsApproval(tahun, tahunBefore, dosen.getId(),
+                                tahun.getKodeTahunAkademik(), page);
                 //
                 // model.addAttribute("listKrsDetail",
                 // krsDetailDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
                 // model.addAttribute("listMatkulMengulang",
                 // krsApprovalDao.listMatkulMengulang(jadi));
                 model.addAttribute("listKrs", krs);
+
+                // list MBKM
+                List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao.findByDosenAndStatus(dosen, StatusRecord.AKTIF);
+                model.addAttribute("list", listRequest);
+
         }
 
         @GetMapping("/get-matkul-mengulang/{id}")
