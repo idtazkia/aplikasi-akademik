@@ -74,10 +74,10 @@
                             </table>
                         </div>
 
-                        <div class="alert alert-warning" th:if="${validJadwal != null}">
-                            <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
-                            <span class="alert-inner--text">Sorry, Your selected schedule has been used, please another schedule</span>
-                        </div>
+<!--                        <div class="alert alert-warning" th:if="${validJadwal != null}">-->
+<!--                            <span class="alert-inner&#45;&#45;icon"><i class="fas fa-exclamation-triangle"></i></span>-->
+<!--                            <span class="alert-inner&#45;&#45;text">Sorry, Your selected schedule has been used, please another schedule</span>-->
+<!--                        </div>-->
                         <form th:action="@{/academic/schedule/form}" th:object="${jadwal}" method="post">
                             <div class="row">
                                 <div class="col-md-6">

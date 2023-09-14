@@ -1379,39 +1379,32 @@ public class  AcademicActivityController {
         Jadwal jadwal = jadwalDao.findById(request.getId()).get();
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
 
-        if (jdwl == null | jdwl.isEmpty()){
-            jadwal.setHari(request.getHari());
-            jadwal.setAkses(request.getAkses());
-            jadwal.setRuangan(request.getRuangan());
-            jadwal.setDosen(request.getDosen());
-            jadwal.setKapasitas(request.getKapasitas());
-            jadwal.setFinalStatus("N");
-            if (request.getSesii() != null) {
-                jadwal.setSesi(request.getSesii().getSesi());
-                jadwal.setJamMulai(request.getSesii().getJamMulai());
-                jadwal.setJamSelesai(request.getSesii().getJamSelesai());
-            }
-            jadwalDao.save(jadwal);
-
-
-            JadwalDosen jd = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.PENGAMPU);
-            if (jd == null) {
-
-                JadwalDosen jadwalDosen = new JadwalDosen();
-                jadwalDosen.setDosen(jadwal.getDosen());
-                jadwalDosen.setJadwal(jadwal);
-                jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
-                jadwalDosenDao.save(jadwalDosen);
-            }else {
-                jd.setDosen(jadwal.getDosen());
-                jadwalDosenDao.save(jd);
-            }
-
-        }else {
-            attributes.addFlashAttribute("validJadwal", jadwal);
-            return "redirect:form?id=" + jadwal.getId();
+        jadwal.setHari(request.getHari());
+        jadwal.setAkses(request.getAkses());
+        jadwal.setRuangan(request.getRuangan());
+        jadwal.setDosen(request.getDosen());
+        jadwal.setKapasitas(request.getKapasitas());
+        jadwal.setFinalStatus("N");
+        if (request.getSesii() != null) {
+            jadwal.setSesi(request.getSesii().getSesi());
+            jadwal.setJamMulai(request.getSesii().getJamMulai());
+            jadwal.setJamSelesai(request.getSesii().getJamSelesai());
         }
+        jadwalDao.save(jadwal);
 
+
+        JadwalDosen jd = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.PENGAMPU);
+        if (jd == null) {
+
+            JadwalDosen jadwalDosen = new JadwalDosen();
+            jadwalDosen.setDosen(jadwal.getDosen());
+            jadwalDosen.setJadwal(jadwal);
+            jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
+            jadwalDosenDao.save(jadwalDosen);
+        }else {
+            jd.setDosen(jadwal.getDosen());
+            jadwalDosenDao.save(jd);
+        }
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
 
