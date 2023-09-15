@@ -19,8 +19,19 @@ public class JadwalService {
 
     @Autowired private TahunAkademikDao tahunAkademikDao;
 
-    @Scheduled(cron = "0 05 10 * * *", zone = "Asia/Jakarta")
-    public void plotingJadwal() throws Exception {
+    @Scheduled(cron = "0 00 05 * * *", zone = "Asia/Jakarta")
+    public void plotingJadwal1() throws Exception {
+
+        List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
+        for (Jadwal j : cekJadwal){
+            System.out.println(j.getId() +" : id jadwal");
+            presensiService.generateSesi2(j);
+
+        }
+    }
+
+    @Scheduled(cron = "0 00 17 * * *", zone = "Asia/Jakarta")
+    public void plotingJadwal2() throws Exception {
 
         List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
         for (Jadwal j : cekJadwal){
