@@ -19,6 +19,7 @@ import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1559,7 +1560,7 @@ public class StudentBillController {
 
     }
 
-//    Request Penangguhan
+    // Request Penangguhan
 
     @GetMapping("/studentBill/requestPenangguhan/list")
     public void listPenangguhan(Model model, @PageableDefault(size = 10) Pageable page, String search){
@@ -1790,7 +1791,74 @@ public class StudentBillController {
         return "redirect:../requestPenangguhan/list";
     }
 
-//    request cicilan
+    @GetMapping("/penangguhan/download")
+    public void downloadPenangguhan(@RequestParam TahunAkademik tahun, HttpServletResponse response) throws IOException {
+
+        String[] columns = {"No", "NIM", "Nama", "Tagihan", "Tahun Akademik", "Tanggal Pengajuan", "Tanggal Penangguhan", "Status"};
+
+        List<RequestPenangguhan> penangguhan = requestPenangguhanDao.findByStatusAndTagihanTahunAkademikOrderByTanggalPengajuan(StatusRecord.AKTIF, tahun);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Tahun "+tahun.getTahun()+" "+tahun.getJenis());
+
+        sheet.addMergedRegion(CellRangeAddress.valueOf("C2:F2"));
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Font ketFont = workbook.createFont();
+        ketFont.setBold(true);
+        ketFont.setFontHeightInPoints((short) 14);
+        ketFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle ketCellStyle = workbook.createCellStyle();
+        ketCellStyle.setFont(ketFont);
+        ketCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+        Row headerRow = sheet.createRow(3);
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowKet = 1;
+        Row keterangan = sheet.createRow(rowKet);
+        keterangan.createCell(2).setCellValue("Data Request Penangguhan Tahun " + tahun.getNamaTahunAkademik());
+        keterangan.getCell(2).setCellStyle(ketCellStyle);
+
+        int rowNum = 4;
+        int baris = 1;
+
+        for (RequestPenangguhan p : penangguhan){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(p.getTagihan().getMahasiswa().getNim());
+            row.createCell(2).setCellValue(p.getTagihan().getMahasiswa().getNama());
+            row.createCell(3).setCellValue(p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama());
+            row.createCell(4).setCellValue(p.getTagihan().getTahunAkademik().getNamaTahunAkademik());
+            row.createCell(5).setCellValue(p.getTanggalPengajuan().toString());
+            row.createCell(6).setCellValue(p.getTanggalPenangguhan().toString());
+            row.createCell(7).setCellValue(p.getStatus().toString());
+        }
+
+        for (int i = 0; i<columns.length;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vns.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Request Penangguhan Tahun Akademik " + tahun.getNamaTahunAkademik() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
+    // request cicilan
 
     @GetMapping("/studentBill/requestCicilan/list")
     public void listCicilan(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) String search){

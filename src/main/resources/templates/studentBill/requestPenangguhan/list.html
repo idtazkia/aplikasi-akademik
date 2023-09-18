@@ -45,7 +45,43 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Data List</h3>
+<!--                                <h3 class="mb-0">Data List</h3>-->
+<!--                                <a th:href="@{/studentBill/requestCicilan/rekap}" class="btn btn-info btn-sm"><i class="ni ni-book-bookmark"></i> Rekap</a>-->
+                                <a class="btn btn-success btn-sm text-white" data-toggle="modal" data-target="#modal-import"><i class="fas fa-download"></i> Download Report</a>
+
+                                <div class="modal fade" id="modal-import" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div class="card shadow border-0">
+                                                    <div class="card-body px-lg-5 py-lg-5">
+                                                        <div class="text-center">
+                                                            <form method="get" th:action="@{/penangguhan/download}">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <label>Tahun Akademik</label>
+                                                                            <select name="tahun" required class="form-control">
+                                                                                <option value=""></option>
+                                                                                <option th:each="data : ${tahunAkademik}"
+                                                                                        th:selected="(${data} == *{selectTahun})"
+                                                                                        th:text="${data.namaTahunAkademik}"
+                                                                                        th:value="${data.id}">STEI TAZKIA</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <button class="btn btn-primary" type="submit">Import</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col text-right">
                                 <form method="get">
@@ -67,6 +103,7 @@
                                 <th>Nim</th>
                                 <th>Nama</th>
                                 <th>Tagihan</th>
+                                <th>Tahun Akademik</th>
                                 <th>Tanggal Pengajuan</th>
                                 <th>Tanggal Penangguhan</th>
                                 <th>Status</th>
@@ -79,6 +116,7 @@
                                 <td th:text="${data.tagihan.mahasiswa.nim}"></td>
                                 <td th:text="${data.tagihan.mahasiswa.nama}"></td>
                                 <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                <td th:text="${data.tagihan.tahunAkademik.namaTahunAkademik}"></td>
                                 <td th:text="${data.tanggalPengajuan}"></td>
                                 <td th:text="${data.tanggalPenangguhan}">PATRICK STAR</td>
                                 <td th:if="${data.statusApprove.WAITING} == ${data.statusApprove} "><a href="#!" th:text="${data.statusApprove}" class="btn btn-primary btn-sm">WAITING</a></td>
