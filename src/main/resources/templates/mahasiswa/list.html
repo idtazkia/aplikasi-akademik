@@ -185,7 +185,7 @@
             padding-left: 35px;
         }
 
-        button
+        .button-ic
         {
             position: relative;
             display: block;
@@ -329,7 +329,48 @@
             <div class="col-md-12 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <h3 class="mb-0" style="color: white;">Data</h3>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0"></h3>
+                            </div>
+                            <div class="col text-right">
+                                <a class="btn btn-success btn-sm text-white" data-toggle="modal" data-target="#modal-import"><i class="fas fa-download"></i> Import per angkatan</a>
+
+                                <div class="modal fade" id="modal-import" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div class="card shadow border-0">
+                                                    <div class="card-body px-lg-5 py-lg-5">
+                                                        <div class="text-center">
+                                                            <form method="get" th:action="@{/mahasiswa/import/angkatan}">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <label>Angkatan</label>
+                                                                            <select name="angkatan" required class="form-control">
+                                                                                <option value=""></option>
+                                                                                <option th:each="data : ${angkatan}"
+                                                                                        th:selected="(${data} == *{selectAngkatan})"
+                                                                                        th:text="${data}"
+                                                                                        th:value="${data}">STEI TAZKIA</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <button class="btn btn-primary" type="submit">Import</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <br>
@@ -339,7 +380,7 @@
                                     <div class="tb">
                                         <div class="td"><input type="text" placeholder="Search" class="input-text" name="search" required th:value="${search}"></div>
                                         <div class="td" id="s-cover">
-                                            <button type="submit">
+                                            <button class="button-ic" type="submit">
                                                 <div id="s-circle"></div>
                                                 <span></span>
                                             </button>

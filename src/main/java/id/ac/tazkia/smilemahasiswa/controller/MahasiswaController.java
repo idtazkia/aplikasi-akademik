@@ -5,7 +5,13 @@ import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
+import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +26,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.*;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -134,6 +143,74 @@ public class MahasiswaController {
             model.addAttribute("search", search);
             model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(Arrays.asList(StatusRecord.HAPUS), search,search, page));
         }
+    }
+
+    @GetMapping("/mahasiswa/import/angkatan")
+    public void importAngkatan(@RequestParam String angkatan, HttpServletResponse response) throws IOException {
+
+        String[] columns = {"NO", "NIM", "Nama", "Prodi", "Email"};
+
+        List<Mahasiswa> mhs = mahasiswaDao.findByStatusAndStatusAktifAndAngkatan(StatusRecord.AKTIF, "AKTIF", angkatan);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Angkatan "+angkatan);
+
+        sheet.addMergedRegion(CellRangeAddress.valueOf("C2:D2"));
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Font ketFont = workbook.createFont();
+        ketFont.setBold(true);
+        ketFont.setFontHeightInPoints((short) 14);
+        ketFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle ketCellStyle = workbook.createCellStyle();
+        ketCellStyle.setFont(ketFont);
+        ketCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+        Row headerRow = sheet.createRow(3);
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowKet = 1;
+        Row keterangan = sheet.createRow(rowKet);
+        keterangan.createCell(2).setCellValue("Data Mahasiswa Angkatan " + angkatan);
+        keterangan.getCell(2).setCellStyle(ketCellStyle);
+
+        int rowNum = 4;
+        int baris = 1;
+
+        for (Mahasiswa m : mhs){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(m.getNim());
+            row.createCell(2).setCellValue(m.getNama());
+            row.createCell(3).setCellValue(m.getIdProdi().getNamaProdi());
+            if (m.getEmailTazkia() != null) {
+                row.createCell(4).setCellValue(m.getEmailTazkia());
+            }else{
+                row.createCell(4).setCellValue("-");
+            }
+        }
+
+        for (int i = 0; i<columns.length;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vns.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Mahasiswa Angkatan " + angkatan +".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
 
