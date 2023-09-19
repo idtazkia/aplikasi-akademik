@@ -59,11 +59,11 @@
                                <strong>Daftar KRS</strong>
                             </div>
                             <div class="col-md-6 col-xs-12 text-right">
-                                <div class="dropdown-trig-an-list" th:if="${validasi != null && mbkm != null}">
+                                <div class="dropdown-trig-an-list" th:if="${mbkm != null}">
                                     <div class="dropdown-trig-sgn pull-right">
                                         <button class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-plus-square"></i> Tambah KRS</button>
                                         <ul class="dropdown-menu">
-                                            <li><a th:href="@{/study/form}">Tambah Krs</a></li>
+                                            <li th:if="${validasi != null && kelas != null}"><a th:href="@{/study/form}">Tambah Krs</a></li>
                                             <li><a th:href="@{/study/mbkm/daftar}" class="text-white">MBKM </a></li>
                                         </ul>
                                     </div>
