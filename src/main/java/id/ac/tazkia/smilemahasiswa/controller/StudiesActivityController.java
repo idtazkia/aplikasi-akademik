@@ -12767,6 +12767,15 @@ public class StudiesActivityController {
                 }
         }
 
+        @GetMapping("/update-sesikuliah/{id}")
+        @ResponseBody
+        public void updatePresensi(@PathVariable String id)
+                throws Exception {
+                Jadwal jadwal = jadwalDao.findById(id).get();
+                presensiService.updateSesi1(jadwal);
+
+        }
+
         @PostMapping("/import-ipk-sks")
         @ResponseBody
         public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse importIpkSks() {

@@ -6,7 +6,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import id.ac.tazkia.smilemahasiswa.controller.EquipmentController;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,9 +24,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -400,20 +397,22 @@ public class PresensiService {
         return presensiDosen;
     }
 
-    public PresensiDosen updateTanggalPresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime,
+    public void updateTanggalPresensi(Dosen d, Jadwal j, LocalDateTime dateTime,
                                           Integer pertemuan) throws Exception {
 
-        SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKeAndPresensiDosenStatusNotIn(j,pertemuan,Arrays.asList(StatusRecord.HAPUS));
+        SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(j,pertemuan).get();
         PresensiDosen presensiDosen = sesiKuliah.getPresensiDosen();
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), j.getJamSelesai()));
-        presensiDosen.setWaktuMasuk(dateTime);
-        presensiDosenDao.save(presensiDosen);
+        if (presensiDosen.getStatusPresensi().equals(StatusPresensi.BELUM_MENGAJAR)) {
+            presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), j.getJamSelesai()));
+            presensiDosen.setWaktuMasuk(dateTime);
+            presensiDosen.setDosen(d);
+            presensiDosenDao.save(presensiDosen);
 
-        sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
-        sesiKuliah.setWaktuSelesai(presensiDosen.getWaktuSelesai());
-        sesiKuliahDao.save(sesiKuliah);
+            sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
+            sesiKuliah.setWaktuSelesai(presensiDosen.getWaktuSelesai());
+            sesiKuliahDao.save(sesiKuliah);
+        }
 
-        return presensiDosen;
     }
 
     public void updatePresensi(Jadwal j) {
@@ -520,18 +519,18 @@ public class PresensiService {
 
         LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal-1);
 
-        if (totalPresensi == 0) {
-            int attend = 16;
 
-            for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
+           int attend = 16;
 
-                updateTanggalPresensi(jadwal.getDosen(),
-                        jadwal, "-",
-                        LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
-                        pertemuan);
+           for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
 
-            }
-        }
+               updateTanggalPresensi(jadwal.getDosen(),
+                       jadwal,
+                       LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                       pertemuan);
+
+           }
+
 
     }
 
@@ -552,8 +551,7 @@ public class PresensiService {
             for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
 
                 updateTanggalPresensi(jadwal.getDosen(),
-                        jadwal, "-",
-                        LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                        jadwal, LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
                         pertemuan);
 
             }

@@ -11,9 +11,8 @@ import java.util.Optional;
 public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, String> {
     List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord aktif);
 
-    SesiKuliah findByJadwalAndPertemuanKeAndPresensiDosenStatusNotIn(Jadwal jadwal, Integer pertemuan, List<StatusRecord> stats);
-
     SesiKuliah findByPresensiDosen(PresensiDosen pd);
+
     @Query(value = "select * from sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen=pd.id inner join jadwal as j on pd.id_jadwal=j.id where " +
             "j.id=?1 and date(sk.waktu_mulai)=?2 and sk.pertemuan = 'Online' or sk.pertemuan = 'Offline' order by sk.waktu_mulai", nativeQuery = true)
     SesiKuliah cariPresensiHariIni(String idJadwal, String hariIni);
@@ -63,5 +62,4 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     @Query(value = "update sesi_kuliah set rps = '' where id_jadwal = ?1", nativeQuery = true)
     void updateRps(String idJadwal);
 
-    SesiKuliah findByJadwalAndPertemuan(Jadwal j, Integer pertemuan);
 }
