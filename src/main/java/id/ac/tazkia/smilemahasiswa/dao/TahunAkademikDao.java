@@ -59,4 +59,12 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
     TahunAkademik findByStatusAndJenisNot(StatusRecord status, StatusRecord jenis);
 
+    @Query(value = "select ta.* from mahasiswa m inner join krs k on m.id=k.id_mahasiswa inner join tahun_akademik ta on k.id_tahun_akademik=ta.id where id_mahasiswa=?1 and k.status='AKTIF' and ta.jenis <> 'PENDEK' order by ta.kode_tahun_akademik asc limit 1", nativeQuery = true)
+    TahunAkademik tahunAkademikAwal(String idMahasiswa);
+
+    @Query(value = "select ta.* from mahasiswa m inner join krs k on m.id=k.id_mahasiswa inner join tahun_akademik ta on k.id_tahun_akademik=ta.id where id_mahasiswa=?1 and k.status='AKTIF' and ta.jenis <> 'PENDEK' order by ta.kode_tahun_akademik desc limit 1", nativeQuery = true)
+    TahunAkademik tahunAkademikAkhir(String idMahasiswa);
+
+    Integer countByKodeTahunAkademikGreaterThanEqualAndKodeTahunAkademikLessThanEqualAndStatusNotInAndJenisNotIn(String kodeAwal, String  kodeTahunTerakhir, List<StatusRecord> status, List<StatusRecord> notJenis);
+
 }

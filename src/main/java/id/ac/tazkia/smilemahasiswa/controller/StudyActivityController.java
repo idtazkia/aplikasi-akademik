@@ -296,7 +296,13 @@ public class StudyActivityController {
 
             model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
 
-            if (semesterTotal > 8) {
+            TahunAkademik tahunAwal = tahunAkademikDao.tahunAkademikAwal(mahasiswa.getId());
+            TahunAkademik tahunAkhir = tahunAkademikDao.tahunAkademikAkhir(mahasiswa.getId());
+            Integer total = tahunAkademikDao.countByKodeTahunAkademikGreaterThanEqualAndKodeTahunAkademikLessThanEqualAndStatusNotInAndJenisNotIn(tahunAwal.getKodeTahunAkademik(), tahunAkhir.getKodeTahunAkademik(), Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusRecord.PENDEK));
+
+            model.addAttribute("tSemester", total);
+
+            if (total > 8) {
                 model.addAttribute("mbkm", "Pilihan MBKM terbuka");
             }
 
@@ -633,12 +639,6 @@ public class StudyActivityController {
         model.addAttribute("listKrs", krsDao.listKrs(tahunAkademik, mahasiswa));
     }
 
-    @GetMapping("/study/mbkm")
-    public void listMBKM(Model model, Authentication authentication){
-        User user = currentUserService.currentUser(authentication);
-
-    }
-
     @GetMapping("/study/mbkm/daftar")
     public String daftarMbkm(Authentication authentication, RedirectAttributes attributes){
         User user = currentUserService.currentUser(authentication);
@@ -658,6 +658,12 @@ public class StudyActivityController {
         }
 
         return "redirect:../krs";
+    }
+
+    @GetMapping("/study/mbkm")
+    public void listMBKM(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
     }
 
     @GetMapping("/study/jadwal")
