@@ -760,9 +760,11 @@ public class StudiesActivityController {
         public void editAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah) {
                 JadwalDto jadwalDto = new JadwalDto();
                 jadwalDto.setId(sesiKuliah.getId());
+                jadwalDto.setId(sesiKuliah.getPertemuan());
                 jadwalDto.setJadwal(sesiKuliah.getJadwal());
                 jadwalDto.setBeritaAcara(sesiKuliah.getBeritaAcara());
                 jadwalDto.setDosen(sesiKuliah.getPresensiDosen().getDosen());
+                jadwalDto.setPertemuan(sesiKuliah.getPertemuan());
                 jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());
                 jadwalDto.setTanggal(sesiKuliah.getWaktuMulai().toLocalDate());
                 jadwalDto.setId(sesiKuliah.getId());
@@ -805,7 +807,7 @@ public class StudiesActivityController {
                 presensiDosen.setDosen(jadwalDto.getDosen());
                 presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
                 presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
-
+                sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
                 sesiKuliahDao.save(sesiKuliah);
                 presensiDosenDao.save(presensiDosen);
 

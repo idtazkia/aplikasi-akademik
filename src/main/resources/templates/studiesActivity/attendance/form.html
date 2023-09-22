@@ -55,6 +55,17 @@
                     <div class="card-body">
                         <form th:action="@{/studiesActivity/attendance/form}" method="post" th:object="${sesi}">
                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Pertemuan :</label>
+                                        <select name="pertemuan" th:field="*{pertemuan}" class="form-control">
+                                            <option id="pertemuan-value" value="Online">Online</option>
+                                            <option id="pertemuan-value" value="Offline">Offline</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Dosen :</label>
