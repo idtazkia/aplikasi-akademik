@@ -17,7 +17,7 @@ public interface PendaftaranMbkmDao extends PagingAndSortingRepository<Pendaftar
 
     Page<PendaftaranMbkm> findByStatusAndTahunAkademikOrderByTanggalDaftar(StatusRecord status, TahunAkademik tahun, Pageable page);
 
-    @Query(value = "select id_matakuliah_kurikulum, kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks from\n" +
+    @Query(value = "select id_matakuliah_kurikulum, kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks, semester from\n" +
             "(SELECT a.*,id_matakuliahh, b.bobot\n" +
             "FROM (\n" +
             "    SELECT a.id, a.id_matakuliah_kurikulum, a.id_matakuliah, \n" +
@@ -30,11 +30,11 @@ public interface PendaftaranMbkmDao extends PagingAndSortingRepository<Pendaftar
             "        FROM mahasiswa AS a\n" +
             "        INNER JOIN matakuliah_kurikulum AS b ON a.id_kurikulum = b.id_kurikulum\n" +
             "        INNER JOIN matakuliah AS c ON b.id_matakuliah = c.id\n" +
-            "        WHERE a.id = ?1 AND b.status = 'AKTIF' AND c.status = 'AKTIF'\n" +
+            "        WHERE a.id = ?1 AND b.status = 'AKTIF' AND c.status = 'AKTIF' and jumlah_sks > 0 \n" +
             "        ORDER BY b.semester, c.kode_matakuliah\n" +
             "    ) AS a\n" +
-            "    INNER JOIN matakuliah_setara AS b ON a.id_matakuliah = b.id_matakuliah\n" +
-            "    INNER JOIN matakuliah_setara AS c ON a.id_matakuliah = c.id_matakuliah_setara\n" +
+            "    LEFT JOIN matakuliah_setara AS b ON a.id_matakuliah = b.id_matakuliah\n" +
+            "    LEFT JOIN matakuliah_setara AS c ON a.id_matakuliah = c.id_matakuliah_setara\n" +
             "    GROUP BY a.id_matakuliah_kurikulum\n" +
             ") AS a\n" +
             "LEFT JOIN (\n" +
@@ -44,7 +44,7 @@ public interface PendaftaranMbkmDao extends PagingAndSortingRepository<Pendaftar
             "    WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 AND a.bobot >= 2 group by id_matakuliah\n" +
             ") AS b\n" +
             "ON a.id_matakuliah = b.id_matakuliahh OR a.setara LIKE CONCAT('%(', b.id_matakuliahh, '),%') OR a.setara2 LIKE CONCAT('%(', b.id_matakuliahh, '),%')) as a\n" +
-            "where id_matakuliahh is null order by semester, kode_matakuliah", nativeQuery = true)
+            "where id_matakuliahh is null group by kode_matakuliah order by semester, kode_matakuliah", nativeQuery = true)
     List<Object[]> listMatkulMbkm(String idMahasiswa);
 
 }
