@@ -333,7 +333,7 @@
                                 <a th:href="@{/berkas/uploadSoal/list}" class="nav-link">Upload & Download Soal</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS')">
-                                <a th:href="@{/studiesActivity/krs/approval/list}" class="nav-link">Approval KRS</a>
+                                <a th:href="@{/studiesActivity/krs/approval/list}" class="nav-link">Approval KRS & MBKM</a>
                             </li>
                         </ul>
                     </div>
@@ -527,6 +527,9 @@
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_BEASISWA')">
                                 <a th:href="@{/report/recapitulation/ipk}" class="nav-link">Laporan IPK</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
+                                <a th:href="@{/report/mbkm}" class="nav-link">Laporan MBKM</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_TRANSCRIPT_ADMIN') or hasAuthority('SETTING_MESIN_ABSEN') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_PEMBINA') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_BEASISWA')">
                                 <a th:href="@{/report/historymahasiswa}" class="nav-link">Riwayat Mahasiswa</a>

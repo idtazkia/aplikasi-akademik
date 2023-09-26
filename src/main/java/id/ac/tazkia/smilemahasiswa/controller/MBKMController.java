@@ -47,7 +47,7 @@ public class MBKMController {
         mbkm.setStatusApproval(StatusApprove.APPROVED);
         pendaftaranMbkmDao.save(mbkm);
 
-        return "redirect:/studiesActivity/mbkm/list";
+        return "redirect:/studiesActivity/krs/approval/list";
     }
 
     @PostMapping("/mbkm/reject")
@@ -56,7 +56,7 @@ public class MBKMController {
         mbkm.setStatusApproval(StatusApprove.REJECTED);
         pendaftaranMbkmDao.save(mbkm);
 
-        return "redirect:/studiesActivity/mbkm/list";
+        return "redirect:/studiesActivity/krs/approval/list";
     }
 
 }

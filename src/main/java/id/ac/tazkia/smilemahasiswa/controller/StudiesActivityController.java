@@ -1265,6 +1265,16 @@ public class StudiesActivityController {
                 return krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krs);
         }
 
+        @GetMapping("/get-matkul-mbkm/{id}")
+        @ResponseBody
+        public List<KrsDetail> getRequestMatkulMBKM(@PathVariable String id) {
+                TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+                Mahasiswa mhs = mahasiswaDao.findById(id).get();
+                Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+
+                return krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krs);
+        }
+
         @PostMapping("/studiesActivity/krs/approval/approve")
         public String approvedKrs(@RequestParam KrsApproval krsApproval) {
 

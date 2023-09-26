@@ -14,10 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -122,6 +119,18 @@ public class StudyActivityController {
 
     @Autowired
     private PendaftaranMbkmDao pendaftaranMbkmDao;
+
+    @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
+    private HariDao hariDao;
+
+    @Autowired
+    private SesiDao sesiDao;
+
+    @Autowired
+    private RuanganDao ruanganDao;
 
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
@@ -302,8 +311,26 @@ public class StudyActivityController {
 
             model.addAttribute("tSemester", total);
 
+            // MBKM
             if (total > 8) {
                 model.addAttribute("mbkm", "Pilihan MBKM terbuka");
+            }
+            List<KrsDetail> cekKrs = krsDetailDao.cariKrsSelainMBKM(k.getId());
+            if (!cekKrs.isEmpty()) {
+                model.addAttribute("existKrs", "Sudah mengisi krs, tidak bisa mengambil MBKM");
+            }
+            PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatusAndStatusApproval(mahasiswa, ta, StatusRecord.AKTIF, StatusApprove.APPROVED);
+            if (cek != null) {
+                model.addAttribute("existMbkm", "Sudah mendaftrar MBKM");
+            }
+            PendaftaranMbkm mbkmStatus = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
+            if (mbkmStatus != null) {
+                if (mbkmStatus.getStatusApproval() == StatusApprove.WAITING) {
+                    model.addAttribute("mbkmWaiting", "Menunggu pendaftaran MBKM disetujui dosen wali");
+                }
+                if (mbkmStatus.getStatusApproval() == StatusApprove.REJECTED) {
+                    model.addAttribute("mbkmReject", "Pendaftaran MBKM di reject, silahkan hubungi dosen wali");
+                }
             }
 
             KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
@@ -652,18 +679,117 @@ public class StudyActivityController {
             daftar.setDosen(mhs.getDosen());
             daftar.setTahunAkademik(tahun);
             pendaftaranMbkmDao.save(daftar);
-        }else{
-            attributes.addFlashAttribute("mbkmExist", "MBKM sudah ada.");
-            return "redirect:../krs";
         }
-
-        return "redirect:../krs";
+        return "redirect:../mbkm";
     }
 
     @GetMapping("/study/mbkm")
     public void listMBKM(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
 
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahun, StatusRecord.AKTIF);
+        Long totalSksExist = krsDetailDao.jumlahSksMbkm(StatusRecord.AKTIF, krs, StatusRecord.MBKM);
+        if (totalSksExist != null) {
+            model.addAttribute("sks", totalSksExist);
+        }else {
+            model.addAttribute("sks", "0");
+        }
+
+        model.addAttribute("mhs", mahasiswa);
+        model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(mahasiswa.getId()));
+    }
+
+    @PostMapping("/study/mbkm/input")
+    public String inputMbkmMatkul(@RequestParam String mahasiswa, @RequestParam(required = false) String[] matkul, RedirectAttributes attributes){
+
+        Mahasiswa mhs = mahasiswaDao.findById(mahasiswa).get();
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+
+        PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+        if (cek == null) {
+            PendaftaranMbkm daftar = new PendaftaranMbkm();
+            daftar.setMahasiswa(mhs);
+            daftar.setDosen(mhs.getDosen());
+            daftar.setTahunAkademik(tahun);
+            pendaftaranMbkmDao.save(daftar);
+        }
+
+        Long totalSksExist = krsDetailDao.jumlahSksMbkm(StatusRecord.AKTIF, krs, StatusRecord.MBKM);
+
+        Integer total = 0;
+        if (totalSksExist != null) {
+            total = totalSksExist.intValue();
+        }
+        for (String mk : matkul){
+            MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(mk).get();
+            total = total + matkur.getJumlahSks();
+        }
+        log.info("total Sks : {}", total);
+        if (total > 20) {
+            attributes.addFlashAttribute("sksLebih", "Maksimal 20 SKS");
+            return "redirect:../mbkm";
+        }
+
+        for (String mk : matkul){
+
+            MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(mk).get();
+
+            Dosen dosen = dosenDao.findById("YaserT").get();
+            Hari hari = hariDao.findById("0").get();
+            Kelas kelas = kelasDao.findById("-").get();
+            Ruangan ruangan = ruanganDao.findById("01").get();
+
+            Jadwal jadwal = new Jadwal();
+            jadwal.setFinalStatus("N");
+            jadwal.setJumlahSesi(1);
+            jadwal.setBobotUts(BigDecimal.ZERO);
+            jadwal.setBobotUas(BigDecimal.ZERO);
+            jadwal.setBobotTugas(BigDecimal.ZERO);
+            jadwal.setBobotPresensi(BigDecimal.ZERO);
+            jadwal.setDosen(dosen);
+            jadwal.setProdi(mhs.getIdProdi());
+            jadwal.setTahunAkademik(tahun);
+            jadwal.setTahunAkademikProdi(tahunProdi);
+            jadwal.setMatakuliahKurikulum(matkur);
+            jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setProgram(mhs.getIdProgram());
+            jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setHari(hari);
+            jadwal.setKelas(kelas);
+            jadwal.setRuangan(ruangan);
+            jadwal.setStatus(StatusRecord.MBKM);
+            jadwalDao.save(jadwal);
+
+
+            KrsDetail kd = new KrsDetail();
+            kd.setKrs(krs);
+            kd.setMahasiswa(mhs);
+            kd.setJadwal(jadwal);
+            kd.setMatakuliahKurikulum(matkur);
+            kd.setNilaiPresensi(BigDecimal.ZERO);
+            kd.setNilaiUts(BigDecimal.ZERO);
+            kd.setNilaiTugas(BigDecimal.ZERO);
+            kd.setFinalisasi("N");
+            kd.setNilaiUas(BigDecimal.ZERO);
+            kd.setJumlahKehadiran(0);
+            kd.setJumlahMangkir(0);
+            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+            kd.setJumlahTerlambat(0);
+            kd.setJumlahIzin(0);
+            kd.setJumlahSakit(0);
+            kd.setStatusEdom(StatusRecord.UNDONE);
+            kd.setStatus(StatusRecord.AKTIF);
+            kd.setStatusKonversi(StatusRecord.MBKM);
+            kd.setTahunAkademik(tahun);
+            krsDetailDao.save(kd);
+        }
+
+        return "redirect:../krs";
     }
 
     @GetMapping("/study/jadwal")

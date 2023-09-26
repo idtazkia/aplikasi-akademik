@@ -59,12 +59,12 @@
                                <strong>Daftar KRS</strong>
                             </div>
                             <div class="col-md-6 col-xs-12 text-right">
-                                <div class="dropdown-trig-an-list" th:if="${mbkm != null}">
+                                <div class="dropdown-trig-an-list" th:if="${mbkm != null && existMbkm == null && existKrs == null}">
                                     <div class="dropdown-trig-sgn pull-right">
                                         <button class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-plus-square"></i> Tambah KRS</button>
                                         <ul class="dropdown-menu">
                                             <li th:if="${validasi != null && kelas != null}"><a th:href="@{/study/form}">Tambah Krs</a></li>
-                                            <li><a th:href="@{/study/mbkm/daftar}" class="text-white">MBKM </a></li>
+                                            <li><a th:href="@{/study/mbkm}" class="text-white">MBKM </a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -87,6 +87,8 @@
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-info text-center" th:if="${mbkmWaiting != null}" th:text="${mbkmWaiting}"></div>
+                    <div class="alert alert-danger text-center" th:if="${mbkmReject != null}" th:text="${mbkmReject}"></div>
                     <div class="alert alert-info" th:if="${validasi == null}">
                         <center>
                             <strong>
@@ -100,9 +102,6 @@
                                 Anda belum terdaftar ke kelas, Silahkan hubungi akademik.
                             </strong>
                         </center>
-                    </div>
-                    <div class="alert alert-danger" th:if="${mbkmExist != null}">
-                        Anda sudah mendaftar MBKM di semester ini.
                     </div>
                     <div class="alert alert-danger" th:if="${gagal != null}">
                         Delete data gagal, Krs sudah tidak dapat dihapus karena sudah ada aktifitas perkuliahan yang anda lakukan dengan matakuliah ini...

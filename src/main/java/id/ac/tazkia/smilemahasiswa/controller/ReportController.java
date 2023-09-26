@@ -8,6 +8,7 @@ import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import nz.net.ultraq.thymeleaf.layoutdialect.models.extensions.IModelExtensions;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -102,6 +103,9 @@ public class ReportController {
 
     @Autowired
     private MahasiswaDosenWaliDao mahasiswaDosenWaliDao;
+
+    @Autowired
+    private PendaftaranMbkmDao pendaftaranMbkmDao;
 
     @Value("${upload.soal}")
     private String uploadFolder;
@@ -1431,6 +1435,24 @@ public class ReportController {
         }
 
         return "report/mahasiswaPembinaanList";
+
+    }
+
+    // MBKM
+
+    @GetMapping("/report/mbkm")
+    public void reportMBKM(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page){
+
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik == null) {
+            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByTanggalDaftar(StatusRecord.AKTIF, tahun, page);
+            model.addAttribute("listMbkm", mbkm);
+        }else {
+            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByTanggalDaftar(StatusRecord.AKTIF, tahunAkademik, page);
+            model.addAttribute("listMbkm", mbkm);
+            model.addAttribute("selectedTahun", tahunAkademik);
+        }
+
 
     }
 

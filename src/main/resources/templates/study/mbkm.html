@@ -5,7 +5,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>MBKM</title>
     <style>
         .background-col-md{
             background-color: white;
@@ -37,7 +37,7 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>KRS Form</h2>
+                                        <h2>MBKM Form</h2>
                                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                                     </div>
                                 </div>
@@ -58,71 +58,64 @@
 
     <div class="container">
         <div class="bounceIn">
+            <div class="row" th:if="${sksLebih != null}">
+                <div class="col-md-12 col-xs-12">
+                    <div class="alert alert-danger">
+                        Maksimal 20 SKS!
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <div class="alert alert-info" role="alert">
+                        Jumlah batas maksimal SKS 20 !
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xs-12">
+                    <div class="alert alert-info" role="alert" th:text="${'Jumlah SKS yang telah diambil ' + sks}">
+                        Jumlah SKS  21 !
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12 col-xs-12">
-                    <div class="normal-table-list mg-t-30">
-                        <div class="basic-tb-hd">
-                            <h2>Data KRS</h2>
-                        </div>
-                        <div class="bsc-tbl-st" style="padding: 10px;">
-                            <form th:action="@{/study/form}" method="post" id="krs">
-                                <div class="row">
-<!--                                    <div class="col-md-6" th:each="data, row : ${listKrs}">-->
-<!--                                        <div class="col-md-12 background-col-md">-->
-<!--                                            <div class="row">-->
-<!--                                                <div class="col-md-9">-->
-<!--                                                    <div class="row" style="padding-top: 10px; padding-bottom: 10px;">-->
-<!--                                                        <div class="col-md-12">-->
-<!--                                                            <span style="color: #8a8a8a">Matakuliah</span>-->
-<!--                                                            <h5 th:text="${data[2]}">Ekonomi Syariah</h5>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-12">-->
-<!--                                                            <span style="color: #8a8a8a">Dosen</span>-->
-<!--                                                            <h5 th:text="${data[8]}"></h5>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-6">-->
-<!--                                                            <span style="color: #8a8a8a">Hari</span>-->
-<!--                                                            <h5 th:text="${data[7]}"></h5>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-6">-->
-<!--                                                            <span style="color: #8a8a8a">Waktu</span>-->
-<!--                                                            <h5 th:text="${data[5] + ' - ' + data[6]}"></h5>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-12">-->
-<!--                                                            <span style="color: #8a8a8a">Jumlah SKS</span>-->
-<!--                                                            <h5 th:text="${data[4]}">4</h5>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-12">-->
-<!--                                                            <span style="color: #8a8a8a">Keterangan</span>-->
-<!--                                                            <h5 th:if="${data[9] != null && data[14] == null}" th:text="${ 'Anda Belum Mengambil Prasyarat' + ' (' +data[9] + ')'}">Anda Belum Mengambil Prasyarat</h5>-->
-<!--                                                            <h5 th:if="${data[9] == null && data[14] == null}">-</h5>-->
-<!--                                                            <h5 th:if="${data[9] == null && data[14] == null}" style="color: white;">-</h5>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-
-<!--                                                </div>-->
-<!--                                                <div class="col-md-3">-->
-<!--                                                    <div class="col-md-12" th:if="${data[9] == null && data[14] == null}" style="text-align: center; background-color: #0C85D0;">-->
-<!--                                                        <input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox">-->
-<!--                                                        <br>-->
-<!--                                                        <span style="color: white; font-size: 10px;">Selected</span>-->
-<!--                                                    </div>-->
-
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                    <form method="post" th:action="@{/study/mbkm/input}">
+                        <input type="hidden" name="mahasiswa" th:value="${mhs.id}">
+                        <div class="normal-table-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Data MBKM</h2>
+                            </div>
+                            <div class="bsc-tbl-st">
+                                <table id="data-table-basic" class="table table-striped">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Kode MK</th>
+                                        <th>Nama Mata Kuliah</th>
+                                        <th>SKS</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data : ${listMatkul}">
+                                        <td  th:text="${data[1]}">AEM1101</td>
+                                        <td  th:text="${data[2]}">Dirasah Islamiah</td>
+                                        <td  th:text="${data[4]}"><b>3</b></td>
+                                        <td>
+                                            <div class="text-center" >
+                                                <input type="checkbox" class="select-check" name="matkul" th:value="${data[0]}">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button style="margin-bottom: 20px;" type="submit" class="mb-5 btn btn-success btn-sm"> Simpan</button>
                                 </div>
-                                <br>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-12 text-center">
-                                        <button class="btn btn-success">Save</button>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
