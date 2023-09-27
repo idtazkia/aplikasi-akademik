@@ -17,6 +17,8 @@ public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
 
     Page<Cuti> findByStatusOrderByStatusPengajuaanDesc(StatusRecord statusRecord, Pageable pageable);
 
+    Page<Cuti> findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord statusRecord, TahunAkademik tahunAkademik, Pageable pageable);
+
     @Query(value = "select a.id, d.nim, d.nama, a.keterangan, a.tanggal_mulai_cuti, a.tanggal_berakhir_cuti, a.dosen_wali_approved, a.status, a.semester, a.status_pengajuaan " +
             "from cuti as a inner join dosen as b on b.id = a.id_dosen inner join karyawan as c on c.id = b.id_karyawan inner join s_user as e on e.id = c.id_user " +
             "inner join mahasiswa as d on a.id_mahasiswa=d.id where e.id = ?1 and a.status = 'AKTIF' order by a.status_pengajuaan desc", nativeQuery = true)

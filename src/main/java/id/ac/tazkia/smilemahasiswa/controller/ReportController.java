@@ -472,9 +472,17 @@ public class ReportController {
     }
 
     @GetMapping("/report/cuti")
-    public void mahasiswaCuti(Model model, @PageableDefault(size = 10) Pageable pageable) {
-        model.addAttribute("listCutiMahasiswa",
-                cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
+    public void mahasiswaCuti(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable pageable) {
+
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik == null) {
+            model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, tahun, pageable));
+        }else {
+            model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, tahunAkademik, pageable));
+            model.addAttribute("selectedTahun", tahunAkademik);
+        }
+
+//        model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
     }
 
     @PostMapping("/proses/cuti")
@@ -1445,10 +1453,10 @@ public class ReportController {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         if (tahunAkademik == null) {
-            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByTanggalDaftar(StatusRecord.AKTIF, tahun, page);
+            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahun, page);
             model.addAttribute("listMbkm", mbkm);
         }else {
-            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByTanggalDaftar(StatusRecord.AKTIF, tahunAkademik, page);
+            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahunAkademik, page);
             model.addAttribute("listMbkm", mbkm);
             model.addAttribute("selectedTahun", tahunAkademik);
         }

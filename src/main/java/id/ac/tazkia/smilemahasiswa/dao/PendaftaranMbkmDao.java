@@ -13,9 +13,9 @@ public interface PendaftaranMbkmDao extends PagingAndSortingRepository<Pendaftar
     PendaftaranMbkm findByMahasiswaAndTahunAkademikAndStatus(Mahasiswa mahasiswa, TahunAkademik tahun, StatusRecord status);
     PendaftaranMbkm findByMahasiswaAndTahunAkademikAndStatusAndStatusApproval(Mahasiswa mahasiswa, TahunAkademik tahun, StatusRecord status, StatusApprove statusApprove);
 
-    List<PendaftaranMbkm> findByDosenAndStatus(Dosen dosen, StatusRecord statusRecord);
+    List<PendaftaranMbkm> findByDosenAndStatusOrderByStatusApprovalDesc(Dosen dosen, StatusRecord statusRecord);
 
-    Page<PendaftaranMbkm> findByStatusAndTahunAkademikOrderByTanggalDaftar(StatusRecord status, TahunAkademik tahun, Pageable page);
+    Page<PendaftaranMbkm> findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord status, TahunAkademik tahun, Pageable page);
 
     @Query(value = "select id_matakuliah_kurikulum, kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks, semester from\n" +
             "(SELECT a.*,id_matakuliahh, b.bobot\n" +
