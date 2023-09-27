@@ -1233,7 +1233,7 @@ public class StudiesActivityController {
                 model.addAttribute("listKrs", krs);
 
                 // list MBKM
-                List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao.findByDosenAndStatus(dosen, StatusRecord.AKTIF);
+                List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao.findByDosenAndStatusOrderByStatusApprovalDesc(dosen, StatusRecord.AKTIF);
                 model.addAttribute("list", listRequest);
 
         }

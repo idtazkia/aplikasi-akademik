@@ -31,16 +31,6 @@ public class MBKMController {
 
     @Autowired private TahunAkademikDao tahunAkademikDao;
 
-    @GetMapping("/studiesActivity/mbkm/list")
-    public void MBKMList(Model model, Authentication authentication){
-        User user = currentUserService.currentUser(authentication);
-        Dosen dosen = dosenDao.findByKaryawanIdUser(user);
-
-        List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao.findByDosenAndStatus(dosen, StatusRecord.AKTIF);
-        model.addAttribute("list", listRequest);
-        model.addAttribute("tahun", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-    }
-
     @PostMapping("/mbkm/approved")
     public String approvedMBKM(@RequestParam PendaftaranMbkm mbkm){
 
