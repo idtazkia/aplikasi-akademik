@@ -11,6 +11,7 @@ import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
+import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -118,6 +119,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private PresensiService presensiService;
 
     @Autowired
     private GedungDao gedungDao;
@@ -1374,7 +1378,7 @@ public class  AcademicActivityController {
     @PostMapping("/academic/schedule/form")
     public String prosesSchedule(Model model,
                                  @ModelAttribute @Valid RequestJadwal request,
-                                 RedirectAttributes attributes){
+                                 RedirectAttributes attributes)throws Exception{
 
         Jadwal jadwal = jadwalDao.findById(request.getId()).get();
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
@@ -1404,6 +1408,9 @@ public class  AcademicActivityController {
         }else {
             jd.setDosen(jadwal.getDosen());
             jadwalDosenDao.save(jd);
+        }
+        if (jadwal.getFinalPloting().equals("FINISHED")){
+            presensiService.updateSesi1(jadwal);
         }
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
