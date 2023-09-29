@@ -143,7 +143,9 @@ public class Mahasiswa {
 
     private String nirl;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String judul;
+    @Column(columnDefinition = "LONGTEXT")
     private String title;
     private String noTranskript;
     private String indukNasional;
