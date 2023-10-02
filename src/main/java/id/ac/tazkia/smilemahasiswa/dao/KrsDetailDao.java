@@ -868,6 +868,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     List<KrsDetail> findByStatusAndTahunAkademikAndKrs(StatusRecord statusRecord, TahunAkademik tahunAkademik, Krs krs);
 
+    List<KrsDetail> findByStatusAndTahunAkademikAndKrsAndStatusKonversi(StatusRecord statusRecord, TahunAkademik tahunAkademik, Krs krs, StatusRecord mbkm);
+
     List<KrsDetail> findByStatusAndKrsAndMahasiswa(StatusRecord status, Krs krs, Mahasiswa mahasiswa);
 
     List<KrsDetail> findByKrsAndStatusAndStatusKonversiNotInOrStatusKonversiIsNull(Krs krs, StatusRecord status, List<StatusRecord> mbkm);

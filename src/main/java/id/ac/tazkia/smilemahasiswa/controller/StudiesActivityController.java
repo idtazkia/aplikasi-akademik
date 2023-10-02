@@ -1272,7 +1272,7 @@ public class StudiesActivityController {
                 Mahasiswa mhs = mahasiswaDao.findById(id).get();
                 Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
 
-                return krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krs);
+                return krsDetailDao.findByStatusAndTahunAkademikAndKrsAndStatusKonversi(StatusRecord.AKTIF, tahun, krs, StatusRecord.MBKM);
         }
 
         @PostMapping("/studiesActivity/krs/approval/approve")

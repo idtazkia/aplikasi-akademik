@@ -709,15 +709,6 @@ public class StudyActivityController {
         TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
 
-        PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
-        if (cek == null) {
-            PendaftaranMbkm daftar = new PendaftaranMbkm();
-            daftar.setMahasiswa(mhs);
-            daftar.setDosen(mhs.getDosen());
-            daftar.setTahunAkademik(tahun);
-            pendaftaranMbkmDao.save(daftar);
-        }
-
         Long totalSksExist = krsDetailDao.jumlahSksMbkm(StatusRecord.AKTIF, krs, StatusRecord.MBKM);
 
         Integer total = 0;
@@ -732,6 +723,15 @@ public class StudyActivityController {
         if (total > 20) {
             attributes.addFlashAttribute("sksLebih", "Maksimal 20 SKS");
             return "redirect:../mbkm";
+        }
+
+        PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+        if (cek == null) {
+            PendaftaranMbkm daftar = new PendaftaranMbkm();
+            daftar.setMahasiswa(mhs);
+            daftar.setDosen(mhs.getDosen());
+            daftar.setTahunAkademik(tahun);
+            pendaftaranMbkmDao.save(daftar);
         }
 
         for (String mk : matkul){
