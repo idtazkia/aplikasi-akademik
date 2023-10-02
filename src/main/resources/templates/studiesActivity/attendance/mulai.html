@@ -61,9 +61,13 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
-                                                <select id="pertemuan" name="pertemuan" class="form-control">
-                                                    <option id="pertemuan-value" value="Online">Online</option>
-                                                    <option id="pertemuan-value" value="Offline">Offline</option>
+                                                <select name="pertemuan" class="form-control" th:if="${now == sesi.tanggal}">
+                                                    <option value="Online">Online</option>
+                                                    <option value="Offline">Offline</option>
+                                                </select>
+                                                <select name="pertemuan" class="form-control" th:if="${now != sesi.tanggal}">
+                                                    <option value="Pengganti Offline">Pengganti Offline</option>
+                                                    <option value="Pengganti Online">Pengganti Online</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -88,7 +92,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" th:if="${now != sesi.tanggal}">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Jam Mulai :</label>

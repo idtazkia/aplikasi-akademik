@@ -7,6 +7,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.*;
 
@@ -451,6 +453,8 @@ public class PresensiService {
         return qrCode;
     }
 
+
+
     public BaseResponse generateSesi(Jadwal jadwal) throws Exception {
         BaseResponse response = null;
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
@@ -592,5 +596,103 @@ public class PresensiService {
                 .code("200").message("Berhasil Generate")
                 .build();
     }
+
+    public void mulaiMengajar(PresensiDto jadwalDto, SesiKuliah sesiKuliah,LocalDateTime waktuMasukSebelum) throws Exception{
+        if (jadwalDto.getJamMulai() == null){
+            jadwalDto.setJamMulai(LocalTime.now());
+        }
+
+        sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
+        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), sesiKuliah.getJadwal().getJamSelesai()));
+
+        PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
+        presensiDosen.setDosen(jadwalDto.getDosen());
+        presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
+        presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
+        presensiDosen.setStatus(StatusRecord.AKTIF);
+
+        if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0) {
+            if (presensiDosen.getWaktuMasuk().toLocalTime()
+                    .compareTo(presensiDosen.getWaktuMasuk().toLocalTime().plusMinutes(15)) >= 0) {
+                presensiDosen.setStatusPresensi(StatusPresensi.TERLAMBAT);
+            } else {
+                presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+            }
+            sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+        } else {
+            presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+        }
+
+        Integer qrCodeSize = 300;
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("ss");
+        String productCode = dateFormat.format(date);
+
+        Date date1 = Calendar.getInstance().getTime();
+        DateFormat dateFormat1 = new SimpleDateFormat("mm");
+        String productionYear = dateFormat1.format(date1);
+
+        Date date2 = Calendar.getInstance().getTime();
+        DateFormat dateFormat2 = new SimpleDateFormat("MM");
+        String productCode2 = dateFormat2.format(date2);
+
+        Integer productNumberLength = 6;
+        Integer productQuantity = 1;
+
+        String folderOutput = uploadFolder;
+        new File(folderOutput).mkdirs();
+
+        for (int i = 1; i <= productQuantity; i++) {
+            String presensiBarcode = productCode + productionYear + productCode2
+                    + String.format("%1$" + productNumberLength + "s", i)
+                    .replace(' ', '2');
+            System.out.println("Generate QR Code for product number " + presensiBarcode);
+            BufferedImage qrCode = generateQRcode(
+                    barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+            ImageIO.write(qrCode, "png",
+                    new File(folderOutput + File.separator
+                            + presensiBarcode + ".png"));
+            if (presensiDosen.getBarcodeNow() == null) {
+                presensiDosen.setBarcodeNow(presensiBarcode + ".png");
+                presensiDosenDao.save(presensiDosen);
+            } else {
+                File file = new File(uploadFolder + File.separator + presensiDosen.getBarcodeBefore());
+                file.delete();
+                presensiDosen.setBarcodeBefore(presensiDosen.getBarcodeNow());
+                presensiDosen.setBarcodeNow(presensiBarcode + ".png");
+                presensiDosenDao.save(presensiDosen);
+
+            }
+        }
+        
+        sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+        sesiKuliahDao.save(sesiKuliah);
+        presensiDosenDao.save(presensiDosen);
+
+        StatusPresensi statusMahasiswa = null;
+        if (presensiDosen.getStatusPresensi() == StatusPresensi.HADIR) {
+            statusMahasiswa = StatusPresensi.MANGKIR;
+        } else {
+            statusMahasiswa = StatusPresensi.HADIR;
+        }
+
+        Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(
+                presensiDosen.getJadwal(),
+                StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail) {
+            PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
+            presensiMahasiswa.setStatusPresensi(statusMahasiswa);
+            presensiMahasiswa.setSesiKuliah(sesiKuliah);
+            presensiMahasiswa.setKrsDetail(kd);
+            presensiMahasiswa.setCatatan("Manual");
+            presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
+            presensiMahasiswa.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
+            presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
+            presensiMahasiswa.setRating(0);
+            presensiMahasiswaDao.save(presensiMahasiswa);
+        }
+    }
+
 
 }

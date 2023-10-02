@@ -790,6 +790,7 @@ public class StudiesActivityController {
                 jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
 
                 model.addAttribute("sesi", jadwalDto);
+                model.addAttribute("now", LocalDate.now());
                 model.addAttribute("sesiKuliah", sesiKuliah);
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sesiKuliah.getJadwal()));
 
@@ -816,69 +817,10 @@ public class StudiesActivityController {
         }
 
         @PostMapping("/studiesActivity/attendance/mulai")
-        public String prosesMulai(@ModelAttribute PresensiDto jadwalDto) {
-
-                LocalDateTime waktuMasukSebelum = null;
-                LocalDateTime waktuSelesaiSebelum = null;
+        public String prosesMulai(@ModelAttribute PresensiDto jadwalDto)throws Exception {
                 SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
-                waktuMasukSebelum = sesiKuliah.getWaktuMulai();
-                waktuSelesaiSebelum = sesiKuliah.getWaktuSelesai();
-
-                sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
-                sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
-                sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamSelesai()));
-
-                PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
-                presensiDosen.setDosen(jadwalDto.getDosen());
-                presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
-                presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
-                presensiDosen.setStatus(StatusRecord.AKTIF);
-
-                if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0
-                                && waktuSelesaiSebelum.compareTo(sesiKuliah.getWaktuSelesai()) == 0) {
-                        if (presensiDosen.getWaktuMasuk().toLocalTime()
-                                        .compareTo(presensiDosen.getWaktuMasuk().toLocalTime().plusMinutes(15)) >= 0) {
-                                presensiDosen.setStatusPresensi(StatusPresensi.TERLAMBAT);
-                        } else {
-                                presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-                        }
-                        sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
-                } else {
-                        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-                }
-
-                if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0
-                                && waktuSelesaiSebelum.compareTo(sesiKuliah.getWaktuSelesai()) == 0) {
-                        sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
-                } else {
-                        sesiKuliah.setPertemuan("Pengganti " + jadwalDto.getPertemuan());
-                }
-
-                sesiKuliahDao.save(sesiKuliah);
-                presensiDosenDao.save(presensiDosen);
-
-                StatusPresensi statusMahasiswa = null;
-                if (presensiDosen.getStatusPresensi() == StatusPresensi.HADIR) {
-                        statusMahasiswa = StatusPresensi.MANGKIR;
-                } else {
-                        statusMahasiswa = StatusPresensi.HADIR;
-                }
-
-                Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(
-                                presensiDosen.getJadwal(),
-                                StatusRecord.AKTIF);
-                for (KrsDetail kd : krsDetail) {
-                        PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-                        presensiMahasiswa.setStatusPresensi(statusMahasiswa);
-                        presensiMahasiswa.setSesiKuliah(sesiKuliah);
-                        presensiMahasiswa.setKrsDetail(kd);
-                        presensiMahasiswa.setCatatan("Manual");
-                        presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
-                        presensiMahasiswa.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
-                        presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-                        presensiMahasiswa.setRating(0);
-                        presensiMahasiswaDao.save(presensiMahasiswa);
-                }
+                LocalDateTime waktuMasukSebelum = sesiKuliah.getWaktuMulai();
+                presensiService.mulaiMengajar(jadwalDto,sesiKuliah,waktuMasukSebelum);
 
                 return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
