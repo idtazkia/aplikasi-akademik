@@ -2094,15 +2094,20 @@ public class  AcademicActivityController {
 
 
     @GetMapping("/analytics/dosen/list")
-    public void analitikDosen(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable pageable, String search) {
+    public void analitikDosen(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable pageable, String search, Authentication authentication) {
 
         TahunAkademik tahunAkademikAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         model.addAttribute("jmlDosen", dosenDao.countDosenByStatus(StatusRecord.AKTIF));
 
+        model.addAttribute("jmlSemuaKelas", sesiKuliahDao.jmlSemuaKelas(tahunAkademik));
 
         model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademikAktif, StatusPresensi.HADIR.toString()));
         model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademikAktif, StatusPresensi.TERLAMBAT.toString()));
@@ -2122,6 +2127,9 @@ public class  AcademicActivityController {
         } else {
             model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademikAktif, pageable));
         }
+
+//        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
+//        model.addAttribute("listTotalSks2", krsDetailDao.listTotalSks2(tahunAkademik,dosen));
 
     }
 
