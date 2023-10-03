@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface WisudaDao extends PagingAndSortingRepository<Wisuda, String> {
     Page<Wisuda> findByPeriodeWisudaAndStatusNotInOrderByStatusDescMahasiswaIdProdiAsc(PeriodeWisuda periodeWisuda, List<StatusApprove> statusApproves, Pageable page);
+    List<Wisuda> findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(PeriodeWisuda periodeWisuda, StatusApprove statusApproves);
     Page<Wisuda> findByPeriodeWisudaAndMahasiswaIdProdiAndStatusNotInOrderByStatusDesc(PeriodeWisuda periodeWisuda, Prodi prodi, List<StatusApprove> statusApproves,Pageable page);
     List<Wisuda> findByMahasiswaAndStatusNotIn(Mahasiswa mahasiswa, List<StatusApprove> statusApprove);
     Wisuda findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusApprove statusApprove);

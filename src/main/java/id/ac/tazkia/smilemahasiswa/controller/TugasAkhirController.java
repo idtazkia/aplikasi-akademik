@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -661,9 +662,11 @@ public class TugasAkhirController {
             extension = wisuda.getFoto().substring(i + 1);
         }
 
-        // Files.move(lokasiFoto, lokasiFoto.resolveSibling(
-        // wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
-        // + extension));
+         Files.move(lokasiFoto, lokasiFoto.resolveSibling(
+         wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+         + extension));
+        wisuda.setFoto(wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+                + extension);
         wisuda.setStatus(StatusApprove.APPROVED);
         wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);
@@ -1377,6 +1380,36 @@ public class TugasAkhirController {
             }
 
             model.addAttribute("listWisuda", wisudaList);
+        }
+    }
+
+    @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
+    public void plotingJadwal2() throws Exception {
+
+        List<Wisuda> cekMahasiswaWisuda =  wisudaDao.findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), StatusApprove.APPROVED);
+        for (Wisuda wisuda : cekMahasiswaWisuda){
+            System.out.println(wisuda.getMahasiswa().getNim() +" : update filename wisuda ");
+            String lokasiUpload = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                    + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
+                    + File.separator + wisuda.getMahasiswa().getNim();
+            Path lokasiFoto = Path.of(lokasiUpload + File.separator + wisuda.getFoto());
+
+            String extension = "";
+
+            int i = wisuda.getFoto().lastIndexOf('.');
+            int p = Math.max(wisuda.getFoto().lastIndexOf('/'), wisuda.getFoto().lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = wisuda.getFoto().substring(i + 1);
+            }
+
+            Files.move(lokasiFoto, lokasiFoto.resolveSibling(
+                    wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+                            + extension));
+            wisuda.setFoto(wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+                    + extension);
+            wisudaDao.save(wisuda);
+
         }
     }
 }
