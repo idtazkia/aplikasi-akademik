@@ -703,7 +703,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join jadwal as x on a.id_jadwal = x.id\n" +
             "INNER JOIN matakuliah_kurikulum AS b ON x.id_matakuliah_kurikulum = b.id\n" +
             "inner join matakuliah as c on b.id_matakuliah = c.id\n" +
-            "WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 2 group by id_matakuliah\n" +
+            "WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 1 group by id_matakuliah\n" +
             "order by semester) as a\n" +
             "left JOIN matakuliah_setara AS b ON a.id_matakuliah = b.id_matakuliah\n" +
             "left JOIN matakuliah_setara AS c ON a.id_matakuliah = c.id_matakuliah_setara\n" +
@@ -714,7 +714,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "    inner join jadwal as x on a.id_jadwal = x.id\n" +
             "    INNER JOIN matakuliah_kurikulum AS b ON x.id_matakuliah_kurikulum = b.id\n" +
             "    inner join matakuliah as c on b.id_matakuliah = c.id\n" +
-            "    WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 2 group by id_matakuliah\n" +
+            "    WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 1 group by id_matakuliah\n" +
             ") AS b\n" +
             "ON a.id_matakuliah = b.id_matakuliahh OR a.setara LIKE CONCAT('%(', b.id_matakuliahh, '),%') OR a.setara2 LIKE CONCAT('%(', b.id_matakuliahh, '),%')\n" +
             "and b.bobot > a.bobot group by coalesce(b.id_matakuliahh, a.id_matakuliah) order by coalesce(b.semester, a.semester), coalesce(b.nama_matakuliah, a.nama_matakuliah)",nativeQuery = true)
