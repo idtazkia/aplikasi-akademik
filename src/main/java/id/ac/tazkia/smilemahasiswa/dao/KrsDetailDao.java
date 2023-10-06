@@ -698,25 +698,28 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "coalesce(b.sks, a.sks) as sks, coalesce(b.semester, a.semester) as semester, coalesce(b.bobot,a.bobot) * coalesce(b.sks, a.sks) as mutu from\n" +
             "(select a.* ,  GROUP_CONCAT('(', b.id_matakuliah_setara, ')' SEPARATOR ', ') AS setara,\n" +
             "GROUP_CONCAT('(', c.id_matakuliah, ')' SEPARATOR ', ') AS setara2 from\n" +
-            "(SELECT a.id_matakuliah_kurikulum, b.id_matakuliah AS id_matakuliah,jumlah_sks as sks, max(a.bobot) as bobot, grade, c.kode_matakuliah, c.nama_matakuliah, c.nama_matakuliah_english, b.semester\n" +
+            "(SELECT a.id_matakuliah_kurikulum, b.id_matakuliah AS id_matakuliah,jumlah_sks as sks, a.bobot, grade, c.kode_matakuliah, c.nama_matakuliah, c.nama_matakuliah_english, b.semester\n" +
             "FROM krs_detail AS a\n" +
             "inner join jadwal as x on a.id_jadwal = x.id\n" +
             "INNER JOIN matakuliah_kurikulum AS b ON x.id_matakuliah_kurikulum = b.id\n" +
             "inner join matakuliah as c on b.id_matakuliah = c.id\n" +
-            "WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 1 group by id_matakuliah\n" +
+            "WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 1 group by a.id\n" +
             "order by semester) as a\n" +
             "left JOIN matakuliah_setara AS b ON a.id_matakuliah = b.id_matakuliah\n" +
             "left JOIN matakuliah_setara AS c ON a.id_matakuliah = c.id_matakuliah_setara\n" +
             "GROUP BY a.id_matakuliah_kurikulum) as a\n" +
             "LEFT JOIN (\n" +
-            "    SELECT a.id_matakuliah_kurikulum, b.id_matakuliah AS id_matakuliahh,jumlah_sks as sks, max(a.bobot) as bobot, grade, c.kode_matakuliah, c.nama_matakuliah, c.nama_matakuliah_english, b.semester\n" +
+            "    SELECT a.id_matakuliah_kurikulum, b.id_matakuliah AS id_matakuliahh,jumlah_sks as sks, bobot, grade, c.kode_matakuliah, c.nama_matakuliah, \n" +
+            "    c.nama_matakuliah_english, b.semester\n" +
             "    FROM krs_detail AS a\n" +
             "    inner join jadwal as x on a.id_jadwal = x.id\n" +
             "    INNER JOIN matakuliah_kurikulum AS b ON x.id_matakuliah_kurikulum = b.id\n" +
             "    inner join matakuliah as c on b.id_matakuliah = c.id\n" +
-            "    WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 1 group by id_matakuliah\n" +
+            "    WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 and finalisasi = 'FINAL' AND a.bobot >= 1 group by a.id\n" +
             ") AS b\n" +
-            "ON (a.id_matakuliah = b.id_matakuliahh or a.kode_matakuliah = b.kode_matakuliah or a.nama_matakuliah = b.nama_matakuliah or a.nama_matakuliah_english = b.nama_matakuliah_english OR a.setara LIKE CONCAT('%(', b.id_matakuliahh, ')%') OR a.setara2 LIKE CONCAT('%(', b.id_matakuliahh, ')%'))\n" +
+            "ON (a.id_matakuliah = b.id_matakuliahh or a.kode_matakuliah = b.kode_matakuliah or a.nama_matakuliah = b.nama_matakuliah \n" +
+            "or a.nama_matakuliah_english = b.nama_matakuliah_english OR a.setara LIKE CONCAT('%(', b.id_matakuliahh, ')%') \n" +
+            "OR a.setara2 LIKE CONCAT('%(', b.id_matakuliahh, ')%'))\n" +
             "and b.bobot > a.bobot \n" +
             "group by coalesce(b.id_matakuliahh, a.id_matakuliah) order by coalesce(b.semester, a.semester), coalesce(b.nama_matakuliah, a.nama_matakuliah)",nativeQuery = true)
     List<DataTranskript> listTranskript(Mahasiswa mahasiswa);
