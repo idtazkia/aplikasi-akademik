@@ -36,7 +36,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
             "FROM sesi_kuliah as sk\n" +
             "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
             "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
-            "where jd.id_tahun_akademik = ?1 and sk.pertemuan in ('Online','Pengganti Online')", nativeQuery = true)
+            "where pd.id_tahun_akademik = ?1 and sk.pertemuan  in ('Online','Pengganti Online')", nativeQuery = true)
     Object jmlKelasOnline(TahunAkademik tahunAkademik);
 
     @Query(value = "SELECT COUNT(*) as kelasOnline, COUNT(*) * 100 / (SELECT COUNT(*) as semuaKelas\n" +
@@ -48,7 +48,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
             "FROM sesi_kuliah as sk\n" +
             "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
             "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
-            "where jd.id_tahun_akademik = ?1 and sk.pertemuan in ('Offline','Pengganti Offline')", nativeQuery = true)
+            "where pd.id_tahun_akademik = ?1 and sk.pertemuan in ('Offline','Pengganti Offline')", nativeQuery = true)
     Object jmlKelasOffline(TahunAkademik tahunAkademik);
 
 
