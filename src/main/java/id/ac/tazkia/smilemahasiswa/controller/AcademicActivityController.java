@@ -2119,13 +2119,21 @@ public class  AcademicActivityController {
         if (StringUtils.hasText(search) && tahunAkademik == null) {
             model.addAttribute("search", search);
             model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademikAktif, search, pageable));
+            model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
+            model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
         } else if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
             model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademik, search, pageable));
+            model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
+            model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
         } else if (tahunAkademik != null){
             model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik, pageable));
+            model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
+            model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
         } else {
             model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademikAktif, pageable));
+            model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
+            model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
         }
 
 //        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));

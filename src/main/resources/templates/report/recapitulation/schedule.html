@@ -52,13 +52,14 @@
                                         <input type="date" class="form-control" th:value="${tanggal}"
                                                name="tanggalTutupPerbaikan" id="tanggal" >
                                     </div>
+                                    <p><small>Klik header table untuk sort</small></p>
                                     <div class="col text-right">
                                         <h3 class="mb-0"><i class="fas fa-book"></i> &nbsp; Jumlah SKS (<span style="color: red"></span>)</h3>
                                     </div>
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
+                                <table class="table align-items-center table-flush sortable">
                                     <thead class="thead-light">
                                     <tr>
                                         <th>Dosen</th>
@@ -103,6 +104,7 @@
 </div>
 </body>
 </html>
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 <script>
     var today = new Date();
     var dd = today.getDate();
