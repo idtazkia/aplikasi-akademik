@@ -113,17 +113,23 @@
                                 <th>Nim</th>
                                 <th>Nama</th>
                                 <th>Prodi</th>
+                                <th>Angkatan</th>
+                                <th>IPK</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="data, row:${mahasiswa}">
-                                    <td th:text="${(row.index + 1)}"></td>
+                                    <td th:text="${(row.index + 1) + (mahasiswa.number * mahasiswa.size)}"></td>
                                     <td th:text="${data[1]}"></td>
                                     <td th:text="${data[2]}"></td>
                                     <td th:text="${data[3]}"></td>
-                                    <td><span th:text="${data[4]}" class="btn btn-success btn-sm"></span></td>
+                                    <td th:text="${data[4]}"></td>
+                                    <td th:text="${data[5]}"></td>
+                                    <td th:if="${data[6] == 'AKTIF'}"><span th:text="${data[6]}" class="btn btn-info btn-sm"></span></td>
+                                    <td th:if="${data[6] == 'LULUS'}"><span th:text="${data[6]}" class="btn btn-success btn-sm"></span></td>
+                                    <td th:if="${data[6] == 'KELUAR'}"><span th:text="${data[6]}" class="btn btn-danger btn-sm"></span></td>
                                     <td>
                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data[0]}">
                                             <i class="fas fa-trash"></i>
@@ -164,6 +170,17 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

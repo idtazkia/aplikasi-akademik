@@ -11,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -246,8 +248,9 @@ public class MahasiswaService {
         return response;
     }
 
+    @Scheduled(cron = "0 00 12 * * *", zone = "Asia/Jakarta")
     public void importIpkSksAuto(){
-        List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByStatusAndStatusAktif(StatusRecord.AKTIF, "AKTIF");
+        List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByStatusAndStatusAktifIn(StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
         for (Mahasiswa mhs : mahasiswaAktif){
 
             List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
