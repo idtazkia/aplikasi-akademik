@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional @Slf4j
 public class MahasiswaService {
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -248,35 +249,42 @@ public class MahasiswaService {
         return response;
     }
 
-    @Scheduled(cron = "0 00 12 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 02 * * *", zone = "Asia/Jakarta")
     public void importIpkSksAuto(){
         List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByStatusAndStatusAktifIn(StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
         for (Mahasiswa mhs : mahasiswaAktif){
 
-            List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
-            listTranskript.removeIf(e -> e.getGrade().equals("E"));
-
-            int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
-            System.out.println("sks " + mhs.getNim() + " : " + sks);
-
-            if (sks != 0) {
-                BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
-
-                Ipk cek = ipkDao.findByMahasiswa(mhs);
-                if (cek == null) {
-                    Ipk inputIpk = new Ipk();
-                    inputIpk.setMahasiswa(mhs);
-                    inputIpk.setIpk(ipk);
-                    inputIpk.setSksTotal(sks);
-                    ipkDao.save(inputIpk);
+            if (mhs.getStatusAktif().equals("LULUS")){
+                log.info("status mahasiswa {} lulus", mhs.getNim());
+                if (Integer.parseInt(mhs.getAngkatan()) < 2015) {
+                    log.info("Mahasiswa {} tidak generate ipk karna angkatan {}", mhs.getNim(), mhs.getAngkatan());
                 }else{
-                    cek.setMahasiswa(mhs);
-                    cek.setIpk(ipk);
-                    cek.setSksTotal(sks);
-                    ipkDao.save(cek);
+                    List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
+                    listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+                    int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+                    log.info("sks {} : {}",mhs.getNim(), sks);
+
+                    if (sks != 0) {
+                        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
+
+                        Ipk cek = ipkDao.findByMahasiswa(mhs);
+                        if (cek == null) {
+                            Ipk inputIpk = new Ipk();
+                            inputIpk.setMahasiswa(mhs);
+                            inputIpk.setIpk(ipk);
+                            inputIpk.setSksTotal(sks);
+                            ipkDao.save(inputIpk);
+                        }else{
+                            cek.setMahasiswa(mhs);
+                            cek.setIpk(ipk);
+                            cek.setSksTotal(sks);
+                            ipkDao.save(cek);
+                        }
+                    }
                 }
             }
         }
