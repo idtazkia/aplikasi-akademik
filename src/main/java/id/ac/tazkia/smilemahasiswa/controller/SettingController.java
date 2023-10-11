@@ -4,6 +4,9 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -465,6 +470,57 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         model.addAttribute("beasiswa", beasiswa);
         model.addAttribute("mahasiswa", beasiswaDao.listBeasiswaMahasiwa(id, page));
         model.addAttribute("listMahasiswa", mahasiswaDao.findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord.AKTIF, "AKTIF"));
+    }
+
+    @GetMapping("/setting/beasiswa/rekap")
+    public void downloadRekap(@RequestParam Beasiswa beasiswa, HttpServletResponse response) throws IOException {
+
+        List<Object[]> listMhs = beasiswaDao.rekapBeasiswaMahasiwa(beasiswa.getId());
+
+        String[] columns = {"No", "NIM", "Nama Mahasiswa", "Nama Prodi", "Angkatan", "IPK", "Status Mahasiswa"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List rekapan beasiswa");
+
+        Font fontHeader = workbook.createFont();
+        fontHeader.setBold(true);
+        fontHeader.setFontHeightInPoints((short) 11);
+        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(fontHeader);
+
+        Row rowHeader = sheet.createRow(0);
+
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = rowHeader.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listMhs){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[1].toString());
+            row.createCell(2).setCellValue(list[2].toString());
+            row.createCell(3).setCellValue(list[3].toString());
+            row.createCell(4).setCellValue(list[4].toString());
+            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(6).setCellValue(list[6].toString());
+        }
+
+        for (int i = 0; i<columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekapan " + beasiswa.getNamaBeasiswa() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
     @PostMapping("/setting/beasiswa/mahasiswa")

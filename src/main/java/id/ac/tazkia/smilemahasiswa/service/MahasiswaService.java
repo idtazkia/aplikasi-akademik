@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional @Slf4j
@@ -65,6 +66,9 @@ public class MahasiswaService {
 
     @Autowired
     private IpkDao ipkDao;
+
+    @Autowired
+    private JenjangDao jenjangDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MahasiswaService.class);
 
@@ -250,13 +254,56 @@ public class MahasiswaService {
     }
 
     @Scheduled(cron = "0 00 02 * * *", zone = "Asia/Jakarta")
-    public void importIpkSksAuto(){
-        List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByStatusAndStatusAktifIn(StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
+    public void importIpkSksS1(){
+        Jenjang jenjang = jenjangDao.findById("01").get();
+        List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByIdProdiIdJenjangAndStatusAndStatusAktifIn(jenjang, StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
         for (Mahasiswa mhs : mahasiswaAktif){
 
             if (mhs.getStatusAktif().equals("LULUS")){
                 log.info("status mahasiswa {} lulus", mhs.getNim());
                 if (Integer.parseInt(mhs.getAngkatan()) < 2015) {
+                    log.info("Mahasiswa {} tidak generate ipk karna angkatan {}", mhs.getNim(), mhs.getAngkatan());
+                }else{
+                    List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
+                    listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+                    int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+                    log.info("sks {} : {}",mhs.getNim(), sks);
+
+                    if (sks != 0) {
+                        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
+
+                        Ipk cek = ipkDao.findByMahasiswa(mhs);
+                        if (cek == null) {
+                            Ipk inputIpk = new Ipk();
+                            inputIpk.setMahasiswa(mhs);
+                            inputIpk.setIpk(ipk);
+                            inputIpk.setSksTotal(sks);
+                            ipkDao.save(inputIpk);
+                        }else{
+                            cek.setMahasiswa(mhs);
+                            cek.setIpk(ipk);
+                            cek.setSksTotal(sks);
+                            ipkDao.save(cek);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 00 03 * * *", zone = "Asia/Jakarta")
+    public void importIpkSksS2(){
+        Jenjang jenjang = jenjangDao.findById("02").get();
+        List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByIdProdiIdJenjangAndStatusAndStatusAktifIn(jenjang, StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
+        for (Mahasiswa mhs : mahasiswaAktif){
+
+            if (mhs.getStatusAktif().equals("LULUS")){
+                log.info("status mahasiswa {} lulus", mhs.getNim());
+                if (Integer.parseInt(mhs.getAngkatan()) < 10) {
                     log.info("Mahasiswa {} tidak generate ipk karna angkatan {}", mhs.getNim(), mhs.getAngkatan());
                 }else{
                     List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);

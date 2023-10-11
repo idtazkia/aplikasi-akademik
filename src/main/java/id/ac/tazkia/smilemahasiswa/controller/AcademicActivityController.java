@@ -1889,8 +1889,6 @@ public class  AcademicActivityController {
             jadwalDao.updateFinalStatus(tahun.getId());
             System.out.println("TerUpdate final.");
 
-            mahasiswaService.importIpkSksAuto();
-
         }
 
     }
