@@ -817,10 +817,10 @@ public class StudiesActivityController {
         }
 
         @PostMapping("/studiesActivity/attendance/mulai")
-        public String prosesMulai(@ModelAttribute PresensiDto jadwalDto)throws Exception {
+        public String prosesMulai(@ModelAttribute PresensiDto jadwalDto) throws Exception {
                 SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
                 LocalDateTime waktuMasukSebelum = sesiKuliah.getWaktuMulai();
-                presensiService.mulaiMengajar(jadwalDto,sesiKuliah,waktuMasukSebelum);
+                presensiService.mulaiMengajar(jadwalDto, sesiKuliah, waktuMasukSebelum);
 
                 return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
@@ -1146,7 +1146,8 @@ public class StudiesActivityController {
         }
 
         @GetMapping("/studiesActivity/krs/approval/list")
-        public void krsApprovalDosenWali(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page) {
+        public void krsApprovalDosenWali(Model model, Authentication authentication,
+                        @PageableDefault(size = 10) Pageable page) {
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
                 Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -1175,7 +1176,8 @@ public class StudiesActivityController {
                 model.addAttribute("listKrs", krs);
 
                 // list MBKM
-                List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao.findByDosenAndStatusOrderByStatusApprovalDesc(dosen, StatusRecord.AKTIF);
+                List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao
+                                .findByDosenAndStatusOrderByStatusApprovalDesc(dosen, StatusRecord.AKTIF);
                 model.addAttribute("list", listRequest);
 
         }
@@ -1214,7 +1216,8 @@ public class StudiesActivityController {
                 Mahasiswa mhs = mahasiswaDao.findById(id).get();
                 Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
 
-                return krsDetailDao.findByStatusAndTahunAkademikAndKrsAndStatusKonversi(StatusRecord.AKTIF, tahun, krs, StatusRecord.MBKM);
+                return krsDetailDao.findByStatusAndTahunAkademikAndKrsAndStatusKonversi(StatusRecord.AKTIF, tahun, krs,
+                                StatusRecord.MBKM);
         }
 
         @PostMapping("/studiesActivity/krs/approval/approve")
@@ -5956,7 +5959,6 @@ public class StudiesActivityController {
 
                 BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
                 List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
-                listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
                 int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
@@ -5979,6 +5981,7 @@ public class StudiesActivityController {
                 List<DataTranskript> semester8 = new ArrayList<>();
 
                 for (DataTranskript data : listTranskript) {
+                        System.out.println(data.getSks());
                         if (data.getSemester().equals("1")) {
                                 semester1.add(data);
                         }
@@ -7321,8 +7324,9 @@ public class StudiesActivityController {
 
         // Status KRS
         @GetMapping("/studiesActivity/krs/status")
-        public void statusKrs(Model model, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) String angkatan,
-                              @RequestParam(required = false) Dosen dosen, @PageableDefault(size = 10) Pageable page){
+        public void statusKrs(Model model, @RequestParam(required = false) Prodi prodi,
+                        @RequestParam(required = false) String angkatan,
+                        @RequestParam(required = false) Dosen dosen, @PageableDefault(size = 10) Pageable page) {
 
                 TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
@@ -7331,11 +7335,13 @@ public class StudiesActivityController {
                 model.addAttribute("selectDosen", dosen);
 
                 if (prodi != null && angkatan != null && dosen == null) {
-                        model.addAttribute("listMahasiswa", krsDao.listKrsAdmin(angkatan, prodi.getId(), tahun.getId(), page));
+                        model.addAttribute("listMahasiswa",
+                                        krsDao.listKrsAdmin(angkatan, prodi.getId(), tahun.getId(), page));
                 }
 
-                if (prodi != null && angkatan != null && dosen != null){
-                        model.addAttribute("listMahasiswa", krsDao.listKrsAdminByDosenWali(angkatan, prodi.getId(), tahun.getId(), dosen.getId(), page));
+                if (prodi != null && angkatan != null && dosen != null) {
+                        model.addAttribute("listMahasiswa", krsDao.listKrsAdminByDosenWali(angkatan, prodi.getId(),
+                                        tahun.getId(), dosen.getId(), page));
                 }
         }
 
@@ -7549,7 +7555,8 @@ public class StudiesActivityController {
                 birthDay.createCell(0).setCellValue("Tempat, Tanggal lahir");
                 birthDay.createCell(3).setCellValue(":");
 
-                birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir() + "," + transcriptService.convertDateIndonesia(mahasiswa.getTanggalLahir()));
+                birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir() + ","
+                                + transcriptService.convertDateIndonesia(mahasiswa.getTanggalLahir()));
                 birthDay.getCell(4).setCellStyle(styleData);
 
                 birthDay.getCell(0).setCellStyle(styleData);
@@ -12701,10 +12708,11 @@ public class StudiesActivityController {
         @GetMapping("/generate-sesikuliah")
         @ResponseBody
         public void generatePresensi()
-                throws Exception {
-                List<Jadwal> cekJadwal =  jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
-                for (Jadwal j : cekJadwal){
-                        System.out.println(j.getId() +" : id jadwal");
+                        throws Exception {
+                List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF,
+                                tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
+                for (Jadwal j : cekJadwal) {
+                        System.out.println(j.getId() + " : id jadwal");
                         presensiService.generateSesi2(j);
 
                 }
@@ -12714,8 +12722,9 @@ public class StudiesActivityController {
         @GetMapping("/updateall-sesikuliah/{tahun}")
         @ResponseBody
         public void updatePresensiAll(@PathVariable String tahun)
-                throws Exception {
-                List<Jadwal> jadwals = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF,tahunAkademikDao.findById(tahun).get(),"FINISHED");
+                        throws Exception {
+                List<Jadwal> jadwals = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF,
+                                tahunAkademikDao.findById(tahun).get(), "FINISHED");
                 for (Jadwal jadwal : jadwals) {
                         presensiService.updateSesi1(jadwal);
                 }
@@ -12724,7 +12733,7 @@ public class StudiesActivityController {
         @GetMapping("/update-sesikuliah/{id}")
         @ResponseBody
         public void updatePresensi(@PathVariable String id)
-                throws Exception {
+                        throws Exception {
                 Jadwal jadwal = jadwalDao.findById(id).get();
                 presensiService.updateSesi1(jadwal);
 
