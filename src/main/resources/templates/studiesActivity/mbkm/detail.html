@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail MBKM</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">MBKM </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-6 col-sm-9 col-xs-12">
+                <div class="card shadow">
+
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data Mahasiswa <div th:text="${mhs.nim + ' - ' + mhs.nama}"></div></h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studiesActivity/mbkm/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" th:action="@{/mbkm/penilaian/input}">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama Matakuliah</th>
+                                    <th scope="col">Grade</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${matkul}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}">12</td>
+                                    <td >
+                                        <div class="form-group">
+                                            <select th:name="${'grade-'+data.id}" class="form-control">
+                                                <option th:each="gd : ${grade}"
+                                                        th:text="${gd.nama}"
+                                                        th:selected="${gd.nama == data.grade}"
+                                                        th:value="${gd.nama}"></option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" name="krs" th:value="${krs.id}">
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success pull-right mb-4" >
+                                <i class="fas fa-save"></i> &nbsp; Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+
+<!--modal-->
+
+</body>
+</html>

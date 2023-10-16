@@ -1057,9 +1057,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query(value = "select * from krs_detail where id_krs=?1 and status='AKTIF' and (status_konversi not in ('MBKM') or status_konversi is null)", nativeQuery = true)
         List<KrsDetail> cariKrsSelainMBKM(String idKrs);
 
-        @Query("select sum (kd.matakuliahKurikulum.jumlahSks) from KrsDetail kd where kd.status = :status and kd.krs= :krs and kd.statusKonversi= :konversi")
-        Long jumlahSksMbkm(@Param("status") StatusRecord statusRecord, @Param("krs") Krs krs,
-                        @Param("konversi") StatusRecord mbkm);
+        List<KrsDetail> findByKrsAndStatusAndStatusKonversi(Krs krs, StatusRecord status, StatusRecord mbkm);
+
+        List<KrsDetail> findByKrsAndStatusAndStatusKonversiAndGradeIsNotNull(Krs krs, StatusRecord status, StatusRecord mbkm);
 
         @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
                         +

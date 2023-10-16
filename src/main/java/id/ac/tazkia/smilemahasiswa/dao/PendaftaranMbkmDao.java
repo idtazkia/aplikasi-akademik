@@ -47,14 +47,14 @@ public interface PendaftaranMbkmDao extends PagingAndSortingRepository<Pendaftar
             "where id_matakuliahh is null and nama_matakuliah_english not in ('Thesis') group by kode_matakuliah order by semester, kode_matakuliah", nativeQuery = true)
     List<Object[]> listMatkulMbkm(String idMahasiswa);
 
-//    @Query(value = "select * from\n" +
-//            "(select k.id, m.nim, m.nama, p.nama_prodi, ta.nama_tahun_akademik from pendaftaran_mbkm pm inner join mahasiswa m on pm.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join tahun_akademik ta on pm.id_tahun_akademik=ta.id inner join krs k on pm.id_mahasiswa=k.id_mahasiswa and pm.id_tahun_akademik=k.id_tahun_akademik where pm.status_approval='APPROVED' and pm.id_tahun_akademik=?1)a\n" +
-//            "left join \n" +
-//            "(select kd.id_krs, j.id_dosen_pengampu from krs_detail kd inner join jadwal j on kd.id_jadwal=j.id where kd.status='AKTIF' and kd.status_konversi='MBKM' and j.id_dosen_pengampu=?2 group by id_krs)b on a.id=b.id_krs", nativeQuery = true,
-//    countQuery = "select count(a.id) from\n" +
-//            "(select k.id, m.nim, m.nama, p.nama_prodi, ta.nama_tahun_akademik from pendaftaran_mbkm pm inner join mahasiswa m on pm.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join tahun_akademik ta on pm.id_tahun_akademik=ta.id inner join krs k on pm.id_mahasiswa=k.id_mahasiswa and pm.id_tahun_akademik=k.id_tahun_akademik where pm.status_approval='APPROVED' and pm.id_tahun_akademik=?1)a\n" +
-//            "left join \n" +
-//            "(select kd.id_krs, j.id_dosen_pengampu from krs_detail kd inner join jadwal j on kd.id_jadwal=j.id where kd.status='AKTIF' and kd.status_konversi='MBKM' and j.id_dosen_pengampu=?2 group by id_krs)b on a.id=b.id_krs")
-//    Page<Object[]> penilaianMbkmMahasiswa(String idTahun, String idDosen);
+    @Query(value = "select * from\n" +
+            "(select k.id, m.nim, m.nama, p.nama_prodi, ta.nama_tahun_akademik from pendaftaran_mbkm pm inner join mahasiswa m on pm.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join tahun_akademik ta on pm.id_tahun_akademik=ta.id inner join krs k on pm.id_mahasiswa=k.id_mahasiswa and pm.id_tahun_akademik=k.id_tahun_akademik where pm.status_approval='APPROVED' and pm.id_tahun_akademik=?1)a\n" +
+            "inner join \n" +
+            "(select kd.id_krs, j.id_dosen_pengampu from krs_detail kd inner join jadwal j on kd.id_jadwal=j.id where kd.status='AKTIF' and kd.status_konversi='MBKM' and j.id_dosen_pengampu=?2 group by id_krs)b on a.id=b.id_krs", nativeQuery = true,
+    countQuery = "select count(a.id) from\n" +
+            "(select k.id, m.nim, m.nama, p.nama_prodi, ta.nama_tahun_akademik from pendaftaran_mbkm pm inner join mahasiswa m on pm.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join tahun_akademik ta on pm.id_tahun_akademik=ta.id inner join krs k on pm.id_mahasiswa=k.id_mahasiswa and pm.id_tahun_akademik=k.id_tahun_akademik where pm.status_approval='APPROVED' and pm.id_tahun_akademik=?1)a\n" +
+            "inner join \n" +
+            "(select kd.id_krs, j.id_dosen_pengampu from krs_detail kd inner join jadwal j on kd.id_jadwal=j.id where kd.status='AKTIF' and kd.status_konversi='MBKM' and j.id_dosen_pengampu=?2 group by id_krs)b on a.id=b.id_krs")
+    Page<Object[]> penilaianMbkmMahasiswa(String idTahun, String idDosen, Pageable page);
 
 }

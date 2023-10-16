@@ -132,6 +132,9 @@ public class StudyActivityController {
     @Autowired
     private RuanganDao ruanganDao;
 
+    @Autowired
+    private MatakuliahMbkmDao matakuliahMbkmDao;
+
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
         return konsentrasiDao.findByStatus(StatusRecord.AKTIF);
@@ -690,7 +693,7 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahun, StatusRecord.AKTIF);
-        Long totalSksExist = krsDetailDao.jumlahSksMbkm(StatusRecord.AKTIF, krs, StatusRecord.MBKM);
+        Long totalSksExist = matakuliahMbkmDao.jumlahSksMbkm(StatusRecord.AKTIF, krs);
         if (totalSksExist != null) {
             model.addAttribute("sks", totalSksExist);
         }else {
@@ -709,7 +712,7 @@ public class StudyActivityController {
         TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
 
-        Long totalSksExist = krsDetailDao.jumlahSksMbkm(StatusRecord.AKTIF, krs, StatusRecord.MBKM);
+        Long totalSksExist = matakuliahMbkmDao.jumlahSksMbkm(StatusRecord.AKTIF, krs);
 
         Integer total = 0;
         if (totalSksExist != null) {
@@ -725,68 +728,25 @@ public class StudyActivityController {
             return "redirect:../mbkm";
         }
 
-        PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
-        if (cek == null) {
-            PendaftaranMbkm daftar = new PendaftaranMbkm();
-            daftar.setMahasiswa(mhs);
-            daftar.setDosen(mhs.getDosen());
-            daftar.setTahunAkademik(tahun);
-            pendaftaranMbkmDao.save(daftar);
+        PendaftaranMbkm daftarMbkm = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+        if (daftarMbkm == null) {
+            daftarMbkm = new PendaftaranMbkm();
+            daftarMbkm.setMahasiswa(mhs);
+            daftarMbkm.setDosen(mhs.getDosen());
+            daftarMbkm.setTahunAkademik(tahun);
+            pendaftaranMbkmDao.save(daftarMbkm);
         }
 
         for (String mk : matkul){
 
             MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(mk).get();
+            MatakuliahMbkm newMbkm = new MatakuliahMbkm();
+            newMbkm.setKrs(krs);
+            newMbkm.setMatakuliahKurikulum(matkur);
+            newMbkm.setPendaftaranMbkm(daftarMbkm);
+            newMbkm.setStatus(StatusRecord.AKTIF);
+            matakuliahMbkmDao.save(newMbkm);
 
-            Dosen dosen = dosenDao.findById("YaserT").get();
-            Hari hari = hariDao.findById("0").get();
-            Kelas kelas = kelasDao.findById("-").get();
-            Ruangan ruangan = ruanganDao.findById("01").get();
-
-            Jadwal jadwal = new Jadwal();
-            jadwal.setFinalStatus("N");
-            jadwal.setJumlahSesi(1);
-            jadwal.setBobotUts(BigDecimal.ZERO);
-            jadwal.setBobotUas(BigDecimal.ZERO);
-            jadwal.setBobotTugas(BigDecimal.ZERO);
-            jadwal.setBobotPresensi(BigDecimal.ZERO);
-            jadwal.setDosen(dosen);
-            jadwal.setProdi(mhs.getIdProdi());
-            jadwal.setTahunAkademik(tahun);
-            jadwal.setTahunAkademikProdi(tahunProdi);
-            jadwal.setMatakuliahKurikulum(matkur);
-            jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
-            jadwal.setProgram(mhs.getIdProgram());
-            jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
-            jadwal.setHari(hari);
-            jadwal.setKelas(kelas);
-            jadwal.setRuangan(ruangan);
-            jadwal.setStatus(StatusRecord.MBKM);
-            jadwalDao.save(jadwal);
-
-
-            KrsDetail kd = new KrsDetail();
-            kd.setKrs(krs);
-            kd.setMahasiswa(mhs);
-            kd.setJadwal(jadwal);
-            kd.setMatakuliahKurikulum(matkur);
-            kd.setNilaiPresensi(BigDecimal.ZERO);
-            kd.setNilaiUts(BigDecimal.ZERO);
-            kd.setNilaiTugas(BigDecimal.ZERO);
-            kd.setFinalisasi("N");
-            kd.setNilaiUas(BigDecimal.ZERO);
-            kd.setJumlahKehadiran(0);
-            kd.setJumlahMangkir(0);
-            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-            kd.setJumlahTerlambat(0);
-            kd.setJumlahIzin(0);
-            kd.setJumlahSakit(0);
-            kd.setStatusEdom(StatusRecord.UNDONE);
-            kd.setStatus(StatusRecord.AKTIF);
-            kd.setStatusKonversi(StatusRecord.MBKM);
-            kd.setTahunAkademik(tahun);
-            krsDetailDao.save(kd);
         }
 
         return "redirect:../krs";
