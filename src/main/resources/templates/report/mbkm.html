@@ -110,7 +110,7 @@
                                         <td th:if="${data.statusApproval == data.statusApproval.REJECTED}">
                                             <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
                                         </td>
-                                        <td>
+                                        <td th:if="${data.statusApproval == data.statusApproval.WAITING}" class="text-right">
                                             <button type="button" class="btn btn-info btn-sm" th:id="${data.mahasiswa.id}" onclick="detailMbkm(this.id)">
                                                 <i class="fas fa-eye"></i> Detail
                                             </button>
@@ -133,7 +133,6 @@
                                                                     <tr>
                                                                         <th class="text-center">Matakuliah</th>
                                                                         <th class="text-center">SKS</th>
-<!--                                                                        <th class="text-center">Dosen</th>-->
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -141,6 +140,63 @@
                                                                     </tbody>
                                                                 </table>
                                                             </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div th:if="${data.statusApproval == data.statusApproval.WAITING}">
+                                                                <form th:action="@{/mbkm/approved(mbkm = ${data.id})}" method="post">
+                                                                    <button class="btn btn-primary btn-sm">Approved</button>
+                                                                </form>
+                                                            </div>
+                                                            <div th:if="${data.statusApproval == data.statusApproval.WAITING}">
+                                                                <form th:action="@{/mbkm/reject(mbkm = ${data.id})}" method="post">
+                                                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                                                </form>
+                                                            </div>
+                                                            <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:if="${data.statusApproval == data.statusApproval.APPROVED}" class="text-right">
+                                            <button type="button" class="btn btn-info btn-sm" th:id="${data.mahasiswa.id}" onclick="detailMbkmApproved(this.id)">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </button>
+
+                                            <div class="modal fade" th:id="${'modal-mbkm-approved' + data.mahasiswa.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
+                                                    <div class="modal-content">
+
+                                                        <div class="modal-header">
+                                                            <h6 class="modal-title" id="modal-title-notification">Detail Matakuliah MBKM</h6>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <div class="table-responsive">
+                                                                <table id="table-mbkm-approved" class="table align-items-center table-flush">
+                                                                    <thead class="thead-light">
+                                                                    <tr>
+                                                                        <th class="text-center">Matakuliah</th>
+                                                                        <th class="text-center">SKS</th>
+                                                                        <th class="text-center">Dosen</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div th:if="${data.statusApproval == data.statusApproval.APPROVED}">
+                                                                <form th:action="@{/mbkm/waiting(mbkm = ${data.id})}" method="post">
+                                                                    <button class="btn btn-primary btn-sm">Set Waiting</button>
+                                                                </form>
+                                                            </div>
+                                                            <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -189,7 +245,27 @@
 
                 console.log("data request : " + entry.id);
             });
-        })
+        });
+    }
 
+    function detailMbkmApproved(id){
+
+        $('#modal-mbkm-approved'+id).modal('show');
+
+        const url = '/get-matkul-mbkm-approved/'+id;
+        $.getJSON(url, function (data){
+            $('#table-mbkm-approved tbody').empty();
+
+            $.each(data, function (key, entry){
+                let rowT1 = '<tr>' +
+                    '<td class="text-center">' + entry.matakuliahKurikulum.matakuliah.namaMatakuliah + '</td>' +
+                    '<td class="text-center">' + entry.matakuliahKurikulum.jumlahSks + '</td>' +
+                    '<td class="text-center">' + entry.jadwal.dosen.karyawan.namaKaryawan + '</td>' +
+                    '</tr>';
+                $('#table-mbkm-approved tbody').append(rowT1);
+
+                console.log("data request : " + entry.id);
+            });
+        })
     }
 </script>
