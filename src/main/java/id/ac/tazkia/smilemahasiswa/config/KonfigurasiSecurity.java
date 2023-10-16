@@ -239,6 +239,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/import-ipk-sks/{tahun}")
                 .antMatchers("/update-sesikuliah/{id}")
                 .antMatchers("/generate-sesikuliah")
+                .antMatchers("/regenerate-sesikuliah")
                 .antMatchers("/updateall-sesikuliah/{tahun}")
                 .antMatchers("/generate-sesikuliah/{id}");
     }

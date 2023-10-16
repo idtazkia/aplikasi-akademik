@@ -58,7 +58,7 @@ public class PresensiService {
     private String uploadFolder;
 
     public PresensiDosen inputPresensiPengganti(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime,
-                                                String pertemuan, Sesi sesi) throws Exception {
+            String pertemuan, Sesi sesi) throws Exception {
 
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
@@ -93,7 +93,7 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
                 BufferedImage qrCode = generateQRcode(
                         barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
@@ -163,7 +163,7 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
                 // BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" +
                 // presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
@@ -250,7 +250,7 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
                 BufferedImage qrCode = generateQRcode(
                         barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
@@ -320,7 +320,7 @@ public class PresensiService {
             for (int i = 1; i <= productQuantity; i++) {
                 String presensiBarcode = productCode + productionYear + productCode2
                         + String.format("%1$" + productNumberLength + "s", i)
-                        .replace(' ', '2');
+                                .replace(' ', '2');
                 System.out.println("Generate QR Code for product number " + presensiBarcode);
                 // BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" +
                 // presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
@@ -371,7 +371,7 @@ public class PresensiService {
     }
 
     public PresensiDosen generatePresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime,
-                                          Integer pertemuan) throws Exception {
+            Integer pertemuan) throws Exception {
 
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
@@ -400,9 +400,9 @@ public class PresensiService {
     }
 
     public void updateTanggalPresensi(Dosen d, Jadwal j, LocalDateTime dateTime,
-                                          Integer pertemuan) throws Exception {
+            Integer pertemuan) throws Exception {
 
-        SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(j,pertemuan).get();
+        SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(j, pertemuan).get();
         PresensiDosen presensiDosen = sesiKuliah.getPresensiDosen();
         if (presensiDosen.getStatusPresensi().equals(StatusPresensi.BELUM_MENGAJAR)) {
             presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), j.getJamSelesai()));
@@ -417,13 +417,31 @@ public class PresensiService {
 
     }
 
+    public void regenerateTanggal(Dosen d, Jadwal j, LocalDateTime dateTime,
+            Integer pertemuan) throws Exception {
+
+        SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(j, pertemuan).get();
+        PresensiDosen presensiDosen = sesiKuliah.getPresensiDosen();
+
+        presensiDosen.setWaktuSelesai(LocalDateTime.of(dateTime.toLocalDate(), j.getJamSelesai()));
+        presensiDosen.setWaktuMasuk(dateTime);
+        presensiDosen.setDosen(d);
+        presensiDosenDao.save(presensiDosen);
+
+        sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
+        sesiKuliah.setWaktuSelesai(presensiDosen.getWaktuSelesai());
+        sesiKuliahDao.save(sesiKuliah);
+
+    }
+
     public void updatePresensi(Jadwal j) {
 
         Integer valueHari = Integer.valueOf(j.getHari().getId());
-        if (j.getHari().getId().equals("0")){
+        if (j.getHari().getId().equals("0")) {
             valueHari = 7;
         }
-        List<PresensiDosen> presensiDosenList = presensiDosenDao.findByJadwalAndStatusNotInAndStatusPresensi(j, Arrays.asList(StatusRecord.HAPUS), StatusPresensi.BELUM_MENGAJAR);
+        List<PresensiDosen> presensiDosenList = presensiDosenDao.findByJadwalAndStatusNotInAndStatusPresensi(j,
+                Arrays.asList(StatusRecord.HAPUS), StatusPresensi.BELUM_MENGAJAR);
         for (PresensiDosen presensiDosen : presensiDosenList) {
             System.out.println(presensiDosen.getWaktuMasuk().getDayOfWeek().getValue() - valueHari);
         }
@@ -453,8 +471,6 @@ public class PresensiService {
         return qrCode;
     }
 
-
-
     public BaseResponse generateSesi(Jadwal jadwal) throws Exception {
         BaseResponse response = null;
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
@@ -465,7 +481,7 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal-1);
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
 
         if (totalPresensi == 0) {
             int attend = 16;
@@ -496,7 +512,7 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal-1);
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
 
         if (totalPresensi == 0) {
             int attend = 16;
@@ -521,20 +537,64 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal-1);
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
 
+        int attend = 16;
 
-           int attend = 16;
+        for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
 
-           for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
+            updateTanggalPresensi(jadwal.getDosen(),
+                    jadwal,
+                    LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                    pertemuan);
 
-               updateTanggalPresensi(jadwal.getDosen(),
-                       jadwal,
-                       LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
-                       pertemuan);
+        }
 
-           }
+    }
 
+    public void reGenerate(Jadwal jadwal,String tanggal) throws Exception {
+        Integer valueJadwal = null;
+        if (jadwal.getHari().getId().equals("0")) {
+            valueJadwal = 7;
+        } else {
+            valueJadwal = Integer.parseInt(jadwal.getHari().getId());
+        }
+
+        LocalDate firstAttendDate = LocalDate.parse(tanggal).plusDays(valueJadwal - 1);
+
+        int attend = 16;
+
+        for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
+
+            regenerateTanggal(jadwal.getDosen(),
+                    jadwal,
+                    LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                    pertemuan);
+
+        }
+
+    }
+
+    public void reGenerate1(Jadwal jadwal) throws Exception {
+        Integer valueJadwal = null;
+        if (jadwal.getHari().getId().equals("0")) {
+            valueJadwal = 7;
+        } else {
+            valueJadwal = Integer.parseInt(jadwal.getHari().getId());
+        }
+
+        LocalDate firstAttendDate = LocalDate.parse("2023-10-16").plusDays(valueJadwal - 1);
+
+        int attend = 16;
+
+        for (int pertemuan = 1; pertemuan <= attend; pertemuan++) {
+
+            regenerateTanggal(jadwal.getDosen(),
+                    jadwal,
+                    LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                    pertemuan);
+
+        }
 
     }
 
@@ -547,7 +607,7 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal-1);
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
 
         if (totalPresensi == 0) {
             int attend = 16;
@@ -597,8 +657,9 @@ public class PresensiService {
                 .build();
     }
 
-    public void mulaiMengajar(PresensiDto jadwalDto, SesiKuliah sesiKuliah,LocalDateTime waktuMasukSebelum) throws Exception{
-        if (jadwalDto.getJamMulai() == null){
+    public void mulaiMengajar(PresensiDto jadwalDto, SesiKuliah sesiKuliah, LocalDateTime waktuMasukSebelum)
+            throws Exception {
+        if (jadwalDto.getJamMulai() == null) {
             jadwalDto.setJamMulai(LocalTime.now());
         }
 
@@ -646,7 +707,7 @@ public class PresensiService {
         for (int i = 1; i <= productQuantity; i++) {
             String presensiBarcode = productCode + productionYear + productCode2
                     + String.format("%1$" + productNumberLength + "s", i)
-                    .replace(' ', '2');
+                            .replace(' ', '2');
             System.out.println("Generate QR Code for product number " + presensiBarcode);
             BufferedImage qrCode = generateQRcode(
                     barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
@@ -665,7 +726,7 @@ public class PresensiService {
 
             }
         }
-        
+
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
@@ -693,6 +754,5 @@ public class PresensiService {
             presensiMahasiswaDao.save(presensiMahasiswa);
         }
     }
-
 
 }
