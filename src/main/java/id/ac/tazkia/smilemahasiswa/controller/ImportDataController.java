@@ -119,6 +119,7 @@ public class ImportDataController  {
             tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
             tagihan.setKeterangan("Sisa Tagihan Daftar Ulang SPMB");
             tagihan.setNilaiTagihan(totalNominal);
+            tagihan.setNilaiTagihanAsli(totalNominal);
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
             tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -145,6 +146,7 @@ public class ImportDataController  {
             tagihan.setNilaiJenisTagihan(cekNilaiJenis);
             tagihan.setKeterangan("Sisa Tagihan Daftar Ulang SPMB");
             tagihan.setNilaiTagihan(totalNominal);
+            tagihan.setNilaiTagihanAsli(totalNominal);
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
             tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));

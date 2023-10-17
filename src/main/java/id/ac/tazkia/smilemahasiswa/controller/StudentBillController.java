@@ -781,6 +781,7 @@ public class StudentBillController {
                                 tagihan.setNilaiJenisTagihan(njt);
                                 tagihan.setKeterangan(keteranganTagihan);
                                 tagihan.setNilaiTagihan(njt.getNilai());
+                                tagihan.setNilaiTagihanAsli(njt.getNilai());
                                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                 tagihan.setTanggalPembuatan(LocalDate.now());
                                 tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -836,6 +837,7 @@ public class StudentBillController {
                                 tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                                         + " a.n. " + tagihan.getMahasiswa().getNama());
                                 tagihan.setNilaiTagihan(njt.getNilai().add(new BigDecimal(sisaCicilan)));
+                                tagihan.setNilaiTagihanAsli(njt.getNilai());
                                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                 tagihan.setTanggalPembuatan(LocalDate.now());
                                 tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -952,6 +954,7 @@ public class StudentBillController {
                                     tagihan.setNilaiJenisTagihan(njt);
                                     tagihan.setKeterangan(keteranganTagihan);
                                     tagihan.setNilaiTagihan(BigDecimal.ZERO);
+                                    tagihan.setNilaiTagihanAsli(BigDecimal.ZERO);
                                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                     tagihan.setTanggalPembuatan(LocalDate.now());
                                     tagihan.setTanggalJatuhTempo(LocalDate.now());
@@ -998,6 +1001,7 @@ public class StudentBillController {
                                     tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                                             + " a.n. " + tagihan.getMahasiswa().getNama());
                                     tagihan.setNilaiTagihan(new BigDecimal(sisaCicilan));
+                                    tagihan.setNilaiTagihanAsli(BigDecimal.ZERO);
                                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                     tagihan.setTanggalPembuatan(LocalDate.now());
                                     tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1064,6 +1068,7 @@ public class StudentBillController {
                                     tagihan.setNilaiJenisTagihan(njt);
                                     tagihan.setKeterangan(keteranganTagihan);
                                     tagihan.setNilaiTagihan(new BigDecimal(total));
+                                    tagihan.setNilaiTagihanAsli(new BigDecimal(total));
                                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                     tagihan.setTanggalPembuatan(LocalDate.now());
                                     tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1094,6 +1099,7 @@ public class StudentBillController {
                                     tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                                             + " a.n. " + tagihan.getMahasiswa().getNama());
                                     tagihan.setNilaiTagihan(new BigDecimal(total).add(new BigDecimal(sisaCicilan)));
+                                    tagihan.setNilaiTagihanAsli(new BigDecimal(total));
                                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                     tagihan.setTanggalPembuatan(LocalDate.now());
                                     tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1194,6 +1200,7 @@ public class StudentBillController {
             t.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                     + " a.n. " +tagihan.getMahasiswa().getNama());
             t.setNilaiTagihan(tagihan.getNilaiTagihan());
+            t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
             t.setAkumulasiPembayaran(BigDecimal.ZERO);
             t.setTanggalPembuatan(LocalDate.now());
             t.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1279,6 +1286,7 @@ public class StudentBillController {
             t.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                     + " a.n. " +tagihan.getMahasiswa().getNama());
             t.setNilaiTagihan(tgh.getNilaiTagihan().add(tagihan.getNilaiTagihan()));
+            t.setNilaiTagihanAsli(tgh.getNilaiTagihan());
             t.setAkumulasiPembayaran(BigDecimal.ZERO);
             t.setTanggalPembuatan(LocalDate.now());
             t.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1397,6 +1405,7 @@ public class StudentBillController {
         }
 
         tagihan.setNilaiTagihan(nilaiTagihan);
+        tagihan.setNilaiTagihanAsli(nilaiTagihan);
         tagihanDao.save(tagihan);
         if (tagihan.getStatusTagihan() != StatusTagihan.LUNAS){
             tagihanService.editTagihan(tagihan);

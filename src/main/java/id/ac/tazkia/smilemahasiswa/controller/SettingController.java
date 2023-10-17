@@ -465,10 +465,10 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
     }
 
     @GetMapping("/setting/beasiswa/mahasiswa")
-    public void listMahasiswa(Model model,@RequestParam String id, @PageableDefault(size = 10) Pageable page){
+    public void listMahasiswa(Model model,@RequestParam String id){
         Beasiswa beasiswa = beasiswaDao.findById(id).get();
         model.addAttribute("beasiswa", beasiswa);
-        model.addAttribute("mahasiswa", beasiswaDao.listBeasiswaMahasiwa(id, page));
+        model.addAttribute("mahasiswa", beasiswaDao.rekapBeasiswaMahasiwa(id));
         model.addAttribute("listMahasiswa", mahasiswaDao.findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord.AKTIF, "AKTIF"));
     }
 

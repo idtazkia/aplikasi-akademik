@@ -1313,6 +1313,7 @@ public class StudyActivityController {
                 tagihan.setNilaiJenisTagihan(nilaiTagihan);
                 tagihan.setKeterangan(keteranganTagihan);
                 tagihan.setNilaiTagihan(total);
+                tagihan.setNilaiTagihanAsli(total);
                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                 tagihan.setTanggalPembuatan(LocalDate.now());
                 tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1339,6 +1340,7 @@ public class StudyActivityController {
                         tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
                         tagihan.setKeterangan(keteranganTagihan);
                         tagihan.setNilaiTagihan(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
+                        tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                         tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                         tagihan.setTanggalPembuatan(LocalDate.now());
                         tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1355,6 +1357,7 @@ public class StudyActivityController {
                     tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
                     tagihan.setKeterangan(keteranganTagihan);
                     tagihan.setNilaiTagihan(total);
+                    tagihan.setNilaiTagihanAsli(total);
                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                     tagihan.setTanggalPembuatan(LocalDate.now());
                     tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1409,6 +1412,7 @@ public class StudyActivityController {
                 tagihan.setNilaiJenisTagihan(nilaiTagihan);
                 tagihan.setKeterangan(keteranganTagihan);
                 tagihan.setNilaiTagihan(total);
+                tagihan.setNilaiTagihanAsli(total);
                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                 tagihan.setTanggalPembuatan(LocalDate.now());
                 tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1438,6 +1442,7 @@ public class StudyActivityController {
                         tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
                         tagihan.setKeterangan(keteranganTagihan);
                         tagihan.setNilaiTagihan(total);
+                        tagihan.setNilaiTagihanAsli(total);
                         tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                         tagihan.setTanggalPembuatan(LocalDate.now());
                         tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1454,6 +1459,7 @@ public class StudyActivityController {
                             tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
                             tagihan.setKeterangan(keteranganTagihan);
                             tagihan.setNilaiTagihan(total);
+                            tagihan.setNilaiTagihanAsli(total);
                             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                             tagihan.setTanggalPembuatan(LocalDate.now());
                             tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1470,6 +1476,7 @@ public class StudyActivityController {
                                 tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
                                 tagihan.setKeterangan(keteranganTagihan);
                                 tagihan.setNilaiTagihan(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
+                                tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                 tagihan.setTanggalPembuatan(LocalDate.now());
                                 tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
@@ -1485,6 +1492,7 @@ public class StudyActivityController {
                     }
                 }else{
                     t.setNilaiTagihan(t.getNilaiTagihan().add(total));
+                    t.setNilaiTagihanAsli(t.getNilaiTagihan().add(total));
                     tagihanDao.save(t);
                     tagihanService.editTagihan(t);
                 }

@@ -37,6 +37,9 @@ public class Tagihan {
     private BigDecimal nilaiTagihan;
 
     @Min(0)
+    private BigDecimal nilaiTagihanAsli;
+
+    @Min(0)
     private BigDecimal akumulasiPembayaran;
 
     @Column(columnDefinition = "DATE")

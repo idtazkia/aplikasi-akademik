@@ -5,6 +5,7 @@
 		 $('#data-table-basic').DataTable( {
 			 "paging":   false
 		 } );
+		$('#data-table-1').DataTable();
 	});
  
 })(jQuery); 
