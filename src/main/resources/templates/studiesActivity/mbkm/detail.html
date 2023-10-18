@@ -61,14 +61,14 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Nama Matakuliah</th>
                                     <th scope="col">Grade</th>
-
+                                    <th scope="col">Laporan</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="data,row : ${matkul}">
                                     <td th:text="${(row.index + 1)}">1</td>
                                     <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}">12</td>
-                                    <td >
+                                    <td>
                                         <div class="form-group">
                                             <select th:name="${'grade-'+data.id}" class="form-control">
                                                 <option th:each="gd : ${grade}"
@@ -76,6 +76,41 @@
                                                         th:selected="${gd.nama == data.grade}"
                                                         th:value="${gd.nama}"></option>
                                             </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#laporan-'+data.id}">
+                                            <i class="fas fa-file"></i> Daftar Laporan
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'laporan-'+data.id}" role="dialog" aria-labelledby="laporanModal" aria-hidden="true">
+                                            <div class="modal-dialog modal-sm modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h4>Laporan MBKM</span></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table align-items-center table-flush">
+                                                                <tr class="thead-light">
+                                                                    <th class="text-center">Laporan</th>
+                                                                </tr>
+                                                                <tr th:each="dataLaporan, row : ${laporan}">
+                                                                    <td th:if="${dataLaporan.krsDetail.id == data.id}" class="text-center">
+                                                                        <a target="_blank" th:text="${dataLaporan.namaFile}" th:href="@{/laporan/{file}/mbkm(file = ${dataLaporan.id})}"></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>

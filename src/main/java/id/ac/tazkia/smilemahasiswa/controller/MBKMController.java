@@ -7,18 +7,30 @@ import id.ac.tazkia.smilemahasiswa.service.MBKMService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @Slf4j
@@ -55,6 +67,11 @@ public class MBKMController {
     @Autowired private MahasiswaDao mahasiswaDao;
 
     @Autowired private GradeDao gradeDao;
+
+    @Autowired private FileMbkmDao fileMbkmDao;
+
+    @Value("${upload.mbkm}")
+    private String mbkmFolder;
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik(){
@@ -181,6 +198,53 @@ public class MBKMController {
         return "redirect:/studiesActivity/krs/approval/list";
     }
 
+    @PostMapping("/mbkm/upload/file")
+    public String uploadFileMbkm(@Valid FileMbkm fileMbkm, MultipartFile file, Authentication authentication) throws IOException {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mhs = mahasiswaDao.findByUser(user);
+
+        if (file != null || !file.isEmpty()) {
+            mbkmService.uploadLaporan(file, fileMbkm);
+        }
+
+        return "redirect:/study/krs";
+    }
+
+    @GetMapping("/laporan/{file}/mbkm")
+    public ResponseEntity<byte[]> showDocument(@PathVariable FileMbkm file) throws Exception{
+        String lokasiFile = mbkmFolder + File.separator + file.getKrsDetail().getMahasiswa().getNim() + File.separator +
+                file.getFileMbkm();
+
+        log.debug("lokasi file : {}" + lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (file.getFileMbkm().toLowerCase().endsWith("jpeg") || file.getFileMbkm().toLowerCase().endsWith("jpg")){
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (file.getFileMbkm().toLowerCase().endsWith("png")){
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (file.getFileMbkm().toLowerCase().endsWith("pdf")){
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else{
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        }catch (Exception err){
+            log.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/mbkm/laporan/delete")
+    public String deleteLaporan(@RequestParam FileMbkm file){
+
+        file.setStatus(StatusRecord.HAPUS);
+        fileMbkmDao.save(file);
+
+        return "redirect:/study/krs";
+    }
+
     // penilaian MBKM
 
     @GetMapping("/studiesActivity/mbkm/list")
@@ -206,7 +270,7 @@ public class MBKMController {
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("matkul", listMatkul);
         model.addAttribute("mhs", krs.getMahasiswa());
-
+        model.addAttribute("laporan", fileMbkmDao.findByStatusOrderByWaktuInput(StatusRecord.AKTIF));
     }
 
     @PostMapping("/mbkm/penilaian/input")

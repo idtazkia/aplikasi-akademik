@@ -1,15 +1,21 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
+import id.ac.tazkia.smilemahasiswa.dao.FileMbkmDao;
 import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service @Transactional
 @Slf4j
@@ -18,6 +24,11 @@ public class MBKMService {
     @Autowired private JadwalDao jadwalDao;
 
     @Autowired private KrsDetailDao krsDetailDao;
+
+    @Autowired private FileMbkmDao fileMbkmDao;
+
+    @Value("${upload.mbkm}")
+    private String mbkmFolder;
 
     public void buatJadwalKrsMbkm(MatakuliahMbkm matkul, Dosen dosen, TahunAkademik tahun, TahunAkademikProdi tahunProdi, Hari hari, Kelas kelas, Ruangan ruangan){
 
@@ -65,6 +76,30 @@ public class MBKMService {
         kd.setTahunAkademik(tahun);
         krsDetailDao.save(kd);
 
+    }
+
+    public void uploadLaporan(MultipartFile file, FileMbkm fileMbkm) throws IOException {
+
+        String namaAsli = file.getOriginalFilename();
+
+        // memisahkan extension
+        String extension = "";
+        int i = namaAsli.lastIndexOf('.');
+        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = namaAsli.substring(i+1);
+        }
+
+        String idFile = UUID.randomUUID().toString();
+        String lokasiUpload = mbkmFolder + File.separator + fileMbkm.getKrsDetail().getMahasiswa().getNim();
+        new File(lokasiUpload).mkdirs();
+        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+        file.transferTo(tujuan);
+        fileMbkm.setFileMbkm(idFile + "." + extension);
+        fileMbkm.setNamaFile(namaAsli);
+
+        fileMbkmDao.save(fileMbkm);
     }
 
 }

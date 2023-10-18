@@ -135,6 +135,9 @@ public class StudyActivityController {
     @Autowired
     private MatakuliahMbkmDao matakuliahMbkmDao;
 
+    @Autowired
+    private FileMbkmDao fileMbkmDao;
+
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
         return konsentrasiDao.findByStatus(StatusRecord.AKTIF);
@@ -322,14 +325,15 @@ public class StudyActivityController {
             if (!cekKrs.isEmpty()) {
                 model.addAttribute("existKrs", "Sudah mengisi krs, tidak bisa mengambil MBKM");
             }
-            PendaftaranMbkm cek = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatusAndStatusApproval(mahasiswa, ta, StatusRecord.AKTIF, StatusApprove.APPROVED);
-            if (cek != null) {
-                model.addAttribute("existMbkm", "Sudah mendaftrar MBKM");
-            }
             PendaftaranMbkm mbkmStatus = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
             if (mbkmStatus != null) {
                 if (mbkmStatus.getStatusApproval() == StatusApprove.WAITING) {
                     model.addAttribute("mbkmWaiting", "Menunggu pendaftaran MBKM disetujui dosen wali");
+                }
+                if (mbkmStatus.getStatusApproval() == StatusApprove.APPROVED) {
+                    model.addAttribute("existMbkm", "Sudah mendaftrar MBKM");
+                    model.addAttribute("listKrsMbkm", krsDetailDao.findByStatusKonversiAndStatusAndKrsAndMahasiswa(StatusRecord.MBKM, StatusRecord.AKTIF, k, mahasiswa));
+                    model.addAttribute("laporan", fileMbkmDao.findByStatusOrderByWaktuInput(StatusRecord.AKTIF));
                 }
                 if (mbkmStatus.getStatusApproval() == StatusApprove.REJECTED) {
                     model.addAttribute("mbkmReject", "Pendaftaran MBKM di reject, silahkan hubungi dosen wali");
