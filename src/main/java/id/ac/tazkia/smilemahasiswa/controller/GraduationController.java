@@ -2437,12 +2437,25 @@ public class GraduationController {
                 Arrays.asList(StatusApprove.WAITING, StatusApprove.REJECTED));
 
         FileMagang waiting = fileMagangDao.findByStatusAndMahasiswa(StatusApprove.WAITING, mahasiswa);
+        FileMagang approved = fileMagangDao.findByStatusAndMahasiswa(StatusApprove.APPROVED, mahasiswa);
         if (waiting != null) {
             model.addAttribute("waiting", waiting);
         }
 
         model.addAttribute("list", list);
-        return "graduation/magang/mahasiswa/list";
+
+        if (approved != null) {
+            return "redirect:succes-magang";
+        } else {
+            return "graduation/magang/mahasiswa/list";
+
+        }
+
+    }
+
+    @GetMapping("/graduation/succes-magang")
+    public String succesMagang() {
+        return "graduation/magang/mahasiswa/success";
 
     }
 
