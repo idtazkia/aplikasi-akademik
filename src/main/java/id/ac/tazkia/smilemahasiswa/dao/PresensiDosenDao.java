@@ -61,15 +61,33 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
 
     PresensiDosen findTopByJadwalAndStatusOrderByWaktuMasukDesc(Jadwal jadwal, StatusRecord status);
 
-    @Query(value = "SELECT COUNT(*) as jumlahKelasOntime, COUNT(*) * 100 / (SELECT COUNT(*) as semuaKelas\n" +
-            "\tFROM presensi_dosen as pd\n" +
-            "\tinner join jadwal as jd on pd.id_jadwal = jd.id\n" +
-            "\twhere pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF')\n" +
+    @Query(value = "SELECT COUNT(*) as jumlahKelasOntime, COUNT(*) * 100 / (SELECT COUNT(*)\n" +
+            "\tFROM sesi_kuliah as sk\n" +
+            "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+            "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
+            "\twhere pd.id_tahun_akademik = ?1 \n" +
+            "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
             "as persentase\n" +
-            "FROM presensi_dosen as pd\n" +
+            "FROM sesi_kuliah as sk\n" +
+            "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
             "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
-            "where pd.id_tahun_akademik = ?1 and pd.status = 'AKTIF' and pd.status_presensi = ?2", nativeQuery = true)
-    Object jmlKelas(TahunAkademik tahunAkademik, String statusPresensi);
+            "where pd.id_tahun_akademik = ?1 and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11'\n" +
+            "and pd.status_presensi = ?2", nativeQuery = true)
+    Object jmlKelasOntime(TahunAkademik tahunAkademik, String statusPresensi);
+
+    @Query(value = "SELECT COUNT(*) as jumlahKelasOntime, COUNT(*) * 100 / (SELECT COUNT(*)\n" +
+            "\tFROM sesi_kuliah as sk\n" +
+            "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+            "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
+            "\twhere pd.id_tahun_akademik = ?1 \n" +
+            "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
+            "as persentase\n" +
+            "FROM sesi_kuliah as sk\n" +
+            "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
+            "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
+            "where pd.id_tahun_akademik = ?1 and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11'\n" +
+            "and pd.status_presensi in ('TERLAMBAT','BELUM_MENGAJAR')", nativeQuery = true)
+    Object jmlKelasTerlambat(TahunAkademik tahunAkademik);
 
     @Query(value = "SELECT pd.id, pd.id_tahun_akademik, pd.id_jadwal, pd.waktu_masuk, pd.waktu_selesai,pd.status_presensi, pd.status, pd.id_dosen,kr.nama_karyawan as dosen,pr.nama_prodi as namaProdi, \n" +
             "jd.jam_mulai, jd.jam_selesai, sum(if(pd.status_presensi = 'HADIR', 1, 0)) as sesiTepatWaktu, COUNT(pd.id) as semuaSesi, round((sum(if(pd.status_presensi = 'HADIR', 1, 0)) * 100)/count(pd.id),2) as persentase\n" +

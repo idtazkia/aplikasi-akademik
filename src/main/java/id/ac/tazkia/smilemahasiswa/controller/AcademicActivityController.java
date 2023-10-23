@@ -2107,8 +2107,8 @@ public class  AcademicActivityController {
 
         model.addAttribute("jmlSemuaKelas", sesiKuliahDao.jmlSemuaKelas(tahunAkademik));
 
-        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademikAktif, StatusPresensi.HADIR.toString()));
-        model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademikAktif, StatusPresensi.TERLAMBAT.toString()));
+        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelasOntime(tahunAkademikAktif, StatusPresensi.HADIR.toString()));
+        model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelasTerlambat(tahunAkademikAktif));
 
         model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
         model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
