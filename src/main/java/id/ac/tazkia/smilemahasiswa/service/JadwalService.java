@@ -46,7 +46,7 @@ public class JadwalService {
         }
     }
 
-    @Scheduled(cron = "0 25 11 * * *", zone = "Asia/Jakarta")
+    // @Scheduled(cron = "0 25 11 * * *", zone = "Asia/Jakarta")
     public void regenerateJadwal() throws Exception {
 
         List<Jadwal> cekJadwal = jadwalDao.jadwalMatrik();
