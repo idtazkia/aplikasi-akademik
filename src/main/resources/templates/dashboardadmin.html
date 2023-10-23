@@ -468,7 +468,9 @@
                                     <div class="row">
                                         <div class="col">
                                             <h5 class="card-title text-uppercase text-muted mb-0">Total Kelas Kosong</h5>
-                                            <span class="h2 font-weight-bold mb-0" >-</span>
+                                            <span class="h2 font-weight-bold mb-0" th:text="${jmlKelasKosong[0]}">2,352</span>
+                                            |
+                                            <span class="h2 font-weight-bold mb-0" th:text="${jmlKelasKosong[1] + '%'}">2,456</span>
                                         </div>
                                         <div class="col-auto">
                                             <div class="icon icon-shape bg-success text-white rounded-circle shadow">

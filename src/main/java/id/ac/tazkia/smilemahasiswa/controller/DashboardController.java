@@ -918,13 +918,15 @@ public class DashboardController {
 
         model.addAttribute("jmlSemuaKelas", sesiKuliahDao.jmlSemuaKelas(tahunAkademik));
 
-        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.HADIR.toString()));
-        model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.TERLAMBAT.toString()));
+        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelasOntime(tahunAkademik,StatusPresensi.HADIR.toString()));
+        model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelasTerlambat(tahunAkademik));
 
         model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
         model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
 
         model.addAttribute("jmlSempro", seminarDao.jmlSempro(tahunAkademik,StatusApprove.APPROVED.toString()));
+
+        model.addAttribute("jmlKelasKosong", sesiKuliahDao.jmlKelasKosong(tahunAkademik));
 
 
 //        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
