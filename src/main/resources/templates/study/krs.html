@@ -48,11 +48,20 @@
                     <div class="basic-tb-hd">
                         <div class="row">
                             <div class="col-md-12">
+                                <input type="hidden" th:value="${krsStatus}" id="krsStatus">
                                 <div th:if="${reject}" class="alert alert-danger">
                                     <h5 class="text-white text-center" th:text="${reject}"></h5>
                                 </div>
+                                <p th:if="${reject}" id="notif-reject" style="color: red;">*Notifikasi ini hanya muncul sekali!</p>
+                                <div th:if="${reject}" class="alert alert-danger" id="reject-alert">
+                                    <h5 class="text-white text-center" th:text="${'Komentar Dosen Wali : ' + komentar}"></h5>
+                                </div>
                                 <div th:if="${waiting}" class="alert alert-warning">
                                     <h5 class="text-white text-center" th:text="${waiting}"></h5>
+                                </div>
+                                <p th:if="${approved}" id="notif-success" style="color: red;">*Notifikasi ini hanya muncul sekali!</p>
+                                <div th:if="${approved}" class="alert alert-success" id="success-alert">
+                                    <h5 class="text-white text-center" th:text="${approved}"></h5>
                                 </div>
                             </div>
                             <div class="col-md-6 col-xs-12">
@@ -299,6 +308,27 @@
 </body>
 </html>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+
+    var status = $('#krsStatus').val();
+    console.log(status);
+
+    $('#success-alert').hide();
+    $('#reject-alert').hide();
+    $('#notif-success').hide();
+    $('#notif-reject').hide();
+    var alerted = localStorage.getItem('alerted') || '';
+    if (alerted != 'yes'){
+        if (status === 'APPROVED'){
+            $('#notif-success').show();
+            $('#success-alert').show();
+        }else if(status === 'REJECTED'){
+            $('#notif-reject').show();
+            $('#reject-alert').show();
+        }
+        localStorage.setItem('alerted', 'yes');
+    }
+</script>
 <script>
 
     function kelasKosong() {

@@ -1210,8 +1210,9 @@ public class StudiesActivityController {
         }
 
         @PostMapping("/studiesActivity/krs/approval/approve")
-        public String approvedKrs(@RequestParam KrsApproval krsApproval) {
+        public String approvedKrs(@RequestParam KrsApproval krsApproval, @RequestParam(required = false) String keterangan) {
 
+                krsApproval.setKomentar(keterangan);
                 krsApproval.setStatus(StatusApprove.APPROVED);
                 krsApprovalDao.save(krsApproval);
 
@@ -1219,8 +1220,9 @@ public class StudiesActivityController {
         }
 
         @PostMapping("/studiesActivity/krs/approval/reject")
-        public String rejectedKrs(@RequestParam KrsApproval krsApproval) {
+        public String rejectedKrs(@RequestParam KrsApproval krsApproval, @RequestParam(required = false) String keterangan) {
 
+                krsApproval.setKomentar(keterangan);
                 krsApproval.setStatus(StatusApprove.REJECTED);
                 krsApprovalDao.save(krsApproval);
 

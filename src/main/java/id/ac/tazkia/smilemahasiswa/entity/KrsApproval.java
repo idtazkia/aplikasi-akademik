@@ -23,6 +23,9 @@ public class KrsApproval {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentar;
+
     @Enumerated(EnumType.STRING)
     private StatusApprove status;
 

@@ -78,7 +78,8 @@
                                             <th scope="col">Ip semester</th>
                                             <th scope="col">Total SKS</th>
                                             <th scope="col">IPK</th>
-                                            <th scope="col" width="30px;"></th>
+                                            <th scope="col" width="30px;">Status</th>
+                                            <th scope="col"></th>
                                             <th scope="col"></th>
 
                                         </tr>
@@ -102,6 +103,63 @@
                                             <td th:if="${data[8] == 'REJECTED'}">
                                                 <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
                                             </td>
+                                            <td>
+                                                <button type="button" class="btn btn-success btn-outline-success btn-sm" data-toggle="modal" th:data-target="${'#modal-approvedakademik' + data[0]}" th:if="${data[8] == 'WAITING'}">
+                                                    Approved
+                                                </button>
+
+                                                <button type="button" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejectakademik' + data[0]}" th:if="${data[8] == 'WAITING'}">
+                                                    Reject
+                                                </button>
+
+                                                <div class="modal fade" th:id="${'modal-approvedakademik'+data[0]}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form th:action="@{/studiesActivity/krs/approval/approve(krsApproval = ${data[9]})}" method="post">
+                                                                    <div class="form-group">
+                                                                        <textarea name="keterangan" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <button class="btn btn-success" type="submit">Approved</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade" th:id="${'modal-rejectakademik'+data[0]}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form th:action="@{/studiesActivity/krs/approval/reject(krsApproval = ${data[9]})}" method="post">
+                                                                    <div class="form-group">
+                                                                        <textarea name="keterangan" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
+                                                                    </div>
+                                                                    <input type="hidden" name="id" th:value="${data[0]}">
+                                                                    <div class="form-group">
+                                                                        <button class="btn btn-danger" type="submit">Reject</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+
                                             <td>
                                                 <!--button-->
                                                 <button type="button" class="btn btn-info btn-sm" th:id="${data[0]}" onclick="detailMatkul(this.id)">
@@ -176,16 +234,6 @@
 
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <div th:if="${data[8] == 'WAITING'}">
-                                                                    <form th:action="@{/studiesActivity/krs/approval/approve(krsApproval = ${data[9]})}" method="post">
-                                                                        <button type="submit" class="btn btn-success">Approve</button>
-                                                                    </form>
-                                                                </div>
-                                                                <div th:if="${data[8] == 'WAITING'}">
-                                                                    <form th:action="@{/studiesActivity/krs/approval/reject(krsApproval = ${data[9]})}" method="post">
-                                                                        <button type="submit" class="btn btn-danger">Reject</button>
-                                                                    </form>
-                                                                </div>
                                                                 <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                             </div>
                                                         </div>

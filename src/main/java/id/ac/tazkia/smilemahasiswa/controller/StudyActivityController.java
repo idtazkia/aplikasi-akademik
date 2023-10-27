@@ -342,11 +342,16 @@ public class StudyActivityController {
 
             KrsApproval ka = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
             if (ka != null) {
+                model.addAttribute("krsStatus", ka.getStatus());
                 if (ka.getStatus() == StatusApprove.WAITING) {
                     model.addAttribute("waiting", "Menunggu persetujuan dosen wali");
                 }
                 if (ka.getStatus() == StatusApprove.REJECTED) {
                     model.addAttribute("reject", "KRS di reject, silahkan hubungi dosen wali");
+                    model.addAttribute("komentar", ka.getKomentar());
+                }
+                if (ka.getStatus() == StatusApprove.APPROVED) {
+                    model.addAttribute("approved", ka.getKomentar());
                 }
             }
         }
