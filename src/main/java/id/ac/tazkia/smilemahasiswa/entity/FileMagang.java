@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -26,7 +29,7 @@ public class FileMagang {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
-    @ManyToOne
+    @ManyToOne  
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
 
@@ -36,6 +39,10 @@ public class FileMagang {
 
     @Column(columnDefinition = "TEXT")
     private String komentar;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalUpload = LocalDate.now();
 
     @NotNull
     @Enumerated(EnumType.STRING)
