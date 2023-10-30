@@ -744,6 +744,9 @@ public class StudyActivityController {
             daftarMbkm.setDosen(mhs.getDosen());
             daftarMbkm.setTahunAkademik(tahun);
             pendaftaranMbkmDao.save(daftarMbkm);
+        }else{
+            daftarMbkm.setStatusApproval(StatusApprove.WAITING);
+            pendaftaranMbkmDao.save(daftarMbkm);
         }
 
         for (String mk : matkul){
