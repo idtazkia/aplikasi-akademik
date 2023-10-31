@@ -711,6 +711,7 @@ public class StudyActivityController {
 
         model.addAttribute("mhs", mahasiswa);
         model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(mahasiswa.getId()));
+        model.addAttribute("listMatkulDiambil", matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF));
     }
 
     @PostMapping("/study/mbkm/input")
@@ -762,6 +763,16 @@ public class StudyActivityController {
         }
 
         return "redirect:../krs";
+    }
+
+    @PostMapping("/study/mbkm/delete")
+    public String deleteMatkulMBKM(@RequestParam MatakuliahMbkm matakuliahMbkm, RedirectAttributes attributes){
+
+        matakuliahMbkm.setStatus(StatusRecord.HAPUS);
+        matakuliahMbkmDao.save(matakuliahMbkm);
+//        attributes.addFlashAttribute("berhasil", "Delete Matkul MBKM berhasil");
+
+        return "redirect:/study/mbkm";
     }
 
     @GetMapping("/study/jadwal")

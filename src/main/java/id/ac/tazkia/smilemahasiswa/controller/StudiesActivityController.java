@@ -958,6 +958,8 @@ public class StudiesActivityController {
                                                         .findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(
                                                                         StatusRecord.AKTIF, k, mahasiswa));
                         model.addAttribute("mahasiswa", mahasiswa);
+                        model.addAttribute("jumlahSks", krsDetailDao.jumlahSksMahasiswa(mahasiswa.getId(), tahunAkademik.getId()));
+                        model.addAttribute("status", krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mahasiswa, StatusRecord.AKTIF));
 
                 }
 

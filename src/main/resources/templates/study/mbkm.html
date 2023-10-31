@@ -78,6 +78,43 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Data matakuliah yang sudah diambil </h2>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <table class="table table-striped">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${listMatkulDiambil}">
+                                    <td  th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">AEM1101</td>
+                                    <td  th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}">Dirasah Islamiah</td>
+                                    <td  th:text="${data.matakuliahKurikulum.jumlahSks}"><b>3</b></td>
+                                    <td>
+                                        <form th:action="@{/study/mbkm/delete(matakuliahMbkm = ${data.id})}" method="post">
+                                            <button type="submit" class="btn btn-danger waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hapus">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-12 col-xs-12">
                     <form method="post" th:action="@{/study/mbkm/input}">

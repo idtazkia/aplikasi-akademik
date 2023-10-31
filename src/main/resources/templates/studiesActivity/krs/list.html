@@ -120,6 +120,17 @@
                                                         th:text="${mahasiswa.idProdi.namaProdi}">19191919</span></h4>
                                             </th>
                                         </tr>
+                                        <tr>
+                                            <th>
+                                                <h4 class="mb-0">Jumlah SKS : <span
+                                                        th:text="${jumlahSks} ?: '-'">19191919</span></h4>
+                                            </th>
+                                            <th>
+                                                <h4  class="mb-0">Status Semester : <span
+                                                        th:if="${status == null}" th:text="${'Nonaktif ('+mahasiswa.statusAktif+')'}">19191919</span>
+                                                <span th:if="${status}" th:text="${'Aktif (' + mahasiswa.statusAktif + ')'}"></span></h4>
+                                            </th>
+                                        </tr>
                                     </table>
                                 </div>
                                 <div class="table-responsive">
