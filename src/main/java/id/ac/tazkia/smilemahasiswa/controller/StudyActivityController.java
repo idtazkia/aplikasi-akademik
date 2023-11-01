@@ -505,7 +505,7 @@ public class StudyActivityController {
         }
 
         if (validasi.isEmpty()){
-            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.REJECTED, StatusApprove.HAPUS));
+            KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
             if (cek == null) {
                 Integer tSemester = krsDetailDao.cariSemester(mahasiswa.getId(), tahunAkademik.getId());
                 BigDecimal batas = new BigDecimal(3);
@@ -625,11 +625,17 @@ public class StudyActivityController {
     }
 
     private void createKrsApproval(Krs k, Mahasiswa mahasiswa, StatusApprove status){
-        KrsApproval ka = new KrsApproval();
-        ka.setKrs(k);
-        ka.setMahasiswa(mahasiswa);
-        ka.setStatus(status);
-        krsApprovalDao.save(ka);
+        KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.REJECTED));
+        if (cek != null) {
+            cek.setStatus(status);
+            krsApprovalDao.save(cek);
+        }else{
+            KrsApproval ka = new KrsApproval();
+            ka.setKrs(k);
+            ka.setMahasiswa(mahasiswa);
+            ka.setStatus(status);
+            krsApprovalDao.save(ka);
+        }
     }
 
     @PostMapping("/study/deleteKrs")
