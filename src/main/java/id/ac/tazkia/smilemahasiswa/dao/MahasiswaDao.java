@@ -86,4 +86,19 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
 
     List<Mahasiswa> findByBeasiswaAndStatusAktifAndStatusAndAngkatanAndIdProgram(Beasiswa beasiswa, String status, StatusRecord statusRecord, String angkatan, Program program);
 
+    @Query(value = "select nama_prodi,angkatan, nim, nama, if(sks is not null, if(sks > 0, 'AKTIF','NONAKTIF'),'NONAKTIF') as status_semester, \n" +
+            "coalesce(if(sks is not null, if(sks > 0, 'AKTIF',null),null),status_aktif) as status,coalesce(nama_tahun_akademik, '-') as nama_tahun, coalesce(sks, '-') as sks, coalesce(ipk, '-') as ipk from\n" +
+            "(select a.*, nama_prodi,ipk from mahasiswa as a\n" +
+            "inner join prodi as b on a.id_prodi = b.id\n" +
+            "left join ipk as c on a.id = c.id_mahasiswa\n" +
+            "where angkatan in (?1) and a.status = 'AKTIF') as a\n" +
+            "left join\n" +
+            "(select a.id_mahasiswa, sum(jumlah_sks) as sks, nama_tahun_akademik from krs as a\n" +
+            "inner join krs_detail as b on a.id = b.id_krs \n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join tahun_akademik as d on a.id_tahun_akademik = d.id\n" +
+            "where a.id_tahun_akademik = ?2 and a.status = 'AKTIF'\n" +
+            "and b.status = 'AKTIF' group by id_krs) as b\n" +
+            "on a.id = b.id_mahasiswa order by angkatan,id_prodi, nim", nativeQuery = true)
+    List<Object[]> listStatusMahasiswa(List<String> angkatan, String idTahunAkademik);
 }

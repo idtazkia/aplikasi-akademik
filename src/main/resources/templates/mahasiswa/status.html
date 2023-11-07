@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Status Mahasiswa</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Status Mahasiswa </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label >Angkatan</label>
+                                        <select name="angkatan" id="mySelect2" class="form-control js-example-placeholder-single" required multiple="multiple">
+                                            <option th:each="data : ${angkatan}"
+                                                    th:text="${data}" th:value="${data}">asd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary" > Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+<!--                        <a th:if="${selectTahun != null}" th:href="@{/download/status/mahasiswa(angkatan=${selectAngaktan})}" class="btn btn-success btn-sm"><i class="fa fa-download"></i> Download</a>-->
+                        <div class="table-responsive">
+                            <table id="data-table-1" class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Prodi</th>
+                                    <th>Angkatan</th>
+                                    <th>NIM</th>
+                                    <th>Nama</th>
+                                    <th>Status Semester</th>
+                                    <th>Status Mahasiswa</th>
+                                    <th>Tahun Akademik</th>
+                                    <th>Jumlah SKS</th>
+                                    <th>IPK</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listMhs}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data[0]}"></td>
+                                    <td th:text="${data[1]}">PATRICK STAR</td>
+                                    <td th:text="${data[2]}">BANGUN DAN SEMANGAT</td>
+                                    <td th:text="${data[3]}"></td>
+                                    <td th:text="${data[4]}"></td>
+                                    <td th:text="${data[5]}"></td>
+                                    <td th:text="${data[6]}"></td>
+                                    <td th:text="${data[7]}"></td>
+                                    <td th:text="${data[8]}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(".js-example-placeholder-single").select2({
+            placeholder: "Pilih ",
+            allowClear: true
+        });
+    </script>
+</th:block>
+</body>
+</html>
