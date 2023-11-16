@@ -2875,7 +2875,7 @@ public class StudentBillController {
 
     @GetMapping("/billReport/permahasiswa/prodi")
     public void reportPerMahasiswaProdi(@RequestParam String prodi, @RequestParam String tahun, HttpServletResponse response) throws IOException{
-        String[] columns = {"No", "Angkatan", "Nim", "Nama", "Tagihan", "Dibayar", "Sisa", "Status Mahasiswa", "Beasiswa"};
+        String[] columns = {"No", "Angkatan", "Nim", "Nama", "Tagihan", "Dibayar", "Sisa", "Status Mahasiswa", "Program Mahasiswa", "Beasiswa"};
 
         Prodi p = prodiDao.findById(prodi).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
@@ -2914,6 +2914,7 @@ public class StudentBillController {
             row.createCell(6).setCellValue(list[7].toString());
             row.createCell(7).setCellValue(list[8].toString());
             row.createCell(8).setCellValue(list[9].toString());
+            row.createCell(9).setCellValue(list[10].toString());
         }
 
         for (int i = 0; i < columns.length; i++){
@@ -2979,7 +2980,7 @@ public class StudentBillController {
 
     @GetMapping("/billReport/permahasiswa/angkatan")
     public void reportPerMahasiswaAngkatan(@RequestParam String angkatan, @RequestParam String tahun, HttpServletResponse response) throws IOException{
-        String[] columns = {"No", "Prodi", "Nim", "Nama", "Tagihan", "Dibayar", "Sisa", "Status Mahasiswa", "Beasiswa"};
+        String[] columns = {"No", "Prodi", "Nim", "Nama", "Tagihan", "Dibayar", "Sisa", "Status Mahasiswa", "Program Mahasiswa", "Beasiswa"};
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
         List<Object[]> listTagihan = tagihanDao.listTagihanPerMahasiswaByAngkatan(angkatan, tahun);
@@ -3016,6 +3017,7 @@ public class StudentBillController {
             row.createCell(6).setCellValue(list[7].toString());
             row.createCell(7).setCellValue(list[8].toString());
             row.createCell(8).setCellValue(list[9].toString());
+            row.createCell(9).setCellValue(list[10].toString());
         }
 
         for (int i = 0; i < columns.length; i++){
