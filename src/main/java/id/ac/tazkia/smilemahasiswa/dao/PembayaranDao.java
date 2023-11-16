@@ -2,10 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarPembayaranDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
-import id.ac.tazkia.smilemahasiswa.entity.Pembayaran;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.Tagihan;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -66,5 +63,7 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
     Pembayaran findByStatusAndTagihan(StatusRecord statusRecord, Tagihan tagihan);
 
     Integer countAllByTagihan(Tagihan tagihan);
+
+    List<Pembayaran> findByTagihanMahasiswaAndTagihanStatusNotOrderByTagihanTahunAkademikKodeTahunAkademik(Mahasiswa mahasiswa, StatusRecord statusRecord);
 
 }

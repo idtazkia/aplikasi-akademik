@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Bebas Kewajiban</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Keterangan Bebas Kewajiban Keuangan </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-10 col-sm-10">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data Mahasiswa</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/kewajiban/admin/keuangan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <tr>
+                                            <td class="text-right">Mahasiswa</td>
+                                            <td>:</td>
+                                            <td th:text="${mahasiswa.nama}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Program Studi</td>
+                                            <td style="width: 5px;">:</td>
+                                            <td th:text="${mahasiswa.idProdi.namaProdi}"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xs-12">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <tr>
+                                            <td class="text-right">NIM</td>
+                                            <td >:</td>
+                                            <td th:text="${mahasiswa.nim}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right" >Program Pendidikan</td>
+                                            <td style="width: 5px;">:</td>
+                                            <td th:text="${mahasiswa.idProgram.namaProgram}"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-2">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Approval</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <form method="post" th:action="@{/kewajiban/admin/keuangan/approve(bebasKewajiban=${bebasKewajiban.id})}">
+                                                <button type="submit" class="btn btn-success">Approved</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data Tagihan</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tahun Akademik</th>
+                                    <th scope="col">Nama Tagihan</th>
+                                    <th scope="col">Total Tagihan</th>
+                                    <th scope="col">Total Dibayar</th>
+                                    <th scope="col" width="30px;">Status</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listTagihan}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.tahunAkademik.namaTahunAkademik}">12</td>
+                                    <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">12</td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}">2020</td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}">2020</td>
+                                    <td th:text="${data.statusTagihan}">2020</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data Pembayaran</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tahun Akademik</th>
+                                    <th scope="col">Nama Tagihan</th>
+                                    <th scope="col">Tanggal Bayar</th>
+                                    <th scope="col">Dibayar</th>
+                                    <th scope="col">No. Rekening</th>
+                                    <th scope="col">Bank</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listPembayaran}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.tagihan.tahunAkademik.namaTahunAkademik}">12</td>
+                                    <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}">12</td>
+                                    <td th:text="${data.waktuBayar}">12</td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.amount, 0, 'POINT', 2, 'COMMA')}">2020</td>
+                                    <td th:text="${data.nomorRekening} ?: '-'">2020</td>
+                                    <td th:text="${data.bank?.nama} ?: '-'">2020</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+
+<!--modal-->
+
+</body>
+</html>
+
+<script>
+
+</script>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nav Tab</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap"
+            rel="stylesheet"
+    />
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+        }
+        .number-step {
+            background-color: #e9f3ff;
+            width: 40px;
+            height: 40px;
+            color: #1b84ff;
+        }
+
+        .nav-item-wrapper .active .number-step {
+            background-color: #1b84ff;
+            color: #e9f3ff;
+        }
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #78829d;
+        }
+        .step-subtitle {
+            font-size: 13px;
+            font-weight: 500;
+            color: #99a1b7;
+        }
+        .nav-step-line {
+            height: 40px;
+            border-left: 1px dashed #dbdfe9;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="mt-5"></div>
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <input type="hidden" id="status" th:value="${bebasKewajiban.statusApprove}">
+            <div class="nav-step flex-column h-100 p-4 border border-1 rounded-3 shadow-sm" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <div class="nav-item-wrapper">
+                    <div class="d-flex flex-nowrap disabled" id="v-pills-perpustakaan-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perpustakaan" type="button" role="tab" aria-controls="v-pills-perpustakaan" aria-selected="true">
+                        <div class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            1
+                        </div>
+                        <div>
+                            <p class="mb-0 step-title">Perpustakaan</p>
+                            <p class="mb-0 step-subtitle">Persetujuan dari perpustakaan</p>
+                        </div>
+                    </div>
+                    <div class="nav-step-line"></div>
+                </div>
+                <div class="nav-item-wrapper">
+                    <div class="d-flex flex-nowrap disabled" id="v-pills-keuangan-tab" data-bs-toggle="pill" data-bs-target="#v-pills-keuangan" type="button" role="tab" aria-controls="v-pills-keuangan" aria-selected="false">
+                        <div class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            2
+                        </div>
+                        <div>
+                            <p class="mb-0 step-title">Keuangan</p>
+                            <p class="mb-0 step-subtitle">Persetujuan dari keuangan</p>
+                        </div>
+                    </div>
+                     <div class="nav-step-line"></div>
+                </div>
+                <div class="nav-item-wrapper">
+                    <div class="d-flex flex-nowrap disabled" id="v-pills-tlc-tab" data-bs-toggle="pill" data-bs-target="#v-pills-tlc" type="button" role="tab" aria-controls="v-pills-tlc" aria-selected="false">
+                        <div class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            3
+                        </div>
+                        <div>
+                            <p class="mb-0 step-title">TLC</p>
+                            <p class="mb-0 step-subtitle">Persetujuan dari Tazkia Language Center</p>
+                        </div>
+                    </div>
+                     <div class="nav-step-line"></div>
+                </div>
+                <div class="nav-item-wrapper">
+                    <div class="d-flex flex-nowrap disabled" id="v-pills-akademik-tab" data-bs-toggle="pill" data-bs-target="#v-pills-akademik" type="button" role="tab" aria-controls="v-pills-akademik" aria-selected="false">
+                        <div class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            4
+                        </div>
+                        <div>
+                            <p class="mb-0 step-title">Akademik</p>
+                            <p class="mb-0 step-subtitle">Persetujuan dari akademik</p>
+                        </div>
+                    </div>
+                     <div class="nav-step-line"></div>
+                </div>
+                <div class="nav-item-wrapper">
+                    <div class="d-flex flex-nowrap disabled" id="v-pills-complete-tab" data-bs-toggle="pill" data-bs-target="#v-pills-complete" type="button" role="tab" aria-controls="v-pills-complete" aria-selected="false">
+                        <div class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            5
+                        </div>
+                        <div>
+                            <p class="mb-0 step-title">Complete</p>
+                            <p class="mb-0 step-subtitle"></p>
+                        </div>
+                    </div>
+<!--                     <div class="nav-step-line"></div>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="tab-content h-100 p-4 border border-1 rounded-3 shadow-sm" id="v-pills-tabContent">
+                <div class="tab-pane fade" id="v-pills-perpustakaan" role="tabpanel" aria-labelledby="v-pills-perpustakaan-tab" tabindex="0">
+                    <table>
+                        <tr><h4>Daftar yang harus di selesaikan untuk mendapatan persetujuan perpustakaan:</h4></tr>
+                        <tr th:each="data, row: ${listKewajibanMahasiswa}">
+                            <td style="width: 30px;">
+                                <input th:name="${'check-'+data.id}" th:if="${data.status == data.status.AKTIF}" checked disabled type="checkbox" th:id="${data.id + '-checkbox'}">
+                                <input th:name="${'check-'+data.id}" th:if="${data.status == data.status.NONAKTIF}" disabled type="checkbox" th:id="${data.id + '-checkbox'}">
+                            </td>
+                            <td>
+                                <label th:for="${data.id + '-checkbox'}" th:text="${data.kewajibanPerpus.keterangan}"></label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="v-pills-keuangan" role="tabpanel" aria-labelledby="v-pills-keuangan-tab" tabindex="0">
+                    Melunasi seluruh kewajiban ke bagian keuangan.
+                </div>
+                <div class="tab-pane fade" id="v-pills-tlc" role="tabpanel" aria-labelledby="v-pills-tlc-tab" tabindex="0">
+                    Telah menyelesaikan dan dinyatakan <b>LULUS</b> matakuliah General Arabics English, IELTS atau TOEFL.
+                </div>
+                <div class="tab-pane fade" id="v-pills-akademik" role="tabpanel" aria-labelledby="v-pills-akademik-tab" tabindex="0">
+                    <p>Pastikan bahwa nama tersebut telah menyelesaikan tugas kewajiban ke bagian akademik, sebagai berikut: </p>
+                    <p><b>1. Beban studi(SKS) dari bagian akademik.</b></p>
+                    <p><b>2. Menyerahkan kartu mahasiswa (KTM).</b></p>
+                </div>
+                <div class="tab-pane fade" id="v-pills-complete" role="tabpanel" aria-labelledby="v-pills-complete-tab" tabindex="0">
+                    Step Complete masih dalam proses...
+<!--                    <a th:href="@{/cetakSkl (bebasKewajiban=${bebasKewajiban.id})}" class="btn btn-success">Download SKL</a>-->
+                </div>
+                <div class="tab-pane fade" id="v-pills-reject" role="tabpanel" aria-labelledby="v-pills-reject-tab" tabindex="0">
+                    Rejected by <div th:text="${#strings.substringAfter(bebasKewajiban.statusApprove,'_')}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-5"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script type="text/javascript">
+    var stat = document.getElementById('status').value;
+
+    var tab1 = document.getElementById('v-pills-perpustakaan-tab');
+    var sec1 = document.getElementById('v-pills-perpustakaan');
+    var tab2 = document.getElementById('v-pills-keuangan-tab');
+    var sec2 = document.getElementById('v-pills-keuangan');
+    var tab3 = document.getElementById('v-pills-tlc-tab');
+    var sec3 = document.getElementById('v-pills-tlc');
+    var tab4 = document.getElementById('v-pills-akademik-tab');
+    var sec4 = document.getElementById('v-pills-akademik');
+    var tab5 = document.getElementById('v-pills-complete-tab');
+    var sec5 = document.getElementById('v-pills-complete');
+    var secReject = document.getElementById('v-pills-reject');
+    if (stat === 'APPROVED_PERPUS' || stat === 'WAITING'){
+        tab1.classList.add('active');
+        tab1.classList.remove('disabled');
+        sec1.classList.add('show', 'active');
+    }else if (stat === 'APPROVED_KABAG_PERPUS'){
+        tab2.classList.add('active');
+        tab1.classList.remove('disabled');
+        tab2.classList.remove('disabled');
+        sec2.classList.add('show', 'active');
+    }else if (stat === 'APPROVED_KEUANGAN'){
+        tab3.classList.add('active');
+        tab1.classList.remove('disabled');
+        tab2.classList.remove('disabled');
+        tab3.classList.remove('disabled');
+        sec3.classList.add('show', 'active');
+    }else if (stat === 'APPROVED_TLC'){
+        tab4.classList.add('active');
+        tab1.classList.remove('disabled');
+        tab2.classList.remove('disabled');
+        tab3.classList.remove('disabled');
+        tab4.classList.remove('disabled');
+        sec4.classList.add('show', 'active');
+    }else if (stat === 'APPROVED'){
+        tab5.classList.add('active');
+        tab1.classList.remove('disabled');
+        tab2.classList.remove('disabled');
+        tab3.classList.remove('disabled');
+        tab4.classList.remove('disabled');
+        tab5.classList.remove('disabled');
+        sec5.classList.add('show', 'active');
+    }else{
+        secReject.classList.add('show', 'active');
+    }
+</script>
+</html>

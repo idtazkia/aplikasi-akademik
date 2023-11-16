@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Bebas Kewajiban</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Bebas Kewajiban </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <form method="get">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h3 class="mb-0">Data </h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">NIM</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Prodi</th>
+                                    <th scope="col">Angkatan</th>
+                                    <th scope="col" width="30px;">Status</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listMahasiswa}">
+                                    <td th:text="${(row.index + 1) + (listMahasiswa.number * listMahasiswa.size)}">1</td>
+                                    <td th:text="${data.mahasiswa.nim}">12</td>
+                                    <td th:text="${data.mahasiswa.nama}">12</td>
+                                    <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
+                                    <td th:text="${data.mahasiswa.angkatan}">2020</td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.WAITING}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_PERPUS}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED PERPUS</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_KABAG_PERPUS}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED PERPUS</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_KEUANGAN}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED KEUANGAN</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_TLC}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED TLC</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_AKADEMIK}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED AKADEMIK</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                    </td>
+                                    <td th:if="${data.statusApprove == data.statusApprove.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
+                                    </td>
+
+                                    <td>
+                                        <!--button-->
+                                        <a th:href="@{/kewajiban/admin/keuangan/detail(id=${data.id})}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> Detail
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer py-4">
+                            <nav aria-label="...">
+                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+
+<!--modal-->
+
+</body>
+</html>
+
+<script>
+
+</script>

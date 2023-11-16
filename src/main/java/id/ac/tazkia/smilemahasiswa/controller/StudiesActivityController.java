@@ -1218,6 +1218,11 @@ public class StudiesActivityController {
                 krsApproval.setStatus(StatusApprove.APPROVED);
                 krsApprovalDao.save(krsApproval);
 
+//                KelasMahasiswa kelas = kelasMahasiswaDao.findByMahasiswaAndStatus(krsApproval.getMahasiswa(), StatusRecord.AKTIF);
+//                if (kelas != null) {
+//                        mailService.suksesKrs(krsApproval, kelas);
+//                }
+
                 return "redirect:list";
         }
 
