@@ -1809,7 +1809,7 @@ public class SidangController {
 
             if (sidang.getNilai().compareTo(new BigDecimal(70)) >= 0) {
                 Mahasiswa mahasiswa = mahasiswaDao.findById(sidang.getSeminar().getNote().getMahasiswa().getId()).get();
-                mahasiswa.setTanggalLulus(LocalDate.now());
+                mahasiswa.setTanggalLulus(sidang.getTanggalUjian());
                 mahasiswa.setStatusAktif("LULUS");
                 mahasiswaDao.save(mahasiswa);
 
