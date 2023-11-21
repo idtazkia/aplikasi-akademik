@@ -349,10 +349,10 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
         List<Object[]> transkripSemesterWithoutWaiting(Mahasiswa mahasiswa, String semester);
 
-        @Query(value = "SELECT c.nim,c.nama,d.nama_prodi,a.id_tahun_akademik,'A' AS STATUS,coalesce(e.sks_total,0) AS sks_semester,coalesce(e.ipk,0) AS ip_semester,\n"
+        @Query(value = "SELECT c.nim,c.nama,d.nama_prodi,a.id_tahun_akademik,statusMhs AS STATUS,coalesce(e.sks_total,0) AS sks_semester,coalesce(e.ipk,0) AS ip_semester,\n"
                         +
                         "coalesce(b.sks_total,0) as sks_total,coalesce(b.ipk ,0) as ipk \n" +
-                        "FROM (SELECT a.* FROM krs as a inner join mahasiswa as b on a.id_mahasiswa=b.id \n" +
+                        "FROM (SELECT a.*, b.status_aktif as statusMhs FROM krs as a inner join mahasiswa as b on a.id_mahasiswa=b.id \n" +
                         "inner join tahun_akademik as c on a.id_tahun_akademik = c.id\n" +
                         "WHERE a.STATUS='AKTIF' AND a.id_tahun_akademik=?1 and b.angkatan=?2 )a \n" +
                         "LEFT JOIN \n" +
