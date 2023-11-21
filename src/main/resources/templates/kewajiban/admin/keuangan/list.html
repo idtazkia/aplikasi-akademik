@@ -73,7 +73,6 @@
                                     <th scope="col">Angkatan</th>
                                     <th scope="col" width="30px;">Status</th>
                                     <th scope="col"></th>
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -83,28 +82,13 @@
                                     <td th:text="${data.mahasiswa.nama}">12</td>
                                     <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
                                     <td th:text="${data.mahasiswa.angkatan}">2020</td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.WAITING}">
+                                    <td th:if="${data.statusApproveKeuangan == data.statusApproveKeuangan.WAITING}">
                                         <button type="button" class="btn btn-warning btn-sm">WAITING</button>
                                     </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_PERPUS}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED PERPUS</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_KABAG_PERPUS}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED PERPUS</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_KEUANGAN}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED KEUANGAN</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_TLC}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED TLC</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_AKADEMIK}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED AKADEMIK</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED}">
+                                    <td th:if="${data.statusApproveKeuangan == data.statusApproveKeuangan.APPROVED}">
                                         <button type="button" class="btn btn-success btn-sm">APPROVED</button>
                                     </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.REJECTED}">
+                                    <td th:if="${data.statusApproveKeuangan == data.statusApproveKeuangan.REJECTED}">
                                         <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
                                     </td>
 

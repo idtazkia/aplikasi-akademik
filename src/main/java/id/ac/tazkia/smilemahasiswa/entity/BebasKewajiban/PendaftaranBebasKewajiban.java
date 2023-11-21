@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,13 +22,27 @@ public class PendaftaranBebasKewajiban {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String keterangan;
-
     @Enumerated(EnumType.STRING)
     private StatusApprove statusApprove = StatusApprove.WAITING;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusApprovePerpus = StatusApprove.WAITING;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusApproveKabagPerpus = StatusApprove.WAITING;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusApproveKeuangan = StatusApprove.WAITING;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusApproveTlc = StatusApprove.WAITING;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusApproveAkademik = StatusApprove.WAITING;
+
+    private LocalDateTime tanggalRequest = LocalDateTime.now();
 
 }

@@ -124,6 +124,17 @@
                                     </td>
                                 </tr>
                             </table>
+                            <br>
+                            <h2>Histori Komentar</h2>
+                            <div th:each="data, row:${histori}">
+                                <b th:text="${#temporals.format(data.waktuInput, 'dd-MM-yyyy HH:mm')}"></b><br>
+                                <p th:text="${data.komentar}"></p>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="komentar">Komentar</label>
+                                <textarea name="komentar" id="komentar" cols="30" rows="10" class="form-control"></textarea>
+                            </div>
                             <br><br>
                             <div class="row">
                                 <div class="form-group">

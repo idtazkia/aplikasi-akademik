@@ -71,9 +71,12 @@
                                     <th scope="col">Nama</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
-                                    <th scope="col" width="30px;">Status</th>
-                                    <th scope="col"></th>
-
+                                    <th scope="col" width="30px;">Status Perpustakaan</th>
+                                    <th scope="col" width="30px;">Status Kabag Perpustakaan</th>
+                                    <th scope="col" width="30px;">Status Keuangan</th>
+                                    <th scope="col" width="30px;">Status TLC</th>
+                                    <th scope="col" width="30px;">Status Akademik</th>
+                                    <th scope="col" colspan="2"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -83,63 +86,211 @@
                                     <td th:text="${data.mahasiswa.nama}">12</td>
                                     <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
                                     <td th:text="${data.mahasiswa.angkatan}">2020</td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.WAITING}">
+                                    <td th:if="${data.statusApprovePerpus == data.statusApprovePerpus.WAITING}">
                                         <button type="button" class="btn btn-warning btn-sm">WAITING</button>
                                     </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_PERPUS}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED PERPUS</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_KABAG_PERPUS}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED PERPUS</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_KEUANGAN}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED KEUANGAN</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_TLC}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED TLC</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_AKADEMIK}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED AKADEMIK</button>
-                                    </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED}">
+                                    <td th:if="${data.statusApprovePerpus == data.statusApprovePerpus.APPROVED}">
                                         <button type="button" class="btn btn-success btn-sm">APPROVED</button>
                                     </td>
-                                    <td th:if="${data.statusApprove == data.statusApprove.REJECTED}">
-                                        <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
-                                    </td>
-
-                                    <td th:if="${data.statusApprove == data.statusApprove.APPROVED_TLC}">
-                                        <!--button-->
-                                        <button type="button" class="btn btn-success btn-outline-success btn-sm" data-toggle="modal" th:data-target="${'#modal-approvedakademik' + data.id}">
-                                            Approved
-                                        </button>
-
-                                        <div class="modal fade" th:id="${'modal-approvedakademik'+data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                                    <td th:if="${data.statusApprovePerpus == data.statusApprovePerpus.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-perpus-rejected'+data.id}">REJECTED</button>
+                                        <div class="modal fade" th:id="${'modal-perpus-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h2 class="modal-title" id="exampleModalLabel" style="color: red;">Perhatian!</h2>
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <p>Pastikan bahwa nama tersebut telah menyelesaikan </p>
-                                                        <p>tugas kewajiban ke bagian akademik, sebagai berikut: </p>
-                                                        <p><b>1. Beban studi(SKS) dari bagian akademik.</b></p>
-                                                        <p><b>2. Menyerahkan kartu mahasiswa (KTM).</b></p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <form th:action="@{/kewajiban/admin/akademik/approve(bebasKewajiban=${data.id})}" method="post">
-                                                            <div class="form-group">
-                                                                <button class="btn btn-success" type="submit">Approved</button>
-                                                            </div>
-                                                        </form>
+                                                        <h2>Histori Komentar</h2>
+                                                        <div th:each="histori, row:${hPerpus}">
+                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
+                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.APPROVED}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-kabag-perpus-rejected'+data.id}">REJECTED</button>
+                                        <div class="modal fade" th:id="${'modal-kabag-perpus-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h2>Histori Komentar</h2>
+                                                        <div th:each="histori, row:${hKabagPerpus}">
+                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:if="${data.statusApproveKeuangan == data.statusApproveKeuangan.WAITING}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveKeuangan == data.statusApproveKeuangan.APPROVED}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveKeuangan == data.statusApproveKeuangan.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-keuangan-rejected'+data.id}">REJECTED</button>
+                                        <div class="modal fade" th:id="${'modal-keuangan-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h2>Histori Komentar</h2>
+                                                        <div th:each="histori, row:${hKeuangan}">
+                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.APPROVED}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-tlc-rejected'+data.id}">REJECTED</button>
+                                        <div class="modal fade" th:id="${'modal-tlc-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h2>Histori Komentar</h2>
+                                                        <div th:each="histori, row:${hTlc}">
+                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:if="${data.statusApproveAkademik == data.statusApproveAkademik.WAITING}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveAkademik == data.statusApproveAkademik.APPROVED}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveAkademik == data.statusApproveAkademik.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-akademik-rejected'+data.id}">REJECTED</button>
+                                        <div class="modal fade" th:id="${'modal-akademik-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h2>Histori Komentar</h2>
+                                                        <div th:each="histori, row:${hAkademik}">
+                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <div th:if="${data.statusApprovePerpus == data.statusApprovePerpus.APPROVED && data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.APPROVED && data.statusApproveKeuangan == data.statusApproveKeuangan.APPROVED && data.statusApproveTlc == data.statusApproveTlc.APPROVED}">
+                                        <td>
+                                            <!--button-->
+                                            <button type="button" class="btn btn-success btn-outline-success btn-sm" data-toggle="modal" th:data-target="${'#modal-approvedakademik' + data.id}">
+                                                Approved
+                                            </button>
+
+                                            <div class="modal fade" th:id="${'modal-approvedakademik'+data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h2 class="modal-title" id="exampleModalLabel" style="color: red;">Perhatian!</h2>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Pastikan bahwa nama tersebut telah menyelesaikan </p>
+                                                            <p>tugas kewajiban ke bagian akademik, sebagai berikut: </p>
+                                                            <p><b>1. Beban studi(SKS) dari bagian akademik.</b></p>
+                                                            <p><b>2. Menyerahkan kartu mahasiswa (KTM).</b></p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form th:action="@{/kewajiban/admin/akademik/approve(bebasKewajiban=${data.id})}" method="post">
+                                                                <div class="form-group">
+                                                                    <button class="btn btn-success" type="submit">Approved</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:if="${data.statusApproveAkademik == data.statusApproveAkademik.WAITING || data.statusApproveAkademik == data.statusApproveAkademik.REJECTED}">
+                                            <button type="submit" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejected'+data.id}">Rejected</button>
+                                            <div class="modal fade" th:id="${'modal-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h2>Histori Komentar</h2>
+                                                            <div th:each="histori, row:${hAkademik}">
+                                                                <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                                <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                            </div>
+                                                            <form th:action="@{/kewajiban/admin/akademik/reject(bebasKewajiban=${data.id})}" method="post">
+                                                                <div class="form-group">
+                                                                    <label for="keterangan">Komentar</label>
+                                                                    <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="10"></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button class="btn btn-danger" type="submit">Reject</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </div>
                                 </tr>
                                 </tbody>
                             </table>

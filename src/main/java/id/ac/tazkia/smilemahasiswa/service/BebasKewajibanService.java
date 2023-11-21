@@ -6,12 +6,12 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import id.ac.tazkia.smilemahasiswa.dao.BebasKewajibanDao;
+import id.ac.tazkia.smilemahasiswa.dao.HistoriBebasKewajibanDao;
 import id.ac.tazkia.smilemahasiswa.dao.KewajibanPerpusDao;
 import id.ac.tazkia.smilemahasiswa.dao.KewajibanPerpusMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.KewajibanPerpus;
-import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.KewajibanPerpusMahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.PendaftaranBebasKewajiban;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class BebasKewajibanService {
     private String logo;
 
     @Autowired
-    BebasKewajibanDao pendaftaranKewajibanDao;
+    BebasKewajibanDao bebasKewajibanDao;
 
     @Autowired
     KewajibanPerpusDao kewajibanPerpusDao;
@@ -42,16 +42,18 @@ public class BebasKewajibanService {
     KewajibanPerpusMahasiswaDao kewajibanPerpusMahasiswaDao;
 
     @Autowired
+    HistoriBebasKewajibanDao historiBebasKewajibanDao;
+
+    @Autowired
     TranscriptService transcriptService;
 
     public void saveDaftarKewajiban(Mahasiswa mahasiswa){
 
-        PendaftaranBebasKewajiban cek = pendaftaranKewajibanDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
+        PendaftaranBebasKewajiban cek = bebasKewajibanDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
         if (cek == null) {
             PendaftaranBebasKewajiban kewajiban = new PendaftaranBebasKewajiban();
             kewajiban.setMahasiswa(mahasiswa);
-            kewajiban.setKeterangan("-");
-            pendaftaranKewajibanDao.save(kewajiban);
+            bebasKewajibanDao.save(kewajiban);
 
             List<KewajibanPerpus> listKewajiban = kewajibanPerpusDao.findByStatusOrderById(StatusRecord.AKTIF);
             for (KewajibanPerpus list : listKewajiban){
@@ -61,6 +63,88 @@ public class BebasKewajibanService {
                 kewajibanPerpusMahasiswaDao.save(perpusMahasiswa);
             }
         }
+    }
+
+    public void saveStaffPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+
+        Integer jumlahKeterangan = kewajibanPerpusDao.countByStatus(StatusRecord.AKTIF).intValue();
+        Integer jumlahdiCeklis = kewajibanPerpusMahasiswaDao.countByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF).intValue();
+        if (jumlahKeterangan == jumlahdiCeklis) {
+            bebasKewajiban.setStatusApprovePerpus(StatusApprove.APPROVED);
+            bebasKewajibanDao.save(bebasKewajiban);
+            komentar = "DONE";
+        }else{
+            bebasKewajiban.setStatusApprovePerpus(StatusApprove.WAITING);
+            bebasKewajibanDao.save(bebasKewajiban);
+        }
+
+        HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();
+        historiBebasKewajiban.setBebasKewajiban(bebasKewajiban);
+        historiBebasKewajiban.setKomentar(komentar);
+        historiBebasKewajiban.setByBagian(ByBagian.PERPUSTAKAAN);
+        historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApprovePerpus());
+        historiBebasKewajibanDao.save(historiBebasKewajiban);
+
+    }
+
+    public void saveKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+
+        if (bebasKewajiban.getStatusApproveKabagPerpus() == StatusApprove.APPROVED) {
+            komentar = "Done";
+        }
+
+        HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();
+        historiBebasKewajiban.setBebasKewajiban(bebasKewajiban);
+        historiBebasKewajiban.setKomentar(komentar);
+        historiBebasKewajiban.setByBagian(ByBagian.KABAG_PERPUS);
+        historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveKabagPerpus());
+        historiBebasKewajibanDao.save(historiBebasKewajiban);
+
+    }
+
+    public void saveKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+
+        if (bebasKewajiban.getStatusApproveKeuangan() == StatusApprove.APPROVED) {
+            komentar = "Done";
+        }
+
+        HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();
+        historiBebasKewajiban.setBebasKewajiban(bebasKewajiban);
+        historiBebasKewajiban.setKomentar(komentar);
+        historiBebasKewajiban.setByBagian(ByBagian.KEUANGAN);
+        historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveKeuangan());
+        historiBebasKewajibanDao.save(historiBebasKewajiban);
+
+    }
+
+    public void saveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+
+        if (bebasKewajiban.getStatusApproveTlc() == StatusApprove.APPROVED) {
+            komentar = "Done";
+        }
+
+        HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();
+        historiBebasKewajiban.setBebasKewajiban(bebasKewajiban);
+        historiBebasKewajiban.setKomentar(komentar);
+        historiBebasKewajiban.setByBagian(ByBagian.TLC);
+        historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
+        historiBebasKewajibanDao.save(historiBebasKewajiban);
+
+    }
+
+    public void saveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+
+        if (bebasKewajiban.getStatusApproveAkademik() == StatusApprove.APPROVED) {
+            komentar = "Done";
+        }
+
+        HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();
+        historiBebasKewajiban.setBebasKewajiban(bebasKewajiban);
+        historiBebasKewajiban.setKomentar(komentar);
+        historiBebasKewajiban.setByBagian(ByBagian.AKADEMIK);
+        historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveAkademik());
+        historiBebasKewajibanDao.save(historiBebasKewajiban);
+
     }
 
 

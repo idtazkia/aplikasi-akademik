@@ -105,10 +105,47 @@
                             <div class="form-group">
                                 <table>
                                     <tr>
-                                        <td>
+                                        <td th:if="${disabled == null}">
                                             <form method="post" th:action="@{/kewajiban/admin/keuangan/approve(bebasKewajiban=${bebasKewajiban.id})}">
-                                                <button type="submit" class="btn btn-success">Approved</button>
+                                                <button type="submit" class="btn btn-success btn-outline-success">Approved</button>
                                             </form>
+                                        </td>
+                                        <td th:if="${disabled != null}">
+                                            <button disabled type="submit" data-toggle="tooltip" th:title="${disabled}" class="btn btn-success btn-outline-success">Approved</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-outline-danger" data-toggle="modal" th:data-target="${'#modal-rejected'+bebasKewajiban.id}">Rejected</button>
+                                            <div class="modal fade" th:id="${'modal-rejected'+bebasKewajiban.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h2>Histori Komentar</h2>
+                                                            <div th:each="histori, row:${histori}">
+                                                                <b th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                                <p th:text="${histori.komentar}"></p>
+                                                            </div>
+                                                            <form method="post" th:action="@{/kewajiban/admin/keuangan/reject(bebasKewajiban=${bebasKewajiban.id})}">
+                                                                <div class="form-group">
+                                                                    <label for="keterangan">Komentar</label>
+                                                                    <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="10"></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button class="btn btn-danger" type="submit">Reject</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+<!--                                            <form method="post" th:action="@{/kewajiban/admin/keuangan/reject(bebasKewajiban=${bebasKewajiban.id})}">-->
+<!--                                                <button type="submit" class="btn btn-danger">Rejected</button>-->
+<!--                                            </form>-->
                                         </td>
                                     </tr>
                                 </table>

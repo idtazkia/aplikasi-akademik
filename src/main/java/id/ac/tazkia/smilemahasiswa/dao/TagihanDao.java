@@ -387,4 +387,6 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     List<Tagihan> findByMahasiswaAndStatusNotOrderByTahunAkademikKodeTahunAkademik(Mahasiswa mahasiswa, StatusRecord status);
 
+    List<Tagihan> findByMahasiswaAndStatusOrderByStatusTagihanDesc(Mahasiswa mahasiswa, StatusRecord status);
+
 }
