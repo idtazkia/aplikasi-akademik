@@ -47,6 +47,9 @@ public class BebasKewajibanService {
     @Autowired
     TranscriptService transcriptService;
 
+    @Autowired
+    MailService mailService;
+
     public void saveDaftarKewajiban(Mahasiswa mahasiswa){
 
         PendaftaranBebasKewajiban cek = bebasKewajibanDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
@@ -73,9 +76,15 @@ public class BebasKewajibanService {
             bebasKewajiban.setStatusApprovePerpus(StatusApprove.APPROVED);
             bebasKewajibanDao.save(bebasKewajiban);
             komentar = "DONE";
+
+            // kirim email di  approve
+            mailService.mailApprovePerpus(bebasKewajiban, "DONE");
         }else{
             bebasKewajiban.setStatusApprovePerpus(StatusApprove.WAITING);
             bebasKewajibanDao.save(bebasKewajiban);
+
+            // kirim email di reject
+            mailService.mailRejectPerpus(bebasKewajiban, komentar);
         }
 
         HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();

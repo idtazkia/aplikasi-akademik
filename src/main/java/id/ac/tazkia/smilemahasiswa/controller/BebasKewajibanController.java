@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
 import id.ac.tazkia.smilemahasiswa.service.BebasKewajibanService;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
 import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.event.MouseInputAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -81,6 +83,9 @@ public class BebasKewajibanController {
 
     @Autowired
     BebasKewajibanService bebasKewajibanService;
+
+    @Autowired
+    MailService mailService;
 
     // halaman mahasiswa
 
@@ -273,6 +278,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar);
+        mailService.mailApproveKabagPerpus(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/perpus/list";
     }
@@ -283,6 +289,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar);
+        mailService.mailRejectKabagPerpus(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/perpus/list";
     }
@@ -327,6 +334,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveKeuangan(bebasKewajiban, komentar);
+        mailService.mailApproveKeuangan(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/keuangan/list";
     }
@@ -337,6 +345,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveKeuangan(bebasKewajiban, komentar);
+        mailService.mailRejectKeuangan(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/keuangan/list";
     }
@@ -389,6 +398,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveTlc(bebasKewajiban, komentar);
+        mailService.mailApproveTlc(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/tlc/list";
     }
@@ -405,6 +415,7 @@ public class BebasKewajibanController {
         }
 
         bebasKewajibanService.saveTlc(bebasKewajiban, komentar);
+        mailService.mailRejectTlc(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/tlc/list";
     }
@@ -435,6 +446,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveAkademik(bebasKewajiban, komentar);
+        mailService.mailApproveAkademik(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/akademik/list";
     }
@@ -445,6 +457,7 @@ public class BebasKewajibanController {
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveAkademik(bebasKewajiban, komentar);
+        mailService.mailRejectAkademik(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/akademik/list";
     }
