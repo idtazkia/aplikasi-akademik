@@ -197,12 +197,12 @@
                     </table>
                     <br><br>
                     <div class="row rows-cols-2">
-                        <div class="col-md-6 col-xs-6 col-sm-6">
+                        <div th:if="${hPerpus != null}" class="col-md-6 col-xs-6 col-sm-6">
                             <h4>Staff Perpus</h4>
                             <b th:text="${#temporals.format(hPerpus.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hPerpus.statusApprove}"></b>
                             <p th:text="${hPerpus.komentar}"></p>
                         </div>
-                        <div class="col-md-6 col-xs-6 col-sm-6" >
+                        <div th:if="${hKabagPerpus != null}" class="col-md-6 col-xs-6 col-sm-6" >
                             <h4>Kabag Perpus</h4>
                             <b th:text="${#temporals.format(hKabagPerpus.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hKabagPerpus.statusApprove}"></b>
                             <p th:text="${hKabagPerpus.komentar}"></p>
@@ -212,7 +212,7 @@
                 <div class="tab-pane fade" id="v-pills-keuangan" role="tabpanel" aria-labelledby="v-pills-keuangan-tab" tabindex="0">
                     Melunasi seluruh kewajiban ke bagian keuangan.
                     <br><br>
-                    <div>
+                    <div th:if="${hKeuangan != null}">
                         <b th:text="${#temporals.format(hKeuangan.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hKeuangan.statusApprove}"></b>
                         <p th:text="${hKeuangan.komentar}"></p>
                     </div>
@@ -220,7 +220,7 @@
                 <div class="tab-pane fade" id="v-pills-tlc" role="tabpanel" aria-labelledby="v-pills-tlc-tab" tabindex="0">
                     Telah menyelesaikan dan dinyatakan <b>LULUS</b> matakuliah General Arabics English, IELTS atau TOEFL.
                     <br><br>
-                    <div>
+                    <div th:if="${hTlc != null}">
                         <b th:text="${#temporals.format(hTlc.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hTlc.statusApprove}"></b>
                         <p th:text="${hTlc.komentar}"></p>
                     </div>
@@ -277,7 +277,7 @@
                     <p><b>1. Beban studi(SKS) dari bagian akademik.</b></p>
                     <p><b>2. Menyerahkan kartu mahasiswa (KTM).</b></p>
                     <br><br>
-                    <div>
+                    <div th:if="${hAkademik != null}">
                         <b th:text="${#temporals.format(hAkademik.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hAkademik.statusApprove}"></b>
                         <p th:text="${hAkademik.komentar}"></p>
                     </div>

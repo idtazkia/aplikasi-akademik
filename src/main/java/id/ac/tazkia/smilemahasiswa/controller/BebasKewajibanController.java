@@ -101,7 +101,7 @@ public class BebasKewajibanController {
                 return "redirect:/kewajiban/mahasiswa/detail";
             }else{
                 bebasKewajibanService.saveDaftarKewajiban(mahasiswa);
-                return "/kewajiban/daftar";
+                return "redirect:/kewajiban/mahasiswa/detail";
             }
         }else{
             return "/kewajiban/gagal";
@@ -118,13 +118,28 @@ public class BebasKewajibanController {
         log.info("Mahasiswa : {}", bebasKewajiban);
 
         model.addAttribute("bebasKewajiban", bebasKewajiban);
-        model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajiban(bebasKewajiban));
+        model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban));
         // cek histori komentar
-        model.addAttribute("hPerpus", historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF));
-        model.addAttribute("hKabagPerpus", historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KABAG_PERPUS, StatusRecord.AKTIF));
-        model.addAttribute("hKeuangan", historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KEUANGAN, StatusRecord.AKTIF));
-        model.addAttribute("hTlc", historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.TLC, StatusRecord.AKTIF));
-        model.addAttribute("hAkademik", historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.AKADEMIK, StatusRecord.AKTIF));
+        HistoriBebasKewajiban perpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF);
+        HistoriBebasKewajiban kabagperpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KABAG_PERPUS, StatusRecord.AKTIF);
+        HistoriBebasKewajiban keuangan = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KEUANGAN, StatusRecord.AKTIF);
+        HistoriBebasKewajiban tlc = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.TLC, StatusRecord.AKTIF);
+        HistoriBebasKewajiban akademik = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF);
+        if (perpus != null) {
+            model.addAttribute("hPerpus", perpus);
+        }
+        if (perpus != null) {
+            model.addAttribute("hKabagPerpus", kabagperpus);
+        }
+        if (perpus != null) {
+            model.addAttribute("hKeuangan", keuangan);
+        }
+        if (perpus != null) {
+            model.addAttribute("hTlc", tlc);
+        }
+        if (perpus != null) {
+            model.addAttribute("hAkademik", akademik);
+        }
 
     }
 
@@ -247,16 +262,21 @@ public class BebasKewajibanController {
 
         PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findById(id).get();
 //        model.addAttribute("listKewajibanPerpus", kewajibanPerpusDao.findByStatusOrderById(StatusRecord.AKTIF));
-        model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajiban(bebasKewajiban));
+        model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban));
         model.addAttribute("mahasiswa", bebasKewajiban.getMahasiswa());
         model.addAttribute("bebasKewajiban", bebasKewajiban);
         model.addAttribute("histori", historiBebasKewajibanDao.findByBebasKewajibanAndByBagianAndStatusOrderByWaktuInput(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF));
     }
 
+    @GetMapping("/kewajiban/admin/perpus/approval/staff")
+    public void historiApprovalStaff(){
+
+    }
+
     @PostMapping("/kewajiban/admin/perpus/input")
     public String saveKewajibanPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, HttpServletRequest request){
 
-        List<KewajibanPerpusMahasiswa> list = kewajibanPerpusMahasiswaDao.findByBebasKewajiban(bebasKewajiban);
+        List<KewajibanPerpusMahasiswa> list = kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban);
         for (KewajibanPerpusMahasiswa data : list){
             String pilihan = request.getParameter("check-"+data.getId());
             if (pilihan != null) {

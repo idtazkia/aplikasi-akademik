@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface KewajibanPerpusMahasiswaDao extends PagingAndSortingRepository<KewajibanPerpusMahasiswa, String> {
 
-    List<KewajibanPerpusMahasiswa> findByBebasKewajiban(PendaftaranBebasKewajiban pendaftaranBebasKewajiban);
+    List<KewajibanPerpusMahasiswa> findByBebasKewajibanOrderByKewajibanPerpusId(PendaftaranBebasKewajiban pendaftaranBebasKewajiban);
 
     Long countByBebasKewajibanAndStatus(PendaftaranBebasKewajiban bebasKewajiban, StatusRecord status);
 
