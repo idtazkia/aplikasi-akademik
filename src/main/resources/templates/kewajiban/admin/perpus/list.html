@@ -50,8 +50,11 @@
                     <div class="card-header border-0">
                         <form method="get">
                             <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h3 class="mb-0">Data </h3>
+                                <div th:if="${staff != null}" class="col-md-6">
+                                    <a th:href="@{/kewajiban/admin/perpus/approval/staff}" class="btn btn-sm btn-success">Histori Approval</a>
+                                </div>
+                                <div th:if="${kabag != null}" class="col-md-6">
+                                    <a th:href="@{/kewajiban/admin/perpus/approval/kabag}" class="btn btn-sm btn-success">Histori Approval</a>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group mb-3">
@@ -63,7 +66,6 @@
                                 </div>
                             </div>
                         </form>
-<!--                        <a th:href="@{/kewajiban/admin/perpus/approval/staff}" class="btn btn-sm btn-success">Histori Approval</a>-->
                     </div>
 
                     <div class="card-body">

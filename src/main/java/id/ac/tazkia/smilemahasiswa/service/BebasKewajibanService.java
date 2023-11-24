@@ -5,14 +5,10 @@ import com.lowagie.text.pdf.CMYKColor;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import id.ac.tazkia.smilemahasiswa.dao.BebasKewajibanDao;
-import id.ac.tazkia.smilemahasiswa.dao.HistoriBebasKewajibanDao;
-import id.ac.tazkia.smilemahasiswa.dao.KewajibanPerpusDao;
-import id.ac.tazkia.smilemahasiswa.dao.KewajibanPerpusMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional @Slf4j
 public class BebasKewajibanService {
 
     @Value("${logo.surat}")
@@ -43,6 +39,12 @@ public class BebasKewajibanService {
 
     @Autowired
     HistoriBebasKewajibanDao historiBebasKewajibanDao;
+
+    @Autowired
+    KaryawanDao karyawanDao;
+
+    @Autowired
+    UserDao userDao;
 
     @Autowired
     TranscriptService transcriptService;
@@ -65,13 +67,55 @@ public class BebasKewajibanService {
                 perpusMahasiswa.setBebasKewajiban(kewajiban);
                 kewajibanPerpusMahasiswaDao.save(perpusMahasiswa);
             }
+            // kirim notifikasi ke admin masing - masing
+            kirimEmailAdmin(kewajiban);
         }
     }
 
-    public void saveStaffPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void kirimEmailAdmin(PendaftaranBebasKewajiban bebasKewajiban){
+
+        // Admin perpus
+        List<User> perpus = userDao.findByRoleId("perpustakaan");
+        for (User u : perpus){
+            Karyawan karyawan = karyawanDao.findByIdUser(u);
+            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", karyawan);
+        }
+        List<User> kabagperpus = userDao.findByRoleId("kabagperpus");
+        for (User u : kabagperpus){
+            Karyawan karyawan = karyawanDao.findByIdUser(u);
+            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", karyawan);
+        }
+
+        // Admin keuangan
+        Karyawan k1 = karyawanDao.findByEmail("ahmadrisan@tazkia.ac.id");
+        mailService.templateNotifAdmin(bebasKewajiban, "keuangan", k1);
+        Karyawan k2 = karyawanDao.findByEmail("mfurqonh@tazkia.ac.id");
+        mailService.templateNotifAdmin(bebasKewajiban, "keuangan", k2);
+
+        // Admin TLC
+        List<User> stafTlc = userDao.findByRoleId("staftlc");
+        for (User u : stafTlc){
+            Karyawan karyawan = karyawanDao.findByIdUser(u);
+            mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
+        }
+//        List<User> tlc = userDao.findByRoleId("tlc");
+//        for (User u : kabagperpus){
+//            Karyawan karyawan = karyawanDao.findByIdUser(u);
+//            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", karyawan);
+//        }
+
+        // Admin akademik
+        Karyawan a1 = karyawanDao.findByEmail("riska@tazkia.ac.id");
+        mailService.templateNotifAdmin(bebasKewajiban, "akademik", a1);
+        Karyawan a2 = karyawanDao.findByEmail("anaminuri@tazkia.ac.id");
+        mailService.templateNotifAdmin(bebasKewajiban, "akademik", a2);
+    }
+
+    public void saveStaffPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
 
         Integer jumlahKeterangan = kewajibanPerpusDao.countByStatus(StatusRecord.AKTIF).intValue();
         Integer jumlahdiCeklis = kewajibanPerpusMahasiswaDao.countByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF).intValue();
+        log.info("jlm keterangan {} dan jml ceklis {}", jumlahKeterangan, jumlahdiCeklis);
         if (jumlahKeterangan == jumlahdiCeklis) {
             bebasKewajiban.setStatusApprovePerpus(StatusApprove.APPROVED);
             bebasKewajibanDao.save(bebasKewajiban);
@@ -92,11 +136,12 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setKomentar(komentar);
         historiBebasKewajiban.setByBagian(ByBagian.PERPUSTAKAAN);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApprovePerpus());
+        historiBebasKewajiban.setUser(user);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
 
-    public void saveKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void saveKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
 
         if (bebasKewajiban.getStatusApproveKabagPerpus() == StatusApprove.APPROVED) {
             komentar = "Done";
@@ -107,11 +152,12 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setKomentar(komentar);
         historiBebasKewajiban.setByBagian(ByBagian.KABAG_PERPUS);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveKabagPerpus());
+        historiBebasKewajiban.setUser(user);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
 
-    public void saveKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void saveKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
 
         if (bebasKewajiban.getStatusApproveKeuangan() == StatusApprove.APPROVED) {
             komentar = "Done";
@@ -122,11 +168,12 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setKomentar(komentar);
         historiBebasKewajiban.setByBagian(ByBagian.KEUANGAN);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveKeuangan());
+        historiBebasKewajiban.setUser(user);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
 
-    public void saveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void saveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
 
         if (bebasKewajiban.getStatusApproveTlc() == StatusApprove.APPROVED) {
             komentar = "Done";
@@ -137,11 +184,12 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setKomentar(komentar);
         historiBebasKewajiban.setByBagian(ByBagian.TLC);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
+        historiBebasKewajiban.setUser(user);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
 
-    public void saveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void saveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
 
         if (bebasKewajiban.getStatusApproveAkademik() == StatusApprove.APPROVED) {
             komentar = "Done";
@@ -152,6 +200,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setKomentar(komentar);
         historiBebasKewajiban.setByBagian(ByBagian.AKADEMIK);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveAkademik());
+        historiBebasKewajiban.setUser(user);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }

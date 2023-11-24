@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban;
 
 import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.User;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -34,5 +35,9 @@ public class HistoriBebasKewajiban {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    @ManyToOne
+    @JoinColumn(name = "user_modified")
+    private User user;
 
 }

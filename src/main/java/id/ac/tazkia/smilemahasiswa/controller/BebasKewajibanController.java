@@ -1,17 +1,14 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import groovy.lang.GString;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
 import id.ac.tazkia.smilemahasiswa.service.BebasKewajibanService;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
-import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.event.MouseInputAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,7 +41,7 @@ public class BebasKewajibanController {
 
     public static final List<String> USER_PERPUS = Arrays.asList("perpustakaan", "kabagperpus");
     public static final List<String> USER_FINANCE = Arrays.asList("finance", "kabagfinance");
-    public static final List<String> USER_TLC = Arrays.asList("tlc");
+    public static final List<String> USER_TLC = Arrays.asList("tlc", "staftlc");
     public static final List<String> USER_AKADEMIK = Arrays.asList("akademik1", "akademik2", "kabagakademik", "superuser");
 
     @Value("${upload.sertifikatTlc}")
@@ -76,7 +72,7 @@ public class BebasKewajibanController {
     HistoriBebasKewajibanDao historiBebasKewajibanDao;
 
     @Autowired
-    SertifikatTlcDao sertifikatTlcDao;
+    KewajibanSertifikatTlcDao kewajibanSertifikatTlcDao;
 
     @Autowired
     CurrentUserService currentUserService;
@@ -145,13 +141,13 @@ public class BebasKewajibanController {
 
     @PostMapping("/kewajiban/mahasiswa/tlc/dikampus")
     public String sertiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal){
-        SertifikatTlc cek = sertifikatTlcDao.findByMahasiswaAndStatus(bebasKewajiban.getMahasiswa(), StatusRecord.AKTIF);
+        KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
-            SertifikatTlc tlc = new SertifikatTlc();
-            tlc.setMahasiswa(bebasKewajiban.getMahasiswa());
+            KewajibanSertifikatTlc tlc = new KewajibanSertifikatTlc();
+            tlc.setBebasKewajiban(bebasKewajiban);
             tlc.setTanggalUjian(LocalDate.parse(tanggal));
             tlc.setKeteranganUjian(ByBagian.DIKAMPUS);
-            sertifikatTlcDao.save(tlc);
+            kewajibanSertifikatTlcDao.save(tlc);
         }
 
         return "redirect:/kewajiban/mahasiswa/detail";
@@ -159,10 +155,10 @@ public class BebasKewajibanController {
 
     @PostMapping("/kewajiban/mahasiswa/tlc/diluar")
     public String sertiTlcDiluar(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String tempat, MultipartFile file) throws IOException {
-        SertifikatTlc cek = sertifikatTlcDao.findByMahasiswaAndStatus(bebasKewajiban.getMahasiswa(), StatusRecord.AKTIF);
+        KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
 
-            SertifikatTlc tlc = new SertifikatTlc();
+            KewajibanSertifikatTlc tlc = new KewajibanSertifikatTlc();
 
             String idPeserta = bebasKewajiban.getMahasiswa().getNim();
 
@@ -185,11 +181,11 @@ public class BebasKewajibanController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             file.transferTo(tujuan);
             tlc.setFile(idFile + "." + extension);
-            tlc.setMahasiswa(bebasKewajiban.getMahasiswa());
+            tlc.setBebasKewajiban(bebasKewajiban);
             tlc.setTempatUjian(tempat);
             tlc.setTanggalUjian(LocalDate.parse(tanggal));
             tlc.setKeteranganUjian(ByBagian.DILUAR);
-            sertifikatTlcDao.save(tlc);
+            kewajibanSertifikatTlcDao.save(tlc);
         }
 
         return "redirect:/kewajiban/mahasiswa/detail";
@@ -227,7 +223,7 @@ public class BebasKewajibanController {
         if (USER_AKADEMIK.contains(user.getRole().getId())) {
             return "redirect:/kewajiban/admin/akademik/list";
         }else{
-            return "redirect:/kewajiban/admin/perpus/list";
+            return "redirect:/dashboard";
         }
 
     }
@@ -238,19 +234,21 @@ public class BebasKewajibanController {
     public void listKewajibanPerpus(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, String search){
         User user = currentUserService.currentUser(authentication);
         if ("perpustakaan".equalsIgnoreCase(user.getRole().getId()) || "superuser".equalsIgnoreCase(user.getRole().getId())) {
+            model.addAttribute("staff", "Staff Perpus");
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, search, search, page));
+                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
             }else{
-                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusOrderByTanggalRequest(StatusRecord.AKTIF, page));
+                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
             }
         }
         if ("kabagperpus".equalsIgnoreCase(user.getRole().getId()) || "superuser".equalsIgnoreCase(user.getRole().getId())) {
+            model.addAttribute("kabag", "Kabag Perpus");
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, search, search, page));
+                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
             }else{
-                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusOrderByTanggalRequest(StatusRecord.AKTIF, page));
+                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
             }
             model.addAttribute("listKewajiban", kewajibanPerpusMahasiswaDao.findAll());
             model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.KABAG_PERPUS, StatusRecord.AKTIF));
@@ -269,12 +267,24 @@ public class BebasKewajibanController {
     }
 
     @GetMapping("/kewajiban/admin/perpus/approval/staff")
-    public void historiApprovalStaff(){
+    public void historiApprovalStaff(Model model){
+
+        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.PERPUSTAKAAN.toString()));
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF));
+
+    }
+
+    @GetMapping("/kewajiban/admin/perpus/approval/kabag")
+    public void historiApprovalKabag(Model model){
+
+        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.KABAG_PERPUS.toString()));
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.KABAG_PERPUS, StatusRecord.AKTIF));
 
     }
 
     @PostMapping("/kewajiban/admin/perpus/input")
-    public String saveKewajibanPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, HttpServletRequest request){
+    public String saveKewajibanPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, HttpServletRequest request, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
 
         List<KewajibanPerpusMahasiswa> list = kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban);
         for (KewajibanPerpusMahasiswa data : list){
@@ -287,28 +297,30 @@ public class BebasKewajibanController {
                 kewajibanPerpusMahasiswaDao.save(data);
             }
         }
-        bebasKewajibanService.saveStaffPerpus(bebasKewajiban, komentar);
+        bebasKewajibanService.saveStaffPerpus(bebasKewajiban, komentar, user);
 
         return "redirect:/kewajiban/admin/perpus/list";
     }
 
     @PostMapping("/kewajiban/admin/perpus/approve")
-    public String approveKabagPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String approveKabagPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveKabagPerpus(StatusApprove.APPROVED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar);
+        bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar, user);
         mailService.mailApproveKabagPerpus(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/perpus/list";
     }
 
     @PostMapping("/kewajiban/admin/perpus/reject")
-    public String rejectKabagPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String rejectKabagPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveKabagPerpus(StatusApprove.REJECTED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar);
+        bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar, user);
         mailService.mailRejectKabagPerpus(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/perpus/list";
@@ -318,14 +330,18 @@ public class BebasKewajibanController {
 
     @GetMapping("/kewajiban/admin/keuangan/list")
     public void listKewajibanKeuangan(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, String search){
-
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, search, search, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveKeuanganNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
         }else{
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusOrderByTanggalRequest(StatusRecord.AKTIF, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveKeuanganNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
         }
+    }
 
+    @GetMapping("/kewajiban/admin/keuangan/approval")
+    public void historiApproval(Model model){
+        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.KEUANGAN.toString()));
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.KEUANGAN, StatusRecord.AKTIF));
     }
 
     @GetMapping("/kewajiban/admin/keuangan/detail")
@@ -349,22 +365,24 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/admin/keuangan/approve")
-    public String approveKeuangan(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String approveKeuangan(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveKeuangan(StatusApprove.APPROVED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveKeuangan(bebasKewajiban, komentar);
+        bebasKewajibanService.saveKeuangan(bebasKewajiban, komentar, user);
         mailService.mailApproveKeuangan(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/keuangan/list";
     }
 
     @PostMapping("/kewajiban/admin/keuangan/reject")
-    public String rejectKeuangan(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String rejectKeuangan(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveKeuangan(StatusApprove.REJECTED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveKeuangan(bebasKewajiban, komentar);
+        bebasKewajibanService.saveKeuangan(bebasKewajiban, komentar, user);
         mailService.mailRejectKeuangan(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/keuangan/list";
@@ -377,17 +395,23 @@ public class BebasKewajibanController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, search, search, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
         }else{
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusOrderByTanggalRequest(StatusRecord.AKTIF, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
         }
         model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.TLC, StatusRecord.AKTIF));
-        model.addAttribute("sertifikat", sertifikatTlcDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("sertifikat", kewajibanSertifikatTlcDao.findByStatus(StatusRecord.AKTIF));
+    }
+
+    @GetMapping("/kewajiban/admin/tlc/approval")
+    public void historiApprovalTlc(Model model){
+        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.TLC.toString()));
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.TLC, StatusRecord.AKTIF));
     }
 
     @GetMapping("/kewajiban/{sertifikat}/tlc")
-    public ResponseEntity<byte[]> showDocument(@PathVariable SertifikatTlc sertifikat) throws Exception{
-        String lokasiFile = uploadTlc + File.separator + sertifikat.getMahasiswa().getNim() + File.separator +
+    public ResponseEntity<byte[]> showDocument(@PathVariable KewajibanSertifikatTlc sertifikat) throws Exception{
+        String lokasiFile = uploadTlc + File.separator + sertifikat.getBebasKewajiban().getMahasiswa().getNim() + File.separator +
                 sertifikat.getFile();
 
         log.debug("lokasi file : {}" + lokasiFile);
@@ -413,28 +437,30 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/admin/tlc/approve")
-    public String approveTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String approveTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveTlc(StatusApprove.APPROVED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveTlc(bebasKewajiban, komentar);
+        bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user);
         mailService.mailApproveTlc(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/tlc/list";
     }
 
     @PostMapping("/kewajiban/admin/tlc/reject")
-    public String rejectTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String rejectTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveTlc(StatusApprove.REJECTED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        List<SertifikatTlc> listSerti = sertifikatTlcDao.findByStatusAndMahasiswa(StatusRecord.AKTIF, bebasKewajiban.getMahasiswa());
-        for (SertifikatTlc serti : listSerti){
+        List<KewajibanSertifikatTlc> listSerti = kewajibanSertifikatTlcDao.findByStatusAndBebasKewajiban(StatusRecord.AKTIF, bebasKewajiban);
+        for (KewajibanSertifikatTlc serti : listSerti){
             serti.setStatus(StatusRecord.HAPUS);
-            sertifikatTlcDao.save(serti);
+            kewajibanSertifikatTlcDao.save(serti);
         }
 
-        bebasKewajibanService.saveTlc(bebasKewajiban, komentar);
+        bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user);
         mailService.mailRejectTlc(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/tlc/list";
@@ -446,9 +472,9 @@ public class BebasKewajibanController {
     public void listKewajibanAkademik(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, search, search, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveAkademikNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
         }else{
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusOrderByTanggalRequest(StatusRecord.AKTIF, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveAkademikNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
         }
 
         model.addAttribute("hPerpus", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF));
@@ -459,24 +485,32 @@ public class BebasKewajibanController {
 
     }
 
+    @GetMapping("/kewajiban/admin/akademik/approval")
+    public void historiApprovalAkademik(Model model){
+        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.AKADEMIK.toString()));
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.AKADEMIK, StatusRecord.AKTIF));
+    }
+
     @PostMapping("/kewajiban/admin/akademik/approve")
-    public String approveAkademik(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String approveAkademik(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveAkademik(StatusApprove.APPROVED);
         bebasKewajiban.setStatusApprove(StatusApprove.APPROVED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveAkademik(bebasKewajiban, komentar);
+        bebasKewajibanService.saveAkademik(bebasKewajiban, komentar, user);
         mailService.mailApproveAkademik(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/akademik/list";
     }
 
     @PostMapping("/kewajiban/admin/akademik/reject")
-    public String rejectAkademik(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar){
+    public String rejectAkademik(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveAkademik(StatusApprove.REJECTED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveAkademik(bebasKewajiban, komentar);
+        bebasKewajibanService.saveAkademik(bebasKewajiban, komentar, user);
         mailService.mailRejectAkademik(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/akademik/list";

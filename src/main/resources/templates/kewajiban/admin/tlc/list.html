@@ -46,7 +46,7 @@
                         <form method="get">
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <h3 class="mb-0">Data </h3>
+                                    <a th:href="@{/kewajiban/admin/tlc/approval}" class="btn btn-sm btn-success">Histori Approval</a>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group mb-3">
@@ -111,12 +111,12 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div th:each="serti, row : ${sertifikat}">
-                                                            <h4 th:if="${data.mahasiswa.id == serti.mahasiswa.id}" th:text="${'Keterangan Ujian : ' + serti.keteranganUjian}">DIKAMPUSCENAH</h4>
+                                                            <h4 th:if="${data.id == serti.bebasKewajiban.id}" th:text="${'Keterangan Ujian : ' + serti.keteranganUjian}">DIKAMPUSCENAH</h4>
                                                             <ul class="list-group">
-                                                                <li th:if="${data.mahasiswa.id == serti.mahasiswa.id}" class="list-group-item">Tanggal : <p th:text="${serti.tanggalUjian}"></p></li>
-                                                                <li th:if="${data.mahasiswa.id == serti.mahasiswa.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">Tempat : <p th:text="${serti.tempatUjian}"></p></li>
-                                                                <li th:if="${data.mahasiswa.id == serti.mahasiswa.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">File :
-                                                                    <a class="btn btn-sm btn-warning" th:if="${data.mahasiswa.id == serti.mahasiswa.id}" th:href="@{/kewajiban/{sertifikat}/tlc(sertifikat=${serti.id})}">lihat file</a> </li>
+                                                                <li th:if="${data.id == serti.bebasKewajiban.id}" class="list-group-item">Tanggal : <p th:text="${serti.tanggalUjian}"></p></li>
+                                                                <li th:if="${data.id == serti.bebasKewajiban.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">Tempat : <p th:text="${serti.tempatUjian}"></p></li>
+                                                                <li th:if="${data.id == serti.bebasKewajiban.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">File :
+                                                                    <a class="btn btn-sm btn-warning" th:if="${data.id == serti.bebasKewajiban.id}" th:href="@{/kewajiban/{sertifikat}/tlc(sertifikat=${serti.id})}">lihat file</a> </li>
                                                             </ul>
                                                         </div>
                                                     </div>

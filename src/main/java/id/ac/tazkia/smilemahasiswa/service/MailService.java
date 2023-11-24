@@ -186,4 +186,21 @@ public class MailService {
                 output.toString());
     }
 
+    public void templateNotifAdmin(PendaftaranBebasKewajiban bebasKewajiban, String bagian, Karyawan karyawan){
+        Mustache templateEmail = mustacheFactory.compile("templates/email/bebasKewajiban/admin/request.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nama", bebasKewajiban.getMahasiswa().getNama());
+        data.put("nim", bebasKewajiban.getMahasiswa().getNim());
+        data.put("prodi", bebasKewajiban.getMahasiswa().getIdProdi().getNamaProdi());
+        data.put("bagian", bagian);
+
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail("Smile Notifikasi",
+                karyawan.getEmail(),
+                "Pengumuman Bebas Kewajiban",
+                output.toString());
+    }
+
 }

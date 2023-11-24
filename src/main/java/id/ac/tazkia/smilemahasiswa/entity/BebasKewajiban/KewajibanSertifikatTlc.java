@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class SertifikatTlc {
+public class KewajibanSertifikatTlc {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -19,8 +19,8 @@ public class SertifikatTlc {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "id_mahasiswa")
-    private Mahasiswa mahasiswa;
+    @JoinColumn(name = "id_pendaftaran")
+    private PendaftaranBebasKewajiban bebasKewajiban;
 
     private LocalDate tanggalUjian;
 
