@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
 import id.ac.tazkia.smilemahasiswa.service.BebasKewajibanService;
@@ -29,9 +30,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -75,6 +78,12 @@ public class BebasKewajibanController {
     KewajibanSertifikatTlcDao kewajibanSertifikatTlcDao;
 
     @Autowired
+    KrsDao krsDao;
+
+    @Autowired
+    KrsDetailDao krsDetailDao;
+
+    @Autowired
     CurrentUserService currentUserService;
 
     @Autowired
@@ -111,7 +120,9 @@ public class BebasKewajibanController {
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
 
         PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findByMahasiswa(mhs);
-        log.info("Mahasiswa : {}", bebasKewajiban);
+        if ("S2".equalsIgnoreCase(mhs.getIdProdi().getIdJenjang().getKodeJenjang())) {
+            model.addAttribute("mhsS2", "Hide menu TLC untuk s2");
+        }
 
         model.addAttribute("bebasKewajiban", bebasKewajiban);
         model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban));
@@ -120,7 +131,7 @@ public class BebasKewajibanController {
         HistoriBebasKewajiban kabagperpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KABAG_PERPUS, StatusRecord.AKTIF);
         HistoriBebasKewajiban keuangan = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KEUANGAN, StatusRecord.AKTIF);
         HistoriBebasKewajiban tlc = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.TLC, StatusRecord.AKTIF);
-        HistoriBebasKewajiban akademik = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF);
+        HistoriBebasKewajiban akademik = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.AKADEMIK, StatusRecord.AKTIF);
         if (perpus != null) {
             model.addAttribute("hPerpus", perpus);
         }
@@ -137,6 +148,30 @@ public class BebasKewajibanController {
             model.addAttribute("hAkademik", akademik);
         }
 
+    }
+
+    @GetMapping("/kewajiban/mahasiswa/transcript")
+    public void trancstiptDetail(Model model, @RequestParam String nim){
+        model.addAttribute("nim", nim);
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        if (mahasiswa != null) {
+            model.addAttribute("mhs", mahasiswa);
+
+            // tampilsemua
+            List<DataTranskript> listTransc = krsDetailDao.listTranskript(mahasiswa);
+            int sks = listTransc.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+            BigDecimal mutu = listTransc.stream().map(DataTranskript::getMutu)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+            model.addAttribute("transkriptTampil", listTransc);
+            model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
+            model.addAttribute("sks", sks);
+            model.addAttribute("mutu", mutu);
+            model.addAttribute("ipk", mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP));
+        } else {
+            model.addAttribute("message", "error message");
+        }
     }
 
     @PostMapping("/kewajiban/mahasiswa/tlc/dikampus")

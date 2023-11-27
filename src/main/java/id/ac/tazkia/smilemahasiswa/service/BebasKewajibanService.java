@@ -25,6 +25,9 @@ import java.util.List;
 @Transactional @Slf4j
 public class BebasKewajibanService {
 
+    public static final String jenjangS1 = "S1";
+    public static final String jenjangS2 = "S2";
+
     @Value("${logo.surat}")
     private String logo;
 
@@ -57,7 +60,12 @@ public class BebasKewajibanService {
         PendaftaranBebasKewajiban cek = bebasKewajibanDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
         if (cek == null) {
             PendaftaranBebasKewajiban kewajiban = new PendaftaranBebasKewajiban();
-            kewajiban.setMahasiswa(mahasiswa);
+            if (jenjangS1.equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
+                kewajiban.setMahasiswa(mahasiswa);
+            } else if (jenjangS2.equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
+                kewajiban.setStatusApproveTlc(StatusApprove.APPROVED);
+                kewajiban.setMahasiswa(mahasiswa);
+            }
             bebasKewajibanDao.save(kewajiban);
 
             List<KewajibanPerpus> listKewajiban = kewajibanPerpusDao.findByStatusOrderById(StatusRecord.AKTIF);
@@ -98,11 +106,11 @@ public class BebasKewajibanService {
             Karyawan karyawan = karyawanDao.findByIdUser(u);
             mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
         }
-//        List<User> tlc = userDao.findByRoleId("tlc");
-//        for (User u : kabagperpus){
-//            Karyawan karyawan = karyawanDao.findByIdUser(u);
-//            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", karyawan);
-//        }
+        List<User> tlc = userDao.findByRoleId("tlc");
+        for (User u : kabagperpus){
+            Karyawan karyawan = karyawanDao.findByIdUser(u);
+            mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
+        }
 
         // Admin akademik
         Karyawan a1 = karyawanDao.findByEmail("riska@tazkia.ac.id");

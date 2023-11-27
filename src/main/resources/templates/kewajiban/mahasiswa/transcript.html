@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcript</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap"
+            rel="stylesheet"
+    />
+</head>
+<body>
+<div class="container">
+    <div class="mt-5"></div>
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body" th:each="dataSemester,row : ${semesterTranskript}">
+                        <span>
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
+                                <div class="card-header text-bg-primary border-0">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3 th:if="${dataSemester[3] == 'PENDEK'}" class="mb-0" th:text="${dataSemester[2] + ' ( Semester ' + dataSemester[3] + ')'}">Semester<b> 1</b></h3>
+
+                                            <h3 th:if="${dataSemester[3] != 'PENDEK'}" class="mb-0" th:text="${dataSemester[2] + ' ( Semester ' + dataSemester[4] + ')'}">Semester<b> 1</b></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Kode MK</th>
+                                        <th>Nama Mata Kuliah</th>
+                                        <th>SKS</th>
+                                        <th>Grade</th>
+                                        <th>Bobot</th>
+                                        <th>Mutu</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data : ${transkriptTampil}">
+                                        <td th:if="${#strings.toString(dataSemester[4]) == data.semester}" th:text="${data.kode}">AEM1101</td>
+                                        <td th:if="${#strings.toString(dataSemester[4]) == data.semester}" th:text="${data.matkul}">Dirasah Islamiah</td>
+                                        <td th:if="${#strings.toString(dataSemester[4]) == data.semester}" th:text="${data.sks}"><b>3</b></td>
+                                        <td th:if="${#strings.toString(dataSemester[4]) == data.semester}" th:text="${data.grade}"><button class="bd-primary"><b>B</b></button></td>
+                                        <td th:if="${#strings.toString(dataSemester[4]) == data.semester}" th:text="${data.bobot}"><button class="bd-danger"><b>3.00</b></button></td>
+                                        <td th:if="${#strings.toString(dataSemester[4]) == data.semester}" th:text="${data.mutu}"><b>9</b></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+
+                        </span>
+                    </div>
+
+                    <div class="card shadow" style="margin-top: 7px;" th:if="${message == null}">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead>
+                                <tr>
+                                    <th style="color: white;">Kode MK</th>
+                                    <th class="text-right"><span style="color: white">Nama Maa</span> Jumlah :</th>
+                                    <th><b th:text="${sks}">75</b> (SKS)</th>
+                                    <th colspan="2" ><b th:text="${ipk}"></b> (IPK)</th>
+                                    <th style="color: white;">ea</th>
+                                    <th><b th:text="${mutu}">292.8</b> (Mutu)</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-5"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

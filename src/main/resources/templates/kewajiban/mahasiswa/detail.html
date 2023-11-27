@@ -112,7 +112,7 @@
                     </div>
                      <div class="nav-step-line"></div>
                 </div>
-                <div class="nav-item-wrapper">
+                <div th:if="${mhsS2 == null}" class="nav-item-wrapper">
                     <div class="d-flex flex-nowrap " id="v-pills-tlc-tab" data-bs-toggle="pill" data-bs-target="#v-pills-tlc" type="button" role="tab" aria-controls="v-pills-tlc" aria-selected="false">
                         <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
                             3
@@ -137,7 +137,12 @@
                 <div class="nav-item-wrapper">
                     <div class="d-flex flex-nowrap " id="v-pills-akademik-tab" data-bs-toggle="pill" data-bs-target="#v-pills-akademik" type="button" role="tab" aria-controls="v-pills-akademik" aria-selected="false">
                         <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
-                            4
+                            <div th:if="${mhsS2 == null}">
+                                4
+                            </div>
+                            <div th:if="${mhsS2 != null}">
+                                3
+                            </div>
                         </div>
                         <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
@@ -159,7 +164,12 @@
                 <div class="nav-item-wrapper">
                     <div class="d-flex flex-nowrap " id="v-pills-complete-tab" data-bs-toggle="pill" data-bs-target="#v-pills-complete" type="button" role="tab" aria-controls="v-pills-complete" aria-selected="false">
                         <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
-                            5
+                            <div th:if="${mhsS2 == null}">
+                                5
+                            </div>
+                            <div th:if="${mhsS2 != null}">
+                                4
+                            </div>
                         </div>
                         <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
@@ -276,6 +286,9 @@
                     <p>Pastikan bahwa nama tersebut telah menyelesaikan tugas kewajiban ke bagian akademik, sebagai berikut: </p>
                     <p><b>1. Beban studi(SKS) dari bagian akademik.</b></p>
                     <p><b>2. Menyerahkan kartu mahasiswa (KTM).</b></p>
+                    <div class="d-grid d-md-flex justify-content-md-end">
+                        <a type="button" target="_blank" th:href="@{/kewajiban/mahasiswa/transcript(nim=${bebasKewajiban.mahasiswa.nim})}" class="btn btn-info me-md-2">Lihat Transkrip Nilai</a>
+                    </div>
                     <br><br>
                     <div th:if="${hAkademik != null}">
                         <b th:text="${#temporals.format(hAkademik.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hAkademik.statusApprove}"></b>
