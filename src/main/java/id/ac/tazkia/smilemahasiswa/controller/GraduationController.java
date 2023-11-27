@@ -289,7 +289,9 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/alert")
-    public void alert(@RequestParam(required = false) String matkul, Model model) {
+    public void alert(@RequestParam(required = false) String matkul, @RequestParam(required = false) String title,
+            Model model) {
+        model.addAttribute("title", title);
         model.addAttribute("matkul", matkul);
     }
 
@@ -2414,15 +2416,20 @@ public class GraduationController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
+        Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
 
-        if (!StringUtils.hasText(id)) {
-            model.addAttribute("magang", new FileMagang());
-            return "graduation/magang/mahasiswa/form";
-
+        if (magang.length == 0) {
+            return "redirect:alert?matkul=Magang&title=Magang";
         } else {
-            model.addAttribute("magang", fileMagangDao.findById(id).get());
-            return "graduation/magang/mahasiswa/form";
+            if (!StringUtils.hasText(id)) {
+                model.addAttribute("magang", new FileMagang());
+                return "graduation/magang/mahasiswa/form";
 
+            } else {
+                model.addAttribute("magang", fileMagangDao.findById(id).get());
+                return "graduation/magang/mahasiswa/form";
+
+            }
         }
     }
 
