@@ -107,7 +107,7 @@ public class BebasKewajibanService {
             mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
         }
         List<User> tlc = userDao.findByRoleId("tlc");
-        for (User u : kabagperpus){
+        for (User u : tlc){
             Karyawan karyawan = karyawanDao.findByIdUser(u);
             mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
         }
