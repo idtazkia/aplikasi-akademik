@@ -74,7 +74,8 @@
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
                                     <th scope="col" width="30px;">Komentar</th>
-                                    <th scope="col" width="30px;">Status</th>
+                                    <th scope="col" width="30px;">Status Staff</th>
+                                    <th scope="col" width="30px;">Status Kabag</th>
                                     <th scope="col" style="width: 200px;">Waktu Approval</th>
                                     <th scope="col" width="30px;">User Approval</th>
 
@@ -112,8 +113,11 @@
                                     <td >
                                         <button type="button" class="btn btn-success btn-sm" th:text="${data[6]}">APPROVED</button>
                                     </td>
+                                    <td >
+                                        <button type="button" class="btn btn-primary btn-sm" th:text="${data[7]}">APPROVED</button>
+                                    </td>
                                     <td th:text="${data[5]}">2020</td>
-                                    <td th:text="${data[7]}">2020</td>
+                                    <td th:text="${data[8]}">2020</td>
                                 </tr>
                                 </tbody>
                             </table>

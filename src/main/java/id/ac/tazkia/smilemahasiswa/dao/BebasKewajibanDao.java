@@ -33,7 +33,10 @@ public interface BebasKewajibanDao extends PagingAndSortingRepository<Pendaftara
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveAkademikNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
 
-    @Query(value = "select pb.id, m.nim, m.nama, p.nama_prodi, m.angkatan, hb.waktu_input as waktu, hb.status_approve, u.username from pendaftaran_bebas_kewajiban pb inner join histori_bebas_kewajiban hb on pb.id=hb.id_pendaftaran inner join mahasiswa m on pb.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join s_user u on hb.user_modified=u.id where hb.status_approve='APPROVED' and by_bagian=?1 group by pb.id_mahasiswa order by waktu_input desc", nativeQuery = true)
+    @Query(value = "select pb.id, m.nim, m.nama, p.nama_prodi, m.angkatan, hb.waktu_input as waktu, hb.status_approve, coalesce(u.username, '-') from pendaftaran_bebas_kewajiban pb inner join histori_bebas_kewajiban hb on pb.id=hb.id_pendaftaran inner join mahasiswa m on pb.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join s_user u on hb.user_modified=u.id where hb.status_approve='APPROVED' and by_bagian=?1 group by pb.id_mahasiswa order by waktu_input desc", nativeQuery = true)
     List<Object[]> historiApproval(String bagian);
+
+    @Query(value = "select pb.id, m.nim, m.nama, p.nama_prodi, m.angkatan, hb.waktu_input as waktu, hb.status_approve, pb.status_approve_kabag_perpus as statusKabag, coalesce(u.username, '-') from pendaftaran_bebas_kewajiban pb inner join histori_bebas_kewajiban hb on pb.id=hb.id_pendaftaran inner join mahasiswa m on pb.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join s_user u on hb.user_modified=u.id where hb.status_approve='APPROVED' and by_bagian=?1 group by pb.id_mahasiswa order by waktu_input desc", nativeQuery = true)
+    List<Object[]> historiApprovalPerpus(String bagian);
 
 }

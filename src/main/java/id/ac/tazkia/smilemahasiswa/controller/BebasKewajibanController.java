@@ -304,7 +304,7 @@ public class BebasKewajibanController {
     @GetMapping("/kewajiban/admin/perpus/approval/staff")
     public void historiApprovalStaff(Model model){
 
-        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.PERPUSTAKAAN.toString()));
+        model.addAttribute("list", bebasKewajibanDao.historiApprovalPerpus(ByBagian.PERPUSTAKAAN.toString()));
         model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF));
 
     }

@@ -77,6 +77,7 @@ public class BebasKewajibanService {
             }
             // kirim notifikasi ke admin masing - masing
             kirimEmailAdmin(kewajiban);
+            createFirstHistoriApproval(kewajiban);
         }
     }
 
@@ -117,6 +118,44 @@ public class BebasKewajibanService {
         mailService.templateNotifAdmin(bebasKewajiban, "akademik", a1);
         Karyawan a2 = karyawanDao.findByEmail("anaminuri@tazkia.ac.id");
         mailService.templateNotifAdmin(bebasKewajiban, "akademik", a2);
+    }
+
+    public void createFirstHistoriApproval(PendaftaranBebasKewajiban bebasKewajiban){
+        // bagian staff perpus
+        HistoriBebasKewajiban historiAwalPerpus = new HistoriBebasKewajiban();
+        historiAwalPerpus.setBebasKewajiban(bebasKewajiban);
+        historiAwalPerpus.setKomentar("Menunggu respon dari bagian staf perpus.");
+        historiAwalPerpus.setByBagian(ByBagian.PERPUSTAKAAN);
+        historiAwalPerpus.setStatusApprove(bebasKewajiban.getStatusApprovePerpus());
+        historiBebasKewajibanDao.save(historiAwalPerpus);
+        // bagian Kabag perpus
+        HistoriBebasKewajiban historiAwalKabagPerpus = new HistoriBebasKewajiban();
+        historiAwalKabagPerpus.setBebasKewajiban(bebasKewajiban);
+        historiAwalKabagPerpus.setKomentar("Menunggu respon dari kepala bagian perpus.");
+        historiAwalKabagPerpus.setByBagian(ByBagian.KABAG_PERPUS);
+        historiAwalKabagPerpus.setStatusApprove(bebasKewajiban.getStatusApproveKabagPerpus());
+        historiBebasKewajibanDao.save(historiAwalKabagPerpus);
+        // bagian keuangan
+        HistoriBebasKewajiban historiAwalKeuangan = new HistoriBebasKewajiban();
+        historiAwalKeuangan.setBebasKewajiban(bebasKewajiban);
+        historiAwalKeuangan.setKomentar("Menunggu respon dari bagian keuangan.");
+        historiAwalKeuangan.setByBagian(ByBagian.KEUANGAN);
+        historiAwalKeuangan.setStatusApprove(bebasKewajiban.getStatusApproveKeuangan());
+        historiBebasKewajibanDao.save(historiAwalKeuangan);
+        // bagian staff TLC
+        HistoriBebasKewajiban historiAwalTlc = new HistoriBebasKewajiban();
+        historiAwalTlc.setBebasKewajiban(bebasKewajiban);
+        historiAwalTlc.setKomentar("Menunggu respon dari bagian TLC.");
+        historiAwalTlc.setByBagian(ByBagian.TLC);
+        historiAwalTlc.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
+        historiBebasKewajibanDao.save(historiAwalTlc);
+        // bagian staff Akademik
+        HistoriBebasKewajiban historiAwalAkademik = new HistoriBebasKewajiban();
+        historiAwalAkademik.setBebasKewajiban(bebasKewajiban);
+        historiAwalAkademik.setKomentar("Menunggu respon dari bagian akademik.");
+        historiAwalAkademik.setByBagian(ByBagian.AKADEMIK);
+        historiAwalAkademik.setStatusApprove(bebasKewajiban.getStatusApproveAkademik());
+        historiBebasKewajibanDao.save(historiAwalAkademik);
     }
 
     public void saveStaffPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
