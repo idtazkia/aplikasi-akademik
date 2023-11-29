@@ -86,38 +86,30 @@ public class BebasKewajibanService {
         // Admin perpus
         List<User> perpus = userDao.findByRoleId("perpustakaan");
         for (User u : perpus){
-            Karyawan karyawan = karyawanDao.findByIdUser(u);
-            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", karyawan);
+            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", u.getUsername());
         }
         List<User> kabagperpus = userDao.findByRoleId("kabagperpus");
         for (User u : kabagperpus){
-            Karyawan karyawan = karyawanDao.findByIdUser(u);
-            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", karyawan);
+            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", u.getUsername());
         }
 
         // Admin keuangan
-        Karyawan k1 = karyawanDao.findByEmail("ahmadrisan@tazkia.ac.id");
-        mailService.templateNotifAdmin(bebasKewajiban, "keuangan", k1);
-        Karyawan k2 = karyawanDao.findByEmail("mfurqonh@tazkia.ac.id");
-        mailService.templateNotifAdmin(bebasKewajiban, "keuangan", k2);
+        mailService.templateNotifAdmin(bebasKewajiban, "keuangan", "ahmadrisan@tazkia.ac.id");
+        mailService.templateNotifAdmin(bebasKewajiban, "keuangan", "mfurqonh@tazkia.ac.id");
 
         // Admin TLC
         List<User> stafTlc = userDao.findByRoleId("staftlc");
         for (User u : stafTlc){
-            Karyawan karyawan = karyawanDao.findByIdUser(u);
-            mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
+            mailService.templateNotifAdmin(bebasKewajiban, "tlc", u.getUsername());
         }
         List<User> tlc = userDao.findByRoleId("tlc");
         for (User u : tlc){
-            Karyawan karyawan = karyawanDao.findByIdUser(u);
-            mailService.templateNotifAdmin(bebasKewajiban, "tlc", karyawan);
+            mailService.templateNotifAdmin(bebasKewajiban, "tlc", u.getUsername());
         }
 
         // Admin akademik
-        Karyawan a1 = karyawanDao.findByEmail("riska@tazkia.ac.id");
-        mailService.templateNotifAdmin(bebasKewajiban, "akademik", a1);
-        Karyawan a2 = karyawanDao.findByEmail("anaminuri@tazkia.ac.id");
-        mailService.templateNotifAdmin(bebasKewajiban, "akademik", a2);
+        mailService.templateNotifAdmin(bebasKewajiban, "akademik", "riska@tazkia.ac.id");
+        mailService.templateNotifAdmin(bebasKewajiban, "akademik", "anaminuri@tazkia.ac.id");
     }
 
     public void createFirstHistoriApproval(PendaftaranBebasKewajiban bebasKewajiban){
