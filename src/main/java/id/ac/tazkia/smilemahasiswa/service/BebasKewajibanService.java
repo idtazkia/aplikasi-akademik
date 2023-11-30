@@ -163,7 +163,7 @@ public class BebasKewajibanService {
             // kirim email di  approve
             mailService.mailApprovePerpus(bebasKewajiban, "DONE");
         }else{
-            bebasKewajiban.setStatusApprovePerpus(StatusApprove.WAITING);
+            bebasKewajiban.setStatusApprovePerpus(StatusApprove.REJECTED);
             bebasKewajibanDao.save(bebasKewajiban);
 
             // kirim email di reject

@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.PendaftaranBebasKewajiban;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
@@ -23,6 +24,16 @@ public class MailService {
 
     @Autowired
     private MustacheFactory mustacheFactory;
+
+    @Scheduled(cron = "0 00 20 * * *", zone = "Asia/Jakarta")
+    public void testNotifEmail(){
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                "smile.notifikasi@tazkia.ac.id",
+                "Test",
+                "test"
+        );
+    }
 
     public void detailWisuda(WisudaDto wisudaDto) {
             Mustache templateEmail = mustacheFactory.compile("templates/email/wisuda/detail.html");
