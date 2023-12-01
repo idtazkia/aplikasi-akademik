@@ -564,24 +564,27 @@
                                     Import Nilai Dosen
                                 </a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
-                                <a class="nav-link " th:href="@{/elearning/importAbsenDosen}">
-                                    Import Absensi Dosen
-                                </a>
-                            </li>
 
-                            <!--admin-->
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
-                                <a class="nav-link " th:href="@{/elearning/importAbsen}">
-                                    Import Absen
-                                </a>
-                            </li>
 
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
-                                <a class="nav-link " th:href="@{/elearning/importAbsenProdi}">
-                                    Import Absen Prodi
-                                </a>
-                            </li>
+<!--                            sementara di close-->
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">-->
+<!--                                <a class="nav-link " th:href="@{/elearning/importAbsenDosen}">-->
+<!--                                    Import Absensi Dosen-->
+<!--                                </a>-->
+<!--                            </li>-->
+
+<!--                            &lt;!&ndash;admin&ndash;&gt;-->
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">-->
+<!--                                <a class="nav-link " th:href="@{/elearning/importAbsen}">-->
+<!--                                    Import Absen-->
+<!--                                </a>-->
+<!--                            </li>-->
+
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">-->
+<!--                                <a class="nav-link " th:href="@{/elearning/importAbsenProdi}">-->
+<!--                                    Import Absen Prodi-->
+<!--                                </a>-->
+<!--                            </li>-->
 
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a class="nav-link " th:href="@{/elearning/importNilai}">
