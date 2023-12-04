@@ -698,6 +698,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and mk.konsep_note = 'MAGANG' and kd.nilai_akhir >= 55 limit 1", nativeQuery = true)
         Object[] validasiMagang(Mahasiswa mahasiswa);
 
+        @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and mk.konsep_note = 'MAGANG' limit 1", nativeQuery = true)
+        Object[] validasiLaporanMagang(Mahasiswa mahasiswa);
+
         @Query(value = "select d.id as kodeakademik ,b.id,mk.kode_matakuliah as kode ,mk.nama_matakuliah_english as matakuliah,b.nilai_presensi as presensi ,b.nilai_tugas as tugas,b.nilai_uts as uts,b.nilai_uas as uas, coalesce (b.nilai_akhir,0) as nilaiAkhir,coalesce(c.bobot,0)  as bobot,coalesce (c.nama,'E') as grade from krs as a inner join krs_detail as b on a.id = b.id_krs left join grade as c on b.nilai_akhir >= c.bawah and b.nilai_akhir <= c.atas inner join matakuliah_kurikulum as m on b.id_matakuliah_kurikulum = m.id inner join matakuliah as mk on m.id_matakuliah = mk.id inner join tahun_akademik as d on d.id = a.id_tahun_akademik where a.id_mahasiswa= ?1 and a.status='AKTIF' and b.status='aktif' order by d.id desc", nativeQuery = true)
         List<Object[]> khsHistoty(Mahasiswa mahasiswa);
 

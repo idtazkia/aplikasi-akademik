@@ -235,6 +235,9 @@ public class GraduationController {
         }
     }
 
+    @GetMapping("/graduation/flow")
+    public void flow(){}
+
     // Graduation Mahasiswa
     @GetMapping("/graduation/finance")
     public void alertFinance() {
@@ -2416,7 +2419,7 @@ public class GraduationController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
-        Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
+        Object[] magang = krsDetailDao.validasiLaporanMagang(mahasiswa);
 
         if (magang.length == 0) {
             return "redirect:alert?matkul=Magang&title=Magang";
