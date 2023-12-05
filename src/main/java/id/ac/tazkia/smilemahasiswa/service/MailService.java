@@ -185,7 +185,11 @@ public class MailService {
         data.put("nim", bebasKewajiban.getMahasiswa().getNim());
         data.put("noTelp", bebasKewajiban.getMahasiswa().getTeleponSeluler());
         data.put("prodi", bebasKewajiban.getMahasiswa().getIdProdi().getNamaProdi());
-        data.put("konsentrasi", bebasKewajiban.getMahasiswa().getIdKonsentrasi().getNamaKonsentrasi());
+        if (bebasKewajiban.getMahasiswa().getIdKonsentrasi() == null) {
+            data.put("konsentrasi", "-");
+        }else{
+            data.put("konsentrasi", bebasKewajiban.getMahasiswa().getIdKonsentrasi().getNamaKonsentrasi());
+        }
         data.put("komentar", komentar);
 
         StringWriter output = new StringWriter();

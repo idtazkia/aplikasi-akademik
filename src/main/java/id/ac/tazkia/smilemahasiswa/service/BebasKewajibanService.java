@@ -19,7 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.chrono.HijrahDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional @Slf4j
@@ -86,11 +90,11 @@ public class BebasKewajibanService {
         // Admin perpus
         List<User> perpus = userDao.findByRoleId("perpustakaan");
         for (User u : perpus){
-            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", u.getUsername());
+            mailService.templateNotifAdmin(bebasKewajiban, "perpus", u.getUsername());
         }
         List<User> kabagperpus = userDao.findByRoleId("kabagperpus");
         for (User u : kabagperpus){
-            mailService.templateNotifAdmin(bebasKewajiban, "perpustakaan", u.getUsername());
+            mailService.templateNotifAdmin(bebasKewajiban, "perpus", u.getUsername());
         }
 
         // Admin keuangan
@@ -250,6 +254,23 @@ public class BebasKewajibanService {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
 
+        HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
+        String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
+        String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("d", new Locale("en")));
+        String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
+
+        if ("Jumada I".equals(namaBulanHijri)) {
+            namaBulanHijri = "Jumadil Awal";
+        } else if ("Jumada II".equals(namaBulanHijri)) {
+            namaBulanHijri = "Jumadil Akhir";
+        } else if ("Rabiʻ I".equals(namaBulanHijri)) {
+            namaBulanHijri = "Rabi'ul Awal";
+        }else if ("Rabiʻ II".equals(namaBulanHijri)){
+            namaBulanHijri = "Rabi'ul Akhir";
+        }else {
+            namaBulanHijri = namaBulanHijri;
+        }
+
         document.open();
 
         Image background = Image.getInstance(logo + File.separator + "LOGO TR.png");
@@ -292,11 +313,13 @@ public class BebasKewajibanService {
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
+        Paragraph line = new Paragraph("\n");
+        document.add(line);
 
         PdfPTable table = new PdfPTable(3);
-        table.setWidthPercentage(70);
+//        table.setWidthPercentage(70);
         table.setWidths(new int[] {10,1,15});
-        table.setSpacingBefore(10);
+//        table.setSpacingBefore(10);
         Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font.setColor(CMYKColor.BLACK);
 
@@ -351,6 +374,7 @@ public class BebasKewajibanService {
 //        table.addCell(cell);
 
         document.add(table);
+        document.add(line);
 
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("adalah benar telah menyelesaikan semua persyaratan akademik dan telah mengikuti sidang tugas akhir sebagai ujian penutup pada Program Studi ", fStandard));
@@ -359,11 +383,56 @@ public class BebasKewajibanService {
         paragrafkosong.add(new Chunk(bebasKewajiban.getMahasiswa().getIdProdi().getFakultas().getNamaFakultas(), fStandard));
         paragrafkosong.add(new Chunk(" di Institut Agama Islam Tazkia dan telah dinyatakan ", fStandard));
         paragrafkosong.add(new Chunk("LULUS ", fontB));
-        paragrafkosong.add(new Chunk(" untuk menyandang gelar ", fStandard));
+        paragrafkosong.add(new Chunk(" untuk menyandang gelar", fStandard));
+        paragrafkosong.add(new Chunk(bebasKewajiban.getMahasiswa().getIdProdi().getKeterangan(), fStandard));
 //        paragrafkosong.add(new Chunk(" sebagai berikut:", fStandard));
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
+        document.add(line);
+
+        paragrafkosong = new Paragraph("Demikian, sementara menunggu ijazah asli, maka Surat Tanda Keterangan Lulus ini dapat dipergunakan sebagaimana mestinya.", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+        document.add(line);
+        document.add(line);
+
+        Image wassalam = Image.getInstance(logo + File.separator + "wassalam.png");
+        wassalam.scaleToFit(140, 140);
+        wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - table.getTotalHeight() - 415);
+        document.add(wassalam);
+
+        paragrafkosong = new Paragraph();
+        paragrafkosong.add(new Chunk("Bogor, ", fStandard));
+        paragrafkosong.add(new Chunk(LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong.add(new Chunk(" / ", fStandard));
+        paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        Paragraph jabatan = new Paragraph("Wakil Rektor Bidang Akademik,", kodeFont);
+        jabatan.setAlignment(Paragraph.ALIGN_BASELINE);
+        jabatan.setIndentationLeft(50);
+        document.add(jabatan);
+        document.add(nLine);
+
+        Paragraph kpsName = new Paragraph("Yaser Taufik Syamlan, M.E., CIFP", titleFont);
+        kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
+        kpsName.setIndentationLeft(50);
+        document.add(kpsName);
+
+        Paragraph nidn = new Paragraph("NIK 3511", kodeFont);
+        nidn.setAlignment(Paragraph.ALIGN_BASELINE);
+        nidn.setIndentationLeft(50);
+        nidn.setFont(kodeFont);
+        document.add(nidn);
+
+        Image footer = Image.getInstance(logo + File.separator + "footer.png");
+        footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
+        footer.setAbsolutePosition( 10, 10);
+        document.add(footer);
 
         document.close();
 
