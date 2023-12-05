@@ -110,10 +110,12 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div th:each="serti, row : ${sertifikat}">
+                                                        <div th:if="${not #lists.isEmpty(sertifikat)}" th:each="serti, row : ${sertifikat}">
                                                             <h4 th:if="${data.id == serti.bebasKewajiban.id}" th:text="${'Keterangan Ujian : ' + serti.keteranganUjian}">DIKAMPUSCENAH</h4>
                                                             <ul class="list-group">
+                                                                <li th:if="${data.id != serti.bebasKewajiban.id}" class="list-group-item"><h5>Mahasiswa belum mengupload keterangan sertifikat TOEFL/IELTS</h5></li>
                                                                 <li th:if="${data.id == serti.bebasKewajiban.id}" class="list-group-item">Tanggal : <p th:text="${serti.tanggalUjian}"></p></li>
+                                                                <li th:if="${data.id == serti.bebasKewajiban.id}" class="list-group-item">Jenis : <p th:text="${serti.jenisTes}"></p></li>
                                                                 <li th:if="${data.id == serti.bebasKewajiban.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">Tempat : <p th:text="${serti.tempatUjian}"></p></li>
                                                                 <li th:if="${data.id == serti.bebasKewajiban.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">File :
                                                                     <a class="btn btn-sm btn-warning" th:if="${data.id == serti.bebasKewajiban.id}" th:href="@{/kewajiban/{sertifikat}/tlc(sertifikat=${serti.id})}">lihat file</a> </li>

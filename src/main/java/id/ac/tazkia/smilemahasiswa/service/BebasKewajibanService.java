@@ -106,10 +106,6 @@ public class BebasKewajibanService {
         for (User u : stafTlc){
             mailService.templateNotifAdmin(bebasKewajiban, "tlc", u.getUsername());
         }
-        List<User> tlc = userDao.findByRoleId("tlc");
-        for (User u : tlc){
-            mailService.templateNotifAdmin(bebasKewajiban, "tlc", u.getUsername());
-        }
 
         // Admin akademik
         mailService.templateNotifAdmin(bebasKewajiban, "akademik", "riska@tazkia.ac.id");

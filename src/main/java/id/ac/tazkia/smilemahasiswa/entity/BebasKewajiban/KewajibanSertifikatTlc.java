@@ -31,6 +31,8 @@ public class KewajibanSertifikatTlc {
     @Enumerated(EnumType.STRING)
     private ByBagian keteranganUjian;
 
+    private String jenisTes;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 

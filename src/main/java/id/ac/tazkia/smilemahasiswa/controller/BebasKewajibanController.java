@@ -175,13 +175,14 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/mahasiswa/tlc/dikampus")
-    public String sertiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal){
+    public String sertiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String jenis){
         KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
             KewajibanSertifikatTlc tlc = new KewajibanSertifikatTlc();
             tlc.setBebasKewajiban(bebasKewajiban);
             tlc.setTanggalUjian(LocalDate.parse(tanggal));
             tlc.setKeteranganUjian(ByBagian.DIKAMPUS);
+            tlc.setJenisTes(jenis);
             kewajibanSertifikatTlcDao.save(tlc);
         }
 
@@ -189,7 +190,7 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/mahasiswa/tlc/diluar")
-    public String sertiTlcDiluar(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String tempat, MultipartFile file) throws IOException {
+    public String sertiTlcDiluar(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String tempat, @RequestParam String jenis, MultipartFile file) throws IOException {
         KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
 
@@ -220,6 +221,7 @@ public class BebasKewajibanController {
             tlc.setTempatUjian(tempat);
             tlc.setTanggalUjian(LocalDate.parse(tanggal));
             tlc.setKeteranganUjian(ByBagian.DILUAR);
+            tlc.setJenisTes(jenis);
             kewajibanSertifikatTlcDao.save(tlc);
         }
 
