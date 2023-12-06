@@ -71,6 +71,7 @@
                                     <th scope="col">Nama</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
+                                    <th scope="col">Tanggal Pengajuan</th>
                                     <th scope="col" width="30px;">Status</th>
                                     <th scope="col"></th>
                                     <th scope="col" colspan="2"></th>
@@ -84,6 +85,7 @@
                                     <td th:text="${data.mahasiswa.nama}">12</td>
                                     <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
                                     <td th:text="${data.mahasiswa.angkatan}">2020</td>
+                                    <td th:text="${#temporals.format(data.tanggalRequest, 'dd-MM-yyyy')}"></td>
                                     <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING}">
                                         <button type="button" class="btn btn-warning btn-sm">WAITING</button>
                                     </td>
@@ -113,7 +115,6 @@
                                                         <div th:if="${not #lists.isEmpty(sertifikat)}" th:each="serti, row : ${sertifikat}">
                                                             <h4 th:if="${data.id == serti.bebasKewajiban.id}" th:text="${'Keterangan Ujian : ' + serti.keteranganUjian}">DIKAMPUSCENAH</h4>
                                                             <ul class="list-group">
-                                                                <li th:if="${data.id != serti.bebasKewajiban.id}" class="list-group-item"><h5>Mahasiswa belum mengupload keterangan sertifikat TOEFL/IELTS</h5></li>
                                                                 <li th:if="${data.id == serti.bebasKewajiban.id}" class="list-group-item">Tanggal : <p th:text="${serti.tanggalUjian}"></p></li>
                                                                 <li th:if="${data.id == serti.bebasKewajiban.id}" class="list-group-item">Jenis : <p th:text="${serti.jenisTes}"></p></li>
                                                                 <li th:if="${data.id == serti.bebasKewajiban.id && serti.keteranganUjian == serti.keteranganUjian.DILUAR}" class="list-group-item">Tempat : <p th:text="${serti.tempatUjian}"></p></li>
