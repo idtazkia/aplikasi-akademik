@@ -218,4 +218,23 @@ public class MailService {
                 output.toString());
     }
 
+    
+    public void attendanceReminder(Jadwal jadwal) {
+            Mustache templateEmail = mustacheFactory.compile("templates/email/attendance/reminder.html");
+            Map<String, String> data = new HashMap<>();
+            data.put("dosen", jadwal.getDosen().getKaryawan().getNamaKaryawan());
+            data.put("matakuliah", jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            data.put("kelas", jadwal.getKelas().getNamaKelas());
+
+            StringWriter output = new StringWriter();
+            templateEmail.execute(output, data);
+
+            gmailApiService.kirimEmail(
+                    "Smile Notifikasi",
+                    "test@tazkia.ac.id",
+                    "Attendance Reminder ",
+                    output.toString());
+
+    }
+
 }

@@ -2,24 +2,34 @@ package id.ac.tazkia.smilemahasiswa.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
+import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahDao;
 import id.ac.tazkia.smilemahasiswa.dto.notifikasi.DataNotifikasiTerlambat;
 import id.ac.tazkia.smilemahasiswa.dto.notifikasi.NotifikasiSmile;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
+import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class NotifikasiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(NotifikasiService.class);
 
-    @Value("${kafka.topic.notifikasi}") private String topicNotifikasi;
-    @Value("${notifikasi.smile.konfigurasi.telat}") private String konfigurasiTelat;
+    @Value("${kafka.topic.notifikasi}")
+    private String topicNotifikasi;
+    @Value("${notifikasi.smile.konfigurasi.telat}")
+    private String konfigurasiTelat;
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -27,22 +37,28 @@ public class NotifikasiService {
     private ObjectMapper objectMapper;
     @Autowired
     private HariDao hariDao;
-
-
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private SesiKuliahDao sesiKuliahDao;
 
     @Async
-    public void kirimNotifikasiTelat(PresensiDosen presensiDosen){
+    public void kirimNotifikasiTelat(PresensiDosen presensiDosen) {
         NotifikasiSmile notif = NotifikasiSmile.builder()
                 .konfigurasi(konfigurasiTelat)
                 .email(presensiDosen.getDosen().getKaryawan().getEmail())
                 .mobile("")
                 .data(DataNotifikasiTerlambat.builder()
-                        .hariMasuk(hariDao.findByNamaHariEngContainingIgnoreCase(presensiDosen.getWaktuMasuk().toLocalDate().getDayOfWeek().toString()).getNamaHari())
+                        .hariMasuk(hariDao
+                                .findByNamaHariEngContainingIgnoreCase(
+                                        presensiDosen.getWaktuMasuk().toLocalDate().getDayOfWeek().toString())
+                                .getNamaHari())
                         .hari(presensiDosen.getJadwal().getHari().getNamaHari())
                         .jam(presensiDosen.getJadwal().getJamMulai())
                         .jamMasuk(presensiDosen.getWaktuMasuk().toLocalTime())
                         .nama(presensiDosen.getDosen().getKaryawan().getNamaKaryawan())
-                        .matakuliah(presensiDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah())
+                        .matakuliah(
+                                presensiDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah())
                         .tanggalMasuk(presensiDosen.getWaktuMasuk().toLocalDate())
                         .build())
                 .build();
@@ -63,7 +79,8 @@ public class NotifikasiService {
                         .jam(presensiDosen.getJadwal().getJamMulai())
                         .jamMasuk(presensiDosen.getWaktuMasuk().toLocalTime())
                         .nama(presensiDosen.getDosen().getKaryawan().getNamaKaryawan())
-                        .matakuliah(presensiDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah())
+                        .matakuliah(
+                                presensiDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah())
                         .tanggalMasuk(presensiDosen.getWaktuMasuk().toLocalDate())
                         .build())
                 .build();
@@ -75,5 +92,12 @@ public class NotifikasiService {
         }
     }
 
+    @Scheduled(cron = "0 00 10 * * *", zone = "Asia/Jakarta")
+    public void plotingJadwal1() throws Exception {
+        for(SesiKuliah sesiKuliah : sesiKuliahDao.cariBelumMengajar()){
+            mailService.attendanceReminder(sesiKuliah.getJadwal());
+        }
+
+    }
 
 }

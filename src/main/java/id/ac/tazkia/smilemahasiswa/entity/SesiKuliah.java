@@ -43,4 +43,9 @@ public class SesiKuliah {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String rps;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull private LocalDateTime tanggalInput;
+
+
 }
