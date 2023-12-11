@@ -666,12 +666,14 @@ public class PresensiService {
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
         sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
         sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), sesiKuliah.getJadwal().getJamSelesai()));
+        sesiKuliah.setTanggalInput(LocalDateTime.now());
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());
         presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
         presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
         presensiDosen.setStatus(StatusRecord.AKTIF);
+        presensiDosen.setTanggalInput(LocalDateTime.now());
 
         if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0) {
             if (presensiDosen.getWaktuMasuk().toLocalTime()
