@@ -65,7 +65,6 @@ import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
 import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
 import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
 import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
-import id.ac.tazkia.smilemahasiswa.dao.TagihanDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
@@ -86,6 +85,7 @@ import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
 import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.BebasKewajibanService;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.FormulirService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
@@ -136,7 +136,7 @@ public class SidangController {
     private SidangService sidangService;
 
     @Autowired
-    private TagihanDao tagihanDao;
+    private BebasKewajibanService bebasKewajibanService;
 
     @Autowired
     PeriodeWisudaDao periodeWisudaDao;
@@ -1815,6 +1815,8 @@ public class SidangController {
 
                 sidang.setPublish(StatusRecord.AKTIF);
                 sidangDao.save(sidang);
+
+                bebasKewajibanService.saveDaftarKewajiban(mahasiswa);
 
                 KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
                 if (cariThesis != null) {
