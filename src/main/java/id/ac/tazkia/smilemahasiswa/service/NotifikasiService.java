@@ -41,6 +41,8 @@ public class NotifikasiService {
     private MailService mailService;
     @Autowired
     private SesiKuliahDao sesiKuliahDao;
+    @Autowired
+    private JadwalDao jadwalDao;
 
     @Async
     public void kirimNotifikasiTelat(PresensiDosen presensiDosen) {
@@ -94,8 +96,8 @@ public class NotifikasiService {
 
     @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal1() throws Exception {
-        for(SesiKuliah sesiKuliah : sesiKuliahDao.cariBelumMengajar()){
-            mailService.attendanceReminder(sesiKuliah.getJadwal());
+        for(Object[] sesiKuliah : sesiKuliahDao.cariBelumMengajar()){
+            mailService.attendanceReminder(jadwalDao.findById(sesiKuliah[1].toString()).get());
         }
 
     }
