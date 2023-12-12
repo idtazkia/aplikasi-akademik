@@ -231,7 +231,7 @@ public class MailService {
 
             gmailApiService.kirimEmail(
                     "Smile Notifikasi",
-                    "test@gmail.com",
+                    "jadwal.getDosen().getKaryawan().getIdUser().getUsername()",
                     "Attendance Reminder ",
                     output.toString());
 
