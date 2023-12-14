@@ -2462,7 +2462,7 @@ public class GraduationController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
-        model.addAttribute("jenis", MagangStatus.values())
+        model.addAttribute("jenis", MagangStatus.values());
         Object[] magang = krsDetailDao.validasiLaporanMagang(mahasiswa);
 
         if (magang.length == 0) {
