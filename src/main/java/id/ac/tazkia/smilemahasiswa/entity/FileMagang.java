@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
 import lombok.Data;
 
 @Entity
@@ -43,6 +44,11 @@ public class FileMagang {
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalUpload = LocalDate.now();
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition =  "varchar")
+    private MagangStatus jenis;
 
     @NotNull
     @Enumerated(EnumType.STRING)

@@ -69,6 +69,7 @@ import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
 import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
 import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
 import id.ac.tazkia.smilemahasiswa.dao.FileMagangDao;
@@ -236,7 +237,8 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/flow")
-    public void flow(){}
+    public void flow() {
+    }
 
     // Graduation Mahasiswa
     @GetMapping("/graduation/finance")
@@ -313,7 +315,14 @@ public class GraduationController {
                 System.out.println(magang.length);
                 System.out.println(metolit.length);
                 if (magang.length == 0) {
-                    return "redirect:alert?matkul=Magang";
+                    if (metolit.length == 0) {
+                        return "redirect:alert?matkul=Magang";
+
+                    } else {
+                        model.addAttribute("note", new Note());
+                        return "graduation/form";
+                    }
+
                 } else {
                     if (metolit.length == 0) {
                         return "redirect:alert?matkul=Metolit";
@@ -336,7 +345,16 @@ public class GraduationController {
                 if (metolit.length == 0) {
                     return "redirect:alert?matkul=Metolit";
                 } else {
+                    if (Integer.parseInt(mahasiswa.getAngkatan()) >= 23
+                            && mahasiswa.getIdProdi().getId().equals("05")) {
+                        model.addAttribute("valid", "dosen2");
+                    }
 
+                    if (Integer.parseInt(mahasiswa.getAngkatan()) >= 03
+                            && mahasiswa.getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                        model.addAttribute("valid", "dosen2");
+
+                    }
                     model.addAttribute("note", new Note());
                     return "graduation/form";
 
@@ -560,6 +578,17 @@ public class GraduationController {
     @GetMapping("/graduation/admin/form")
     public void formAdmin(Model model, @RequestParam(value = "id", name = "id") Note note) {
         model.addAttribute("note", note);
+
+        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 23
+                && note.getMahasiswa().getIdProdi().getId().equals("05")) {
+            model.addAttribute("valid", "dosen2");
+        }
+
+        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+                && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+            model.addAttribute("valid", "dosen2");
+
+        }
     }
 
     @PostMapping("/graduation/admin/approve")
@@ -793,7 +822,8 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/sempropasca")
-    public String semproPasca(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
+    public String semproPasca(Model model, @RequestParam(name = "id", value = "id", required = false) Note note,
+            @RequestParam(required = false) String valid) {
         if (note.getStatus() == StatusApprove.APPROVED) {
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
@@ -815,7 +845,7 @@ public class GraduationController {
 
                     if (lastKode.equals("1")) {
                         Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
-                        String kode = String.valueOf(tahun) + "2";
+                        String kode = String.valueOf(tahun) + "2";  
                         ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
                                 kode);
                     } else {
@@ -826,8 +856,8 @@ public class GraduationController {
 
                 }
             }
-
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
+
             if (krsDetail != null) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
@@ -2374,12 +2404,25 @@ public class GraduationController {
 
     @GetMapping("/graduation/magang/admin/list")
     public void listMagangAdmin(@RequestParam(required = false) TahunAkademik tahunAkademik, Pageable pageable,
-            @RequestParam(required = false) Prodi prodi, Model model) {
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) String status,
+            Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
-        model.addAttribute("list",
-                fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDesc(prodi,
-                        Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik, pageable));
+        model.addAttribute("jenis", MagangStatus.values());
+        if (StringUtils.hasText(status)) {
+            if (status.equals("ALL") && !status.isEmpty()) {
+                model.addAttribute("selectedStatus", status);
+                model.addAttribute("list",
+                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDesc(prodi,
+                                Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik, pageable));
+            } else {
+                model.addAttribute("list",
+                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDesc(prodi,
+                                Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik,
+                                MagangStatus.valueOf(status), pageable));
+            }
+        }
+
     }
 
     @GetMapping("/suratTugas/seminar/pdf")
@@ -2419,6 +2462,7 @@ public class GraduationController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("jenis", MagangStatus.values())
         Object[] magang = krsDetailDao.validasiLaporanMagang(mahasiswa);
 
         if (magang.length == 0) {

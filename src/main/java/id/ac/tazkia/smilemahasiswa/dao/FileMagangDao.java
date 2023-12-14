@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
 import id.ac.tazkia.smilemahasiswa.entity.FileMagang;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
@@ -21,6 +22,10 @@ public interface FileMagangDao extends PagingAndSortingRepository<FileMagang, St
 
     Page<FileMagang> findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDesc(Prodi prodi,
             List<StatusApprove> asList, TahunAkademik tahunAkademik,
+            Pageable page);
+
+    Page<FileMagang> findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDesc(Prodi prodi,
+            List<StatusApprove> asList, TahunAkademik tahunAkademik, MagangStatus magangStatus,
             Pageable page);
 
 }

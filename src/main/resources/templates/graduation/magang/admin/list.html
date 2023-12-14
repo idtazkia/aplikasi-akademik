@@ -54,7 +54,7 @@
                         <div class="card-body">
                             <form method="get">
                                 <div class="row">
-                                    <div class="col-md-6 col-xs-12">
+                                    <div class="col-md-4 col-xs-12">
                                         <div class="form-group">
                                             <label>Tahun Akademik</label>
                                             <select name="tahunAkademik" required class="form-control">
@@ -66,14 +66,27 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-xs-12">
+                                    <div class="col-md-4 col-xs-12">
                                         <div class="form-group">
-                                            <label>Program Study</label>
+                                            <label>Program Studi</label>
                                             <select name="prodi" required class="form-control">
                                                 <option value="" selected disabled>-- Select One --</option>
                                                 <option th:each="prodi : ${prodi}"
                                                     th:selected="(${prodi} == *{selectedProdi})"
                                                     th:text="${prodi.namaProdi}" th:value="${prodi.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Jenis</label>
+                                            <select name="status" class="form-control">
+                                                <option value="ALL" selected>Semua Data</option>
+                                                <option value="MAGANG" th:selected="${selectedStatus == 'MAGANG'}">
+                                                    Laporan Magang Tugas
+                                                    Akhir</option>
+                                                <option value="MBKM" th:selected="${selectedStatus == 'MBKM'}">Laporan
+                                                    Magang MBKM</option>
                                             </select>
                                         </div>
                                     </div>
