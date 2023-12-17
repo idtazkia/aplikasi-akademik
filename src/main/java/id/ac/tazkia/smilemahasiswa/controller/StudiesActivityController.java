@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.BorderExtent;
@@ -76,34 +77,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.mustachejava.MustacheFactory;
 
-import id.ac.tazkia.smilemahasiswa.dao.BobotTugasDao;
-import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.EdomMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionDao;
-import id.ac.tazkia.smilemahasiswa.dao.HariDao;
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
-import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
-import id.ac.tazkia.smilemahasiswa.dao.KelasDao;
-import id.ac.tazkia.smilemahasiswa.dao.KelasMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsApprovalDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.MatakuliahKurikulumDao;
-import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
-import id.ac.tazkia.smilemahasiswa.dao.PendaftaranMbkmDao;
-import id.ac.tazkia.smilemahasiswa.dao.PraKrsSpDao;
-import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
-import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
-import id.ac.tazkia.smilemahasiswa.dao.RpsDao;
-import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahDao;
-import id.ac.tazkia.smilemahasiswa.dao.SoalDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
@@ -192,6 +165,9 @@ public class StudiesActivityController {
 
         @Autowired
         private JadwalDosenDao jadwalDosenDao;
+
+        @Autowired
+        private DetailPertemuanDao detailPertemuanDao;
 
         @Autowired
         private PresensiService presensiService;
@@ -825,6 +801,7 @@ public class StudiesActivityController {
                 jadwalDto.setId(sesiKuliah.getId());
                 jadwalDto.setId(sesiKuliah.getPertemuan());
                 jadwalDto.setJadwal(sesiKuliah.getJadwal());
+                jadwalDto.setDetailPertemuan(sesiKuliah.getDetailPertemuan());
                 jadwalDto.setBeritaAcara(sesiKuliah.getBeritaAcara());
                 jadwalDto.setDosen(sesiKuliah.getPresensiDosen().getDosen());
                 jadwalDto.setPertemuan(sesiKuliah.getPertemuan());
@@ -834,8 +811,14 @@ public class StudiesActivityController {
                 jadwalDto.setJamMulai(sesiKuliah.getWaktuMulai().toLocalTime());
                 jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
 
+                if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
+                        model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
+
+                } 
+
                 model.addAttribute("sesi", jadwalDto);
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sesiKuliah.getJadwal()));
+                model.addAttribute("detailPertemuans", detailPertemuanDao.findAll());
 
         }
 
@@ -849,9 +832,15 @@ public class StudiesActivityController {
                 jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());
                 jadwalDto.setTanggal(sesiKuliah.getWaktuMulai().toLocalDate());
                 jadwalDto.setId(sesiKuliah.getId());
+                jadwalDto.setDetailPertemuan(sesiKuliah.getDetailPertemuan());
                 jadwalDto.setJamMulai(sesiKuliah.getWaktuMulai().toLocalTime());
                 jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
+                if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
+                        model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
 
+                } 
+
+                model.addAttribute("detailPertemuans", detailPertemuanDao.findAll());
                 model.addAttribute("sesi", jadwalDto);
                 model.addAttribute("now", LocalDate.now());
                 model.addAttribute("sesiKuliah", sesiKuliah);
@@ -1021,8 +1010,10 @@ public class StudiesActivityController {
                                                         .findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(
                                                                         StatusRecord.AKTIF, k, mahasiswa));
                         model.addAttribute("mahasiswa", mahasiswa);
-                        model.addAttribute("jumlahSks", krsDetailDao.jumlahSksMahasiswa(mahasiswa.getId(), tahunAkademik.getId()));
-                        model.addAttribute("status", krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mahasiswa, StatusRecord.AKTIF));
+                        model.addAttribute("jumlahSks",
+                                        krsDetailDao.jumlahSksMahasiswa(mahasiswa.getId(), tahunAkademik.getId()));
+                        model.addAttribute("status", krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik,
+                                        mahasiswa, StatusRecord.AKTIF));
 
                 }
 
@@ -1275,22 +1266,26 @@ public class StudiesActivityController {
         }
 
         @PostMapping("/studiesActivity/krs/approval/approve")
-        public String approvedKrs(@RequestParam KrsApproval krsApproval, @RequestParam(required = false) String keterangan) {
+        public String approvedKrs(@RequestParam KrsApproval krsApproval,
+                        @RequestParam(required = false) String keterangan) {
 
                 krsApproval.setKomentar(keterangan);
                 krsApproval.setStatus(StatusApprove.APPROVED);
                 krsApprovalDao.save(krsApproval);
 
-//                KelasMahasiswa kelas = kelasMahasiswaDao.findByMahasiswaAndStatus(krsApproval.getMahasiswa(), StatusRecord.AKTIF);
-//                if (kelas != null) {
-//                        mailService.suksesKrs(krsApproval, kelas);
-//                }
+                // KelasMahasiswa kelas =
+                // kelasMahasiswaDao.findByMahasiswaAndStatus(krsApproval.getMahasiswa(),
+                // StatusRecord.AKTIF);
+                // if (kelas != null) {
+                // mailService.suksesKrs(krsApproval, kelas);
+                // }
 
                 return "redirect:list";
         }
 
         @PostMapping("/studiesActivity/krs/approval/reject")
-        public String rejectedKrs(@RequestParam KrsApproval krsApproval, @RequestParam(required = false) String keterangan) {
+        public String rejectedKrs(@RequestParam KrsApproval krsApproval,
+                        @RequestParam(required = false) String keterangan) {
 
                 krsApproval.setKomentar(keterangan);
                 krsApproval.setStatus(StatusApprove.REJECTED);
@@ -12838,12 +12833,12 @@ public class StudiesActivityController {
         @GetMapping("/regenerate-sesikuliah")
         @ResponseBody
         public void regeneratePresensi(@RequestParam String tanggal)
-                throws Exception {
+                        throws Exception {
                 List<Jadwal> cekJadwal = jadwalDao.jadwalMatrik();
                 System.out.println("jadwal matrik");
                 for (Jadwal j : cekJadwal) {
                         System.out.println(j.getId() + " : id jadwal");
-                        presensiService.reGenerate(j,tanggal);
+                        presensiService.reGenerate(j, tanggal);
 
                 }
 
