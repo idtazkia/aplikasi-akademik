@@ -1,6 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class SesiKuliah {
     @Id
-    @GeneratedValue(generator = "uuid" )
+    @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
@@ -26,10 +25,12 @@ public class SesiKuliah {
     private String beritaAcara;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull private LocalDateTime waktuMulai = LocalDateTime.now();
+    @NotNull
+    private LocalDateTime waktuMulai = LocalDateTime.now();
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull private LocalDateTime waktuSelesai = LocalDateTime.now();
+    @NotNull
+    private LocalDateTime waktuSelesai = LocalDateTime.now();
 
     private String pertemuan;
 
@@ -45,7 +46,11 @@ public class SesiKuliah {
     private String rps;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull private LocalDateTime tanggalInput;
-
+    @NotNull
+    private LocalDateTime tanggalInput;
+    
+    @JoinColumn(name = "id_detail_pertemuan")
+    @ManyToOne
+    private DetailPertemuan detailPertemuan;
 
 }

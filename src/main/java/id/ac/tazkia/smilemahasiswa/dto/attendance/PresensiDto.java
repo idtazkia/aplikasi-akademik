@@ -8,6 +8,7 @@ import javax.persistence.Column;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import id.ac.tazkia.smilemahasiswa.entity.DetailPertemuan;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
@@ -24,6 +25,7 @@ public class PresensiDto {
     private String id;
     private String beritaAcara;
     private Jadwal jadwal;
+    private DetailPertemuan detailPertemuan;
     private PresensiDosen presensiDosen;
     private String waktuMulai;
     private String waktuSelesai;
