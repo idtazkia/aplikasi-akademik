@@ -75,4 +75,7 @@ public class Tagihan {
 
     private String idTagihanSebelumnya;
 
+    @Enumerated(EnumType.STRING)
+    private ZahirExport zahirExport = ZahirExport.NEW;
+
 }

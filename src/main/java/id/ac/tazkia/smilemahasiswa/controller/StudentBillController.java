@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -3267,4 +3268,107 @@ public class StudentBillController {
 
     }
 
+    @GetMapping("/studentBill/billAdmin/tagihanAsli")
+    public void listTagihanAsli(Model model, @RequestParam(required = false) String[] prodis, @RequestParam(required = false) String[] angkatan, @RequestParam(required = false) TahunAkademik tahun){
+
+        if (prodis != null && angkatan != null && tahun != null) {
+            List<Prodi> prodi = new ArrayList<>();
+            List<String> nProdi = new ArrayList<>();
+            for (String p : prodis){
+                Prodi pr = prodiDao.findById(p).get();
+                prodi.add(pr);
+                nProdi.add(pr.getNamaProdi());
+            }
+            List<String> ang = new ArrayList<>();
+            for (String a : angkatan){
+                ang.add(a);
+            }
+
+            // buat download excel
+            model.addAttribute("prodis", prodis);
+            model.addAttribute("angkatans", angkatan);
+
+            model.addAttribute("selectProdi", prodi);
+            model.addAttribute("nProdi", nProdi.toString().replace("[", "").replace("]", ""));
+            model.addAttribute("selectAngkatan", ang.toString().replace("[", "").replace("]", ""));
+            model.addAttribute("selectTahun", tahun);
+            model.addAttribute("listMhs", tagihanDao.findByStatusAndMahasiswaIdProdiInAndMahasiswaAngkatanInAndTahunAkademikOrderByMahasiswaNim(StatusRecord.AKTIF, prodi, ang, tahun));
+        }
+    }
+
+    @GetMapping("/studentBill/billAdmin/tagihanAsli/download")
+    public void downloadTagihanAsli(@RequestParam String[] prodis, @RequestParam String[] angkatan, @RequestParam TahunAkademik tahun, HttpServletResponse response) throws IOException {
+
+        String[] columns = {"NO", "Angkatan", "NIM", "Nama", "Prodi", "Program", "Tagihan", "Jumlah", "Beasiswa", "Status Tagihan"};
+
+        List<Prodi> prodi = new ArrayList<>();
+        for (String p : prodis){
+            Prodi pr = prodiDao.findById(p).get();
+            prodi.add(pr);
+        }
+        List<String> ang = new ArrayList<>();
+        for (String a : angkatan){
+            ang.add(a);
+        }
+
+        List<Tagihan> tagihanMhs = tagihanDao.findByStatusAndMahasiswaIdProdiInAndMahasiswaAngkatanInAndTahunAkademikOrderByMahasiswaNim(StatusRecord.AKTIF, prodi, ang, tahun);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Tagihan Asli");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Font ketFont = workbook.createFont();
+        ketFont.setBold(true);
+        ketFont.setFontHeightInPoints((short) 14);
+        ketFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle ketCellStyle = workbook.createCellStyle();
+        ketCellStyle.setFont(ketFont);
+        ketCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Tagihan t : tagihanMhs){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(t.getMahasiswa().getAngkatan());
+            row.createCell(2).setCellValue(t.getMahasiswa().getNim());
+            row.createCell(3).setCellValue(t.getMahasiswa().getNama());
+            row.createCell(4).setCellValue(t.getMahasiswa().getIdProdi().getNamaProdi());
+            row.createCell(5).setCellValue(t.getMahasiswa().getIdProgram().getNamaProgram());
+            row.createCell(6).setCellValue(t.getNilaiJenisTagihan().getJenisTagihan().getNama());
+            row.createCell(7).setCellValue(t.getNilaiTagihanAsli().toString());
+            if (t.getMahasiswa().getBeasiswa() != null) {
+                row.createCell(8).setCellValue(t.getMahasiswa().getBeasiswa().getNamaBeasiswa());
+            }else{
+                row.createCell(8).setCellValue("-");
+            }
+            row.createCell(9).setCellValue(t.getStatusTagihan().toString());
+        }
+
+        for (int i = 0; i<columns.length;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vns.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Tagihan Asli " + tahun.getNamaTahunAkademik() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
 }

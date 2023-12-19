@@ -56,7 +56,7 @@
                                 <div th:if="${kabag != null}" class="col-md-6">
                                     <a th:href="@{/kewajiban/admin/perpus/approval/kabag}" class="btn btn-sm btn-success">Histori Approval</a>
                                 </div>
-                                <div class="col-md-6">
+                                <div th:if="${kabag != null}" class="col-md-6">
                                     <div class="input-group mb-3">
                                         <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
                                         <div class="input-group-append">
@@ -71,7 +71,7 @@
                     <div class="card-body">
 
                         <div th:if="${listMahasiswa != null}" class="table-responsive">
-                            <table class="table align-items-center table-flush">
+                            <table id="data-table-1" class="table align-items-center table-flush">
                                 <thead class="thead-light">
                                 <tr>
                                     <th scope="col">#</th>
@@ -87,7 +87,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="data,row : ${listMahasiswa}">
-                                    <td th:text="${(row.index + 1) + (listMahasiswa.number * listMahasiswa.size)}">1</td>
+                                    <td th:text="${(row.index + 1)}">1</td>
                                     <td th:text="${data.mahasiswa.nim}">12</td>
                                     <td th:text="${data.mahasiswa.nama}">12</td>
                                     <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
@@ -114,17 +114,6 @@
                                 </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <div th:if="${listMahasiswa != null}" class="card-footer py-4">
-                            <nav aria-label="...">
-                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
-                                    <li class="disabled"><a href="#" aria-label="Previous"><span
-                                            aria-hidden="true">&laquo;</span></a>
-                                    </li>
-                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
 
                         <div th:if="${listMahasiswaKabag != null}" class="table-responsive">

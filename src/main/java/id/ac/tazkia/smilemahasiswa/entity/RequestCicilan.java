@@ -53,4 +53,7 @@ public class RequestCicilan {
 
     private String keterangan;
 
+    @Enumerated(EnumType.STRING)
+    private ZahirExport zahirExport = ZahirExport.NEW;
+
 }

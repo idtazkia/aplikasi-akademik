@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Tagihan</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Tagihan Asli</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Prodi</label>
+                                        <select name="prodis" required class="form-control js-example-placeholder-single" multiple="multiple">
+                                            <option value=""></option>
+                                            <option th:each="data : ${prodi}"
+                                                    th:text="${data.namaProdi}"
+                                                    th:value="${data.id}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Angkatan</label>
+                                        <select name="angkatan" id="mySelect2" class="form-control js-example-placeholder-single" required multiple="multiple">
+                                            <option th:each="data : ${angkatan}"
+                                                    th:text="${data}" th:value="${data}">asd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahun" required class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-eye"></i> Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow" th:if="${selectProdi != null && selectAngkatan != null && selectTahun != null}">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div>Prodi : <b th:each="nama : ${nProdi}" th:text="${nama}"></b></div>
+                                <div>Angkatan : <b th:each="a : ${selectAngkatan}" th:text="${a}"></b></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col text-right">
+                                    <a th:href="@{/studentBill/billAdmin/tagihanAsli/download(prodis=${prodis}, angkatan=${angkatans}, tahun = ${selectTahun.id})}" class="btn btn-success"><i class="fa fa-download"></i> Download</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-shadow">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="data-table-1" class="table align-items-center table-flush table-striped">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th>Angkatan</th>
+                                                <th>Nim</th>
+                                                <th>Nama</th>
+                                                <th>Prodi</th>
+                                                <th>Program</th>
+                                                <th>Tagihan</th>
+                                                <th>Jumlah</th>
+                                                <th>Beasiswa</th>
+                                                <th>Status Tagihan</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row:${listMhs}">
+                                                <td th:text="${(row.index + 1)}">1</td>
+                                                <td th:text="${data.mahasiswa.angkatan}"></td>
+                                                <td th:text="${data.mahasiswa.nim}"></td>
+                                                <td th:text="${data.mahasiswa.nama}"></td>
+                                                <td th:text="${data.mahasiswa.idProdi.namaProdi}"></td>
+                                                <td th:text="${data.mahasiswa.idProgram.namaProgram}"></td>
+                                                <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihanAsli, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td th:text="${data.mahasiswa?.beasiswa?.namaBeasiswa}"></td>
+                                                <td>
+                                                    <a  class="btn btn-info btn-sm" href="#!"
+                                                        th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
+                                                        th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-success btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-warning ger btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.PERINGANAN} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+                                                </td>
+                                                <!-- <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>-->
+                                                <!-- <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>-->
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(".js-example-placeholder-single").select2({
+            placeholder: "Pilih ",
+            allowClear: true
+        });
+    </script>
+</th:block>
+</html>

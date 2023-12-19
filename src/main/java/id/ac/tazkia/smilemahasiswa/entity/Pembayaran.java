@@ -44,4 +44,7 @@ public class Pembayaran {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    @Enumerated(EnumType.STRING)
+    private ZahirExport zahirExport = ZahirExport.NEW;
+
 }

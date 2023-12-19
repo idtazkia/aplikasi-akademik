@@ -48,4 +48,7 @@ public class RequestPenangguhan {
     private String keterangan;
     private String keteranganReject;
 
+    @Enumerated(EnumType.STRING)
+    private ZahirExport zahirExport = ZahirExport.NEW;
+
 }

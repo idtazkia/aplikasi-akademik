@@ -397,6 +397,9 @@
                                 <a th:href="@{/studentBill/billAdmin/list}" class="nav-link">Tagihan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/billAdmin/tagihanAsli}" class="nav-link">Tagihan Asli</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/rekapTagihan/angkatan}" class="nav-link">Rekapan Tagihan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
@@ -435,6 +438,20 @@
                         Memo Keuangan
                     </a>
                 </li>
+
+<!--                <li class="nav-item" sec:authorize="hasAuthority('VIEW_TLC')">-->
+<!--                    <a class="nav-link" href="#menuTlc" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">-->
+<!--                        <i class="ni ni-align-left-2 ni-book-bookmark text-blue"></i>-->
+<!--                        <span class="nav-link-text">Menu TLC</span>-->
+<!--                    </a>-->
+<!--                    <div class="collapse" id="menuTlc">-->
+<!--                        <ul class="nav nav-sm flex-column">-->
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_TLC')">-->
+<!--                                <a th:href="@{/tlc/sertifikat/list}" class="nav-link">Upload Sertifikat</a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </li>-->
 
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-grad" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">

@@ -274,9 +274,9 @@ public class BebasKewajibanController {
             model.addAttribute("staff", "Staff Perpus");
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
+                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search));
             }else{
-                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
+                model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED));
             }
         }
         if ("kabagperpus".equalsIgnoreCase(user.getRole().getId()) || "superuser".equalsIgnoreCase(user.getRole().getId())) {

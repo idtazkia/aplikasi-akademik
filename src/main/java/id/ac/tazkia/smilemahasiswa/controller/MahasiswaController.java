@@ -496,7 +496,7 @@ public class MahasiswaController {
     }
 
     @GetMapping("/download/status/mahasiswa")
-    public void downloadPenangguhan(@RequestParam String[] angkatan, @RequestParam TahunAkademik tahun, HttpServletResponse response) throws IOException {
+    public void downloadStatusMahasiswa(@RequestParam String[] angkatan, @RequestParam TahunAkademik tahun, HttpServletResponse response) throws IOException {
 
         String[] columns = {"No", "Prodi", "Angkatan", "NIM", "Nama", "Program", "Beasiswa", "Status Semester", "Status Mahasiswa", "Tahun Akademik", "Jumlah SKS", "IPK"};
 
