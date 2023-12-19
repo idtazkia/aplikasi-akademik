@@ -73,6 +73,7 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
     List<Mahasiswa> findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord statusRecord, String status);
 
     List<Mahasiswa> findByStatusAndStatusAktif(StatusRecord statusRecord, String status);
+    List<Mahasiswa> findByStatusAndStatusAktifIn(StatusRecord statusRecord, List<String> status);
 
     List<Mahasiswa> findByIdProdiIdJenjangAndStatusAndStatusAktifIn(Jenjang idJenjang, StatusRecord statusRecord, List<String> status);
 

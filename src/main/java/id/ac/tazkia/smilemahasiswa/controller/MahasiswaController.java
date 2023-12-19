@@ -488,11 +488,82 @@ public class MahasiswaController {
             for (String a : angkatan){
                 ang.add(a);
             }
-
             model.addAttribute("selectAngkatan", ang.toString());
+            model.addAttribute("downloadAngkatan", angkatan);
             model.addAttribute("selectTahun", tahunAkademik);
             model.addAttribute("listMhs", mahasiswaDao.listStatusMahasiswa(ang, tahunAkademik.getId()));
-
         }
     }
+
+    @GetMapping("/download/status/mahasiswa")
+    public void downloadPenangguhan(@RequestParam String[] angkatan, @RequestParam TahunAkademik tahun, HttpServletResponse response) throws IOException {
+
+        String[] columns = {"No", "Prodi", "Angkatan", "NIM", "Nama", "Program", "Beasiswa", "Status Semester", "Status Mahasiswa", "Tahun Akademik", "Jumlah SKS", "IPK"};
+
+        List<String> ang = new ArrayList<>();
+        for (String a : angkatan){
+            ang.add(a);
+        }
+
+        List<Object[]> listTagihan = mahasiswaDao.listStatusMahasiswa(ang, tahun.getId());
+
+        System.out.println("List Angkatan : " + ang);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Status Mahasiswa ");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Font ketFont = workbook.createFont();
+        ketFont.setBold(true);
+        ketFont.setFontHeightInPoints((short) 14);
+        ketFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle ketCellStyle = workbook.createCellStyle();
+        ketCellStyle.setFont(ketFont);
+        ketCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listTagihan){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[0].toString());
+            row.createCell(2).setCellValue(list[1].toString());
+            row.createCell(3).setCellValue(list[2].toString());
+            row.createCell(4).setCellValue(list[3].toString());
+            row.createCell(5).setCellValue(list[9].toString());
+            row.createCell(6).setCellValue(list[10].toString());
+            row.createCell(7).setCellValue(list[4].toString());
+            row.createCell(8).setCellValue(list[5].toString());
+            row.createCell(9).setCellValue(list[6].toString());
+            row.createCell(10).setCellValue(list[7].toString());
+            row.createCell(11).setCellValue(list[8].toString());
+        }
+
+        for (int i = 0; i<columns.length;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vns.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Status Mahasiswa " + tahun.getNamaTahunAkademik() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
 }
