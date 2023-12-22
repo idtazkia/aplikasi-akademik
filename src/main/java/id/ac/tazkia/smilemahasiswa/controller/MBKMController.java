@@ -155,7 +155,14 @@ public class MBKMController {
                 listMatkur.setStatus(StatusRecord.FINISHED);
                 matakuliahMbkmDao.save(listMatkur);
 
-                Dosen dosen = dosenDao.findById("YaserT").get();
+                Dosen dosen = null;
+                if ("08".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("9ea8dfe9-704d-4ed2-984e-e53611d6ecf5").get();
+                } else if ("01".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("dinad").get();
+                }else{
+                    dosen = dosenDao.findById("YaserT").get();
+                }
                 Hari hari = hariDao.findById("0").get();
                 Kelas kelas = kelasDao.findById("-").get();
                 Ruangan ruangan = ruanganDao.findById("01").get();
