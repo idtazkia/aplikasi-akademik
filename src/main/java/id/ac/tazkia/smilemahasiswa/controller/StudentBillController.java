@@ -3076,44 +3076,72 @@ public class StudentBillController {
 
         List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(3));
         for (RequestCicilan cariMahasiswa : setDashboardMhs){
-            Role role = roleDao.findById("mahasiswanunggak").get();
-            User usr = cariMahasiswa.getTagihan().getMahasiswa().getUser();
-            usr.setRole(role);
-            userDao.save(usr);
+            if ("AKTIF".equalsIgnoreCase(cariMahasiswa.getTagihan().getMahasiswa().getStatusAktif()) || "CUTI".equalsIgnoreCase(cariMahasiswa.getTagihan().getMahasiswa().getStatusAktif())){
+                Role role = roleDao.findById("mahasiswanunggak").get();
+                User usr = cariMahasiswa.getTagihan().getMahasiswa().getUser();
+                usr.setRole(role);
+                userDao.save(usr);
 
-            log.info("set mhs nunggak : ", cariMahasiswa.getTagihan().getMahasiswa().getNim());
-
+                log.info("set mhs nunggak : ", cariMahasiswa.getTagihan().getMahasiswa().getNim());
+            }else{
+                log.info("mahasiswa sudah tidak aktif.");
+            }
         }
 
         List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
         for (RequestCicilan cariCicilanHariIni : requestCicilan){
-            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
-            requestCicilanDao.save(cariCicilanHariIni);
 
-            log.info("Update status cicilan : {}", cariCicilanHariIni);
+            if ("AKTIF".equalsIgnoreCase(cariCicilanHariIni.getTagihan().getMahasiswa().getStatusAktif()) || "CUTI".equalsIgnoreCase(cariCicilanHariIni.getTagihan().getMahasiswa().getStatusAktif())){
+                log.info("Proses Akumulasi Tagihan Mahasiswa aktif / cuti");
 
-            Role role = roleDao.findById("mahasiswa").get();
-            User usr = cariCicilanHariIni.getTagihan().getMahasiswa().getUser();
-            usr.setRole(role);
-            userDao.save(usr);
-
-            RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
-            if (cicilanSelanjutnya != null){
-
-                cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-                cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
-                requestCicilanDao.save(cicilanSelanjutnya);
-
-                tagihanService.ubahJadiCicilan(cicilanSelanjutnya);
-
-            }else{
-                log.info("Tidak ada cicilan selanjutnya!");
-                cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
                 requestCicilanDao.save(cariCicilanHariIni);
+
+                log.info("Update status cicilan : {}", cariCicilanHariIni);
+
+                Role role = roleDao.findById("mahasiswa").get();
+                User usr = cariCicilanHariIni.getTagihan().getMahasiswa().getUser();
+                usr.setRole(role);
+                userDao.save(usr);
+
+                RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
+                if (cicilanSelanjutnya != null){
+
+                    cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                    cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
+                    requestCicilanDao.save(cicilanSelanjutnya);
+
+                    tagihanService.ubahJadiCicilan(cicilanSelanjutnya);
+
+                }else{
+                    log.info("Tidak ada cicilan selanjutnya!");
+                    cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                    requestCicilanDao.save(cariCicilanHariIni);
 //                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
 //                userBlock.setActive(false);
 //                userDao.save(userBlock);
 //                log.info("block smile untuk user {}", userBlock);
+                }
+
+            }else{
+                log.info("Proses Akumulasi Tagihan Mahasiswa Keluar!!!");
+
+                cariCicilanHariIni.setStatus(StatusRecord.NONAKTIF);
+                cariCicilanHariIni.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                requestCicilanDao.save(cariCicilanHariIni);
+
+                List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(cariCicilanHariIni.getTagihan(), StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS, StatusCicilan.LEWAT_JATUH_TEMPO));
+                if (cekSisaCicilan != null) {
+                    for (RequestCicilan listCicilan : cekSisaCicilan){
+                        listCicilan.setStatus(StatusRecord.NONAKTIF);
+                        listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                        requestCicilanDao.save(listCicilan);
+                    }
+                }
+
+                Tagihan tagihan = cariCicilanHariIni.getTagihan();
+                tagihan.setStatus(StatusRecord.NONAKTIF);
+                tagihanDao.save(tagihan);
             }
 
         }

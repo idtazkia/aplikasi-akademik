@@ -154,6 +154,10 @@
                                                         th:if="${data.statusCicilan.LEWAT_JATUH_TEMPO} == ${data.statusCicilan}"
                                                         th:text="${data.statusCicilan}">
                                                     </a>
+                                                    <a  class="btn btn-danger btn-sm text-white"
+                                                        th:if="${data.statusCicilan.BATAL_CICIL} == ${data.statusCicilan}"
+                                                        th:text="${data.statusCicilan}">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
