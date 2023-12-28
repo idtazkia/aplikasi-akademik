@@ -193,7 +193,7 @@ public class ReportController {
         LocalDate m = LocalDate.parse(masuk);
         LocalDate s = LocalDate.parse(selesai);
 
-        String[] column = {"No", "Dosen", "Status Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal"};
+        String[] column = {"No", "Dosen", "Status Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal Masuk", "Tidak Mengajar"};
 
         List<SalaryDto> list = presensiDosenDao.rekapSalary(m,s);
 
@@ -238,6 +238,7 @@ public class ReportController {
             row.createCell(4).setCellValue(salary.getSks());
             row.createCell(5).setCellValue(salary.getKelas());
             row.createCell(6).setCellValue(salary.getTanggal());
+            row.createCell(7).setCellValue(salary.getAbstain());
 
             row.getCell(0).setCellStyle(isiStyleCenter);
             row.getCell(1).setCellStyle(isiStyleCenter);
@@ -246,6 +247,7 @@ public class ReportController {
             row.getCell(4).setCellStyle(isiStyleCenter);
             row.getCell(5).setCellStyle(isiStyleCenter);
             row.getCell(6).setCellStyle(isiStyleCenter);
+            row.getCell(7).setCellStyle(isiStyleCenter);
         }
 
         for (int i = 0; i<column.length; i++){

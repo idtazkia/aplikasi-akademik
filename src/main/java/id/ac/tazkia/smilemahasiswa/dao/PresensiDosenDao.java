@@ -129,38 +129,26 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "having count(pd.id) >= 32) as a", nativeQuery = true)
     Page<KlasemenDosenIntDto> klasemenDosenByTahunDanSearch(TahunAkademik tahunAkademik, String dosen, Pageable pageable);
 
-    @Query(value = "select a.id_jadwal as jadwal,a.id_dosen as dosen,a.nama_karyawan as nama,a.email as email,a.nama_matakuliah as matkul,a.nama_kelas as kelas,a.sks as sks,a.month as bulan,a.day as hari,a.date as tanggal,a.total_sesi as totalsesi,a.total_sks as totalsks,coalesce(total_seluruh_sesi,0) as totalseluruhsesi, sks * coalesce(total_seluruh_sesi,0) as totalseluruhsks,idprodi,prodi,idjenjang,jenjang, sdosen from\n"
-            +
-            "(select id_jadwal,id_dosen, nama_karyawan, email, nama_matakuliah, nama_kelas, jumlah_sks as sks, month, day, group_concat(date order by date) as date, sum(sesi) as total_sesi,\n"
-            +
-            "jumlah_sks * sum(sesi) as total_sks,idprodi,prodi,idjenjang,jenjang, sdosen from\n" +
-            "(select a.id_jadwal,a.id_dosen, h.nama_karyawan, email, d.nama_matakuliah, e.nama_kelas, c.jumlah_sks,monthname(waktu_masuk) as month, dayname(waktu_masuk) as day,\n"
-            +
-            "concat(day(waktu_masuk),'-',left(monthname(waktu_masuk),3)) as date, jam_mulai, waktu_masuk,1 as sesi,p.id as idProdi, p.nama_prodi as prodi,j.id as idjenjang,j.nama_jenjang as jenjang, g.status_dosen as sdosen from presensi_dosen as a\n"
-            +
+    @Query(value = "select jadwal, dosen, nama, email, matkul, kelas, sks, bulan, hari,  group_concat(if(presensi is not null,date,null) order by date) as tanggal,\n" +
+            "group_concat(if(presensi is null,date,null) order by date) as abstain, sum(if(presensi is not null,1,0)) as totalsesi,\n" +
+            "sum(if(presensi is not null,sks,0)) as totalsks, sum(1) as totalseluruhsesi, sum(sks) as totalseluruhsks, id_prodi as idprodi, nama_prodi as prodi,\n" +
+            "id_jenjang as idjenjang, jenjang, sdosen from\n" +
+            "(select a.*,b.id as presensi from\n" +
+            "(select c.id_presensi_dosen as id_presensi, b.id as jadwal, d.id as dosen, e.nama_karyawan as nama, e.email, nama_matakuliah as matkul,nama_kelas as kelas, jumlah_sks as sks,\n" +
+            "monthname(c.waktu_mulai) as bulan, dayname(c.waktu_mulai) as hari,concat(day(waktu_mulai),'-',left(monthname(waktu_mulai),3)) as date,\n" +
+            "h.id_prodi,i.nama_prodi,i.id_jenjang,nama_jenjang as jenjang, status_dosen as sdosen from jadwal_dosen as a\n" +
             "inner join jadwal as b on a.id_jadwal = b.id\n" +
-            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
-            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
-            "inner join kelas as e on b.id_kelas = e.id\n" +
-            "inner join hari as f on b.id_hari = f.id\n" +
-            "inner join prodi as p on b.id_prodi = p.id\n" +
-            "inner join jenjang as j on p.id_jenjang = j.id\n" +
-            "inner join dosen as g on a.id_dosen = g.id\n" +
-            "inner join karyawan as h on g.id_karyawan = h.id\n" +
-            "where date(waktu_masuk) >= ?1 and date(waktu_masuk) <= ?2 and a.status = 'AKTIF' and status_presensi in ('HADIR','TERLAMBAT')\n"
-            +
-            "group by nama_karyawan, nama_matakuliah, nama_kelas, waktu_masuk\n" +
-            "order by nama_karyawan, nama_kelas) as a\n" +
-            "group by nama_karyawan, nama_matakuliah, nama_kelas) as a\n" +
-            "left join\n" +
-            "(select id_jadwal,id_dosen,d.jumlah_sks,count(id_jadwal) as total_seluruh_sesi from presensi_dosen as a\n"
-            +
-            "inner join jadwal as b on a.id_jadwal = b.id\n" +
-            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
-            "inner join matakuliah_kurikulum as d on b.id_matakuliah_kurikulum = d.id\n" +
-            "where tanggal_mulai >= ?1 and c.tanggal_selesai <= ?2\n" +
-            "and a.status = 'AKTIF' and a.status_presensi in ('HADIR','TERLAMBAT')\n" +
-            "group by id_jadwal, id_dosen) as b on a.id_jadwal = b.id_jadwal and a.id_dosen = b.id_dosen", nativeQuery = true)
+            "inner join sesi_kuliah as c on b.id = c.id_jadwal\n" +
+            "inner join dosen as d on a.id_dosen = d.id\n" +
+            "inner join karyawan as e on d.id_karyawan = e.id\n" +
+            "inner join matakuliah_kurikulum as f on b.id_matakuliah_kurikulum = f.id\n" +
+            "inner join matakuliah as g on f.id_matakuliah = g.id\n" +
+            "inner join kelas as h on b.id_kelas = h.id\n" +
+            "inner join prodi as i on h.id_prodi = i.id\n" +
+            "inner join jenjang as j on i.id_jenjang = j.id\n" +
+            "where date(c.tanggal_input) >= ?1 and date(c.tanggal_input) <= ?2) as a\n" +
+            "left join presensi_dosen as b on a.id_presensi = b.id and a.dosen = b.id_dosen and b.status_presensi in ('HADIR','TERLAMBAT')) as a\n" +
+            "group by jadwal, dosen", nativeQuery = true)
     List<SalaryDto> rekapSalary(LocalDate masuk, LocalDate selesai);
 
 }

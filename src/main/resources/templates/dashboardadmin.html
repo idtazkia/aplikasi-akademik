@@ -132,32 +132,28 @@
                                                                 <th>SKS</th>
                                                                 <th>Dosen</th>
                                                                 <th>Status</th>
+                                                                <th>Jumlah Presensi</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody class="list">
                                                             <tr th:each="jadwal,row : ${jadwal}">
                                                                 <td th:text="${row.index + 1}"></td>
-                                                                <td th:text="${jadwal.jadwal.ruangan.namaRuangan}">
+                                                                <td th:text="${jadwal[3]}">
                                                                 </td>
-                                                                <td><span
-                                                                        th:text="${jadwal.jadwal.jamMulai}"></span>
-                                                                    -
-                                                                    <span
-                                                                            th:text="${jadwal.jadwal.jamSelesai}"></span>
+                                                                <td th:text="${jadwal[4]}"></td>
+                                                                <td
+                                                                        th:text="${jadwal[5]}">
+                                                                </td>
+                                                                <td th:text="${jadwal[6]}"></td>
+                                                                <td><b th:text="${jadwal[7]}"></b>
                                                                 </td>
                                                                 <td
-                                                                        th:text="${jadwal.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">
+                                                                        th:text="${jadwal[8]}">
                                                                 </td>
-                                                                <td th:text="${jadwal.jadwal.kelas.namaKelas}"></td>
-                                                                <td><b th:text="${jadwal.jadwal.hari.namaHari}"></b>
+                                                                <td th:text="${jadwal[9]}"></td>
+                                                                <td><b th:text="${jadwal[10]}"></b>
                                                                 </td>
-                                                                <td
-                                                                        th:text="${jadwal.jadwal.matakuliahKurikulum.jumlahSks}">
-                                                                </td>
-                                                                <td th:text="${jadwal.dosen.karyawan.namaKaryawan}">
-                                                                </td>
-                                                                <td><b th:text="${jadwal.statusJadwalDosen}"></b>
-                                                                </td>
+                                                                <td th:text="${jadwal[11]}"></td>
                                                             </tr>
 
                                                             </tbody>

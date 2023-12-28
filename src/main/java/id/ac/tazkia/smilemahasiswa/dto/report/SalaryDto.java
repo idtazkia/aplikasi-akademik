@@ -13,6 +13,8 @@ public interface SalaryDto {
 
     String getTanggal();
 
+    String getAbstain();
+
     String getProdi();
 
     String getSdosen();

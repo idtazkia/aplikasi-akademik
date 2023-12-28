@@ -913,7 +913,7 @@ public class DashboardController {
         model.addAttribute("listCutiDosenWali", cutiDao.listCutiDosenWali(user));
         model.addAttribute("listCutiKps", cutiDao.listCutiKps(user));
 
-        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, dosen);
+        List<Object[]> jadwal = jadwalDosenDao.listJadwalMengajarDashboardDosen(dosen.getId(), tahunAkademik.getId());
         model.addAttribute("jadwal", jadwal);
 
         model.addAttribute("jmlSemuaKelas", sesiKuliahDao.jmlSemuaKelas(tahunAkademik));

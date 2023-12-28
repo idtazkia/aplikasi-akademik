@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import javax.validation.Valid;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -27,6 +28,15 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
     JadwalDosen cari(@Param("dosen")Dosen dosen, @Param("tahun") TahunAkademik tahunAkademik, @Param("hari")Hari hari, @Param("ruangan") Ruangan ruangan,@Param("sampai")LocalTime sampai);
 
     Iterable<JadwalDosen> findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(List<StatusRecord >hapus, TahunAkademik tahunAkademik, Dosen dosen);
+
+    @Query(value = "select a.*, concat(coalesce(hadir, '0'), ' / ', total) as jmlPresensi from\n" +
+            "(select j.id, h.id as idHari, j.jam_mulai, r.nama_ruangan, concat(TIME_FORMAT(j.jam_mulai, '%H:%i'), ' - ', TIME_FORMAT(j.jam_selesai, '%H:%i')) as Jam, m.nama_matakuliah_english, k.nama_kelas, h.nama_hari, mk.jumlah_sks, kr.nama_karyawan, jd.status_jadwal_dosen from jadwal_dosen jd inner join jadwal j on jd.id_jadwal=j.id inner join dosen d on jd.id_dosen=d.id inner join ruangan r on j.id_ruangan=r.id inner join matakuliah_kurikulum mk on j.id_matakuliah_kurikulum=mk.id inner join matakuliah m on mk.id_matakuliah=m.id inner join kelas k on j.id_kelas=k.id inner join karyawan kr on d.id_karyawan=kr.id inner join hari h on j.id_hari=h.id where d.id=?1 and j.id_tahun_akademik=?2 and j.status not in('HAPUS')) as a\n" +
+            "left join\n" +
+            "(select id_jadwal, count(id) as hadir from sesi_kuliah where pertemuan<>'Belum Mengajar' group by id_jadwal) as b on a.id=b.id_jadwal\n" +
+            "left join\n" +
+            "(select id_jadwal, count(id) as total from sesi_kuliah group by id_jadwal) as c on a.id=c.id_jadwal\n" +
+            "order by a.idHari, a.jam_mulai", nativeQuery = true)
+    List<Object[]> listJadwalMengajarDashboardDosen(String idDosen, String idTahunAkademik);
 
     static final String REKAP_JADWAL_DOSEN = "select new id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto(jd.jadwal.id,jd.dosen.id,jd.dosen.karyawan.namaKaryawan, jd.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah, jd.jadwal.matakuliahKurikulum.jumlahSks, jd.jadwal.prodi.namaProdi, jd.jadwal.kelas.namaKelas, jd.jadwal.hari.namaHari,jd.jadwal.sesi, jd.jadwal.jamMulai, jd.jadwal.jamSelesai, jd.jadwal.ruangan.namaRuangan, jd.jadwal.ruangan.gedung.namaGedung, jd.jumlahKehadiran) from JadwalDosen jd where jd.statusJadwalDosen = :statusJadwalDosen and jd.jadwal.tahunAkademik = :ta and jd.jadwal.status = :statusJadwal order by jd.dosen.karyawan.namaKaryawan, jd.jadwal.hari.id, jd.jadwal.jamMulai";
 
