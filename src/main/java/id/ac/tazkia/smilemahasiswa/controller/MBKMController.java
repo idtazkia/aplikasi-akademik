@@ -210,6 +210,35 @@ public class MBKMController {
         return "redirect:/studiesActivity/krs/approval/list";
     }
 
+    @PostMapping("/mbkm/cancel")
+    public String cancelMbkm(@RequestParam PendaftaranMbkm mbkm){
+
+        List<MatakuliahMbkm> listMahasiswa = matakuliahMbkmDao.findByPendaftaranMbkmAndStatus(mbkm, StatusRecord.FINISHED);
+        if (listMahasiswa != null || !listMahasiswa.isEmpty()) {
+            for (MatakuliahMbkm listMatkur : listMahasiswa){
+                matakuliahMbkmDao.delete(listMatkur);
+            }
+        }
+
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mbkm.getMahasiswa(), mbkm.getTahunAkademik(), StatusRecord.AKTIF);
+        if (krs != null) {
+            List<KrsDetail> matkul = krsDetailDao.findByKrsAndStatusAndStatusKonversi(krs, StatusRecord.AKTIF, StatusRecord.MBKM);
+            if (matkul != null || !matkul.isEmpty()) {
+                for (KrsDetail mat : matkul){
+                    krsDetailDao.delete(mat);
+                    Jadwal jadwal = mat.getJadwal();
+                    jadwalDao.delete(jadwal);
+                }
+            }
+        }
+
+        mbkm.setStatus(StatusRecord.HAPUS);
+        mbkm.setStatusApproval(StatusApprove.HAPUS);
+        pendaftaranMbkmDao.save(mbkm);
+
+        return "redirect:/report/mbkm";
+    }
+
     @PostMapping("/mbkm/upload/file")
     public String uploadFileMbkm(@Valid FileMbkm fileMbkm, MultipartFile file, Authentication authentication) throws IOException {
         User user = currentUserService.currentUser(authentication);
@@ -256,18 +285,6 @@ public class MBKMController {
 
         return "redirect:/study/krs";
     }
-
-    // cancel MBKM oleh KPS
-
-//    @GetMapping("/studiesActivity/mbkm/cancel")
-//    public void cancelMBKM(Model model, @RequestParam(required = false) Prodi prodi){
-//
-//        if (prodi != null) {
-//            model.addAttribute("selectProdi", prodi);
-//            model.addAttribute("listMhs", pendaftaranMbkmDao.findByStatusAndStatusApprovalAndMahasiswaIdProdiOrderByTahunAkademikKodeTahunAkademik(StatusRecord.AKTIF, StatusApprove.APPROVED, prodi));
-//        }
-//
-//    }
 
     // penilaian MBKM
 

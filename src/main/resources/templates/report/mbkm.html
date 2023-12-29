@@ -76,13 +76,12 @@
                     <div class="card-body">
                         <div class="card shadow">
                             <div class="card-header border-0">
-                                <h3 class="mb-0">"Search Result"</h3>
                                 <div class="col text-right">
 <!--                                    <a th:href="@{/report/recapitulation/downloadipk (tahunAkademik =${selectedTahun.id}, angkatan =${selectedAngkatan})}" class="btn btn-warning btn-sm"><i class="fa fa-download"></i> Download</a>-->
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
+                                <table id="data-table-1" class="table align-items-center table-flush">
                                     <thead class="thead-light">
                                     <tr>
                                         <th>#</th>
@@ -96,7 +95,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${listMbkm}">
-                                        <td th:text="${(row.index + 1) + (listMbkm.number * listMbkm.size)}"></td>
+                                        <td th:text="${(row.index + 1)}"></td>
                                         <td th:text="${data.mahasiswa.nim}"></td>
                                         <td th:text="${data.mahasiswa.nama}"></td>
                                         <td th:text="${data.mahasiswa.idProdi.namaProdi}"></td>
@@ -196,6 +195,11 @@
                                                                     <button class="btn btn-primary btn-sm">Set Waiting</button>
                                                                 </form>
                                                             </div>
+                                                            <div>
+                                                                <form th:action="@{/mbkm/cancel(mbkm = ${data.id})}" method="post">
+                                                                    <button class="btn btn-danger btn-sm">Cancel</button>
+                                                                </form>
+                                                            </div>
                                                             <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                         </div>
                                                     </div>
@@ -205,17 +209,6 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="card-footer py-4" th:if="${tahun == null}">
-                                <nav aria-label="...">
-                                    <ul class="pagination justify-content-end mb-0" sd:pagination="full">
-                                        <li class="disabled"><a href="#" aria-label="Previous"><span
-                                                aria-hidden="true">&laquo;</span></a>
-                                        </li>
-                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
-                                        </li>
-                                    </ul>
-                                </nav>
                             </div>
                         </div>
                     </div>

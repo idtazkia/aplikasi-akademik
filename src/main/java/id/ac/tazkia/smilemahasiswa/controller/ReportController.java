@@ -1451,14 +1451,14 @@ public class ReportController {
     // MBKM
 
     @GetMapping("/report/mbkm")
-    public void reportMBKM(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page){
+    public void reportMBKM(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik){
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         if (tahunAkademik == null) {
-            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahun, page);
+            List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahun);
             model.addAttribute("listMbkm", mbkm);
         }else {
-            Page<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahunAkademik, page);
+            List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahunAkademik);
             model.addAttribute("listMbkm", mbkm);
             model.addAttribute("selectedTahun", tahunAkademik);
         }
