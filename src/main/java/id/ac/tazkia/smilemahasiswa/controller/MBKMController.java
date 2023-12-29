@@ -70,12 +70,19 @@ public class MBKMController {
 
     @Autowired private FileMbkmDao fileMbkmDao;
 
+    @Autowired private ProdiDao prodiDao;
+
     @Value("${upload.mbkm}")
     private String mbkmFolder;
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik(){
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
+    }
+
+    @ModelAttribute("prodi")
+    public Iterable<Prodi> prodi() {
+        return prodiDao.findAll();
     }
 
     // api response
@@ -128,16 +135,14 @@ public class MBKMController {
             List<KrsDetail> matkul = krsDetailDao.findByKrsAndStatusAndStatusKonversi(krs, StatusRecord.AKTIF, StatusRecord.MBKM);
             if (matkul != null || !matkul.isEmpty()) {
                 for (KrsDetail mat : matkul){
-                    mat.setStatus(StatusRecord.HAPUS);
-                    krsDetailDao.save(mat);
+                    krsDetailDao.delete(mat);
                     Jadwal jadwal = mat.getJadwal();
-                    jadwal.setStatus(StatusRecord.HAPUS);
-                    jadwalDao.save(jadwal);
+                    jadwalDao.delete(jadwal);
                 }
             }
         }
 
-        return "redirect:/studiesActivity/krs/approval/list";
+        return "redirect:/report/mbkm";
     }
 
     @PostMapping("/mbkm/approved")
@@ -251,6 +256,18 @@ public class MBKMController {
 
         return "redirect:/study/krs";
     }
+
+    // cancel MBKM oleh KPS
+
+//    @GetMapping("/studiesActivity/mbkm/cancel")
+//    public void cancelMBKM(Model model, @RequestParam(required = false) Prodi prodi){
+//
+//        if (prodi != null) {
+//            model.addAttribute("selectProdi", prodi);
+//            model.addAttribute("listMhs", pendaftaranMbkmDao.findByStatusAndStatusApprovalAndMahasiswaIdProdiOrderByTahunAkademikKodeTahunAkademik(StatusRecord.AKTIF, StatusApprove.APPROVED, prodi));
+//        }
+//
+//    }
 
     // penilaian MBKM
 
