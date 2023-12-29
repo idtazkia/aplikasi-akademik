@@ -818,7 +818,7 @@ public class StudiesActivityController {
 
                 model.addAttribute("sesi", jadwalDto);
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sesiKuliah.getJadwal()));
-                model.addAttribute("detailPertemuans", detailPertemuanDao.findAll());
+                model.addAttribute("detailPertemuans", detailPertemuanDao.findByStatus(StatusRecord.AKTIF));
 
         }
 
@@ -840,7 +840,7 @@ public class StudiesActivityController {
 
                 } 
 
-                model.addAttribute("detailPertemuans", detailPertemuanDao.findAll());
+                model.addAttribute("detailPertemuans", detailPertemuanDao.findByStatus(StatusRecord.AKTIF));
                 model.addAttribute("sesi", jadwalDto);
                 model.addAttribute("now", LocalDate.now());
                 model.addAttribute("sesiKuliah", sesiKuliah);
@@ -12756,6 +12756,17 @@ public class StudiesActivityController {
                         throws Exception {
                 Jadwal jadwal = jadwalDao.findById(id).get();
                 id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = presensiService.generateSesi(jadwal);
+
+                return response;
+
+        }
+
+        @GetMapping("/generate-presensi-mahasiswa/{id}")
+        @ResponseBody
+        public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse generatePresensiMahasiswa(@PathVariable String id)
+                        throws Exception {
+                SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
+                id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = presensiService.generatePresensiMahasiswa(sesiKuliah);
 
                 return response;
 
