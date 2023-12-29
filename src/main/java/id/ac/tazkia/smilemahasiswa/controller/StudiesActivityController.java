@@ -810,6 +810,8 @@ public class StudiesActivityController {
                 jadwalDto.setId(sesiKuliah.getId());
                 jadwalDto.setJamMulai(sesiKuliah.getWaktuMulai().toLocalTime());
                 jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
+                jadwalDto.setJamMulaiString(sesiKuliah.getWaktuMulai().toLocalTime());
+                jadwalDto.setJamSelesaiString(sesiKuliah.getWaktuSelesai().toLocalTime());
 
                 if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
                         model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
@@ -854,13 +856,20 @@ public class StudiesActivityController {
                 SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
                 sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
 
-                sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
-                sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamSelesai()));
+                LocalTime jamMulai = jadwalDto.getJamMulaiString().plusSeconds(30);
+                LocalTime jamSelesai = jadwalDto.getJamSelesaiString().plusSeconds(30);
+                LocalTime modifJamMulai = jamMulai.withSecond(0);
+                LocalTime modifJamSelesai = jamSelesai.withSecond(0);
+
+                sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), modifJamMulai));
+                sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), modifJamSelesai));
                 PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
                 presensiDosen.setDosen(jadwalDto.getDosen());
                 presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
                 presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
+                presensiDosen.setTanggalInput(LocalDateTime.now());
                 sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+                sesiKuliah.setTanggalInput(LocalDateTime.now());
                 sesiKuliahDao.save(sesiKuliah);
                 presensiDosenDao.save(presensiDosen);
 

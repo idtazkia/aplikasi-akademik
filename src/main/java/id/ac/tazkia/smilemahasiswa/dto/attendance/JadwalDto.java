@@ -42,4 +42,10 @@ public class JadwalDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime jamKeluar;
 
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime jamMulaiString;
+
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime jamSelesaiString;
+
 }
