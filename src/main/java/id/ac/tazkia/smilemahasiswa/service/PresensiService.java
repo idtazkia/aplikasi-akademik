@@ -757,4 +757,25 @@ public class PresensiService {
         }
     }
 
+    public BaseResponse generatePresensiMahasiswa(SesiKuliah sesiKuliah) throws Exception {
+
+        Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(
+                sesiKuliah.getJadwal(),
+                StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail) {
+            PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
+            presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
+            presensiMahasiswa.setSesiKuliah(sesiKuliah);
+            presensiMahasiswa.setKrsDetail(kd);
+            presensiMahasiswa.setCatatan("System");
+            presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
+            presensiMahasiswa.setRating(0);
+            presensiMahasiswaDao.save(presensiMahasiswa);
+        }
+
+        return BaseResponse.builder()
+                .code("200").message("Berhasil Generate")
+                .build();
+    }
+
 }
