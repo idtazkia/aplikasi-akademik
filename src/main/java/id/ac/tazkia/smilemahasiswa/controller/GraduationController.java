@@ -526,6 +526,16 @@ public class GraduationController {
         model.addAttribute("note", note);
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),
                 StatusRecord.SEMPRO, true);
+        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 23
+                && note.getMahasiswa().getIdProdi().getId().equals("05")) {
+            model.addAttribute("valid", "dosen2");
+        }
+
+        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+                && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+            model.addAttribute("valid", "dosen2");
+
+        }
         if (enableFiture != null) {
             model.addAttribute("sempro", enableFiture);
         } else {
@@ -833,6 +843,8 @@ public class GraduationController {
             TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
                     note.getMahasiswa().getIdProdi());
 
+            KrsDetail krsDetail = null;
+
             if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK) {
                 String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
                 ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
@@ -845,7 +857,7 @@ public class GraduationController {
 
                     if (lastKode.equals("1")) {
                         Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
-                        String kode = String.valueOf(tahun) + "2";  
+                        String kode = String.valueOf(tahun) + "2";
                         ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
                                 kode);
                     } else {
@@ -856,7 +868,18 @@ public class GraduationController {
 
                 }
             }
-            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
+
+            if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 21
+                    && note.getMahasiswa().getIdProdi().getId().equals("05")) {
+                krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
+
+            } else  if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+                    && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
+
+            }else {
+                krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
+            }
 
             if (krsDetail != null) {
                 if (waiting != null) {
