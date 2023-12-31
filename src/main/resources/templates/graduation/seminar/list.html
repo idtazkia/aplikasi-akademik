@@ -293,7 +293,7 @@
 
                                                                                         <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing 1 :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.note.dosen.karyawan.namaKaryawan}">asdasdasd</span> </div>
 
-                                                                                        <div class="my-2" th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing 2 :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.note.dosen2.karyawan.namaKaryawan}">asdasdasd</span> </div>
+                                                                                        <div class="my-2" th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing 2 :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.note.dosen2?.karyawan?.namaKaryawan}">asdasdasd</span> </div>
 
                                                                                         <div th:if="${'NONAKTIF' == data.publish}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-warning badge-pill px-25">Belum Publish</span></div>
                                                                                         <div th:if="${'AKTIF' == data.publish && data.nilai >= 70}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-success badge-pill px-25">Lulus</span></div>
@@ -316,7 +316,7 @@
                                                                                             <th>Ketua</th>
                                                                                             <th>Penguji</th>
                                                                                             <th>Pembimbing</th>
-                                                                                            <th th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}">Pembimbing 2</th>
+                                                                                            <th th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">Pembimbing 2</th>
                                                                                         </tr>
                                                                                         </thead>
 
@@ -369,7 +369,7 @@
                                                                                         </tr>
                                                                                         </tbody>
 
-                                                                                        <tbody class="text-95 text-secondary-d3" th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                                        <tbody class="text-95 text-secondary-d3" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                                                         <tr></tr>
                                                                                         <tr>
                                                                                             <td>1</td>
@@ -377,7 +377,8 @@
                                                                                             <td align="center" th:text="${data.ka}">90.00</td>
                                                                                             <td align="center" th:text="${data.ua}">90.00</td>
                                                                                             <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pa2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pa2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
                                                                                         </tr>
 
                                                                                         <tr>
@@ -386,7 +387,8 @@
                                                                                             <td align="center" th:text="${data.kb}">90.00</td>
                                                                                             <td align="center" th:text="${data.ub}">90.00</td>
                                                                                             <td align="center" th:text="${data.pb}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pb2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pb2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
                                                                                         </tr>
 
                                                                                         <tr>
@@ -395,7 +397,8 @@
                                                                                             <td align="center" th:text="${data.kc}">90.00</td>
                                                                                             <td align="center" th:text="${data.uc}">90.00</td>
                                                                                             <td align="center" th:text="${data.pc}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pc2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pc2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
                                                                                         </tr>
 
                                                                                         <tr>
@@ -404,7 +407,8 @@
                                                                                             <td align="center" th:text="${data.kd}">90.00</td>
                                                                                             <td align="center" th:text="${data.ud}">90.00</td>
                                                                                             <td align="center" th:text="${data.pd}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pd2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pd2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td>5</td>
@@ -412,7 +416,8 @@
                                                                                             <td align="center" th:text="${data.ke}">90.00</td>
                                                                                             <td align="center" th:text="${data.ue}">90.00</td>
                                                                                             <td align="center" th:text="${data.pe}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pe2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pe2}">90.00</td>
+                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
                                                                                         </tr>
                                                                                         </tbody>
 
