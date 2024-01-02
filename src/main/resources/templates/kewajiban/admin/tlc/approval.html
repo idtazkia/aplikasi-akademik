@@ -110,7 +110,43 @@
                                         </div>
                                     </td>
                                     <td >
-                                        <button type="button" class="btn btn-success btn-sm" th:text="${data[6]}">APPROVED</button>
+                                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" th:data-target="${'#modal-nilai'+data[0]}" th:text="${data[6]}">APPROVED</button>
+                                        <div class="modal fade" th:id="${'modal-nilai'+data[0]}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <form th:action="@{/kewajiban/admin/tlc/edit(bebasKewajiban=${data[0]})}" method="post">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Nilai</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h2>Edit Nilai</h2>
+                                                            <div class="row">
+                                                                <div class="col-md-6 col-xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="toefl">Nilai Toefl</label>
+                                                                        <input id="toefl" type="number" name="toefl" class="form-control" th:value="${data[8]}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="ielts">Nilai IELTS</label>
+                                                                        <input id="ielts" type="number" name="ielts" class="form-control" th:value="${data[9]}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success" type="submit">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td th:text="${data[5]}">2020</td>
                                     <td th:text="${data[7]}">2020</td>

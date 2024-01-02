@@ -140,24 +140,39 @@
                                         <div class="modal fade" th:id="${'modal-approvedakademik'+data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Perhatian!</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>Pastikan bahwa nama tersebut telah menyelesaikan dan </p>
-                                                        <p>dinyatakan lulus mata kuliah General Arabics English, dan </p>
-                                                        <p>IELTS atau TOEFL.</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <form th:action="@{/kewajiban/admin/tlc/approve(bebasKewajiban=${data.id})}" method="post">
+                                                    <form th:action="@{/kewajiban/admin/tlc/approve(bebasKewajiban=${data.id})}" method="post">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Perhatian!</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Pastikan bahwa nama tersebut telah menyelesaikan dan </p>
+                                                            <p>dinyatakan lulus mata kuliah General Arabics English, dan </p>
+                                                            <p>IELTS atau TOEFL.</p>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6 col-xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="toefl">Nilai Toefl</label>
+                                                                        <input id="toefl" type="number" name="toefl" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="ielts">Nilai IELTS</label>
+                                                                        <input id="ielts" type="number" name="ielts" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
                                                             <div class="form-group">
                                                                 <button class="btn btn-success" type="submit">Approved</button>
                                                             </div>
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

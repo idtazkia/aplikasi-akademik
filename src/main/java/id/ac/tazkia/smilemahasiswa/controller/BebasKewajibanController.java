@@ -474,15 +474,35 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/admin/tlc/approve")
-    public String approveTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+    public String approveTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, @RequestParam(required = false) Integer toefl,
+                             @RequestParam(required = false) Integer ielts, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveTlc(StatusApprove.APPROVED);
+        if (toefl != null) {
+            bebasKewajiban.setNilaiToefl(new BigDecimal(toefl));
+        }
+        if (ielts != null) {
+            bebasKewajiban.setNilaiIelts(new BigDecimal(ielts));
+        }
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user);
         mailService.mailApproveTlc(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/tlc/list";
+    }
+
+    @PostMapping("/kewajiban/admin/tlc/edit")
+    public String editNilaiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) Integer toefl, @RequestParam(required = false) Integer ielts){
+        if (toefl != null) {
+            bebasKewajiban.setNilaiToefl(new BigDecimal(toefl));
+        }
+        if (ielts != null) {
+            bebasKewajiban.setNilaiIelts(new BigDecimal(ielts));
+        }
+        bebasKewajibanDao.save(bebasKewajiban);
+
+        return "redirect:/kewajiban/admin/tlc/approval";
     }
 
     @PostMapping("/kewajiban/admin/tlc/reject")

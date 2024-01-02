@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -44,5 +45,9 @@ public class PendaftaranBebasKewajiban {
     private StatusApprove statusApproveAkademik = StatusApprove.WAITING;
 
     private LocalDateTime tanggalRequest = LocalDateTime.now();
+
+    private BigDecimal nilaiToefl = BigDecimal.ZERO;
+
+    private BigDecimal nilaiIelts = BigDecimal.ZERO;
 
 }
