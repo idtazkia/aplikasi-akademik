@@ -316,25 +316,14 @@ public class GraduationController {
 
         if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-                System.out.println(magang.length);
-                System.out.println(metolit.length);
-                if (magang.length == 0) {
-                    if (metolit.length == 0) {
-                        return "redirect:alert?matkul=Magang";
-
-                    } else {
-                        model.addAttribute("note", new Note());
-                        return "graduation/form";
-                    }
-
+                if (magang.length > 0 && metolit.length > 0) {
+                    model.addAttribute("note", new Note());
+                    return "graduation/form";
                 } else {
-                    if (metolit.length == 0) {
-                        return "redirect:alert?matkul=Metolit";
-                    } else {
-                        model.addAttribute("note", new Note());
-                        return "graduation/form";
-                    }
+                    return "redirect:alert?matkul=Magang/Metolit";
+
                 }
+            
             } else {
 
                 model.addAttribute("note", noteDao.findById(id).get());
@@ -594,7 +583,6 @@ public class GraduationController {
             HttpServletResponse response) throws Exception {
         graduationService.downloadDataConceptNote(tahunAkademik, prodi, response);
     }
-    
 
     @GetMapping("/graduation/admin/form")
     public void formAdmin(Model model, @RequestParam(value = "id", name = "id") Note note) {
@@ -884,11 +872,11 @@ public class GraduationController {
                     && note.getMahasiswa().getIdProdi().getId().equals("05")) {
                 krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
 
-            } else  if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+            } else if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
                     && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
                 krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
 
-            }else {
+            } else {
                 krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
             }
 
