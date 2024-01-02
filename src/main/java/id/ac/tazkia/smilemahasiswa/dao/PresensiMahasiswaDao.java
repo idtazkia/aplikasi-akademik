@@ -1,20 +1,22 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
 import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.PerformanceMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.DetailPresensiDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.bkd.Attendance;
 import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MahasiswaMangkirTigaDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
-
-import java.math.BigDecimal;
-import java.util.List;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiMahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 
 public interface PresensiMahasiswaDao extends PagingAndSortingRepository<PresensiMahasiswa, String> {
         List<PresensiMahasiswa> findBySesiKuliahAndStatus(SesiKuliah sesiKuliah, StatusRecord aktif);

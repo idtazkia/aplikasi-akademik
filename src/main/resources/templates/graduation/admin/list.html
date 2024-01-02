@@ -79,6 +79,10 @@
 
                         <div th:if="${selectedTahun != null}">
                             <div class="card-body">
+                                <div class="row p-3">
+                                    <a th:href="@{/download/concept-note(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"
+                                        class="btn btn-success btn-sm" >Download Excel</a>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-3" th:if="${status == null}">
                                         <a th:href="@{/graduation/admin/list (tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"

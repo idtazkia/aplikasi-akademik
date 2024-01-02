@@ -33,4 +33,6 @@ public interface NoteDao extends PagingAndSortingRepository <Note, String> {
 
     List<Note> findByDosenAndStatusAndMahasiswaIdProdiIdJenjangIdOrderByTanggalInputDesc(Dosen dosen, StatusApprove status, String jenjang);
 
+    List<Note> findByTahunAkademikAndMahasiswaIdProdiAndStatus(TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApprove);
+
 }

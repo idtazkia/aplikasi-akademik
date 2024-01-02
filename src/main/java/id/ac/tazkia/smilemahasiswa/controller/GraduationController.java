@@ -110,6 +110,7 @@ import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
 import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.GraduationService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import id.ac.tazkia.smilemahasiswa.service.SidangService;
 
@@ -185,6 +186,9 @@ public class GraduationController {
 
     @Autowired
     private FileMagangDao fileMagangDao;
+
+    @Autowired
+    private GraduationService graduationService;
 
     @Autowired
     private SidangService sidangService;
@@ -584,6 +588,13 @@ public class GraduationController {
         }
 
     }
+
+    @GetMapping("/download/concept-note")
+    public void downloadDataConceptNote(@RequestParam Prodi prodi, @RequestParam TahunAkademik tahunAkademik,
+            HttpServletResponse response) throws Exception {
+        graduationService.downloadDataConceptNote(tahunAkademik, prodi, response);
+    }
+    
 
     @GetMapping("/graduation/admin/form")
     public void formAdmin(Model model, @RequestParam(value = "id", name = "id") Note note) {
