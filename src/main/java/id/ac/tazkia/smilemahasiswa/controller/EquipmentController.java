@@ -7,7 +7,11 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.kelas.DataKelas;
+import id.ac.tazkia.smilemahasiswa.dto.kelas.DataKelasDto;
+import id.ac.tazkia.smilemahasiswa.dto.ploting.DataPlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.DataPloting;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,6 +296,32 @@ public class EquipmentController {
         return "redirect:list";
     }
 
+    @GetMapping("/equipment/class-list")
+    @ResponseBody
+    public DataKelas listKelas( @RequestParam(required = false) String search,
+                                           @RequestParam(required = false) String sort,
+                                           @RequestParam(required = false) String order,
+                                           @RequestParam(required = false) Integer offset,
+                                           @RequestParam(required = false) Integer limit){
+
+        if (search.isEmpty() ) {
+            List<DataKelasDto> kelas = kelasDao.listAllKelas(limit,offset);
+            DataKelas response = new DataKelas();
+            response.setTotal(kelasDao.countAllKelas());
+            response.setTotalNotFiltered(kelasDao.countAllKelas());
+            response.setRows(kelas);
+            return response;
+        }else {
+            List<DataKelasDto> kelas = kelasDao.listSearchKelas(search,limit,offset);
+            DataKelas response = new DataKelas();
+            response.setTotal(kelasDao.listSearchKelas(search,Integer.MAX_VALUE,offset).size());
+            response.setTotalNotFiltered(kelas.size());
+            response.setRows(kelas);
+            return response;
+        }
+
+    }
+
 
     //    class
     @GetMapping("/equipment/class/list")
@@ -331,11 +361,12 @@ public class EquipmentController {
         return "redirect:list";
     }
 
-    @PostMapping("/equipment/class/delete")
+    @GetMapping("/equipment/class/delete")
     public String deleteKelas(@RequestParam Kelas kelas,
                               RedirectAttributes attributes) {
 
         Integer jmlJdwal = jadwalDao.jmlJadwal(kelas.getId());
+        System.out.println(jmlJdwal);
 
         if (jmlJdwal == null) {
             jmlJdwal = 0;

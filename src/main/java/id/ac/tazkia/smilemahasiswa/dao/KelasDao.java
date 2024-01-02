@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.kelas.DataKelasDto;
 import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.Kelas;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
@@ -30,4 +31,24 @@ public interface KelasDao extends PagingAndSortingRepository<Kelas,String> {
             "from kelas where status = 'AKTIF'\n" +
             "order by angkatan desc", nativeQuery = true)
     List<KelasIntDto> apiKelas();
+
+    @Query(value = "select k.id as id, k.nama_kelas as nama, p.nama_prodi as prodi,p.id as idProdi, k.keterangan as keterangan, k.angkatan as angkatan,(select count(*) from kelas_mahasiswa where id_kelas = k.id and status = 'AKTIF') as mahasiswa \n" +
+            "from kelas as k inner join prodi as p on k.id_prodi = p.id \n" +
+            "where k.status in ('AKTIF', 'NONAKTIF') order by k.angkatan desc limit ?1 offset ?2", nativeQuery = true)
+    List<DataKelasDto> listAllKelas(Integer limit, Integer offset);
+
+    @Query(value = "select count(*)\n" +
+            "from kelas as k inner join prodi as p on k.id_prodi = p.id \n" +
+            "where k.status in ('AKTIF', 'NONAKTIF') order by k.angkatan desc", nativeQuery = true)
+    Integer countAllKelas();
+
+    @Query(value = "select k.id as id, k.nama_kelas as nama, p.nama_prodi as prodi,p.id as idProdi,  k.keterangan as keterangan, k.angkatan as angkatan,(select count(*) from kelas_mahasiswa where id_kelas = k.id and status = 'AKTIF') as mahasiswa \n" +
+            "from kelas as k inner join prodi as p on k.id_prodi = p.id \n" +
+            "where k.status in ('AKTIF', 'NONAKTIF') and k.nama_kelas like %?1% order by k.angkatan desc limit ?2 offset ?3", nativeQuery = true)
+    List<DataKelasDto> listSearchKelas(String search,Integer limit, Integer offset);
+
+    @Query(value = "select count(*)\n" +
+            "from kelas as k inner join prodi as p on k.id_prodi = p.id \n" +
+            "where k.status in ('AKTIF', 'NONAKTIF') and k.nama_kelas like %?1", nativeQuery = true)
+    Integer countSearchKelas(String search);
 }
