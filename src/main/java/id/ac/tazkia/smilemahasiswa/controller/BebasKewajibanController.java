@@ -475,14 +475,14 @@ public class BebasKewajibanController {
 
     @PostMapping("/kewajiban/admin/tlc/approve")
     public String approveTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, @RequestParam(required = false) Integer toefl,
-                             @RequestParam(required = false) Integer ielts, Authentication authentication){
+                             @RequestParam(required = false) BigDecimal ielts, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveTlc(StatusApprove.APPROVED);
         if (toefl != null) {
             bebasKewajiban.setNilaiToefl(new BigDecimal(toefl));
         }
         if (ielts != null) {
-            bebasKewajiban.setNilaiIelts(new BigDecimal(ielts));
+            bebasKewajiban.setNilaiIelts(ielts);
         }
         bebasKewajibanDao.save(bebasKewajiban);
 
@@ -493,12 +493,12 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/admin/tlc/edit")
-    public String editNilaiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) Integer toefl, @RequestParam(required = false) Integer ielts){
+    public String editNilaiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) Integer toefl, @RequestParam(required = false) BigDecimal ielts){
         if (toefl != null) {
             bebasKewajiban.setNilaiToefl(new BigDecimal(toefl));
         }
         if (ielts != null) {
-            bebasKewajiban.setNilaiIelts(new BigDecimal(ielts));
+            bebasKewajiban.setNilaiIelts(ielts);
         }
         bebasKewajibanDao.save(bebasKewajiban);
 
