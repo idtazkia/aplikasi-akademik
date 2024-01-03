@@ -816,7 +816,7 @@ public class StudiesActivityController {
                 if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
                         model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
 
-                } 
+                }
 
                 model.addAttribute("sesi", jadwalDto);
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sesiKuliah.getJadwal()));
@@ -840,7 +840,7 @@ public class StudiesActivityController {
                 if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
                         model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
 
-                } 
+                }
 
                 model.addAttribute("detailPertemuans", detailPertemuanDao.findByStatus(StatusRecord.AKTIF));
                 model.addAttribute("sesi", jadwalDto);
@@ -855,6 +855,7 @@ public class StudiesActivityController {
 
                 SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
                 sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+                sesiKuliah.setDetailPertemuan(jadwalDto.getDetailPertemuan());
 
                 LocalTime jamMulai = jadwalDto.getJamMulaiString().plusSeconds(30);
                 LocalTime jamSelesai = jadwalDto.getJamSelesaiString().plusSeconds(30);
@@ -12775,7 +12776,8 @@ public class StudiesActivityController {
         public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse generatePresensiMahasiswa(@PathVariable String id)
                         throws Exception {
                 SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
-                id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = presensiService.generatePresensiMahasiswa(sesiKuliah);
+                id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = presensiService
+                                .generatePresensiMahasiswa(sesiKuliah);
 
                 return response;
 
