@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.RekapTugasAkhir;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.ReportUjianDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -1464,6 +1465,76 @@ public class ReportController {
         }
 
 
+    }
+
+    // Laporan Ujian
+    @GetMapping("/report/ujian")
+    public String reportUjian(Model model, @RequestParam(required = false) TahunAkademik ta,
+                              @RequestParam(required = false) Prodi prodi,
+                              @RequestParam(required = false) String ujian){
+
+        model.addAttribute("selectTahunAkademik", ta);
+        model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("ujian", ujian);
+        if (ta != null){
+            model.addAttribute("listReportUjian", presensiDosenDao.reportUjian(ta, prodi, ujian));
+        }
+        return "report/recapitulation/ujian";
+    }
+
+    @GetMapping("/report/ujian/excel")
+    public void reportUjianExcel(@RequestParam TahunAkademik tahunAkademik,
+                                 @RequestParam Prodi prodi,
+                                 @RequestParam String ujian,
+                                 HttpServletResponse response)throws IOException{
+
+        String[] column = {"No", "Dosen", "Kelas", "Matakuliah", "Detail Pertemuan"};
+
+        List<ReportUjianDto> reportUjianDtoList = presensiDosenDao.reportUjian(tahunAkademik, prodi, ujian);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Data-Report-Ujian");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for(int i = 0; i < column.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(column[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (ReportUjianDto data: reportUjianDtoList){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(data.getDosen());
+            row.createCell(2).setCellValue(data.getKelas());
+            row.createCell(3).setCellValue(data.getMatakuliah());
+            if (data.getDetailPertemuan() == null){
+                row.createCell(4).setCellValue("-");
+            }else {
+                row.createCell(4).setCellValue(data.getDetailPertemuan());
+            }
+        }
+
+        for (int i = 0; i < column.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data-Report-Ujian-"+ LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 
 }

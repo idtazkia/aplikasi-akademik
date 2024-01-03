@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.RekapPresensiDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.KlasemenDosenIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.ReportUjianDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -150,5 +151,18 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "left join presensi_dosen as b on a.id_presensi = b.id and a.dosen = b.id_dosen and b.status_presensi in ('HADIR','TERLAMBAT')) as a\n" +
             "group by jadwal, dosen", nativeQuery = true)
     List<SalaryDto> rekapSalary(LocalDate masuk, LocalDate selesai);
+
+    @Query(value = "select a.id as id, g.nama_karyawan as dosen, f.nama_matakuliah as matakuliah, i.nama_kelas as kelas, h.nama as detailPertemuan from presensi_dosen as a \n" +
+            "\tinner join sesi_kuliah as b on a.id = b.id_presensi_dosen\n" +
+            "    inner join dosen as c on c.id = a.id_dosen\n" +
+            "    inner join jadwal as d on d.id = a.id_jadwal\n" +
+            "    inner join matakuliah_kurikulum as e on e.id = d.id_matakuliah_kurikulum\n" +
+            "    inner join matakuliah as f on f.id = e.id_matakuliah\n" +
+            "    inner join karyawan as g on g.id = c.id_karyawan\n" +
+            "    left join detail_pertemuan h on h.id = b.id_detail_pertemuan\n" +
+            "    inner join kelas as i on d.id_kelas = i.id\n" +
+            "    where a.status = 'AKTIF' and d.id_tahun_akademik = ?1 and d.id_prodi = ?2 \n" +
+            "    and b.pertemuan_ke = ?3 order by g.nama_karyawan ASC", nativeQuery = true)
+    List<ReportUjianDto> reportUjian(TahunAkademik tahunAkademik, Prodi prodi, String jenis);
 
 }

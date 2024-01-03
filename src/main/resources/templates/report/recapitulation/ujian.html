@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Ujian</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Recapitulation Ujian</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group text-center">
+                                        <label>Semester</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="ta">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectTahunAkademik})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group text-center">
+                                        <label>Prodi</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="prodi">
+                                            <option value=""></option>
+                                            <option th:each="data : ${prodi}"
+                                                    th:text="${data.namaProdi}"
+                                                    th:selected="(${data} == *{selectedProdi})"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group text-center">
+                                        <label>Ujian</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="ujian">
+                                            <option value=""></option>
+                                            <option th:selected="('8' == *{ujian})" value="8">UTS</option>
+                                            <option th:selected="('16' == *{ujian})" value="16">UAS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-info">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer" th:if="${selectTahunAkademik != null}">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-header-action text-right">
+                                    <a th:href="@{/report/ujian/excel(tahunAkademik = ${selectTahunAkademik.id}, prodi = ${selectedProdi.id}, ujian = ${ujian})}" class="btn btn-success btn-sm">Download Excel</a>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Dosen</th>
+                                        <th>Kelas</th>
+                                        <th>Matakuliah</th>
+                                        <th>Detail Pertemuan</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, row:${listReportUjian}">
+                                        <td th:text="${(row.index + 1)}"></td>
+                                        <td th:text="${data.dosen}"></td>
+                                        <td th:text="${data.kelas}"></td>
+                                        <td th:text="${data.matakuliah}"></td>
+                                        <td th:text="${data.detailPertemuan}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
