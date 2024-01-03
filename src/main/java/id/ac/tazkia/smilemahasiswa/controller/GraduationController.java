@@ -2430,9 +2430,9 @@ public class GraduationController {
             Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
-        model.addAttribute("jenis", MagangStatus.values());
+        model.addAttribute("selectedStatus", status);
         if (StringUtils.hasText(status)) {
-            if (status.equals("ALL") && !status.isEmpty()) {
+            if (status.equals("ALL")) {
                 model.addAttribute("selectedStatus", status);
                 model.addAttribute("list",
                         fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDesc(prodi,

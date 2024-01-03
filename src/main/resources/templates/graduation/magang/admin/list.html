@@ -81,7 +81,8 @@
                                         <div class="form-group">
                                             <label>Jenis</label>
                                             <select name="status" class="form-control">
-                                                <option value="ALL" selected>Semua Data</option>
+                                                <option value="ALL" th:selected="${selectedStatus == 'ALL'}">Semua
+                                                    Data</option>
                                                 <option value="MAGANG" th:selected="${selectedStatus == 'MAGANG'}">
                                                     Laporan Magang Tugas
                                                     Akhir</option>
@@ -117,6 +118,7 @@
                                                 <th scope="col">NIM</th>
                                                 <th scope="col">Nama</th>
                                                 <th scope="col">Tanggal Upload</th>
+                                                <th scope="col">Jenis</th>
                                                 <th scope="col">Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -129,6 +131,8 @@
                                                 <td th:text="${data.mahasiswa.nama}">Muhammmad Rafizki</td>
                                                 <td th:if="${data.tanggalUpload != null}" th:text="${#temporals.format(data.tanggalUpload, 'EE, dd - MMM - yyyy')}">Muhammmad Rafizki</td>
                                                 <td th:if="${data.tanggalUpload == null}">-</td>
+                                                <td th:text="${data.jenis}">
+                                                    1</td>
                                                 <td>
                                                     <button class="btn btn-warning btn-sm"
                                                         th:if="${data.status == data.status.WAITING}">Menunggu
