@@ -60,15 +60,22 @@ public class SidangService {
 
     @Autowired
     private HariDao hariDao;
-    public Seminar updatePublish(Seminar seminar,SeminarDto seminarDto){
-        BeanUtils.copyProperties(seminarDto,seminar);
-        if (seminarDto.getJenis() == StatusRecord.SKRIPSI){
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+
+    public Seminar updatePublish(Seminar seminar, SeminarDto seminarDto) {
+        BeanUtils.copyProperties(seminarDto, seminar);
+        if (seminarDto.getJenis() == StatusRecord.SKRIPSI) {
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
             seminar.setNilaiA(nilaiA);
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
@@ -76,118 +83,169 @@ public class SidangService {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
-            Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar,BigDecimal.ZERO);
+            Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                     seminar.setStatusSempro(StatusApprove.FAILED);
                     seminar.setStatus(StatusApprove.FAILED);
-                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                            seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
                     if (enableFiture != null) {
                         enableFiture.setEnable(Boolean.FALSE);
                         enableFitureDao.save(enableFiture);
                     }
-                }else {
+                } else {
                     seminar.setStatusSempro(StatusApprove.APPROVED);
                 }
             }
 
         }
 
-        if (seminarDto.getJenis() == StatusRecord.STUDI_KELAYAKAN){
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        if (seminarDto.getJenis() == StatusRecord.STUDI_KELAYAKAN) {
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                    .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
             seminar.setNilaiA(nilaiA);
             seminar.setNilaiB(nilaiB);
             seminar.setNilaiC(nilaiC);
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar,BigDecimal.ZERO);
+            Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                     seminar.setStatusSempro(StatusApprove.FAILED);
                     seminar.setStatus(StatusApprove.FAILED);
-                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                            seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
                     if (enableFiture != null) {
                         enableFiture.setEnable(Boolean.FALSE);
                         enableFitureDao.save(enableFiture);
                     }
-                }else {
+                } else {
                     seminar.setStatusSempro(StatusApprove.APPROVED);
                 }
             }
         }
 
-        if (seminarDto.getJenis() == StatusRecord.TESIS){
-            seminar.setPa2(seminarDto.getPa2());
-            seminar.setPb2(seminarDto.getPb2());
-            seminar.setPc2(seminarDto.getPc2());
-            seminar.setPd2(seminarDto.getPd2());
-            seminar.setPe2(seminarDto.getPe2());
-            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-            seminar.setNilaiA(nilaiA);
-            seminar.setNilaiB(nilaiB);
-            seminar.setNilaiC(nilaiC);
-            seminar.setNilaiD(nilaiD);
-            seminar.setNilaiE(nilaiE);
-            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,BigDecimal.ZERO);
-            if (nilaiKosong == null) {
-                if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                    seminar.setStatusSempro(StatusApprove.FAILED);
-                    seminar.setStatus(StatusApprove.FAILED);
-                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
-                    if (enableFiture != null) {
-                        enableFiture.setEnable(Boolean.FALSE);
-                        enableFitureDao.save(enableFiture);
+        if (seminarDto.getJenis() == StatusRecord.TESIS) {
+            Prodi prodi = seminar.getNote().getMahasiswa().getIdProdi();
+            String angkatan = seminar.getNote().getMahasiswa().getAngkatan();
+            System.out.println(angkatan);
+            System.out.println(prodi.getNamaProdi());
+            if (Integer.parseInt(angkatan) >= 21
+                    && prodi.getId().equals("05")) {
+                System.out.println("test");
+                // updateNilaiPasca(seminar, seminarDto);
+            } else if (Integer.parseInt(angkatan) >= 03
+                    && prodi.getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                System.out.println("test");
+
+                // updateNilaiPasca(seminar, seminarDto);
+
+            } else {
+                seminar.setPa2(seminarDto.getPa2());
+                seminar.setPb2(seminarDto.getPb2());
+                seminar.setPc2(seminarDto.getPc2());
+                seminar.setPd2(seminarDto.getPd2());
+                seminar.setPe2(seminarDto.getPe2());
+                BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2())
+                        .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+                BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2())
+                        .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+                BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2())
+                        .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+                BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2())
+                        .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+                BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2())
+                        .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+                seminar.setNilaiA(nilaiA);
+                seminar.setNilaiB(nilaiB);
+                seminar.setNilaiC(nilaiC);
+                seminar.setNilaiD(nilaiD);
+                seminar.setNilaiE(nilaiE);
+                seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+                Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar, BigDecimal.ZERO);
+                if (nilaiKosong == null) {
+                    if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                        seminar.setStatusSempro(StatusApprove.FAILED);
+                        seminar.setStatus(StatusApprove.FAILED);
+                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                                seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                        if (enableFiture != null) {
+                            enableFiture.setEnable(Boolean.FALSE);
+                            enableFitureDao.save(enableFiture);
+                        }
+                    } else {
+                        seminar.setStatusSempro(StatusApprove.APPROVED);
                     }
-                }else {
-                    seminar.setStatusSempro(StatusApprove.APPROVED);
                 }
             }
 
         }
-
 
         seminarDao.save(seminar);
         return seminar;
     }
 
-    public Sidang updateSidangPasca(Sidang sidang,SeminarDto seminarDto){
-        BeanUtils.copyProperties(seminarDto,sidang);
+    public void updateNilaiPasca(Seminar seminar, SeminarDto seminarDto) {
+        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        seminar.setNilaiA(nilaiA);
+        seminar.setNilaiB(nilaiB);
+        seminar.setNilaiC(nilaiC);
+        seminar.setNilaiD(nilaiD);
+        seminar.setNilaiE(nilaiE);
+        seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+        Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
+        if (nilaiKosong == null) {
+            if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                seminar.setStatusSempro(StatusApprove.FAILED);
+                seminar.setStatus(StatusApprove.FAILED);
+                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
+                        seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                if (enableFiture != null) {
+                    enableFiture.setEnable(Boolean.FALSE);
+                    enableFitureDao.save(enableFiture);
+                }
+            } else {
+                seminar.setStatusSempro(StatusApprove.APPROVED);
+            }
+        }
+        seminarDao.save(seminar);
 
-
-       sidang.setPa2(seminarDto.getPa2());
-       sidang.setPb2(seminarDto.getPb2());
-       sidang.setPc2(seminarDto.getPc2());
-       sidang.setPd2(seminarDto.getPd2());
-       BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).add(sidang.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-       BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).add(sidang.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-       BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).add(sidang.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-       BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).add(sidang.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-       sidang.setNilaiA(nilaiA);
-       sidang.setNilaiB(nilaiB);
-       sidang.setNilaiC(nilaiC);
-       sidang.setNilaiD(nilaiD);
-       sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
-        sidangDao.save(sidang);
-        return sidang;
     }
 
-    public Sidang updateSidang(Sidang sidang,SeminarDto seminarDto){
-        BeanUtils.copyProperties(seminarDto,sidang);
+    public Sidang updateSidangPasca(Sidang sidang, SeminarDto seminarDto) {
+        BeanUtils.copyProperties(seminarDto, sidang);
 
-        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.4));
-        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        sidang.setPa2(seminarDto.getPa2());
+        sidang.setPb2(seminarDto.getPb2());
+        sidang.setPc2(seminarDto.getPc2());
+        sidang.setPd2(seminarDto.getPd2());
+        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).add(sidang.getPa2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).add(sidang.getPb2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).add(sidang.getPc2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).add(sidang.getPd2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
         sidang.setNilaiA(nilaiA);
         sidang.setNilaiB(nilaiB);
         sidang.setNilaiC(nilaiC);
@@ -197,7 +255,27 @@ public class SidangService {
         return sidang;
     }
 
-    public SidangDto getKetua(Sidang sidang){
+    public Sidang updateSidang(Sidang sidang, SeminarDto seminarDto) {
+        BeanUtils.copyProperties(seminarDto, sidang);
+
+        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.4));
+        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        sidang.setNilaiA(nilaiA);
+        sidang.setNilaiB(nilaiB);
+        sidang.setNilaiC(nilaiC);
+        sidang.setNilaiD(nilaiD);
+        sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
+        sidangDao.save(sidang);
+        return sidang;
+    }
+
+    public SidangDto getKetua(Sidang sidang) {
         SidangDto sidangDto = new SidangDto();
         sidangDto.setId(sidang.getId());
         sidangDto.setKomentar(sidang.getKomentarKetua());
@@ -210,7 +288,7 @@ public class SidangService {
         return sidangDto;
     }
 
-    public SemproDto getKetuaSempro(Seminar seminar){
+    public SemproDto getKetuaSempro(Seminar seminar) {
         SemproDto semproDto = new SemproDto();
         semproDto.setId(seminar.getId());
         semproDto.setKomentar(seminar.getKomentarKetua());
@@ -224,7 +302,7 @@ public class SidangService {
         return semproDto;
     }
 
-    public SemproDto getPengujiSempro(Seminar seminar){
+    public SemproDto getPengujiSempro(Seminar seminar) {
         SemproDto semproDto = new SemproDto();
         semproDto.setId(seminar.getId());
         semproDto.setKomentar(seminar.getKomentarKetua());
@@ -237,7 +315,7 @@ public class SidangService {
         return semproDto;
     }
 
-    public SemproDto getPembimbingSempro1(Seminar seminar){
+    public SemproDto getPembimbingSempro1(Seminar seminar) {
         SemproDto semproDto = new SemproDto();
         semproDto.setId(seminar.getId());
         semproDto.setKomentar(seminar.getKomentarKetua());
@@ -250,7 +328,7 @@ public class SidangService {
         return semproDto;
     }
 
-    public SemproDto getPembimbingSempro2(Seminar seminar){
+    public SemproDto getPembimbingSempro2(Seminar seminar) {
         SemproDto semproDto = new SemproDto();
         semproDto.setId(seminar.getId());
         semproDto.setKomentar(seminar.getKomentarKetua());
@@ -264,7 +342,7 @@ public class SidangService {
         return semproDto;
     }
 
-    public SidangDto getPenguji(Sidang sidang){
+    public SidangDto getPenguji(Sidang sidang) {
         SidangDto sidangDto = new SidangDto();
         sidangDto.setId(sidang.getId());
         sidangDto.setKomentar(sidang.getKomentarPenguji());
@@ -276,7 +354,7 @@ public class SidangService {
         return sidangDto;
     }
 
-    public SidangDto getPembimbing(Sidang sidang){
+    public SidangDto getPembimbing(Sidang sidang) {
         SidangDto sidangDto = new SidangDto();
         sidangDto.setId(sidang.getId());
         sidangDto.setKomentar(sidang.getKomentarPembimbing());
@@ -288,7 +366,7 @@ public class SidangService {
         return sidangDto;
     }
 
-    public SidangDto getPembimbing2(Sidang sidang){
+    public SidangDto getPembimbing2(Sidang sidang) {
         SidangDto sidangDto = new SidangDto();
         sidangDto.setId(sidang.getId());
         sidangDto.setKomentar(sidang.getKomentarPembimbing2());
@@ -300,7 +378,7 @@ public class SidangService {
         return sidangDto;
     }
 
-    public void saveKetua(SidangDto sidangDto){
+    public void saveKetua(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarKetua(sidangDto.getKomentar());
         sidang.setBeritaAcara(sidangDto.getBeritaAcara());
@@ -315,7 +393,7 @@ public class SidangService {
 
     }
 
-    public void saveKetuaPasca(SidangDto sidangDto){
+    public void saveKetuaPasca(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarKetua(sidangDto.getKomentar());
         sidang.setBeritaAcara(sidangDto.getBeritaAcara());
@@ -330,7 +408,7 @@ public class SidangService {
 
     }
 
-    public void saveKetuaSeminar(SemproDto semproDto){
+    public void saveKetuaSeminar(SemproDto semproDto) {
         Seminar seminar = seminarDao.findById(semproDto.getId()).get();
         seminar.setKomentarKetua(semproDto.getKomentar());
         seminar.setBeritaAcara(semproDto.getBeritaAcara());
@@ -345,7 +423,7 @@ public class SidangService {
 
     }
 
-    public void savePenguji(SidangDto sidangDto){
+    public void savePenguji(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarPenguji(sidangDto.getKomentar());
         sidang.setUa(sidangDto.getNilaiA());
@@ -356,7 +434,7 @@ public class SidangService {
 
     }
 
-    public void savePengujiPasca(SidangDto sidangDto){
+    public void savePengujiPasca(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarPenguji(sidangDto.getKomentar());
         sidang.setUa(sidangDto.getNilaiA());
@@ -367,7 +445,7 @@ public class SidangService {
 
     }
 
-    public void savePengujiSempro(SemproDto semproDto){
+    public void savePengujiSempro(SemproDto semproDto) {
         Seminar seminar = seminarDao.findById(semproDto.getId()).get();
         seminar.setKomentarPenguji(semproDto.getKomentar());
         seminar.setUa(semproDto.getNilaiA());
@@ -380,7 +458,7 @@ public class SidangService {
 
     }
 
-    public void savePembimbingSempro(SemproDto semproDto){
+    public void savePembimbingSempro(SemproDto semproDto) {
         Seminar seminar = seminarDao.findById(semproDto.getId()).get();
         seminar.setKomentarPenguji(semproDto.getKomentar());
         seminar.setPa(semproDto.getNilaiA());
@@ -393,7 +471,7 @@ public class SidangService {
 
     }
 
-    public void savePembimbing2Sempro(SemproDto semproDto){
+    public void savePembimbing2Sempro(SemproDto semproDto) {
         Seminar seminar = seminarDao.findById(semproDto.getId()).get();
         seminar.setKomentarPenguji(semproDto.getKomentar());
         seminar.setPa2(semproDto.getNilaiA());
@@ -406,7 +484,7 @@ public class SidangService {
 
     }
 
-    public void savePembimbing(SidangDto sidangDto){
+    public void savePembimbing(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarPembimbing(sidangDto.getKomentar());
         sidang.setPa(sidangDto.getNilaiA());
@@ -418,7 +496,7 @@ public class SidangService {
 
     }
 
-    public void savePembimbingPasca(SidangDto sidangDto){
+    public void savePembimbingPasca(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarPembimbing(sidangDto.getKomentar());
         sidang.setPa(sidangDto.getNilaiA());
@@ -430,7 +508,7 @@ public class SidangService {
 
     }
 
-    public void savePembimbing2(SidangDto sidangDto){
+    public void savePembimbing2(SidangDto sidangDto) {
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarPembimbing2(sidangDto.getKomentar());
         sidang.setPa2(sidangDto.getNilaiA());
@@ -442,11 +520,15 @@ public class SidangService {
 
     }
 
-    private void akumulasiNilai(Sidang sidang){
-        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.4));
-        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
-        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+    private void akumulasiNilai(Sidang sidang) {
+        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.4));
+        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
         sidang.setNilaiA(nilaiA);
         sidang.setNilaiB(nilaiB);
         sidang.setNilaiC(nilaiC);
@@ -455,11 +537,15 @@ public class SidangService {
         sidangDao.save(sidang);
     }
 
-    private void akumulasiNilaiPasca(Sidang sidang){
-        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).add(sidang.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).add(sidang.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).add(sidang.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).add(sidang.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+    private void akumulasiNilaiPasca(Sidang sidang) {
+        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).add(sidang.getPa2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).add(sidang.getPb2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).add(sidang.getPc2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).add(sidang.getPd2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
         sidang.setNilaiA(nilaiA);
         sidang.setNilaiB(nilaiB);
         sidang.setNilaiC(nilaiC);
@@ -468,12 +554,17 @@ public class SidangService {
         sidangDao.save(sidang);
     }
 
-    private void akumulasiNilaiSempro(Seminar seminar){
-        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-        BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
-        BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+    private void akumulasiNilaiSempro(Seminar seminar) {
+        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2())
+                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
         seminar.setNilaiA(nilaiA);
         seminar.setNilaiB(nilaiB);
         seminar.setNilaiC(nilaiC);
@@ -484,17 +575,18 @@ public class SidangService {
     }
 
     // CREATE SURAT TUGAS SEMINAR
-    public void suratTugasSeminar(@RequestParam Seminar seminar, HttpServletResponse response) throws IOException, DocumentException {
+    public void suratTugasSeminar(@RequestParam Seminar seminar, HttpServletResponse response)
+            throws IOException, DocumentException {
 
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
 
-        String tgl = seminar.getTanggalInput().toString().substring(5,7);
-        String tahun = seminar.getTanggalInput().toString().substring(0,4);
+        String tgl = seminar.getTanggalInput().toString().substring(5, 7);
+        String tahun = seminar.getTanggalInput().toString().substring(0, 4);
         String kdBln = "";
         System.out.println("tes bulan :" + tgl);
         System.out.println("tes tahun :" + tahun);
-        switch (tgl){
+        switch (tgl) {
             case "01":
                 kdBln = "I";
                 break;
@@ -548,15 +640,16 @@ public class SidangService {
             namaBulanHijri = "Jumadil Akhir";
         } else if ("Rabiʻ I".equals(namaBulanHijri)) {
             namaBulanHijri = "Rabi'ul Awal";
-        }else if ("Rabiʻ II".equals(namaBulanHijri)){
+        } else if ("Rabiʻ II".equals(namaBulanHijri)) {
             namaBulanHijri = "Rabi'ul Akhir";
-        }else {
+        } else {
             namaBulanHijri = namaBulanHijri;
         }
         String kode = "";
         String existingKode = seminar.getKodeSuratTugas();
         if (existingKode == null) {
-            KodeSidang cek = kodeSidangDao.findTopByProdiAndTahunAndStatusOrderByKodeDesc(seminar.getNote().getMahasiswa().getIdProdi(), tahun, StatusRecord.AKTIF);
+            KodeSidang cek = kodeSidangDao.findTopByProdiAndTahunAndStatusOrderByKodeDesc(
+                    seminar.getNote().getMahasiswa().getIdProdi(), tahun, StatusRecord.AKTIF);
             if (cek == null) {
                 KodeSidang newKode = new KodeSidang();
                 newKode.setKode(1);
@@ -565,10 +658,11 @@ public class SidangService {
                 newKode.setProdi(seminar.getNote().getMahasiswa().getIdProdi());
                 newKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(newKode);
-                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                        + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
 
                 seminar.setKodeSuratTugas(kode);
-            }else{
+            } else {
                 KodeSidang addKode = new KodeSidang();
                 Integer newCode = cek.getKode() + 1;
                 String kodeString = String.format("%03d", newCode);
@@ -578,11 +672,12 @@ public class SidangService {
                 addKode.setProdi(seminar.getNote().getMahasiswa().getIdProdi());
                 addKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(addKode);
-                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                        + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
 
                 seminar.setKodeSuratTugas(kode);
             }
-        }else{
+        } else {
             kode = seminar.getKodeSuratTugas();
         }
 
@@ -604,7 +699,7 @@ public class SidangService {
         Paragraph paragrafkosong = new Paragraph("");
 
         Image img = Image.getInstance(logo + File.separator + "bismillah.png");
-//        img.setWidthPercentage(20);
+        // img.setWidthPercentage(20);
         img.scaleToFit(140, 140);
         img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
@@ -631,14 +726,15 @@ public class SidangService {
         document.add(salam);
         document.add(nLine);
 
-        paragrafkosong = new Paragraph("Dengan senantiasa mengharap rahmat dan ridha Allah, yang bertanda tangan di bawah ini :", fStandard);
+        paragrafkosong = new Paragraph(
+                "Dengan senantiasa mengharap rahmat dan ridha Allah, yang bertanda tangan di bawah ini :", fStandard);
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(70);
-        table.setWidths(new int[] {3,1,15});
+        table.setWidths(new int[] { 3, 1, 15 });
         table.setSpacingBefore(10);
         Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font.setColor(CMYKColor.BLACK);
@@ -646,35 +742,35 @@ public class SidangService {
         String nidnDosen = null;
         String jabatan = null;
         String kdProdi = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 nama = karyawan.getNamaKaryawan();
                 nidnDosen = karyawan.getNidn();
                 jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
-            }else if ("TIP".equals(kdProdi)){
+            } else if ("TIP".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
                 nama = karyawan.getNamaKaryawan();
                 nidnDosen = karyawan.getNidn();
                 jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
-            }else if ("MES".equals(kdProdi)){
+            } else if ("MES".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
                 nama = karyawan.getNamaKaryawan();
                 nidnDosen = karyawan.getNidn();
                 jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
-            }else {
+            } else {
                 nama = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
                 nidnDosen = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
                 jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
             }
-        }else{
+        } else {
             nama = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
             nidnDosen = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
             jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
         }
 
         PdfPCell cell;
-        cell = new PdfPCell(new Phrase("Nama",font));
+        cell = new PdfPCell(new Phrase("Nama", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -686,7 +782,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("NIDN",font));
+        cell = new PdfPCell(new Phrase("NIDN", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -698,7 +794,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("Jabatan",font));
+        cell = new PdfPCell(new Phrase("Jabatan", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -710,7 +806,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("Unit Kerja",font));
+        cell = new PdfPCell(new Phrase("Unit Kerja", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -733,7 +829,7 @@ public class SidangService {
         PdfPTable table1 = new PdfPTable(4);
         table1.setSpacingBefore(15);
         table1.setWidthPercentage(90);
-        table1.setWidths(new int[] {3, 5, 8, 5});
+        table1.setWidths(new int[] { 3, 5, 8, 5 });
 
         Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
@@ -819,7 +915,7 @@ public class SidangService {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table1.addCell(cell);
-        }else{
+        } else {
             cell = new PdfPCell(new Phrase("2 ", fontIsi));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -870,12 +966,12 @@ public class SidangService {
 
         PdfPTable table2 = new PdfPTable(3);
         table2.setWidthPercentage(70);
-        table2.setWidths(new int[] {3,1,15});
+        table2.setWidths(new int[] { 3, 1, 15 });
         table2.setSpacingBefore(10);
         Font font2 = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font2.setColor(CMYKColor.BLACK);
 
-        cell = new PdfPCell(new Phrase("Nama",font2));
+        cell = new PdfPCell(new Phrase("Nama", font2));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -890,7 +986,7 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table2.addCell(cell);
-        cell = new PdfPCell(new Phrase("NIM",font2));
+        cell = new PdfPCell(new Phrase("NIM", font2));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -905,7 +1001,7 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table2.addCell(cell);
-        cell = new PdfPCell(new Phrase("Judul",font2));
+        cell = new PdfPCell(new Phrase("Judul", font2));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -930,12 +1026,12 @@ public class SidangService {
 
         PdfPTable table3 = new PdfPTable(3);
         table3.setWidthPercentage(70);
-        table3.setWidths(new int[] {4,1,15});
+        table3.setWidths(new int[] { 4, 1, 15 });
         table3.setSpacingBefore(10);
         Font font3 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
         font2.setColor(CMYKColor.BLACK);
 
-        cell = new PdfPCell(new Phrase("Hari/Tanggal",font3));
+        cell = new PdfPCell(new Phrase("Hari/Tanggal", font3));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -945,12 +1041,14 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table3.addCell(cell);
-        cell = new PdfPCell(new Phrase(hariDao.findById(String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + seminar.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")), font3));
+        cell = new PdfPCell(new Phrase(hariDao
+                .findById(String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari()
+                + ", " + seminar.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")), font3));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table3.addCell(cell);
-        cell = new PdfPCell(new Phrase("Waktu",font));
+        cell = new PdfPCell(new Phrase("Waktu", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -968,7 +1066,7 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table3.addCell(cell);
-        cell = new PdfPCell(new Phrase("Tempat",font));
+        cell = new PdfPCell(new Phrase("Tempat", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -986,23 +1084,26 @@ public class SidangService {
 
         document.add(table3);
 
-        paragrafkosong = new Paragraph("Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.", fStandard);
+        paragrafkosong = new Paragraph("Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.",
+                fStandard);
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
         Image wassalam = Image.getInstance(logo + File.separator + "wassalam.png");
         wassalam.scaleToFit(140, 140);
-        wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
+        wassalam.setAbsolutePosition(85,
+                PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
         document.add(wassalam);
 
         document.add(nLine);
         document.add(nLine);
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Bogor, ", fStandard));
-        paragrafkosong.add(new Chunk(seminar.getTanggalInput().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong
+                .add(new Chunk(seminar.getTanggalInput().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
         paragrafkosong.add(new Chunk(" / ", fStandard));
-        paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
+        paragrafkosong.add(new Chunk(tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
@@ -1011,28 +1112,28 @@ public class SidangService {
         String namaKps = null;
         String nidnKps = null;
         String prd = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
-            }else if ("TIP".equals(prd)){
+            } else if ("TIP".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
-            }else if ("MES".equals(prd)){
+            } else if ("MES".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
-            }else {
+            } else {
                 namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
                 nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
                 ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
             }
-        }else{
+        } else {
             namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
             nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
             ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
@@ -1040,7 +1141,8 @@ public class SidangService {
 
         Image ttd = Image.getInstance(tandaTangan + File.separator + ttdKps);
         ttd.scaleToFit(100, 100);
-        ttd.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
+        ttd.setAbsolutePosition(85,
+                PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
         document.add(ttd);
 
         document.add(nLine);
@@ -1061,7 +1163,7 @@ public class SidangService {
 
         Image footer = Image.getInstance(logo + File.separator + "footer.png");
         footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
-        footer.setAbsolutePosition( 10, 10);
+        footer.setAbsolutePosition(10, 10);
         document.add(footer);
 
         document.close();
@@ -1069,17 +1171,18 @@ public class SidangService {
     }
 
     // CREATE SURAT TUGAS SIDANG
-    public void suratTugasSidang(@RequestParam Sidang sidang, HttpServletResponse response) throws IOException, DocumentException {
+    public void suratTugasSidang(@RequestParam Sidang sidang, HttpServletResponse response)
+            throws IOException, DocumentException {
 
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
 
-        String tgl = sidang.getTanggalInput().toString().substring(5,7);
-        String tahun = sidang.getTanggalInput().toString().substring(0,4);
+        String tgl = sidang.getTanggalInput().toString().substring(5, 7);
+        String tahun = sidang.getTanggalInput().toString().substring(0, 4);
         String kdBln = "";
         System.out.println("tes bulan :" + tgl);
         System.out.println("tes tahun :" + tahun);
-        switch (tgl){
+        switch (tgl) {
             case "01":
                 kdBln = "I";
                 break;
@@ -1133,15 +1236,16 @@ public class SidangService {
             namaBulanHijri = "Jumadil Akhir";
         } else if ("Rabiʻ I".equals(namaBulanHijri)) {
             namaBulanHijri = "Rabi'ul Awal";
-        }else if ("Rabiʻ II".equals(namaBulanHijri)){
+        } else if ("Rabiʻ II".equals(namaBulanHijri)) {
             namaBulanHijri = "Rabi'ul Akhir";
-        }else {
+        } else {
             namaBulanHijri = namaBulanHijri;
         }
         String kode = "";
         String existingKode = sidang.getKodeSuratTugas();
         if (existingKode == null) {
-            KodeSidang cek = kodeSidangDao.findTopByProdiAndTahunAndStatusOrderByKodeDesc(sidang.getSeminar().getNote().getMahasiswa().getIdProdi(), tahun, StatusRecord.AKTIF);
+            KodeSidang cek = kodeSidangDao.findTopByProdiAndTahunAndStatusOrderByKodeDesc(
+                    sidang.getSeminar().getNote().getMahasiswa().getIdProdi(), tahun, StatusRecord.AKTIF);
             if (cek == null) {
                 KodeSidang newKode = new KodeSidang();
                 newKode.setKode(1);
@@ -1150,10 +1254,12 @@ public class SidangService {
                 newKode.setProdi(sidang.getSeminar().getNote().getMahasiswa().getIdProdi());
                 newKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(newKode);
-                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                        + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/"
+                        + tahun;
 
                 sidang.setKodeSuratTugas(kode);
-            }else{
+            } else {
                 KodeSidang addKode = new KodeSidang();
                 Integer newCode = cek.getKode() + 1;
                 String kodeString = String.format("%03d", newCode);
@@ -1163,11 +1269,13 @@ public class SidangService {
                 addKode.setProdi(sidang.getSeminar().getNote().getMahasiswa().getIdProdi());
                 addKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(addKode);
-                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                        + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/"
+                        + tahun;
 
                 sidang.setKodeSuratTugas(kode);
             }
-        }else{
+        } else {
             kode = sidang.getKodeSuratTugas();
         }
 
@@ -1189,7 +1297,7 @@ public class SidangService {
         Paragraph paragrafkosong = new Paragraph("");
 
         Image img = Image.getInstance(logo + File.separator + "bismillah.png");
-//        img.setWidthPercentage(20);
+        // img.setWidthPercentage(20);
         img.scaleToFit(140, 140);
         img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
@@ -1216,14 +1324,15 @@ public class SidangService {
         document.add(salam);
         document.add(nLine);
 
-        paragrafkosong = new Paragraph("Dengan senantiasa mengharap rahmat dan ridha Allah, yang bertanda tangan di bawah ini :", fStandard);
+        paragrafkosong = new Paragraph(
+                "Dengan senantiasa mengharap rahmat dan ridha Allah, yang bertanda tangan di bawah ini :", fStandard);
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(70);
-        table.setWidths(new int[] {3,1,15});
+        table.setWidths(new int[] { 3, 1, 15 });
         table.setSpacingBefore(10);
         Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font.setColor(CMYKColor.BLACK);
@@ -1232,35 +1341,37 @@ public class SidangService {
         String nidnDosen = null;
         String jabatan = null;
         String kdProdi = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 nama = karyawan.getNamaKaryawan();
                 nidnDosen = karyawan.getNidn();
                 jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
-            }else if ("TIP".equals(kdProdi)){
+            } else if ("TIP".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
                 nama = karyawan.getNamaKaryawan();
                 nidnDosen = karyawan.getNidn();
                 jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
-            }else if ("MES".equals(kdProdi)){
+            } else if ("MES".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
                 nama = karyawan.getNamaKaryawan();
                 nidnDosen = karyawan.getNidn();
                 jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
-            }else {
-                nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
-                nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+            } else {
+                nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
+                        .getNamaKaryawan();
+                nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
+                        .getNidn();
                 jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
             }
-        }else{
+        } else {
             nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
             nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
             jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
         }
 
         PdfPCell cell;
-        cell = new PdfPCell(new Phrase("Nama",font));
+        cell = new PdfPCell(new Phrase("Nama", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1272,7 +1383,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("NIDN",font));
+        cell = new PdfPCell(new Phrase("NIDN", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1284,7 +1395,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("Jabatan",font));
+        cell = new PdfPCell(new Phrase("Jabatan", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1296,7 +1407,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("Unit Kerja",font));
+        cell = new PdfPCell(new Phrase("Unit Kerja", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1319,7 +1430,7 @@ public class SidangService {
         PdfPTable table1 = new PdfPTable(4);
         table1.setSpacingBefore(15);
         table1.setWidthPercentage(90);
-        table1.setWidths(new int[] {3, 5, 8, 5});
+        table1.setWidths(new int[] { 3, 5, 8, 5 });
 
         Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
@@ -1405,7 +1516,7 @@ public class SidangService {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table1.addCell(cell);
-        }else{
+        } else {
 
             cell = new PdfPCell(new Phrase("3 ", fontIsi));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1415,7 +1526,8 @@ public class SidangService {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table1.addCell(cell);
-            cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell = new PdfPCell(
+                    new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table1.addCell(cell);
@@ -1429,9 +1541,10 @@ public class SidangService {
 
         String jenjang = null;
 
-        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
             jenjang = "Skripsi";
-        }else if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")){
+        } else if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang()
+                .equals("S2")) {
             jenjang = "Thesis";
         }
 
@@ -1439,7 +1552,8 @@ public class SidangService {
         paragrafkosong.add(new Chunk("Untuk menguji ", fStandard));
         paragrafkosong.add(new Chunk("Sidang " + jenjang, fontB));
         paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
-        paragrafkosong.add(new Chunk(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
+        paragrafkosong
+                .add(new Chunk(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
         paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
         paragrafkosong.add(new Chunk(sidang.getSeminar().getTahunAkademik().getNamaTahunAkademik(), fStandard));
         paragrafkosong.add(new Chunk(" sebagai berikut:", fStandard));
@@ -1449,12 +1563,12 @@ public class SidangService {
 
         PdfPTable table2 = new PdfPTable(3);
         table2.setWidthPercentage(70);
-        table2.setWidths(new int[] {3,1,15});
+        table2.setWidths(new int[] { 3, 1, 15 });
         table2.setSpacingBefore(10);
         Font font2 = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font2.setColor(CMYKColor.BLACK);
 
-        cell = new PdfPCell(new Phrase("Nama",font2));
+        cell = new PdfPCell(new Phrase("Nama", font2));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1469,7 +1583,7 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table2.addCell(cell);
-        cell = new PdfPCell(new Phrase("NIM",font2));
+        cell = new PdfPCell(new Phrase("NIM", font2));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1484,7 +1598,7 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table2.addCell(cell);
-        cell = new PdfPCell(new Phrase("Judul",font2));
+        cell = new PdfPCell(new Phrase("Judul", font2));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1509,12 +1623,12 @@ public class SidangService {
 
         PdfPTable table3 = new PdfPTable(3);
         table3.setWidthPercentage(70);
-        table3.setWidths(new int[] {4,1,15});
+        table3.setWidths(new int[] { 4, 1, 15 });
         table3.setSpacingBefore(10);
         Font font3 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
         font2.setColor(CMYKColor.BLACK);
 
-        cell = new PdfPCell(new Phrase("Hari/Tanggal",font3));
+        cell = new PdfPCell(new Phrase("Hari/Tanggal", font3));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1524,12 +1638,15 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table3.addCell(cell);
-        cell = new PdfPCell(new Phrase(hariDao.findById(String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + sidang.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")), font3));
+        cell = new PdfPCell(new Phrase(
+                hariDao.findById(String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari()
+                        + ", " + sidang.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")),
+                font3));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table3.addCell(cell);
-        cell = new PdfPCell(new Phrase("Waktu",font));
+        cell = new PdfPCell(new Phrase("Waktu", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1547,7 +1664,7 @@ public class SidangService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table3.addCell(cell);
-        cell = new PdfPCell(new Phrase("Tempat",font));
+        cell = new PdfPCell(new Phrase("Tempat", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1565,23 +1682,26 @@ public class SidangService {
 
         document.add(table3);
 
-        paragrafkosong = new Paragraph("Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.", fStandard);
+        paragrafkosong = new Paragraph("Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.",
+                fStandard);
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
         Image wassalam = Image.getInstance(logo + File.separator + "wassalam.png");
         wassalam.scaleToFit(140, 140);
-        wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
+        wassalam.setAbsolutePosition(85,
+                PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
         document.add(wassalam);
 
         document.add(nLine);
         document.add(nLine);
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Bogor, ", fStandard));
-        paragrafkosong.add(new Chunk(sidang.getTanggalInput().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong
+                .add(new Chunk(sidang.getTanggalInput().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
         paragrafkosong.add(new Chunk(" / ", fStandard));
-        paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
+        paragrafkosong.add(new Chunk(tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
@@ -1590,36 +1710,41 @@ public class SidangService {
         String namaKps = null;
         String nidnKps = null;
         String prd = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
-            }else if ("TIP".equals(prd)){
+            } else if ("TIP".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
-            }else if ("MES".equals(prd)){
+            } else if ("MES".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
-            }else {
-                namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+            } else {
+                namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
+                        .getNamaKaryawan();
                 nidnKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-                ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
+                ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
+                        .getTandaTangan();
             }
-        }else{
-            namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+        } else {
+            namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
+                    .getNamaKaryawan();
             nidnKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-            ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
+            ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
+                    .getTandaTangan();
         }
 
         Image ttd = Image.getInstance(tandaTangan + File.separator + ttdKps);
         ttd.scaleToFit(100, 100);
-        ttd.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
+        ttd.setAbsolutePosition(85,
+                PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
         document.add(ttd);
 
         document.add(nLine);
@@ -1640,7 +1765,7 @@ public class SidangService {
 
         Image footer = Image.getInstance(logo + File.separator + "footer.png");
         footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
-        footer.setAbsolutePosition( 10, 10);
+        footer.setAbsolutePosition(10, 10);
         document.add(footer);
 
         document.close();

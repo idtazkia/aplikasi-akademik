@@ -323,7 +323,7 @@ public class GraduationController {
                     return "redirect:alert?matkul=Magang/Metolit";
 
                 }
-            
+
             } else {
 
                 model.addAttribute("note", noteDao.findById(id).get());
@@ -1676,6 +1676,17 @@ public class GraduationController {
         } else {
             Hari hari = hariDao.findById(valueHari).get();
             model.addAttribute("hari", hari);
+
+        }
+
+        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
+                && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
+            model.addAttribute("valid", "dosen2");
+        }
+
+        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 03
+                && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+            model.addAttribute("valid", "dosen2");
 
         }
 
