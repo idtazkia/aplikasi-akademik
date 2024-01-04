@@ -325,7 +325,13 @@ public class MBKMController {
                 matkul.setGrade(pilihan);
                 matkul.setNilaiAkhir(grade.getBawah());
                 matkul.setBobot(grade.getBobot());
+                matkul.setFinalisasi("FINAL");
                 krsDetailDao.save(matkul);
+
+                Jadwal j = matkul.getJadwal();
+                j.setFinalStatus("FINAL");
+                jadwalDao.save(j);
+
             }
         }
 
