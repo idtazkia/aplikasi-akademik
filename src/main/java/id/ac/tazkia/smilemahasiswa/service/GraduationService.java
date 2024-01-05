@@ -1,6 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import id.ac.tazkia.smilemahasiswa.dao.NoteDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.entity.Note;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
@@ -29,6 +32,9 @@ import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 public class GraduationService {
     @Autowired
     private NoteDao noteDao;
+
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
 
     public void downloadDataConceptNote(TahunAkademik tahunAkademik, Prodi prodi, HttpServletResponse response)
             throws IOException {
@@ -146,5 +152,35 @@ public class GraduationService {
                 "attachment; filename=\"" + fileName + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
+    }
+
+    public TahunAkademik cekTahunAkademik(TahunAkademik tahunAkademik) {
+        TahunAkademik ta = null;
+
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
+            if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0) {
+                ta = tahunAkademik;
+            } else {
+                int last = tahunAkademik.getKodeTahunAkademik().length();
+                String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                if (lastKode.equals("1")) {
+                    Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                    String kode = String.valueOf(tahun) + "2";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                            kode);
+                } else {
+                    String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                            kode);
+                }
+
+            }
+        }
+
+        return ta;
     }
 }
