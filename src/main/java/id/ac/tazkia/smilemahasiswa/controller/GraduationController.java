@@ -1685,7 +1685,8 @@ public class GraduationController {
         }
 
         if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 03
-                && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                && seminar.getNote().getMahasiswa().getIdProdi().getId()
+                        .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
             model.addAttribute("valid", "dosen2");
 
         }
@@ -2419,16 +2420,71 @@ public class GraduationController {
         }
 
         if (seminar.getNote().getJenis() == StatusRecord.TESIS) {
-            Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar, BigDecimal.ZERO);
-            if (nilaiKosong == null) {
-                seminar.setPublish("AKTIF");
-                seminar.setStatusSempro(StatusApprove.APPROVED);
-                seminarDao.save(seminar);
-                return "berhasil";
+            Prodi prodi = seminar.getNote().getMahasiswa().getIdProdi();
+            String angkatan = seminar.getNote().getMahasiswa().getAngkatan();
+
+            TahunAkademik tahunAkademik = graduationService.cekTahunAkademik(seminar.getTahunAkademik());
+            KrsDetail krsDetail = krsDetailDao.cariUjianPrososal(seminar.getNote().getMahasiswa(), tahunAkademik);
+
+            if (Integer.parseInt(angkatan) >= 21
+                    && prodi.getId().equals("05")) {
+
+                Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
+                if (nilaiKosong == null) {
+                    if (krsDetail != null) {
+                        seminar.setPublish("AKTIF");
+                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminarDao.save(seminar);
+                        krsDetail.setNilaiAkhir(seminar.getNilai());
+                        krsDetailDao.save(krsDetail);
+                        scoreService.hitungNilaiAkhir(krsDetail);
+
+                        return "berhasil";
+                    } else {
+                        return "krs";
+
+                    }
+
+                } else {
+                    return "lengkapi";
+                }
+            } else if (Integer.parseInt(angkatan) >= 03
+                    && prodi.getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
+                if (nilaiKosong == null) {
+                    if (krsDetail != null) {
+                        seminar.setPublish("AKTIF");
+                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminarDao.save(seminar);
+                        krsDetail.setNilaiAkhir(seminar.getNilai());
+                        krsDetailDao.save(krsDetail);
+                        scoreService.hitungNilaiAkhir(krsDetail);
+
+                        return "berhasil";
+                    } else {
+                        return "krs";
+
+                    }
+
+                } else {
+                    return "lengkapi";
+                }
 
             } else {
-                return "lengkapi";
+                Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,
+                        BigDecimal.ZERO);
+                if (nilaiKosong == null) {
+                    seminar.setPublish("AKTIF");
+                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                    seminarDao.save(seminar);
+
+                    return "berhasil";
+
+                } else {
+                    return "lengkapi";
+                }
             }
+
         }
 
         return "kosong";

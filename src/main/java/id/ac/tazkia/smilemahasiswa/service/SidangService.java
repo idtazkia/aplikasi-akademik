@@ -138,17 +138,14 @@ public class SidangService {
         if (seminarDto.getJenis() == StatusRecord.TESIS) {
             Prodi prodi = seminar.getNote().getMahasiswa().getIdProdi();
             String angkatan = seminar.getNote().getMahasiswa().getAngkatan();
-            System.out.println(angkatan);
-            System.out.println(prodi.getNamaProdi());
+
             if (Integer.parseInt(angkatan) >= 21
                     && prodi.getId().equals("05")) {
-                System.out.println("test");
-                // updateNilaiPasca(seminar, seminarDto);
+
+                updateNilaiPasca(seminar, seminarDto);
             } else if (Integer.parseInt(angkatan) >= 03
                     && prodi.getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
-                System.out.println("test");
-
-                // updateNilaiPasca(seminar, seminarDto);
+                updateNilaiPasca(seminar, seminarDto);
 
             } else {
                 seminar.setPa2(seminarDto.getPa2());
@@ -197,15 +194,15 @@ public class SidangService {
 
     public void updateNilaiPasca(Seminar seminar, SeminarDto seminarDto) {
         BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
-                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
         BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
-                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
         BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
-                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
         BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
-                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
         BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
-                .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
         seminar.setNilaiA(nilaiA);
         seminar.setNilaiB(nilaiB);
         seminar.setNilaiC(nilaiC);
@@ -213,6 +210,7 @@ public class SidangService {
         seminar.setNilaiE(nilaiE);
         seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
         Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
+        System.out.println(nilaiKosong + " : hskajd");
         if (nilaiKosong == null) {
             if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                 seminar.setStatusSempro(StatusApprove.FAILED);
