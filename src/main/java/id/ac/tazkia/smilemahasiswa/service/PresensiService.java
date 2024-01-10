@@ -552,7 +552,7 @@ public class PresensiService {
 
     }
 
-    public void reGenerate(Jadwal jadwal,String tanggal) throws Exception {
+    public void reGenerate(Jadwal jadwal, String tanggal) throws Exception {
         Integer valueJadwal = null;
         if (jadwal.getHari().getId().equals("0")) {
             valueJadwal = 7;

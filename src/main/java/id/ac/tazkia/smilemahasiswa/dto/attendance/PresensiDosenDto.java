@@ -7,6 +7,8 @@ public interface PresensiDosenDto {
 
     String getMasuk();
 
+    String getTanggal();
+
     String getSelesai();
 
     String getDosen();

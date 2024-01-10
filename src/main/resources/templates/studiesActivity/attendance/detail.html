@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <title>Presensi</title>
 </head>
 
 <body>
@@ -19,7 +19,9 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col">
-                                            <h5 class="card-title text-uppercase text-muted mb-0">Details</h5>
+                                            <h5 class="card-title text-uppercase text-muted mb-0">
+                                                Details
+                                            </h5>
                                             <span class="h2 font-weight-bold mb-0">Presensi</span>
                                         </div>
                                         <div class="col-auto">
@@ -29,11 +31,9 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -46,16 +46,18 @@
                     <div class="card shadow">
                         <div class="card-header border-0">
                             <div th:if="${gagal != null}" class="alert alert-danger">
-                                <div class="text-white" th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester
-                                    Pendek terlebih dahulu!</div>
+                                <div class="text-white" th:text="${gagal}">
+                                    Buat / Aktifkan Tahun Akademik Semester Pendek terlebih
+                                    dahulu!
+                                </div>
                             </div>
                             <div class="row align-items-center">
                                 <div class="col">
                                     <h3 class="mb-0">Data List</h3>
                                 </div>
                                 <div class="col text-right">
-                                    <button th:if="${gagal != null}" type="button" class="btn btn-secondary btn-sm" data-toggle="modal"
-                                        data-target="#modal-rps">
+                                    <button th:if="${gagal != null}" type="button" class="btn btn-secondary btn-sm"
+                                        data-toggle="modal" data-target="#modal-rps">
                                         <i class="fas fa-plus-circle"></i> Submit RPS
                                     </button>
 
@@ -63,14 +65,12 @@
                                         aria-labelledby="modal-form" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                                             <div class="modal-content">
-
                                                 <div class="modal-body p-0">
-
-
                                                     <div class="card bg-secondary shadow border-0">
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3">
-                                                                <small>Sample</small></div>
+                                                                <small>Sample</small>
+                                                            </div>
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/sample/rps}"
                                                                     class="btn btn-neutral btn-icon">
@@ -82,20 +82,22 @@
                                                         </div>
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3">
-                                                                <small>Upload</small></div>
+                                                                <small>Upload</small>
+                                                            </div>
                                                             <div class="btn-wrapper text-center">
                                                                 <form method="post"
                                                                     th:action="@{/studiesActivity/attendance/rps/upload}"
                                                                     enctype="multipart/form-data">
                                                                     <input type="hidden" name="jadwal"
-                                                                        th:value="${jadwal.id}">
+                                                                        th:value="${jadwal.id}" />
                                                                     <div class="form-group">
                                                                         <input type="file" name="file"
-                                                                            class="form-control">
+                                                                            class="form-control" />
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <button class="btn btn-success" type="submit"><i
-                                                                                class="fas fa-save"></i> Submit</button>
+                                                                        <button class="btn btn-success" type="submit">
+                                                                            <i class="fas fa-save"></i> Submit
+                                                                        </button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -107,336 +109,414 @@
                                     </div>
 
                                     <a th:href="@{/studiesActivity/attendance/download(jadwal = ${jadwal.id})}"
-                                        class="btn btn-info btn-sm text-darker"><i class="fas
-                                         fa-download"></i> Download Rekap Presensi </a>
+                                        class="btn btn-info btn-sm text-darker"><i class="fas fa-download"></i> Download
+                                        Rekap Presensi
+                                    </a>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4" style="text-align: center; padding: 10px;">
-                                <b style="font-size: 17px;"
+                            <div class="col-md-4" style="text-align: center; padding: 10px">
+                                <b style="font-size: 17px"
                                     th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Intership</b>
-                                <br>
-                                <p style="font-size: 14px;" th:text="${jadwal.matakuliahKurikulum.jumlahSks + ' SKS'}">3
-                                    SKS</p>
+                                <br />
+                                <p style="font-size: 14px" th:text="${jadwal.matakuliahKurikulum.jumlahSks + ' SKS'}">
+                                    3 SKS
+                                </p>
                             </div>
-                            <div class="col-md-4" style="text-align: center; padding: 10px;">
-                                <b style="font-size: 17px;" th:text="${jadwal.kelas.namaKelas}">MUA-15</b>
+                            <div class="col-md-4" style="text-align: center; padding: 10px">
+                                <b style="font-size: 17px" th:text="${jadwal.kelas.namaKelas}">MUA-15</b>
                             </div>
-                            <div class="col-md-4" style="text-align: center; padding: 10px;">
-                                <b style="font-size: 17px;">Schedule</b>
-                                <br>
-                                <p style="font-size: 14px;"
+                            <div class="col-md-4" style="text-align: center; padding: 10px">
+                                <b style="font-size: 17px">Schedule</b>
+                                <br />
+                                <p style="font-size: 14px"
                                     th:text="${jadwal.hari.namaHari +', ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">
-                                    Sunday, 15:31:00 - 18:00:00</p>
+                                    Sunday, 15:31:00 - 18:00:00
+                                </p>
                             </div>
                         </div>
 
                         <div class="table-responsive" th:if="${#lists.isEmpty(detail)}">
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-default">
-                                    <tr class="text-center">
-                                        <th>
-                                            <div class="alert alert-danger">
-                                                <div class="text-white">Harap generate presensi terlebih dahulu.</div>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
+                <table class="table align-items-center table-flush">
+                  <thead class="thead-default">
+                    <tr class="text-center">
+                      <th>
+                        <div class="alert alert-danger">
+                          <div class="text-white">
+                            Harap generate presensi terlebih dahulu.
+                          </div>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+
+              <div
+                class="table-responsive"
+                th:if="${not #lists.isEmpty(detail)}"
+              >
+                <table class="table align-items-center table-flush">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Waktu Masuk</th>
+                      <th scope="col">Dosen</th>
+                      <th scope="col">Pertemuan</th>
+                      <th>Berita Acara</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="headings" th:each="data,row : ${detail}">
+                      <td th:text="${(row.index + 1)}">#</td>
+                      <td th:text="${data.masuk}">Jam</td>
+                      <td
+                        style="white-space: pre-wrap; word-wrap: break-word"
+                        th:utext="${data.dosen}"
+                      >
+                        Jam
+                      </td>
+                      <td>
+                        <a class="btn btn-info text-white btn-sm">
+                          <span
+                            th:text="${data.pertemuan + ' ( ' + data.pertemuanke + ' )'}"
+                            >Notifications</span
+                          >
+                        </a>
+                      </td>
+                      <td
+                        style="white-space: pre-wrap; word-wrap: break-word"
+                        th:text="${data.berita}"
+                      >
+                        Dosen
+                      </td>
+                      <td>
+                        <a
+                          th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
+                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal}"
+                          class="btn text-darker btn-info btn-outline-info btn-sm "
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i class="fas fa-play"></i>
+                          Mulai Mengajar</a
+                        >
+
+                        <button
+                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal}"
+                          th:id="${'edit-' + data.idPresensi}"
+                          class="btn text-darker btn-info btn-outline-info btn-sm"
+                          aria-haspopup="true" onclick="openModalPresensi(this.id)"
+                          aria-expanded="false">
+                          <i class="fas fa-clock"></i>
+                          Edit Sesi</button>
+
+                        <button
+                          type="button"
+                          th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null}"
+                          class="text-dark btn btn-info btn-outline-info btn-sm dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i class="fas fa-cog"></i>
+                          Attendence
+                        </button>
+
+                        <div class="dropdown-menu">
+                          <a
+                            th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.sesi})}"
+                            class="dropdown-item"
+                          >
+                            Kehadiran Mahasiswa</a
+                          >
+                          <a
+                            th:href="@{/studiesActivity/attendance/barcode (id = ${data.idPresensi})}"
+                            class="dropdown-item"
+                          >
+                            Barcode</a
+                          >
+                          <a
+                            th:href="@{/studiesActivity/attendance/form (id = ${data.sesi})}"
+                            class="dropdown-item"
+                          >
+                            Edit Topic</a
+                          >
                         </div>
 
-                        <div class="table-responsive" th:if="${not #lists.isEmpty(detail)}">
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Waktu Masuk</th>
-                                        <th scope="col">Dosen</th>
-                                        <th scope="col">Pertemuan</th>
-                                        <th>Berita Acara</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="headings" th:each="data,row : ${detail}">
-                                        <td th:text="${(row.index + 1)}">#</td>
-                                        <td th:text="${data.masuk}">Jam</td>
-                                        <td style="white-space:pre-wrap; word-wrap:break-word" th:utext="${data.dosen}">
-                                            Jam</td>
-                                        <td>
-                                            <a class="btn btn-info text-white btn-sm">
-                                                <span
-                                                    th:text="${data.pertemuan + ' ( ' + data.pertemuanke + ' )'}">Notifications</span>
-                                                <!-- <span
-                                                    class="badge badge-md badge-circle badge-floating badge-danger border-white"
-                                                    th:text="${data.pertemuanke}">4</span> -->
-                                            </a>
-                                        </td>
-                                        <td style="white-space:pre-wrap; word-wrap:break-word" th:text="${data.berita}">
-                                            Dosen</td>
-                                        <td>
-                                            <a th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
-                                                th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null}"
-                                                class="btn text-darker btn-info btn-outline-info btn-sm"
-                                                aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-play"></i>
-                                                Mulai Mengajar</a>
-
-                                                <button type="button" th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null}"
-                                                        class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
-                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-cog"></i>
-                                                    Attendence</button>
-
-                                            <div class="dropdown-menu">
-                                                <a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.sesi})}"
-                                                    class="dropdown-item"> Kehadiran Mahasiswa</a>
-                                                <a th:href="@{/studiesActivity/attendance/barcode (id = ${data.idPresensi})}"
-                                                    class="dropdown-item"> Barcode</a>
-                                                <a th:href="@{/studiesActivity/attendance/form (id = ${data.sesi})}"
-                                                    class="dropdown-item"> Edit Topic</a>
-                                            </div>
-
-
-
-                                            <div class="modal fade" th:id="${'modal-notification'+data.sesi}"
-                                                tabindex="-1" role="dialog" aria-labelledby="modal-notification"
-                                                aria-hidden="true">
-                                                <div class="modal-dialog modal-danger modal-dialog-centered modal-"
-                                                    role="document">
-                                                    <div class="modal-content bg-gradient-danger">
-
-                                                        <div class="modal-header">
-                                                            <h6 class="modal-title" id="modal-title-notification">Your
-                                                                attention is required</h6>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-
-                                                        <div class="modal-body">
-
-                                                            <div class="py-3 text-center">
-                                                                <i class="far fa-trash-alt fa-3x"></i>
-                                                                <h4 class="heading mt-4">Are you sure ?</h4>
-                                                                <p>Once deleted, you will not be able to recover this
-                                                                    imaginary file!</p>
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="modal-footer">
-                                                            <form
-                                                                th:action="@{/studiesActivity/attendance/delete (id = ${data.sesi})}"
-                                                                method="post">
-                                                                <button type="submit"
-                                                                    class="btn btn-white">Delete</button>
-                                                            </form>
-                                                            <button type="button"
-                                                                class="btn btn-link text-white ml-auto"
-                                                                data-dismiss="modal">Close</button>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Dark table -->
-
-
-            <div class="modal fade" id="exampleModal" data-backdrop="false" role="dialog"
-                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <form id="save-presensi" th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}"
-                        method="post">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Tambah Presensi</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                        <div
+                          class="modal fade"
+                          th:id="${'modal-notification'+data.sesi}"
+                          tabindex="-1"
+                          role="dialog"
+                          aria-labelledby="modal-notification"
+                          aria-hidden="true"
+                        >
+                          <div
+                            class="modal-dialog modal-danger modal-dialog-centered modal-"
+                            role="document"
+                          >
+                            <div class="modal-content bg-gradient-danger">
+                              <div class="modal-header">
+                                <h6
+                                  class="modal-title"
+                                  id="modal-title-notification"
+                                >
+                                  Your attention is required
+                                </h6>
+                                <button
+                                  type="button"
+                                  class="close"
+                                  data-dismiss="modal"
+                                  aria-label="Close"
+                                >
+                                  <span aria-hidden="true">×</span>
                                 </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Pertemuan :</label>
-                                            <select id="pertemuan" name="pertemuan" class="form-control">
-                                                <option value="Pengganti Offline">Kelas Pengganti Offline</option>
-                                                <option value="Pengganti Online">Kelas Pengganti Online</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Tanggal :</label>
-                                            <input type="date" name="tanggal" required class="form-control">
-                                        </div>
-                                    </div>
+                              </div>
+
+                              <div class="modal-body">
+                                <div class="py-3 text-center">
+                                  <i class="far fa-trash-alt fa-3x"></i>
+                                  <h4 class="heading mt-4">Are you sure ?</h4>
+                                  <p>
+                                    Once deleted, you will not be able to
+                                    recover this imaginary file!
+                                  </p>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Dosen :</label>
-                                            <select name="dosen" class="form-control">
-                                                <option value=""></option>
-                                                <option th:each="dosen : ${teamTeaching}"
-                                                    th:text="${dosen.dosen.karyawan.namaKaryawan}"
-                                                    th:value="${dosen.dosen.id}">sdasd</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Berita Acara :</label>
-                                            <textarea name="beritaAcara" class="form-control" id=""></textarea>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="idJadwal" name="jadwal" th:value="${jadwal.id}">
-                                    <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
-                                </div>
+                              </div>
+
+                              <div class="modal-footer">
+                                <form
+                                  th:action="@{/studiesActivity/attendance/delete (id = ${data.sesi})}"
+                                  method="post"
+                                >
+                                  <button type="submit" class="btn btn-white">
+                                    Delete n=str.slice(5);
+                                  </button>
+                                </form>
+                                <button
+                                  type="button"
+                                  class="btn btn-link text-white ml-auto"
+                                  data-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                              </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                <button type="submit" id="btnPresensi" onclick="savePresensi()"
-                                    class="btn btn-primary">Simpan</button>
-                            </div>
+                          </div>
                         </div>
-                    </form>
-                </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-
+          </div>
         </div>
-    </div>
-</body>
+        <!-- Dark table -->
 
+        <div
+          class="modal fade"
+          id="exampleModal"
+          data-backdrop="false"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <form
+              id="edit-sesi"
+              th:action="@{/studiesActivity/attendance/edit-sesi}"
+              th:object="${jadwal}"
+              method="post"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    Edit Sesi Kuliah
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Pertemuan :</label>
+                        <select
+                          id="pertemuan"
+                          name="pertemuan"
+                          class="form-control"
+                        >
+                          <option value="Pengganti Offline">
+                            Kelas Pengganti Offline
+                          </option>
+                          <option value="Pengganti Online">
+                            Kelas Pengganti Online
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Tanggal :</label>
+                        <input
+                          type="date"
+                          id="inputdate"
+                          name="tanggal"
+                          required
+                          class="form-control"
+                        />
+                        <input type="hidden" name="idPresensi" id="idPresensi">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    onclick="closeModalPresensi()"
+                    class="btn btn-secondary">
+                    Tutup
+                  </button>
+                  <button
+                    type="submit"
+                    id="btnPresensi"
+                    onclick="savePresensi()"
+                    class="btn btn-primary"
+                  >
+                    Simpan
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
 <script>
-    function openModalPresensi() {
-        $("#exampleModal").modal({
-            show: true
-        });
+    var dtToday = new Date();
 
-        const url = '/check-presensi-dosen/' + $('#idJadwal').val();
-        let dropdown = $('#pertemuan');
-        dropdown.empty();
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10) month='0' + month.toString(); if(day < 10) day='0' + day.toString(); var maxDate=year + '-' + month
+        + '-' + day; $('#inputdate').attr('min', maxDate);
 
-        $.getJSON(url, function (data) {
-            if (data.code == '404') {
-                dropdown.append($('<option></option>').attr('value', 'Offline').text('Offline'));
-                dropdown.append($('<option></option>').attr('value', 'Online').text('Online'));
-                dropdown.append($('<option></option>').attr('value', 'Pengganti Offline').text(
-                    'Pengganti Offline'));
-                dropdown.append($('<option></option>').attr('value', 'Pengganti Online').text(
-                    'Pengganti Online'));
 
-            }
+  function openModalPresensi(id) {
+    $('#idPresensi').val(id.slice(5))
+    $("#exampleModal").modal({
+      show: true,
+    });
 
-            if (data.code == '200') {
-                dropdown.append($('<option></option>').attr('value', 'Pengganti Offline').text(
-                    'Pengganti Offline'));
-                dropdown.append($('<option></option>').attr('value', 'Pengganti Online').text(
-                    'Pengganti Online'));
-            }
-        });
+  }
+
+  function closeModalPresensi(){
+    document.getElementById("edit-sesi").reset();
+    $('#idPresensi').val()
+
+    $('#exampleModal').modal('hide');
+
+  }
+
+  function formatTanggal(date) {
+    var date = new Date(date);
+    var tahun = date.getFullYear();
+    var bulan = date.getMonth();
+    var tanggal = date.getDate();
+    var hari = date.getDay();
+    var jam = date.getHours();
+    var menit = date.getMinutes();
+    var detik = date.getSeconds();
+    switch (hari) {
+      case 0:
+        hari = "Minggu";
+        break;
+      case 1:
+        hari = "Senin";
+        break;
+      case 2:
+        hari = "Selasa";
+        break;
+      case 3:
+        hari = "Rabu";
+        break;
+      case 4:
+        hari = "Kamis";
+        break;
+      case 5:
+        hari = "Jum'at";
+        break;
+      case 6:
+        hari = "Sabtu";
+        break;
+    }
+    switch (bulan) {
+      case 0:
+        bulan = "Januari";
+        break;
+      case 1:
+        bulan = "Februari";
+        break;
+      case 2:
+        bulan = "Maret";
+        break;
+      case 3:
+        bulan = "April";
+        break;
+      case 4:
+        bulan = "Mei";
+        break;
+      case 5:
+        bulan = "Juni";
+        break;
+      case 6:
+        bulan = "Juli";
+        break;
+      case 7:
+        bulan = "Agustus";
+        break;
+      case 8:
+        bulan = "September";
+        break;
+      case 9:
+        bulan = "Oktober";
+        break;
+      case 10:
+        bulan = "November";
+        break;
+      case 11:
+        bulan = "Desember";
+        break;
     }
 
-    function formatTanggal(date) {
-        var date = new Date(date);
-        var tahun = date.getFullYear();
-        var bulan = date.getMonth();
-        var tanggal = date.getDate();
-        var hari = date.getDay();
-        var jam = date.getHours();
-        var menit = date.getMinutes();
-        var detik = date.getSeconds();
-        switch (hari) {
-            case 0:
-                hari = "Minggu";
-                break;
-            case 1:
-                hari = "Senin";
-                break;
-            case 2:
-                hari = "Selasa";
-                break;
-            case 3:
-                hari = "Rabu";
-                break;
-            case 4:
-                hari = "Kamis";
-                break;
-            case 5:
-                hari = "Jum'at";
-                break;
-            case 6:
-                hari = "Sabtu";
-                break;
-        }
-        switch (bulan) {
-            case 0:
-                bulan = "Januari";
-                break;
-            case 1:
-                bulan = "Februari";
-                break;
-            case 2:
-                bulan = "Maret";
-                break;
-            case 3:
-                bulan = "April";
-                break;
-            case 4:
-                bulan = "Mei";
-                break;
-            case 5:
-                bulan = "Juni";
-                break;
-            case 6:
-                bulan = "Juli";
-                break;
-            case 7:
-                bulan = "Agustus";
-                break;
-            case 8:
-                bulan = "September";
-                break;
-            case 9:
-                bulan = "Oktober";
-                break;
-            case 10:
-                bulan = "November";
-                break;
-            case 11:
-                bulan = "Desember";
-                break;
-        }
+    var tampilTanggal =
+      "Tanggal: " + hari + ", " + tanggal + " " + bulan + " " + tahun;
+    return tampilTanggal;
+  }
 
-        var tampilTanggal = "Tanggal: " + hari + ", " + tanggal + " " + bulan + " " + tahun;
-        return tampilTanggal;
+  $(".datepicker").datepicker({
+    format: "mm/dd/yyyy",
+    startDate: "-3d",
+  });
 
+  function savePresensi() {
+    $("#btnPresensi").removeClass("btn-primary");
+    $("#btnPresensi").addClass("btn-warning");
+    $("#btnPresensi").prop("disabled", true);
+    $("#btnPresensi").html("Loading...");
 
-    }
-
-    function savePresensi() {
-
-        $("#btnPresensi").removeClass("btn-primary");
-        $("#btnPresensi").addClass("btn-warning");
-        $("#btnPresensi").prop('disabled', true);
-        $("#btnPresensi").html('Loading...');
-
-        $("#save-presensi").submit();
-
-    }
+    $("#edit-sesi").submit();
+  }
 </script>

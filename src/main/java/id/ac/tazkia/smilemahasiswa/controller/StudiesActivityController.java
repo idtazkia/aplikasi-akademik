@@ -412,8 +412,27 @@ public class StudiesActivityController {
                 model.addAttribute("dosenUtama", jadwal.getDosen());
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
                 model.addAttribute("jadwal", jadwal);
+                model.addAttribute("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         }
+
+        @PostMapping("/studiesActivity/attendance/edit-sesi")
+        public String editSesi(PresensiDosenDto presensiDosenDto) {
+            PresensiDosen presensiDosen = presensiDosenDao.findById(presensiDosenDto.getIdPresensi()).get();
+            LocalDateTime masuk = LocalDateTime.of(LocalDate.parse(presensiDosenDto.getTanggal()), presensiDosen.getWaktuMasuk().toLocalTime());
+            LocalDateTime keluar = LocalDateTime.of(LocalDate.parse(presensiDosenDto.getTanggal()), presensiDosen.getWaktuSelesai().toLocalTime());
+            presensiDosen.setWaktuMasuk(masuk);
+            presensiDosen.setWaktuSelesai(keluar);
+            presensiDosenDao.save(presensiDosen);
+
+            SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
+            sesiKuliah.setWaktuMulai(masuk);
+            sesiKuliah.setWaktuSelesai(keluar);
+            sesiKuliahDao.save(sesiKuliah);
+            
+            return "redirect:detail?jadwal=" + presensiDosen.getJadwal().getId();
+        }
+        
 
         @GetMapping("/sample/rps")
         public void downloadContohFileInputRPS(HttpServletResponse response) throws IOException {
