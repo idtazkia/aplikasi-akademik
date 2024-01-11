@@ -20,10 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -126,6 +123,9 @@ public class BebasKewajibanController {
 
         model.addAttribute("bebasKewajiban", bebasKewajiban);
         model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban));
+        // sertifikasi tlc
+        model.addAttribute("listSertifikat", kewajibanSertifikatTlcDao.findByStatusAndBebasKewajiban(StatusRecord.AKTIF, bebasKewajiban));
+
         // cek histori komentar
         HistoriBebasKewajiban perpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF);
         HistoriBebasKewajiban kabagperpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KABAG_PERPUS, StatusRecord.AKTIF);
@@ -184,6 +184,11 @@ public class BebasKewajibanController {
             tlc.setKeteranganUjian(ByBagian.DIKAMPUS);
             tlc.setJenisTes(jenis);
             kewajibanSertifikatTlcDao.save(tlc);
+
+            PendaftaranBebasKewajiban kewajiban = tlc.getBebasKewajiban();
+            kewajiban.setStatusApproveTlc(StatusApprove.WAITING);
+            bebasKewajibanDao.save(kewajiban);
+
         }
 
         return "redirect:/kewajiban/mahasiswa/detail";
@@ -223,7 +228,20 @@ public class BebasKewajibanController {
             tlc.setKeteranganUjian(ByBagian.DILUAR);
             tlc.setJenisTes(jenis);
             kewajibanSertifikatTlcDao.save(tlc);
+
+            PendaftaranBebasKewajiban kewajiban = tlc.getBebasKewajiban();
+            kewajiban.setStatusApproveTlc(StatusApprove.WAITING);
+            bebasKewajibanDao.save(kewajiban);
         }
+
+        return "redirect:/kewajiban/mahasiswa/detail";
+    }
+
+    @PostMapping("/kewajiban/mahasiswa/tlc/delete")
+    public String deleteFileUpload(@RequestParam KewajibanSertifikatTlc sertifikat){
+
+        sertifikat.setStatus(StatusRecord.HAPUS);
+        kewajibanSertifikatTlcDao.save(sertifikat);
 
         return "redirect:/kewajiban/mahasiswa/detail";
     }
@@ -540,6 +558,14 @@ public class BebasKewajibanController {
         model.addAttribute("hTlc", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.TLC, StatusRecord.AKTIF));
         model.addAttribute("hAkademik", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.AKADEMIK, StatusRecord.AKTIF));
 
+    }
+
+    @GetMapping("/get-akademik-detail/{id}")
+    @ResponseBody
+    public List<HistoriBebasKewajiban> getDetailAkademik(@PathVariable String id){
+        PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findById(id).get();
+
+        return historiBebasKewajibanDao.getDetailAkademik(bebasKewajiban.getId());
     }
 
     @GetMapping("/kewajiban/admin/akademik/approval")
