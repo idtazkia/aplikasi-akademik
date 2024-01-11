@@ -43,7 +43,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/setting/program/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
                 .antMatchers("/setting/program/form").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
                 .antMatchers("/setting/beasiswa/list")
-                .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2", "VIEW_KPS", "VIEW_FINANCE", "VIEW_WAREK2")
+                .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2", "VIEW_KPS", "VIEW_FINANCE", "VIEW_WAREK2", "VIEW_TRANSCRIPT_ADMIN")
                 .antMatchers("/setting/level/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
                 .antMatchers("/setting/level/form").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
                 .antMatchers("/setting/prody/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
