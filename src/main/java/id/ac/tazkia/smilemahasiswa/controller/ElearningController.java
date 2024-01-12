@@ -326,6 +326,28 @@ public class ElearningController {
 
     }
 
+    @GetMapping("/elearning/historyImportNilaiDosen")
+    public void historyImportNilaiDosen(Model model, Authentication authentication,
+                                 @PageableDefault(size = 10) Pageable page, String search){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("jadwal", jadwal);
+
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listProses2", prosesBackgroundDosenDao.findByNamaDosenContainingIgnoreCaseAndStatusNotInOrderByTanggalInputDesc(search,Arrays.asList(StatusRecord.HAPUS), page));
+        } else {
+            model.addAttribute("listProses2", prosesBackgroundDosenDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
+        }
+
+    }
 
     @GetMapping("/elearning/importAbsen")
     public void importAbsen(Model model){
