@@ -43,7 +43,7 @@ public interface PendaftaranMbkmDao extends PagingAndSortingRepository<Pendaftar
             "    WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 AND a.bobot >= 2 group by id_matakuliah\n" +
             ") AS b\n" +
             "ON a.id_matakuliah = b.id_matakuliahh OR a.setara LIKE CONCAT('%(', b.id_matakuliahh, '),%') OR a.setara2 LIKE CONCAT('%(', b.id_matakuliahh, '),%')) as a\n" +
-            "where id_matakuliahh is null and nama_matakuliah_english not in ('Thesis') group by kode_matakuliah order by semester, kode_matakuliah", nativeQuery = true)
+            "where id_matakuliahh is null group by kode_matakuliah order by semester, kode_matakuliah", nativeQuery = true)
     List<Object[]> listMatkulMbkm(String idMahasiswa);
 
     @Query(value = "select * from\n" +

@@ -477,7 +477,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
 
         List<Object[]> listMhs = beasiswaDao.rekapBeasiswaMahasiwa(beasiswa.getId());
 
-        String[] columns = {"No", "NIM", "Nama Mahasiswa", "Nama Prodi", "Angkatan", "IPK", "Status Mahasiswa"};
+        String[] columns = {"No", "NIM", "Nama Mahasiswa", "Jenis Kelamin", "Nama Prodi", "Angkatan", "IPK", "Status Mahasiswa"};
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List rekapan beasiswa");
@@ -506,10 +506,11 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list[1].toString());
             row.createCell(2).setCellValue(list[2].toString());
-            row.createCell(3).setCellValue(list[3].toString());
-            row.createCell(4).setCellValue(list[4].toString());
-            row.createCell(5).setCellValue(list[5].toString());
-            row.createCell(6).setCellValue(list[6].toString());
+            row.createCell(3).setCellValue(list[7].toString());
+            row.createCell(4).setCellValue(list[3].toString());
+            row.createCell(5).setCellValue(list[4].toString());
+            row.createCell(6).setCellValue(list[5].toString());
+            row.createCell(7).setCellValue(list[6].toString());
         }
 
         for (int i = 0; i<columns.length; i++){
