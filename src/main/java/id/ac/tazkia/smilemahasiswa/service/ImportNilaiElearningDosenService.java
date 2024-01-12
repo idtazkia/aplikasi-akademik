@@ -142,7 +142,9 @@ public class ImportNilaiElearningDosenService {
     public void imporNilaiTugas(@RequestParam(required = true) String prodi,@RequestParam(required = true) String ta,@RequestParam(required = false) String jadwal, @RequestParam(required = true) ProsesBackgroundDosen prosesBackgroundDosen) {
 
         System.out.println("Masuk Import Jalan");
-        List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
+        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
+//        List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
+        List<ListJadwalDto> listJadwalDtos = jadwalDao.byJadwal2Dosen(prodi,ta, jadwal1.getIdNumberElearning());
         if (listJadwalDtos != null){
             for (ListJadwalDto listJadwalDto : listJadwalDtos){
                 List<MdlGradeGradesDto> daftarNilaiTugas = getNilaiTugas2(listJadwalDto.getIdNumberElearning());
