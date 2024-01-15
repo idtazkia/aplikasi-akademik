@@ -40,4 +40,6 @@ public class HistoriBebasKewajiban {
     @JoinColumn(name = "user_modified")
     private User user;
 
+    private Integer urutan;
+
 }

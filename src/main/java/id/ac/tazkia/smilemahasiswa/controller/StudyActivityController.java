@@ -599,6 +599,9 @@ public class StudyActivityController {
                             }else{
                                 createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
+                        }else{
+                            log.info("Lebih dari semester 4 S2!");
+                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                         }
                     } else{
                         createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);

@@ -547,7 +547,7 @@ public class BebasKewajibanController {
     public void listKewajibanAkademik(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveAkademikNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveAkademikNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaAngkatanContainingIgnoreCaseOrMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, search, search, page));
         }else{
             model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveAkademikNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
         }

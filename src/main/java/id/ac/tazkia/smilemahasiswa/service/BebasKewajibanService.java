@@ -119,6 +119,7 @@ public class BebasKewajibanService {
         historiAwalPerpus.setKomentar("Menunggu respon dari bagian staf perpus.");
         historiAwalPerpus.setByBagian(ByBagian.PERPUSTAKAAN);
         historiAwalPerpus.setStatusApprove(bebasKewajiban.getStatusApprovePerpus());
+        historiAwalPerpus.setUrutan(1);
         historiBebasKewajibanDao.save(historiAwalPerpus);
         // bagian Kabag perpus
         HistoriBebasKewajiban historiAwalKabagPerpus = new HistoriBebasKewajiban();
@@ -126,6 +127,7 @@ public class BebasKewajibanService {
         historiAwalKabagPerpus.setKomentar("Menunggu respon dari kepala bagian perpus.");
         historiAwalKabagPerpus.setByBagian(ByBagian.KABAG_PERPUS);
         historiAwalKabagPerpus.setStatusApprove(bebasKewajiban.getStatusApproveKabagPerpus());
+        historiAwalKabagPerpus.setUrutan(2);
         historiBebasKewajibanDao.save(historiAwalKabagPerpus);
         // bagian keuangan
         HistoriBebasKewajiban historiAwalKeuangan = new HistoriBebasKewajiban();
@@ -133,6 +135,7 @@ public class BebasKewajibanService {
         historiAwalKeuangan.setKomentar("Menunggu respon dari bagian keuangan.");
         historiAwalKeuangan.setByBagian(ByBagian.KEUANGAN);
         historiAwalKeuangan.setStatusApprove(bebasKewajiban.getStatusApproveKeuangan());
+        historiAwalKeuangan.setUrutan(3);
         historiBebasKewajibanDao.save(historiAwalKeuangan);
         // bagian staff TLC
         HistoriBebasKewajiban historiAwalTlc = new HistoriBebasKewajiban();
@@ -140,6 +143,7 @@ public class BebasKewajibanService {
         historiAwalTlc.setKomentar("Menunggu respon dari bagian TLC.");
         historiAwalTlc.setByBagian(ByBagian.TLC);
         historiAwalTlc.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
+        historiAwalTlc.setUrutan(4);
         historiBebasKewajibanDao.save(historiAwalTlc);
         // bagian staff Akademik
         HistoriBebasKewajiban historiAwalAkademik = new HistoriBebasKewajiban();
@@ -147,6 +151,7 @@ public class BebasKewajibanService {
         historiAwalAkademik.setKomentar("Menunggu respon dari bagian akademik.");
         historiAwalAkademik.setByBagian(ByBagian.AKADEMIK);
         historiAwalAkademik.setStatusApprove(bebasKewajiban.getStatusApproveAkademik());
+        historiAwalAkademik.setUrutan(5);
         historiBebasKewajibanDao.save(historiAwalAkademik);
     }
 
@@ -176,6 +181,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setByBagian(ByBagian.PERPUSTAKAAN);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApprovePerpus());
         historiBebasKewajiban.setUser(user);
+        historiBebasKewajiban.setUrutan(1);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
@@ -192,6 +198,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setByBagian(ByBagian.KABAG_PERPUS);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveKabagPerpus());
         historiBebasKewajiban.setUser(user);
+        historiBebasKewajiban.setUrutan(2);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
@@ -208,6 +215,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setByBagian(ByBagian.KEUANGAN);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveKeuangan());
         historiBebasKewajiban.setUser(user);
+        historiBebasKewajiban.setUrutan(3);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
@@ -224,6 +232,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setByBagian(ByBagian.TLC);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
         historiBebasKewajiban.setUser(user);
+        historiBebasKewajiban.setUrutan(4);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }
@@ -240,6 +249,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setByBagian(ByBagian.AKADEMIK);
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveAkademik());
         historiBebasKewajiban.setUser(user);
+        historiBebasKewajiban.setUrutan(5);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }

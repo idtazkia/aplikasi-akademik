@@ -18,7 +18,7 @@ public interface HistoriBebasKewajibanDao extends PagingAndSortingRepository<His
 
     List<HistoriBebasKewajiban> findByByBagianAndStatusOrderByWaktuInput(ByBagian bagian, StatusRecord status);
 
-    @Query("SELECT hb FROM HistoriBebasKewajiban hb where hb.bebasKewajiban.id=:idPendaftaran group by hb.byBagian order by hb.waktuInput")
+    @Query("SELECT hb FROM HistoriBebasKewajiban hb where hb.bebasKewajiban.id=:idPendaftaran group by hb.byBagian order by hb.urutan")
     List<HistoriBebasKewajiban> getDetailAkademik(@Param("idPendaftaran") String id);
 
 }
