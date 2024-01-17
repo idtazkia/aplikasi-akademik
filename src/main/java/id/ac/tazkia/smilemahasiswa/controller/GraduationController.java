@@ -315,6 +315,8 @@ public class GraduationController {
         model.addAttribute("note", new Note());
 
         if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
+            model.addAttribute("valid", "dosen2");
+
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
                 if (magang.length > 0 && metolit.length > 0) {
                     model.addAttribute("note", new Note());
@@ -327,7 +329,6 @@ public class GraduationController {
             } else {
 
                 model.addAttribute("note", noteDao.findById(id).get());
-
                 return "graduation/form";
 
             }
@@ -348,6 +349,7 @@ public class GraduationController {
                         model.addAttribute("valid", "dosen2");
 
                     }
+
                     model.addAttribute("note", new Note());
                     return "graduation/form";
 
@@ -588,6 +590,10 @@ public class GraduationController {
     public void formAdmin(Model model, @RequestParam(value = "id", name = "id") Note note) {
         model.addAttribute("note", note);
 
+        if (note.getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
+            model.addAttribute("valid", "dosen2");
+        }
+
         if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 23
                 && note.getMahasiswa().getIdProdi().getId().equals("05")) {
             model.addAttribute("valid", "dosen2");
@@ -598,6 +604,7 @@ public class GraduationController {
             model.addAttribute("valid", "dosen2");
 
         }
+
     }
 
     @PostMapping("/graduation/admin/approve")
@@ -667,7 +674,6 @@ public class GraduationController {
                     String krsDetail = krsDetailDao.idKrsDetail(mahasiswa, StatusRecord.AKTIF, "Magang");
 
                     if (krsDetail == null || baris.getCell(1) != null) {
-                        System.out.println("nim  :  " + nim + "  tidak memiliki krs magang");
                         Mahasiswa m = mahasiswaDao.findByNim(nim.getStringCellValue());
                         mahasiswas.add(m);
                     }
@@ -965,7 +971,6 @@ public class GraduationController {
             model.addAttribute("sempro", semprop);
             if (enableFiture != null) {
                 model.addAttribute("sidang", enableFiture);
-                System.out.println(enableFiture);
             }
         }
         if (sidang.isEmpty()) {
@@ -1090,6 +1095,253 @@ public class GraduationController {
 
         } else {
             seminar.setFileSkripsi(seminar.getFileSkripsi());
+        }
+
+        seminar.setTanggalInput(LocalDate.now());
+        seminar.setStatus(StatusApprove.WAITING);
+        seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setPublish(StatusRecord.NONAKTIF.toString());
+        TahunAkademik ta = null;
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
+            ta = tahunAkademik;
+        }
+        seminar.setTahunAkademik(ta);
+        seminarDao.save(seminar);
+
+        return "redirect:seminar/waiting?id=" + seminar.getNote().getId();
+
+    }
+
+    @PostMapping("/graduation/sempro-publikasi")
+    public String prosesSeminarPublikasi(@Valid Seminar seminar,
+            BindingResult error, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
+            MultipartFile ktp, MultipartFile ijazah, MultipartFile turnitin,
+            @RequestParam(required = false) MultipartFile loa, @RequestParam(required = false) MultipartFile berita,
+            Authentication currentUser) throws Exception {
+        User user = currentUserService.currentUser(currentUser);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (!kartu.isEmpty() || kartu != null) {
+            String namaFile = kartu.getName();
+            String jenisFile = kartu.getContentType();
+            String namaAsli = kartu.getOriginalFilename();
+            Long ukuran = kartu.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kartu.transferTo(tujuan);
+
+            seminar.setFileBimbingan(idFile + "." + extension);
+
+        } else {
+            seminar.setFileBimbingan(seminar.getFileBimbingan());
+        }
+
+        if (!ktp.isEmpty() || ktp != null) {
+            String namaAsli = ktp.getOriginalFilename();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ktp.transferTo(tujuan);
+
+            seminar.setFileKtp(idFile + "." + extension);
+
+        } else {
+            seminar.setFileKtp(seminar.getFileKtp());
+        }
+
+        if (!jurnal.isEmpty() || jurnal != null) {
+            String namaFile = jurnal.getName();
+            String jenisFile = jurnal.getContentType();
+            String namaAsli = jurnal.getOriginalFilename();
+            Long ukuran = jurnal.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            jurnal.transferTo(tujuan);
+
+            seminar.setFileSkripsi(idFile + "." + extension);
+
+        } else {
+            seminar.setFileSkripsi(seminar.getFileSkripsi());
+        }
+
+        if (!pendaftaran.isEmpty() || pendaftaran != null) {
+            String namaFile = pendaftaran.getName();
+            String jenisFile = pendaftaran.getContentType();
+            String namaAsli = pendaftaran.getOriginalFilename();
+            Long ukuran = pendaftaran.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            pendaftaran.transferTo(tujuan);
+
+            seminar.setFileFormulir(idFile + "." + extension);
+
+        } else {
+            seminar.setFileFormulir(seminar.getFileFormulir());
+        }
+
+        if (!ijazah.isEmpty() || ijazah != null) {
+            String namaFile = ijazah.getName();
+            String jenisFile = ijazah.getContentType();
+            String namaAsli = ijazah.getOriginalFilename();
+            Long ukuran = ijazah.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ijazah.transferTo(tujuan);
+
+            seminar.setFileIjazah(idFile + "." + extension);
+
+        } else {
+            seminar.setFileIjazah(seminar.getFileIjazah());
+        }
+
+        if (!turnitin.isEmpty() || turnitin != null) {
+            String namaFile = turnitin.getName();
+            String jenisFile = turnitin.getContentType();
+            String namaAsli = turnitin.getOriginalFilename();
+            Long ukuran = turnitin.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            turnitin.transferTo(tujuan);
+
+            seminar.setFileTurnitin(idFile + "." + extension);
+
+        } else {
+            seminar.setFileTurnitin(seminar.getFileTurnitin());
+        }
+
+        if (!loa.isEmpty() || loa != null) {
+            String namaFile = loa.getName();
+            String jenisFile = loa.getContentType();
+            String namaAsli = loa.getOriginalFilename();
+            Long ukuran = loa.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            loa.transferTo(tujuan);
+
+            seminar.setFileLoa(idFile + "." + extension);
+
+        } else {
+            seminar.setFileLoa(seminar.getFileLoa());
+        }
+
+        if (berita != null) {
+            String namaFile = berita.getName();
+            String jenisFile = berita.getContentType();
+            String namaAsli = berita.getOriginalFilename();
+            Long ukuran = berita.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            berita.transferTo(tujuan);
+
+            seminar.setFileBerita(idFile + "." + extension);
+
         }
 
         seminar.setTanggalInput(LocalDate.now());
