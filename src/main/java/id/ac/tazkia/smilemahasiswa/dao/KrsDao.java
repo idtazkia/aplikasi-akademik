@@ -106,154 +106,32 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                         "WHERE a.id_tahun_akademik = 'f635cb68-3da5-4e11-8213-7020636034a2' AND a.status = 'AKTIF' AND b.status = 'AKTIF' AND b.status_enroll is NULL) mdl_krs_smile", nativeQuery = true)
         List<EnrollMahasiswaIntDto> findEnrollMahasiswa();
 
-        @Query(value = "SELECT kr.nama_karyawan as dosen,jd.id_number_elearning as idNumberElearning,pr.nama_prodi as namaProdi ,mk.kode_matakuliah as kodeMatakuliah,kl.nama_kelas as namaKelas,mk.nama_matakuliah as namaMatakuliah,mk.nama_matakuliah_english as namaMatakuliahEnglish,\n"
-                        +
-                        "CASE\n" +
-                        "        WHEN min(nilai_tugas) > 0 THEN 'SUDAH'\n" +
-                        "        WHEN max(nilai_tugas) > 0 and min(nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n"
-                        +
-                        "        ELSE 'TUGAS BELUM'\n" +
-                        "    END AS statusImportTugas,\n" +
-                        "CASE\n" +
-                        "        WHEN min(nilai_uts) > 0 THEN 'SUDAH'\n" +
-                        "        WHEN max(nilai_uts) > 0 and min(nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n"
-                        +
-                        "        ELSE 'UTS BELUM'\n" +
-                        "    END AS statusImportUts,\n" +
-                        "CASE\n" +
-                        "        WHEN min(nilai_uas) > 0 THEN 'SUDAH'\n" +
-                        "        WHEN max(nilai_uas) > 0 and min(nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n"
-                        +
-                        "        ELSE 'UAS BELUM'\n" +
-                        "    END AS statusImportUas\n" +
-                        "FROM krs_detail as kd \n" +
-                        "inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id\n" +
-                        "inner join matakuliah as mk on mku.id_matakuliah = mk.id\n" +
-                        "inner join mahasiswa as ma on kd.id_mahasiswa = ma.id\n" +
-                        "inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id\n" +
-                        "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
-                        "inner join kelas as kl on jd.id_kelas = kl.id\n" +
-                        "inner join prodi as pr on jd.id_prodi = pr.id\n" +
-                        "inner join dosen as ds on jd.id_dosen_pengampu = ds.id\n" +
-                        "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
-                        "left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n"
-                        +
-                        "FROM krs_detail as kd\n" +
-                        "left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail\n" +
-                        "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
-                        "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
-                        "inner join mahasiswa as ma on pm.id_mahasiswa = ma.id\n" +
-                        "where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n"
-                        +
-                        "group by pm.id_mahasiswa, jd.id\n" +
-                        "having count(pm.id) > 3\n" +
-                        "order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail\n" +
-                        "where kd.id_tahun_akademik = ?1 and excludeMangkir.id_krs_detail is NULL\n" +
-                        "group by jd.id_number_elearning\n" +
-                        "order by jd.id_number_elearning DESC", countQuery = "SELECT count(kd.id) as jml FROM krs_detail as kd \n"
-                                        +
-                                        "inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id\n"
-                                        +
-                                        "inner join matakuliah as mk on mku.id_matakuliah = mk.id\n" +
-                                        "inner join mahasiswa as ma on kd.id_mahasiswa = ma.id\n" +
-                                        "inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id\n" +
-                                        "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
-                                        "inner join kelas as kl on jd.id_kelas = kl.id\n" +
-                                        "inner join prodi as pr on jd.id_prodi = pr.id\n" +
-                                        "inner join dosen as ds on jd.id_dosen_pengampu = ds.id\n" +
-                                        "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
-                                        "left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n"
-                                        +
-                                        "FROM krs_detail as kd\n" +
-                                        "left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail\n" +
-                                        "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
-                                        "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
-                                        "inner join mahasiswa as ma on pm.id_mahasiswa = ma.id\n" +
-                                        "where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n"
-                                        +
-                                        "group by pm.id_mahasiswa, jd.id\n" +
-                                        "having count(pm.id) > 3\n" +
-                                        "order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail\n"
-                                        +
-                                        "where kd.id_tahun_akademik = ?1  and excludeMangkir.id_krs_detail is NULL\n" +
-                                        "group by jd.id_number_elearning\n" +
-                                        "order by jd.id_number_elearning DESC", nativeQuery = true)
+        @Query(value = "SELECT kr.nama_karyawan as dosen,jd.id_number_elearning as idNumberElearning,pr.nama_prodi as namaProdi ,mk.kode_matakuliah as kodeMatakuliah,kl.nama_kelas as namaKelas,mk.nama_matakuliah as namaMatakuliah,mk.nama_matakuliah_english as namaMatakuliahEnglish,\n" +
+                "CASE WHEN min(nilai_tugas) > 0 THEN 'SUDAH' WHEN max(nilai_tugas) > 0 and min(nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n" +
+                "ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN min(nilai_uts) > 0 THEN 'SUDAH' WHEN max(nilai_uts) > 0 and min(nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n" +
+                "ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN min(nilai_uas) > 0 THEN 'SUDAH' WHEN max(nilai_uas) > 0 and min(nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n" +
+                "ELSE 'UAS BELUM' END AS statusImportUas FROM krs_detail as kd inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id inner join matakuliah as mk on mku.id_matakuliah = mk.id inner join mahasiswa as ma on kd.id_mahasiswa = ma.id inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id inner join jadwal as jd on kd.id_jadwal = jd.id inner join kelas as kl on jd.id_kelas = kl.id inner join prodi as pr on jd.id_prodi = pr.id inner join dosen as ds on jd.id_dosen_pengampu = ds.id inner join karyawan as kr on ds.id_karyawan = kr.id left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n" +
+                "FROM krs_detail as kd left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id inner join jadwal as jd on sk.id_jadwal = jd.id inner join mahasiswa as ma on pm.id_mahasiswa = ma.id where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n" +
+                "group by pm.id_mahasiswa, jd.id having count(pm.id) > 3 order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail where kd.id_tahun_akademik = ?1 and excludeMangkir.id_krs_detail is NULL group by jd.id_number_elearning order by jd.id_number_elearning DESC\n", countQuery = "SELECT count(kd.id) as jml FROM krs_detail as kd\n" +
+                "inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id\n" +
+                "inner join matakuliah as mk on mku.id_matakuliah = mk.id inner join mahasiswa as ma on kd.id_mahasiswa = ma.id inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id inner join jadwal as jd on kd.id_jadwal = jd.id inner join kelas as kl on jd.id_kelas = kl.id inner join prodi as pr on jd.id_prodi = pr.id inner join dosen as ds on jd.id_dosen_pengampu = ds.id inner join karyawan as kr on ds.id_karyawan = kr.id left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n" +
+                "FROM krs_detail as kd left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id inner join jadwal as jd on sk.id_jadwal = jd.id inner join mahasiswa as ma on pm.id_mahasiswa = ma.id where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n" +
+                "group by pm.id_mahasiswa, jd.id having count(pm.id) > 3 order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail\n" +
+                "where kd.id_tahun_akademik = ?1  and excludeMangkir.id_krs_detail is NULL group by jd.id_number_elearning order by jd.id_number_elearning DESC", nativeQuery = true)
         Page<StatusImportNilaiDosenIntDto> findStatusImportNilaiDosen(TahunAkademik ta, Pageable page);
 
-        @Query(value = "SELECT kr.nama_karyawan as dosen,jd.id_number_elearning as idNumberElearning,pr.nama_prodi as namaProdi ,mk.kode_matakuliah as kodeMatakuliah,kl.nama_kelas as namaKelas,mk.nama_matakuliah as namaMatakuliah,mk.nama_matakuliah_english as namaMatakuliahEnglish,\n"
-                        +
-                        "CASE\n" +
-                        "        WHEN min(nilai_tugas) > 0 THEN 'SUDAH'\n" +
-                        "        WHEN max(nilai_tugas) > 0 and min(nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n"
-                        +
-                        "        ELSE 'TUGAS BELUM'\n" +
-                        "    END AS statusImportTugas,\n" +
-                        "CASE\n" +
-                        "        WHEN min(nilai_uts) > 0 THEN 'SUDAH'\n" +
-                        "        WHEN max(nilai_uts) > 0 and min(nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n"
-                        +
-                        "        ELSE 'UTS BELUM'\n" +
-                        "    END AS statusImportUts,\n" +
-                        "CASE\n" +
-                        "        WHEN min(nilai_uas) > 0 THEN 'SUDAH'\n" +
-                        "        WHEN max(nilai_uas) > 0 and min(nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n"
-                        +
-                        "        ELSE 'UAS BELUM'\n" +
-                        "    END AS statusImportUas\n" +
-                        "FROM krs_detail as kd \n" +
-                        "inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id\n" +
-                        "inner join matakuliah as mk on mku.id_matakuliah = mk.id\n" +
-                        "inner join mahasiswa as ma on kd.id_mahasiswa = ma.id\n" +
-                        "inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id\n" +
-                        "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
-                        "inner join kelas as kl on jd.id_kelas = kl.id\n" +
-                        "inner join prodi as pr on jd.id_prodi = pr.id\n" +
-                        "inner join dosen as ds on jd.id_dosen_pengampu = ds.id\n" +
-                        "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
-                        "left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n"
-                        +
-                        "FROM krs_detail as kd\n" +
-                        "left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail\n" +
-                        "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
-                        "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
-                        "inner join mahasiswa as ma on pm.id_mahasiswa = ma.id\n" +
-                        "where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n"
-                        +
-                        "group by pm.id_mahasiswa, jd.id\n" +
-                        "having count(pm.id) > 3\n" +
-                        "order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail\n" +
-                        "where kd.id_tahun_akademik = ?1 and excludeMangkir.id_krs_detail is NULL and kr.nama_karyawan LIKE %?2%\n"
-                        +
-                        "group by jd.id_number_elearning\n" +
-                        "order by jd.id_number_elearning DESC", countQuery = "SELECT count(kd.id) as jml FROM krs_detail as kd \n"
-                                        +
-                                        "inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id\n"
-                                        +
-                                        "inner join matakuliah as mk on mku.id_matakuliah = mk.id\n" +
-                                        "inner join mahasiswa as ma on kd.id_mahasiswa = ma.id\n" +
-                                        "inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id\n" +
-                                        "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
-                                        "inner join kelas as kl on jd.id_kelas = kl.id\n" +
-                                        "inner join prodi as pr on jd.id_prodi = pr.id\n" +
-                                        "inner join dosen as ds on jd.id_dosen_pengampu = ds.id\n" +
-                                        "inner join karyawan as kr on ds.id_karyawan = kr.id\n" +
-                                        "left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n"
-                                        +
-                                        "FROM krs_detail as kd\n" +
-                                        "left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail\n" +
-                                        "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
-                                        "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
-                                        "inner join mahasiswa as ma on pm.id_mahasiswa = ma.id\n" +
-                                        "where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n"
-                                        +
-                                        "group by pm.id_mahasiswa, jd.id\n" +
-                                        "having count(pm.id) > 3\n" +
-                                        "order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail\n"
-                                        +
-                                        "where kd.id_tahun_akademik = ?1  and excludeMangkir.id_krs_detail is NULL and kr.nama_karyawan LIKE %?2%\n"
-                                        +
-                                        "group by jd.id_number_elearning\n" +
-                                        "order by jd.id_number_elearning DESC", nativeQuery = true)
+        @Query(value = "SELECT kr.nama_karyawan as dosen,jd.id_number_elearning as idNumberElearning,pr.nama_prodi as namaProdi ,mk.kode_matakuliah as kodeMatakuliah,kl.nama_kelas as namaKelas,mk.nama_matakuliah as namaMatakuliah,mk.nama_matakuliah_english as namaMatakuliahEnglish,\n" +
+                "CASE WHEN min(nilai_tugas) > 0 THEN 'SUDAH' WHEN max(nilai_tugas) > 0 and min(nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n" +
+                "ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN min(nilai_uts) > 0 THEN 'SUDAH' WHEN max(nilai_uts) > 0 and min(nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n" +
+                "ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN min(nilai_uas) > 0 THEN 'SUDAH' WHEN max(nilai_uas) > 0 and min(nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)'\n" +
+                "ELSE 'UAS BELUM' END AS statusImportUas FROM krs_detail as kd inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id inner join matakuliah as mk on mku.id_matakuliah = mk.id inner join mahasiswa as ma on kd.id_mahasiswa = ma.id inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id inner join jadwal as jd on kd.id_jadwal = jd.id inner join kelas as kl on jd.id_kelas = kl.id inner join prodi as pr on jd.id_prodi = pr.id inner join dosen as ds on jd.id_dosen_pengampu = ds.id inner join karyawan as kr on ds.id_karyawan = kr.id left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n" +
+                "FROM krs_detail as kd left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id inner join jadwal as jd on sk.id_jadwal = jd.id inner join mahasiswa as ma on pm.id_mahasiswa = ma.id where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n" +
+                "group by pm.id_mahasiswa, jd.id having count(pm.id) > 3 order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail where kd.id_tahun_akademik = ?1 and excludeMangkir.id_krs_detail is NULL and kr.nama_karyawan LIKE %?2% group by jd.id_number_elearning order by jd.id_number_elearning DESC", countQuery = "SELECT count(kd.id) as jml FROM krs_detail as kd\n" +
+                "inner join matakuliah_kurikulum as mku on kd.id_matakuliah_kurikulum = mku.id\n" +
+                "inner join matakuliah as mk on mku.id_matakuliah = mk.id inner join mahasiswa as ma on kd.id_mahasiswa = ma.id inner join tahun_akademik as ta on kd.id_tahun_akademik = ta.id inner join jadwal as jd on kd.id_jadwal = jd.id inner join kelas as kl on jd.id_kelas = kl.id inner join prodi as pr on jd.id_prodi = pr.id inner join dosen as ds on jd.id_dosen_pengampu = ds.id inner join karyawan as kr on ds.id_karyawan = kr.id left join (SELECT kd.id, pm.id as id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail,pm.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.email_tazkia as email, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.id as idJadwal,jd.id_number_elearning as idNumberElearning, jd.jam_mulai, jd.jam_selesai,count(pm.id) as absensi\n" +
+                "FROM krs_detail as kd left join presensi_mahasiswa as pm on kd.id = pm.id_krs_detail inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id inner join jadwal as jd on sk.id_jadwal = jd.id inner join mahasiswa as ma on pm.id_mahasiswa = ma.id where jd.id_tahun_akademik = ?1 and pm.status_presensi IN ('MANGKIR','TERLAMBAT') and pm.status = 'AKTIF' and kd.status = 'AKTIF'\n" +
+                "group by pm.id_mahasiswa, jd.id having count(pm.id) > 3 order by count(pm.id) DESC) as excludeMangkir on kd.id = excludeMangkir.id_krs_detail\n" +
+                "where kd.id_tahun_akademik = ?1 and excludeMangkir.id_krs_detail is NULL and kr.nama_karyawan LIKE %?2% group by jd.id_number_elearning order by jd.id_number_elearning DESC", nativeQuery = true)
         Page<StatusImportNilaiDosenIntDto> findStatusImportNilaiDosenByDosen(TahunAkademik ta, String dosen,
                         Pageable page);
 
@@ -316,5 +194,30 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                 "left join krs_approval ka on b.idKrs=ka.id_krs\n" +
                 "left join krs_detail kd on b.idKrs=kd.id_krs where kd.status='AKTIF' group by a.id")
         Page<Object[]> listKrsAdminByDosenWali(String angkatan, String idProdi, String idTahun, String idDosen, Pageable page);
+
+        @Query(value = "SELECT dosen, idNumberElearning, namaProdi, kodeMatakuliah, namaKelas, namaMatakuliah, namaMatakuliahEnglish, statusImportTugas, statusImportUts, statusImportUas\n" +
+                "FROM(SELECT kr.nama_karyawan AS dosen, jd.id_number_elearning AS idNumberElearning, pr.nama_prodi AS namaProdi, mk.kode_matakuliah AS kodeMatakuliah, kl.nama_kelas AS namaKelas, mk.nama_matakuliah AS namaMatakuliah, mk.nama_matakuliah_english AS namaMatakuliahEnglish, \n" +
+                "CASE WHEN MIN(kd.nilai_tugas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_tugas) > 0 AND MIN(kd.nilai_tugas) = 0 THEN          'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN MIN(kd.nilai_uts) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uts) > 0 AND MIN(kd.nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN MIN(kd.nilai_uas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uas) > 0 AND MIN(kd.nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UAS BELUM' END AS statusImportUas\n" +
+                "FROM krs_detail AS kd INNER JOIN matakuliah_kurikulum AS mku ON kd.id_matakuliah_kurikulum = mku.id INNER JOIN matakuliah AS mk ON mku.id_matakuliah = mk.id INNER JOIN mahasiswa AS ma ON kd.id_mahasiswa = ma.id INNER JOIN tahun_akademik AS ta ON kd.id_tahun_akademik = ta.id INNER JOIN jadwal AS jd ON kd.id_jadwal = jd.id INNER JOIN kelas AS kl ON jd.id_kelas = kl.id INNER JOIN prodi AS pr ON jd.id_prodi = pr.id INNER JOIN dosen AS ds ON jd.id_dosen_pengampu = ds.id INNER JOIN karyawan AS kr ON ds.id_karyawan = kr.id\n" +
+                "LEFT JOIN (SELECT kd.id, pm.id AS id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail, pm.id_mahasiswa AS idMahasiswa, ma.nim AS nim, ma.email_tazkia AS email, pm.waktu_masuk, pm.waktu_keluar, pm.status_presensi, pm.status, jd.id AS idJadwal, jd.id_number_elearning AS idNumberElearning, jd.jam_mulai, jd.jam_selesai, COUNT(pm.id) AS absensi\n" +
+                "FROM krs_detail AS kd LEFT JOIN presensi_mahasiswa AS pm ON kd.id = pm.id_krs_detail INNER JOIN sesi_kuliah AS sk ON pm.id_sesi_kuliah = sk.id INNER JOIN jadwal AS jd ON sk.id_jadwal = jd.id INNER JOIN mahasiswa AS ma ON pm.id_mahasiswa = ma.id \n" +
+                "WHERE jd.id_tahun_akademik = ?1 AND pm.status_presensi IN ('MANGKIR' , 'TERLAMBAT') AND pm.status = 'AKTIF' AND kd.status = 'AKTIF' GROUP BY pm.id_mahasiswa , jd.id HAVING COUNT(pm.id) > 3 ORDER BY COUNT(pm.id) DESC) AS excludeMangkir ON kd.id = excludeMangkir.id_krs_detail\n" +
+                "WHERE kd.id_tahun_akademik = ?1  and excludeMangkir.id_krs_detail is NULL and kr.nama_karyawan LIKE %?2% GROUP BY jd.id_number_elearning ORDER BY jd.id_number_elearning DESC) AS subquery WHERE  subquery.statusImportTugas = 'TUGAS BELUM' OR subquery.statusImportUts = 'UTS BELUM' OR subquery.statusImportUas = 'UAS BELUM' ORDER BY subquery.namaProdi ASC , subquery.namaMatakuliah ASC , subquery.dosen ASC", countQuery = "SELECT COUNT(*) AS jml FROM (SELECT kr.nama_karyawan AS dosen, jd.id_number_elearning AS idNumberElearning, pr.nama_prodi AS namaProdi, mk.kode_matakuliah AS kodeMatakuliah, kl.nama_kelas AS namaKelas, mk.nama_matakuliah AS namaMatakuliah, mk.nama_matakuliah_english AS namaMatakuliahEnglish, CASE WHEN MIN(kd.nilai_tugas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_tugas) > 0 AND MIN(kd.nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN MIN(kd.nilai_uts) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uts) > 0 AND MIN(kd.nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN MIN(kd.nilai_uas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uas) > 0 AND MIN(kd.nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UAS BELUM' END AS statusImportUas  FROM krs_detail AS kd INNER JOIN matakuliah_kurikulum AS mku ON kd.id_matakuliah_kurikulum = mku.id INNER JOIN matakuliah AS mk ON mku.id_matakuliah = mk.id INNER JOIN mahasiswa AS ma ON kd.id_mahasiswa = ma.id INNER JOIN tahun_akademik AS ta ON kd.id_tahun_akademik = ta.id INNER JOIN jadwal AS jd ON kd.id_jadwal = jd.id INNER JOIN kelas AS kl ON jd.id_kelas = kl.id INNER JOIN prodi AS pr ON jd.id_prodi = pr.id INNER JOIN dosen AS ds ON jd.id_dosen_pengampu = ds.id INNER JOIN karyawan AS kr ON ds.id_karyawan = kr.id LEFT JOIN (SELECT  kd.id,  pm.id AS id_presensi_mahasiswa,  jd.id_tahun_akademik,  pm.id_krs_detail,  pm.id_mahasiswa AS idMahasiswa,  ma.nim AS nim,  ma.email_tazkia AS email,  pm.waktu_masuk,  pm.waktu_keluar,  pm.status_presensi,  pm.status,  jd.id AS idJadwal,  jd.id_number_elearning AS idNumberElearning,  jd.jam_mulai,  jd.jam_selesai,  COUNT(pm.id) AS absensi FROM krs_detail AS kd LEFT JOIN presensi_mahasiswa AS pm ON kd.id = pm.id_krs_detail INNER JOIN sesi_kuliah AS sk ON pm.id_sesi_kuliah = sk.id INNER JOIN jadwal AS jd ON sk.id_jadwal = jd.id INNER JOIN mahasiswa AS ma ON pm.id_mahasiswa = ma.id  WHERE jd.id_tahun_akademik = ?1 AND pm.status_presensi IN ('MANGKIR' , 'TERLAMBAT') AND pm.status = 'AKTIF' AND kd.status = 'AKTIF' GROUP BY pm.id_mahasiswa , jd.id HAVING COUNT(pm.id) > 3 ORDER BY COUNT(pm.id) DESC) AS excludeMangkir ON kd.id = excludeMangkir.id_krs_detail  WHERE kd.id_tahun_akademik = ?1 and excludeMangkir.id_krs_detail is NULL and kr.nama_karyawan LIKE %?2% GROUP BY jd.id_number_elearning ORDER BY jd.id_number_elearning DESC) AS subquery WHERE subquery.statusImportTugas = 'TUGAS BELUM' OR subquery.statusImportUts = 'UTS BELUM' OR subquery.statusImportUas = 'UAS BELUM'\n", nativeQuery = true)
+        Page<StatusImportNilaiDosenIntDto> findStatusImportNilaiDosenByDosen2(TahunAkademik ta, String dosen, Pageable page);
+
+        @Query(value = "SELECT dosen, idNumberElearning, namaProdi, kodeMatakuliah, namaKelas, namaMatakuliah, namaMatakuliahEnglish, statusImportTugas, statusImportUts, statusImportUas\n" +
+                "FROM(SELECT kr.nama_karyawan AS dosen, jd.id_number_elearning AS idNumberElearning, pr.nama_prodi AS namaProdi, mk.kode_matakuliah AS kodeMatakuliah, kl.nama_kelas AS namaKelas, mk.nama_matakuliah AS namaMatakuliah, mk.nama_matakuliah_english AS namaMatakuliahEnglish, \n" +
+                "CASE WHEN MIN(kd.nilai_tugas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_tugas) > 0 AND MIN(kd.nilai_tugas) = 0 THEN          'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN MIN(kd.nilai_uts) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uts) > 0 AND MIN(kd.nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN MIN(kd.nilai_uas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uas) > 0 AND MIN(kd.nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UAS BELUM' END AS statusImportUas\n" +
+                "FROM krs_detail AS kd INNER JOIN matakuliah_kurikulum AS mku ON kd.id_matakuliah_kurikulum = mku.id INNER JOIN matakuliah AS mk ON mku.id_matakuliah = mk.id INNER JOIN mahasiswa AS ma ON kd.id_mahasiswa = ma.id INNER JOIN tahun_akademik AS ta ON kd.id_tahun_akademik = ta.id INNER JOIN jadwal AS jd ON kd.id_jadwal = jd.id INNER JOIN kelas AS kl ON jd.id_kelas = kl.id INNER JOIN prodi AS pr ON jd.id_prodi = pr.id INNER JOIN dosen AS ds ON jd.id_dosen_pengampu = ds.id INNER JOIN karyawan AS kr ON ds.id_karyawan = kr.id\n" +
+                "LEFT JOIN (SELECT kd.id, pm.id AS id_presensi_mahasiswa, jd.id_tahun_akademik, pm.id_krs_detail, pm.id_mahasiswa AS idMahasiswa, ma.nim AS nim, ma.email_tazkia AS email, pm.waktu_masuk, pm.waktu_keluar, pm.status_presensi, pm.status, jd.id AS idJadwal, jd.id_number_elearning AS idNumberElearning, jd.jam_mulai, jd.jam_selesai, COUNT(pm.id) AS absensi\n" +
+                "FROM krs_detail AS kd LEFT JOIN presensi_mahasiswa AS pm ON kd.id = pm.id_krs_detail INNER JOIN sesi_kuliah AS sk ON pm.id_sesi_kuliah = sk.id INNER JOIN jadwal AS jd ON sk.id_jadwal = jd.id INNER JOIN mahasiswa AS ma ON pm.id_mahasiswa = ma.id \n" +
+                "WHERE jd.id_tahun_akademik = ?1 AND pm.status_presensi IN ('MANGKIR' , 'TERLAMBAT') AND pm.status = 'AKTIF' AND kd.status = 'AKTIF' GROUP BY pm.id_mahasiswa , jd.id HAVING COUNT(pm.id) > 3 ORDER BY COUNT(pm.id) DESC) AS excludeMangkir ON kd.id = excludeMangkir.id_krs_detail\n" +
+                "WHERE kd.id_tahun_akademik = ?1 AND excludeMangkir.id_krs_detail IS NULL GROUP BY jd.id_number_elearning ORDER BY jd.id_number_elearning DESC) AS subquery WHERE  subquery.statusImportTugas = 'TUGAS BELUM' OR subquery.statusImportUts = 'UTS BELUM' OR subquery.statusImportUas = 'UAS BELUM' ORDER BY subquery.namaProdi ASC , subquery.namaMatakuliah ASC , subquery.dosen ASC",countQuery = "SELECT COUNT(*) AS jml FROM (SELECT kr.nama_karyawan AS dosen, jd.id_number_elearning AS idNumberElearning, pr.nama_prodi AS namaProdi, mk.kode_matakuliah AS kodeMatakuliah, kl.nama_kelas AS namaKelas, mk.nama_matakuliah AS namaMatakuliah, mk.nama_matakuliah_english AS namaMatakuliahEnglish, CASE WHEN MIN(kd.nilai_tugas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_tugas) > 0 AND MIN(kd.nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN MIN(kd.nilai_uts) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uts) > 0 AND MIN(kd.nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN MIN(kd.nilai_uas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uas) > 0 AND MIN(kd.nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UAS BELUM' END AS statusImportUas  FROM krs_detail AS kd INNER JOIN matakuliah_kurikulum AS mku ON kd.id_matakuliah_kurikulum = mku.id INNER JOIN matakuliah AS mk ON mku.id_matakuliah = mk.id INNER JOIN mahasiswa AS ma ON kd.id_mahasiswa = ma.id INNER JOIN tahun_akademik AS ta ON kd.id_tahun_akademik = ta.id INNER JOIN jadwal AS jd ON kd.id_jadwal = jd.id INNER JOIN kelas AS kl ON jd.id_kelas = kl.id INNER JOIN prodi AS pr ON jd.id_prodi = pr.id INNER JOIN dosen AS ds ON jd.id_dosen_pengampu = ds.id INNER JOIN karyawan AS kr ON ds.id_karyawan = kr.id LEFT JOIN (SELECT  kd.id,  pm.id AS id_presensi_mahasiswa,  jd.id_tahun_akademik,  pm.id_krs_detail,  pm.id_mahasiswa AS idMahasiswa,  ma.nim AS nim,  ma.email_tazkia AS email,  pm.waktu_masuk,  pm.waktu_keluar,  pm.status_presensi,  pm.status,  jd.id AS idJadwal,  jd.id_number_elearning AS idNumberElearning,  jd.jam_mulai,  jd.jam_selesai,  COUNT(pm.id) AS absensi FROM krs_detail AS kd LEFT JOIN presensi_mahasiswa AS pm ON kd.id = pm.id_krs_detail INNER JOIN sesi_kuliah AS sk ON pm.id_sesi_kuliah = sk.id INNER JOIN jadwal AS jd ON sk.id_jadwal = jd.id INNER JOIN mahasiswa AS ma ON pm.id_mahasiswa = ma.id  WHERE jd.id_tahun_akademik = ?1 AND pm.status_presensi IN ('MANGKIR' , 'TERLAMBAT') AND pm.status = 'AKTIF' AND kd.status = 'AKTIF' GROUP BY pm.id_mahasiswa , jd.id HAVING COUNT(pm.id) > 3 ORDER BY COUNT(pm.id) DESC) AS excludeMangkir ON kd.id = excludeMangkir.id_krs_detail  WHERE kd.id_tahun_akademik = ?1 AND excludeMangkir.id_krs_detail IS NULL GROUP BY jd.id_number_elearning ORDER BY jd.id_number_elearning DESC) AS subquery WHERE subquery.statusImportTugas = 'TUGAS BELUM' OR subquery.statusImportUts = 'UTS BELUM' OR subquery.statusImportUas = 'UAS BELUM'\n", nativeQuery = true)
+        Page<StatusImportNilaiDosenIntDto> findStatusImportNilaiDosen2(TahunAkademik ta, Pageable page);
+
+
+
+
+
 
 }

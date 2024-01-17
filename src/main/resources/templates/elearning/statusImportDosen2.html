@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+  <meta charset="UTF-8">
+  <title>Status Import Nilai Dosen</title>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+
+        <!--                table dosen-->
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card mb-4">
+              <div class="card-header pb-0">
+                <h4>List Status Import Nilai Dosen</h4>
+              </div>
+              <div class="card shadow">
+                <div class="card-header">
+                  <form method="get">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Tahun Akademik</label>
+                          <select name="tahunAkademik" class="form-control">
+                            <option value="" disabled selected>-- Select One --</option>
+                            <option th:each="data : ${tahunAkademik}"
+                                    th:selected="(${data} == *{selectedTahun})"
+                                    th:text="${data.namaTahunAkademik}"
+                                    th:value="${data.id}">2023</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Nama Dosen</label>
+                          <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Cari nama dosen disini" >
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12" style="text-align: center;">
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </form>
+                </div>
+
+                <div class="card-body">
+                  <p class="text-warning"><small>Mahasiswa/i yang memiliki keterlambatan dan mangkir lebih dari 3 tidak akan terimport.</small></p>
+                  <p><small>Scroll ke kanan untuk melihat status import</small></p>
+                  <p><small>Klik header table untuk sort</small></p>
+                  <a th:href="@{/elearning/statusImportDosen}" class="btn btn-primary btn-sm">Kembali Ke Seluruh Status</a>
+                  <br>
+                  <br>
+                  <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0 sortable">
+                      <thead class="thead-light">
+                      <tr>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Dosen</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama Matakuliah</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Status Import Tugas</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Status Import UTS</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Status Import UAS</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama Matakuliah English</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Kode Matakuliah</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama Kelas</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Id Number Elearning</th>
+                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama Prodi</th>
+                        <th class="opacity-7"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="data, row : ${statusImportDosen2}">
+                        <td th:text="${(row.index + 1)}"></td>
+                        <td th:text="${data.getDosen}"></td>
+                        <td th:text="${data.getNamaMatakuliah}"></td>
+                        <td th:text="${data.getStatusImportTugas}" style="font-weight:bold"></td>
+                        <td th:text="${data.getStatusImportUts}" style="font-weight:bold"></td>
+                        <td th:text="${data.getStatusImportUas}" style="font-weight:bold"></td>
+                        <td th:text="${data.getNamaMatakuliahEnglish}"></td>
+                        <td th:text="${data.getKodeMatakuliah}"></td>
+                        <td th:text="${data.namaKelas}"></td>
+                        <td th:text="${data.getIdNumberElearning}"></td>
+                        <td th:text="${data.namaProdi}"></td>
+                      </tr>
+                      <!--                                            <tr th:each="data, row : ${statusImportDosen}">-->
+                      <!--                                                <td th:text="${(row.index + 1)}"></td>-->
+                      <!--                                                <td th:text="${data[0]}"></td>-->
+                      <!--                                                <td th:text="${data[5]}"></td>-->
+                      <!--                                                <td th:text="${data[7]}" style="font-weight:bold"></td>-->
+                      <!--                                                <td th:text="${data[8]}" style="font-weight:bold"></td>-->
+                      <!--                                                <td th:text="${data[9]}" style="font-weight:bold"></td>-->
+                      <!--                                                <td th:text="${data[6]}"></td>-->
+                      <!--                                                <td th:text="${data[3]}"></td>-->
+                      <!--                                                <td th:text="${data[4]}"></td>-->
+                      <!--                                                <td th:text="${data[1]}"></td>-->
+                      <!--                                                <td th:text="${data[2]}"></td>-->
+                      <!--                                            </tr>-->
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="card-footer py-4">
+                    <nav aria-label="...">
+                      <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                        <li class="disabled"><a href="#" aria-label="Previous"><span
+                                aria-hidden="true">&laquo;</span></a>
+                        </li>
+                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+
+</body>
+</html>
+
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>

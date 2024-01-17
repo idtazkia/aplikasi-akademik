@@ -410,6 +410,27 @@ public class ElearningController {
 
     }
 
+    @GetMapping("/elearning/statusImportDosen2")
+    public void statusImportDosen2(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page, String search){
+        TahunAkademik tahunAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("selectedSearch", search);
+
+
+        if (StringUtils.hasText(search) && tahunAkademik == null) {
+            model.addAttribute("search", search);
+            model.addAttribute("statusImportDosen2", krsDao.findStatusImportNilaiDosenByDosen2(tahunAktif,search, page));
+        } else if (StringUtils.hasText(search)){
+            model.addAttribute("search", search);
+            model.addAttribute("statusImportDosen2", krsDao.findStatusImportNilaiDosenByDosen2(tahunAkademik,search, page));
+        } else if (tahunAkademik != null){
+            model.addAttribute("statusImportDosen2", krsDao.findStatusImportNilaiDosen2(tahunAkademik, page));
+        } else {
+            model.addAttribute("statusImportDosen2", krsDao.findStatusImportNilaiDosen2(tahunAktif, page));
+        }
+
+    }
+
     @GetMapping("/elearning/enrollKelas")
     public void enrollKelas(Model model){
 
