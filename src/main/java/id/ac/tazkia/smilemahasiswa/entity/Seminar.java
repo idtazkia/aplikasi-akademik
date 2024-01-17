@@ -1,14 +1,23 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Data;
 
 @Data
 @Entity
@@ -16,9 +25,8 @@ public class Seminar {
 
     @Id
     @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid" ,strategy = "uuid2")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-
 
     @ManyToOne
     @JoinColumn(name = "id_note")
@@ -36,6 +44,10 @@ public class Seminar {
     private String fileFormulir;
     private String fileTurnitin;
     private String fileCoverNote;
+    private String fileLoa;
+    private String fileIjazah;
+    private String fileKtp;
+    private String fileBerita;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -129,7 +141,6 @@ public class Seminar {
     private BigDecimal pd2 = BigDecimal.ZERO;
     private BigDecimal pe2 = BigDecimal.ZERO;
     private BigDecimal pf2 = BigDecimal.ZERO;
-
 
     private BigDecimal ea = BigDecimal.ZERO;
     private BigDecimal eb = BigDecimal.ZERO;
