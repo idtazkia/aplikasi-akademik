@@ -121,7 +121,7 @@ public class TagihanService {
                             t.setAkumulasiPembayaran(nilaiBeasiswa.getNilai());
                             t.setTahunAkademik(tahunAkademik);
                             t.setTanggalPembuatan(LocalDate.now());
-                            t.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                            t.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                             t.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                             t.setKeterangan("Tagihan " + mhs.getBeasiswa().getNamaBeasiswa() + ".");
                             t.setLunas(true);
@@ -170,7 +170,7 @@ public class TagihanService {
             tagihan.setNilaiTagihan(jenisTagihanBaru.getNilai());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalJatuhTempo(tahun.getTanggalMulaiUas().minusDays(2));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahun);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -186,7 +186,7 @@ public class TagihanService {
             tagihan.setNilaiTagihan(cekTagihanCuti.getNilai());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalJatuhTempo(tahun.getTanggalMulaiUas().minusDays(2));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahun);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -206,7 +206,7 @@ public class TagihanService {
                 .debitur(tagihan.getMahasiswa().getNim())
                 .keterangan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                         + " a.n. " +tagihan.getMahasiswa().getNama())
-                .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .tanggalJatuhTempo(Date.from(tagihan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.CREATE)
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
@@ -221,7 +221,7 @@ public class TagihanService {
                 .debitur(tagihan.getMahasiswa().getNim())
                 .keterangan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                         + " a.n. " + tagihan.getMahasiswa().getNama())
-                .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .tanggalJatuhTempo(Date.from(tagihan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.REPLACE)
                 .nomorTagihanLama(tagihan.getNomor())
                 .build();

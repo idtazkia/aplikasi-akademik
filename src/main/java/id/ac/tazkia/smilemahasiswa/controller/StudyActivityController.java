@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.KrsService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -137,6 +138,9 @@ public class StudyActivityController {
 
     @Autowired
     private FileMbkmDao fileMbkmDao;
+
+    @Autowired
+    private KrsService krsService;
 
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
@@ -514,97 +518,97 @@ public class StudyActivityController {
                 if ("S1".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
                     if (cekIpk.getIpk().compareTo(batas) <= 0){
                         log.info("Ipk di bawah 3!");
-                        createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                     } else if (cekIpk.getIpk().compareTo(batas) > 0) {
                         log.info("Ipk di atas 3!");
                         if (tSemester == 1){
                             if (cekIpk.getSksTotal() < 12){
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 2){
                             if (cekIpk.getSksTotal() < 24){
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 3){
                             if (cekIpk.getSksTotal() < 44){
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 4) {
                             if (cekIpk.getSksTotal() < 64) {
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 5) {
                             if (cekIpk.getSksTotal() < 84) {
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 6){
                             if (cekIpk.getSksTotal() < 104) {
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 7){
                             if (cekIpk.getSksTotal() < 124) {
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 8){
                             if (cekIpk.getSksTotal() < 144) {
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         }
                     } else{
-                        createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                     }
                 } else if ("S2".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
                     if (cekIpk.getIpk().compareTo(batas) <= 0){
                         log.info("Ipk di bawah 3 S2!");
-                        createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                     } else if (cekIpk.getIpk().compareTo(batas) > 0) {
                         log.info("Ipk di atas 3 S2!");
                         if (tSemester == 1){
                             if (cekIpk.getSksTotal() < 12){
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 2){
                             if (cekIpk.getSksTotal() < 24){
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 3){
                             if (cekIpk.getSksTotal() < 24){
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         } else if (tSemester == 4) {
                             if (cekIpk.getSksTotal() < 24) {
-                                createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                             }else{
-                                createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                             }
                         }else{
                             log.info("Lebih dari semester 4 S2!");
-                            createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                            krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
                         }
                     } else{
-                        createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                     }
                 }
             }
@@ -616,20 +620,6 @@ public class StudyActivityController {
             return "redirect:form?validasi=true";
         }
 
-    }
-
-    private void createKrsApproval(Krs k, Mahasiswa mahasiswa, StatusApprove status){
-        KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.REJECTED));
-        if (cek != null) {
-            cek.setStatus(status);
-            krsApprovalDao.save(cek);
-        }else{
-            KrsApproval ka = new KrsApproval();
-            ka.setKrs(k);
-            ka.setMahasiswa(mahasiswa);
-            ka.setStatus(status);
-            krsApprovalDao.save(ka);
-        }
     }
 
     @PostMapping("/study/deleteKrs")
@@ -1339,7 +1329,7 @@ public class StudyActivityController {
                 tagihan.setNilaiTagihanAsli(total);
                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                 tagihan.setTanggalPembuatan(LocalDate.now());
-                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                 tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                 tagihan.setTahunAkademik(tahunAkademik);
                 tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -1366,7 +1356,7 @@ public class StudyActivityController {
                         tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                         tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                         tagihan.setTanggalPembuatan(LocalDate.now());
-                        tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                        tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                         tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                         tagihan.setTahunAkademik(tahunAkademik);
                         tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -1383,7 +1373,7 @@ public class StudyActivityController {
                     tagihan.setNilaiTagihanAsli(total);
                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                     tagihan.setTanggalPembuatan(LocalDate.now());
-                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                    tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                     tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                     tagihan.setTahunAkademik(tahunAkademik);
                     tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -1438,7 +1428,7 @@ public class StudyActivityController {
                 tagihan.setNilaiTagihanAsli(total);
                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                 tagihan.setTanggalPembuatan(LocalDate.now());
-                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                 tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                 tagihan.setTahunAkademik(tahunAkademik);
                 tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -1468,7 +1458,7 @@ public class StudyActivityController {
                         tagihan.setNilaiTagihanAsli(total);
                         tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                         tagihan.setTanggalPembuatan(LocalDate.now());
-                        tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                        tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                         tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                         tagihan.setTahunAkademik(tahunAkademik);
                         tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -1485,7 +1475,7 @@ public class StudyActivityController {
                             tagihan.setNilaiTagihanAsli(total);
                             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                             tagihan.setTanggalPembuatan(LocalDate.now());
-                            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                            tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                             tagihan.setTahunAkademik(tahunAkademik);
                             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -1502,7 +1492,7 @@ public class StudyActivityController {
                                 tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                 tagihan.setTanggalPembuatan(LocalDate.now());
-                                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                                 tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                                 tagihan.setTahunAkademik(tahunAkademik);
                                 tagihan.setStatusTagihan(StatusTagihan.AKTIF);

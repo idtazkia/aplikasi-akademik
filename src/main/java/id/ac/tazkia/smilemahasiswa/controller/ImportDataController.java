@@ -122,7 +122,7 @@ public class ImportDataController  {
             tagihan.setNilaiTagihanAsli(totalNominal);
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalJatuhTempo(tahunAkademikDao.findByStatus(StatusRecord.AKTIF).getTanggalMulaiUas().minusDays(2));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             tagihan.setStatusTagihan(StatusTagihan.DICICIL);
@@ -149,7 +149,7 @@ public class ImportDataController  {
             tagihan.setNilaiTagihanAsli(totalNominal);
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalJatuhTempo(tahunAkademikDao.findByStatus(StatusRecord.AKTIF).getTanggalMulaiUas().minusDays(2));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             tagihan.setStatusTagihan(StatusTagihan.DICICIL);

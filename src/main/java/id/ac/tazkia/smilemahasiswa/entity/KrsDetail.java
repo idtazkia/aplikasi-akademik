@@ -91,6 +91,8 @@ public class KrsDetail extends Auditable {
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
 
+    private String keterangan;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord statusKonversi;
 

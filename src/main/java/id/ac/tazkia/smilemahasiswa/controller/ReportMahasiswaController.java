@@ -352,7 +352,7 @@ public class ReportMahasiswaController {
                 tagihan.setNilaiTagihanAsli(total);
                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                 tagihan.setTanggalPembuatan(LocalDate.now());
-                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                 tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                 tagihan.setTahunAkademik(tahunAkademik);
                 tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -382,7 +382,7 @@ public class ReportMahasiswaController {
                         tagihan.setNilaiTagihanAsli(total);
                         tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                         tagihan.setTanggalPembuatan(LocalDate.now());
-                        tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                        tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
                         tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                         tagihan.setTahunAkademik(tahunAkademik);
                         tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -399,7 +399,7 @@ public class ReportMahasiswaController {
                             tagihan.setNilaiTagihanAsli(total);
                             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                             tagihan.setTanggalPembuatan(LocalDate.now());
-                            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                            tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
                             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                             tagihan.setTahunAkademik(tahunAkademik);
                             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -416,7 +416,7 @@ public class ReportMahasiswaController {
                                 tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                 tagihan.setTanggalPembuatan(LocalDate.now());
-                                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
                                 tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                                 tagihan.setTahunAkademik(tahunAkademik);
                                 tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -486,7 +486,7 @@ public class ReportMahasiswaController {
                 tagihan.setNilaiTagihanAsli(total);
                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                 tagihan.setTanggalPembuatan(LocalDate.now());
-                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
                 tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                 tagihan.setTahunAkademik(tahunAkademik);
                 tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -513,7 +513,7 @@ public class ReportMahasiswaController {
                         tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                         tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                         tagihan.setTanggalPembuatan(LocalDate.now());
-                        tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                        tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
                         tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                         tagihan.setTahunAkademik(tahunAkademik);
                         tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -530,7 +530,7 @@ public class ReportMahasiswaController {
                     tagihan.setNilaiTagihanAsli(total);
                     tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                     tagihan.setTanggalPembuatan(LocalDate.now());
-                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                    tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
                     tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                     tagihan.setTahunAkademik(tahunAkademik);
                     tagihan.setStatusTagihan(StatusTagihan.AKTIF);
