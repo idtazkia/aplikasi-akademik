@@ -52,4 +52,6 @@ public interface MatakuliahKurikulumDao extends PagingAndSortingRepository<Matak
 
     List<MatakuliahKurikulum> findByStatusAndMatakuliahIdIn(StatusRecord status, List<String> id);
 
+    Integer countByMatakuliahAndStatus(Matakuliah matakuliah, StatusRecord status);
+
 }

@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface MataKuliahSetaraDao extends PagingAndSortingRepository<MatakuliahSetara, String> {
 
+    List<MatakuliahSetara> findByStatusAndMatakuliahOrStatusAndMatakuliahSetara(StatusRecord statusRecord, Matakuliah matakuliah, StatusRecord statusSetara, Matakuliah matakuliahSetara);
+
     @Query(value = "SELECT * FROM\n" +
             "(SELECT a.id,b.kode_matakuliah as kodeMatakuliah,b.nama_matakuliah as namaMatakuliah,b.nama_matakuliah_english as namaMatakuliahEnglish  FROM matakuliah_setara AS a \n" +
             "\tINNER JOIN matakuliah AS b ON a.id_matakuliah_setara = b.id \n" +

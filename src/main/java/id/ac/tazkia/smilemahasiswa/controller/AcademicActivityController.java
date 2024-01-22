@@ -799,7 +799,31 @@ public class  AcademicActivityController {
 
         if (matakuliah != null){
             model.addAttribute("courses",matakuliah);
+            Integer usedMatkul = matakuliahKurikulumDao.countByMatakuliahAndStatus(matakuliah, StatusRecord.AKTIF);
+            if (usedMatkul != 0) {
+                model.addAttribute("used", "Tidak bisa di edit karena matakuliah sudah di gunakan di matakuliah kurikulum!");
+            }
         }
+    }
+
+    @GetMapping("/academic/courses/detail")
+    public void detailCourses(Model model,@RequestParam(name = "id") Matakuliah matakuliah){
+        if (matakuliah != null){
+            model.addAttribute("matakuliah", matakuliah);
+            model.addAttribute("listMatakuliah", mataKuliahSetaraDao.findByStatusAndMatakuliahOrStatusAndMatakuliahSetara(StatusRecord.AKTIF, matakuliah, StatusRecord.AKTIF, matakuliah));
+        }
+    }
+
+    @PostMapping("/academic/courses/setara/delete")
+    public String deleteSetaraByMatakuliah(@RequestParam MatakuliahSetara matakuliahSetara, @RequestParam Matakuliah matakuliah, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
+        matakuliahSetara.setStatus(StatusRecord.HAPUS);
+        matakuliahSetara.setTanggalDelete(LocalDateTime.now());
+        matakuliahSetara.setUserDelete(user.getUsername());
+        mataKuliahSetaraDao.save(matakuliahSetara);
+
+        return "redirect:../detail?id="+matakuliah.getId();
     }
 
     @PostMapping("/academic/courses/form")
