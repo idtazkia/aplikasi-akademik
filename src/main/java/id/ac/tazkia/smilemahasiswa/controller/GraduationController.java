@@ -288,7 +288,11 @@ public class GraduationController {
                 if (wisuda.isEmpty()) {
                     Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(
                             StatusApprove.APPROVED, "AKTIF", new BigDecimal(70), mahasiswa);
-                    return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
+                    if (seminar.getNote().getJenis().equals(StatusRecord.JURNAL)) {
+                        return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
+                    } else {
+                        return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
+                    }
                 } else {
                     return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
 
@@ -1575,6 +1579,7 @@ public class GraduationController {
         seminar.setStatus(StatusApprove.APPROVED);
         seminar.setStatusSempro(StatusApprove.APPROVED);
         seminar.setPublish("AKTIF");
+        seminar.setNilai(new BigDecimal(71));
         seminarDao.save(seminar);
 
         sidangService.createSidangJurnal(seminar);
