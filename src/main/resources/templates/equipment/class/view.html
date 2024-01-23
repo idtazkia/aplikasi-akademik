@@ -68,7 +68,7 @@
                                 <td th:text="${data.mahasiswa.nim}">Edinburgh</td>
                                 <td th:text="${data.mahasiswa.nama}">61</td>
                                 <td th:text="${data.kelas.namaKelas}">61</td>
-                                <td th:if="${data.mahasiswa.kurikulum != null}" th:text="${data.mahasiswa.kurikulum.namaKurikulum}">2011/04/25</td>
+                                <td th:if="${data.mahasiswa.kurikulum != null}" th:text="${data.kelas.kurikulum.namaKurikulum}">2011/04/25</td>
                                 <td th:if="${data.mahasiswa.kurikulum == null}"></td>
                             </tr>
                             </tbody>
