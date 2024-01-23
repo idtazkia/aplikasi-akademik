@@ -83,7 +83,7 @@
                                 <th scope="col">Nama Matakuliah</th>
                                 <th scope="col">Nama Matakuliah Inggris</th>
                                 <th scope="col">Singkatan</th>
-                                <th scope="col"></th>
+                                <th colspan="2" scope="col"></th>
 
                             </tr>
                             </thead>
@@ -99,16 +99,21 @@
                                 <td th:text="${item.namaMatakuliahEnglish}">mathematics</td>
                                 <td th:text="${item.singkatan}">MTK</td>
                                 <td>
-                                    <a th:href="@{/academic/courses/form (id = ${item.id})}"
-                                       class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
-                                       title="Edit"><i class="fas fa-edit"></i></a>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="actionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" th:href="@{/academic/courses/form (id = ${item.id})}">Edit</a>
+                                            <a class="dropdown-item" href="#" data-toggle="modal" th:data-target="${'#modal-notification'+item.id}">Hapus</a>
+                                            <a class="dropdown-item" th:href="@{/academic/courses/detail (id = ${item.id})}">Detail setara</a>
+
+
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <!--button-->
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                            th:data-target="${'#modal-notification'+item.id}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
 
                                     <div class="modal fade" th:id="${'modal-notification'+item.id}" tabindex="-1"
                                          role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
