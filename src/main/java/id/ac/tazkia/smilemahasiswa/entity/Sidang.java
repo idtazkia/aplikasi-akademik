@@ -154,4 +154,8 @@ public class Sidang {
 
     private String kodeSuratTugas;
 
+    @ManyToOne
+    @JoinColumn(name = "id_jurnal")
+    private KriteriaJurnal kriteriaJurnal;
+
 }
