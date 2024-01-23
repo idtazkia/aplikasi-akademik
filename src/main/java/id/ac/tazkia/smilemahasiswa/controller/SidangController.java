@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,8 +58,10 @@ import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
 import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.GradeDao;
 import id.ac.tazkia.smilemahasiswa.dao.HariDao;
 import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KriteriaJurnalDao;
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
@@ -67,12 +70,15 @@ import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
 import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.JurnalDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.EnableFiture;
+import id.ac.tazkia.smilemahasiswa.entity.Grade;
 import id.ac.tazkia.smilemahasiswa.entity.Hari;
 import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.KriteriaJurnal;
 import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
@@ -143,6 +149,12 @@ public class SidangController {
 
     @Autowired
     EnableFitureDao enableFitureDao;
+
+    @Autowired
+    private KriteriaJurnalDao kriteriaJurnalDao;
+
+    @Autowired
+    private GradeDao gradeDao;
 
     @Autowired
     private FormulirService formulirService;
@@ -1262,6 +1274,8 @@ public class SidangController {
             @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("jurnal", kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(),StatusRecord.AKTIF));
+        model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
 
         if (tahunAkademik != null) {
             model.addAttribute("listSidang", sidangDao
@@ -1276,6 +1290,9 @@ public class SidangController {
             @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("jurnal",
+                kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(), StatusRecord.AKTIF));
+        model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
 
         if (tahunAkademik != null) {
             model.addAttribute("listSidang", sidangDao
@@ -1857,6 +1874,49 @@ public class SidangController {
             return "lengkapi";
         }
 
+    }
+
+    @PostMapping("/graduation/jurnal/publish")
+    @ResponseBody
+    public String publishNilaiJurnal(@RequestBody JurnalDto jurnalDto) {
+        Sidang sidang = sidangDao.findById(jurnalDto.getId()).get();
+        Grade grade = null;
+        KriteriaJurnal kriteriaJurnal = null;
+        if (jurnalDto.getJurnalId() == null) {
+            return "lengkapi";
+        }else{
+            kriteriaJurnal = kriteriaJurnalDao.findById(jurnalDto.getJurnalId()).get();
+        }
+
+        if (jurnalDto.getGradeId() == null) {
+            return "lengkapi";
+        } else {
+            grade = gradeDao.findById(jurnalDto.getGradeId()).get();
+        }
+
+        sidang.setNilai(grade.getBawah());
+        sidang.setKriteriaJurnal(kriteriaJurnal);
+        sidang.setStatusSidang(StatusApprove.APPROVED);
+        sidang.setPublish(StatusRecord.AKTIF);
+        sidangDao.save(sidang);
+
+        Mahasiswa mahasiswa = sidang.getSeminar().getNote().getMahasiswa();
+        KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
+
+        cariThesis.setNilaiAkhir(grade.getBawah());
+        cariThesis.setGrade(grade.getNama());
+        cariThesis.setBobot(grade.getBobot());
+        cariThesis.setFinalisasi("FINAL");
+        krsDetailDao.save(cariThesis);
+
+        mahasiswa.setTanggalLulus(LocalDate.now());
+        mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
+        mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
+        mahasiswaDao.save(mahasiswa);
+
+
+
+        return "berhasil";
     }
 
     // file

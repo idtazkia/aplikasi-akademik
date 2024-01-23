@@ -1,6 +1,9 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -18,12 +21,21 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import id.ac.tazkia.smilemahasiswa.dao.NoteDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.entity.Note;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Seminar;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
 import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
@@ -32,6 +44,9 @@ import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 public class GraduationService {
     @Autowired
     private NoteDao noteDao;
+
+    @Value("${upload.seminar}")
+    private String seminarFolder;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -182,5 +197,67 @@ public class GraduationService {
         }
 
         return ta;
+    }
+
+    public ResponseEntity<byte[]> getFileJurnal(Seminar seminar, String file) throws Exception {
+
+        String fileUpload = null;
+
+        switch (file) {
+            case "jurnal":
+
+                break;
+
+            case "pendaftaran":
+                fileUpload = seminar.getFileFormulir();
+            break;
+
+            case "bimbingan":
+                fileUpload = seminar.getFileBimbingan();
+            break;
+
+            case "ktp":
+                fileUpload = seminar.getFileKtp();
+            break;
+
+            case "ijazah":
+                fileUpload = seminar.getFileIjazah();
+            break;
+
+            case "turnitin":
+                fileUpload = seminar.getFileTurnitin();
+            break;
+
+            case "loa":
+                fileUpload = seminar.getFileLoa();
+
+            break;
+
+            default:
+                break;
+        }
+
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + fileUpload;
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (fileUpload.toLowerCase().endsWith("jpeg")
+                    || fileUpload.toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (fileUpload.toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (fileUpload.toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
+
     }
 }

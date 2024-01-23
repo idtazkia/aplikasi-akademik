@@ -1,32 +1,58 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
-import com.oracle.webservices.api.message.BaseDistributedPropertySet;
-import com.sun.xml.xsom.impl.UName;
-import id.ac.tazkia.smilemahasiswa.controller.DashboardController;
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.openxmlformats.schemas.presentationml.x2006.main.CTEmbeddedFontDataId;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.chrono.HijrahDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.chrono.HijrahDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.concurrent.Phaser;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.CMYKColor;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KodeSidangDao;
+import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
+import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
+import id.ac.tazkia.smilemahasiswa.entity.EnableFiture;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.KodeSidang;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Seminar;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 
 @Service
 public class SidangService {
@@ -1768,6 +1794,24 @@ public class SidangService {
 
         document.close();
 
+    }
+
+    public Sidang createSidangJurnal(Seminar seminar){
+        Sidang sidang = new Sidang();
+        sidang.setTanggalInput(LocalDate.now());
+        sidang.setSeminar(seminar);
+        sidang.setTahunAkademik(seminar.getTahunAkademik());
+        sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setStatusSidang(StatusApprove.WAITING);
+        sidang.setPublish(StatusRecord.NONAKTIF);
+        sidang.setJudulTugasAkhir(seminar.getNote().getJudul());
+        sidang.setJudulInggris(seminar.getNote().getJudulInggris());
+        sidang.setJamMulai(LocalTime.parse("00:00:00"));
+        sidang.setStatusSidang(StatusApprove.APPROVED);
+        sidangDao.save(sidang);
+
+
+        return sidang;
     }
 
 }

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tugas Akhir</title>
     <style type="text/css">
         .card {
             background-color: white;
@@ -27,21 +27,16 @@
                                             <i class="notika-icon notika-form"></i>
                                         </div>
                                         <div class="breadcomb-ctn">
-                                            <h2>Sempro</h2>
-                                            <a th:href="@{/graduation/seminar/formulir (id = ${note.id})}"
+                                            <h2 th:if="${note.jenis != note.jenis.JURNAL}">Sempro</h2>
+                                            <h2 th:if="${note.jenis == note.jenis.JURNAL}">Pendaftaran Publikasi Jurnal</h2>
+                                            <a th:if="${note.jenis != note.jenis.JURNAL}"
+                                                th:href="@{/graduation/seminar/formulir (id = ${note.id})}"
                                                 class="btn btn-info btn-sm">
                                                 Download Formulir
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-                                <!--<div class="col-lg-6 col-md-6 col-xs-12">
-                                <div class="breadcomb-report">
-                                    <a th:href="@{/study/krs}">
-                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
-                                    </a>
-                                </div>
-                            </div>-->
                             </div>
                         </div>
                     </div>
@@ -62,7 +57,7 @@
                                     <img src="https://image.freepik.com/free-vector/happy-freelancer-with-computer-home-young-man-sitting-armchair-using-laptop-chatting-online-smiling-vector-illustration-distance-work-online-learning-freelance_74855-8401.jpg"
                                         alt="">
                                 </div>
-                                <div class="col-md-6 col-xs-12">
+                                <div class="col-md-6 col-xs-12" th:if="${note.jenis != note.jenis.JURNAL}">
                                     <form th:action="@{/graduation/sempro}" th:object="${seminar}" method="post"
                                         enctype="multipart/form-data">
                                         <div class="form-group">
@@ -104,6 +99,72 @@
                                         <div class="form-group">
                                             <label>Skripsi/ Tesis Bab 1-3</label>
                                             <input type="file" required accept="application/pdf" name="skripsi"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                        <input type="hidden" name="id" th:field="*{id}">
+                                    </form>
+                                </div>
+
+                                <div class="col-md-6 col-xs-12" th:if="${note.jenis == note.jenis.JURNAL}">
+                                    <form th:action="@{/graduation/sempro-publikasi}" th:object="${seminar}" method="post"
+                                        enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label>NIM</label>
+                                            <br>
+                                            <p th:text="${note.mahasiswa.nim}">11605557</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <br>
+                                            <p th:text="${note.mahasiswa.nama}">Muhammad Rafizki</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <br>
+                                            <p th:text="${note.judulInggris}">
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis
+                                                dolorum eos eum, expedita laboriosam minima necessitatibus odio quis
+                                                rerum similique. At blanditiis dolorem eos error obcaecati, odit totam
+                                                veniam voluptates.
+                                            </p>
+                                        </div>
+                                        <input type="hidden" name="note" th:value="${note.id}">
+                                        <div class="form-group">
+                                            <label>Draft Jurnal</label>
+                                            <input type="file" required accept="application/pdf" name="jurnal"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Form Pendaftaran</label>
+                                            <input type="file" required accept="application/pdf" name="pendaftaran"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Kartu Bimbingan</label>
+                                            <input type="file" required accept="application/pdf" name="kartu"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>KTP</label>
+                                            <input type="file" required accept="application/pdf" name="ktp"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Ijazah</label>
+                                            <input type="file" required accept="application/pdf" name="ijazah"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Turnitin</label>
+                                            <input type="file" required accept="application/pdf" name="turnitin"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>LOA</label>
+                                            <input type="file" required accept="application/pdf" name="loa"
                                                 class="form-control">
                                         </div>
                                         <div class="form-group">

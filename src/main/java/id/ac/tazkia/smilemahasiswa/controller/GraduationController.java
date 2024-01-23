@@ -1569,6 +1569,20 @@ public class GraduationController {
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
+    @PostMapping("/graduation/seminar/approved-jurnal")
+    public String approvedJurnal(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
+        seminar.setKomentarAkademik(keterangan);
+        seminar.setStatus(StatusApprove.APPROVED);
+        seminar.setStatusSempro(StatusApprove.APPROVED);
+        seminar.setPublish("AKTIF");
+        seminarDao.save(seminar);
+
+        sidangService.createSidangJurnal(seminar);
+
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
+    }
+
     @PostMapping("/graduation/seminar/rejectakademik")
     public String rejectAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
         seminar.setKomentarAkademik(keterangan);
@@ -2986,6 +3000,12 @@ public class GraduationController {
         fileMagangDao.save(fileMagang);
         return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
                 + fileMagang.getMahasiswa().getIdProdi().getId();
+    }
+
+    @GetMapping("/upload/{seminar}/file-jurnal/{file}/")
+    public ResponseEntity<byte[]> getFileUpload(@PathVariable Seminar seminar,
+            @PathVariable String file) throws Exception {
+        return graduationService.getFileJurnal(seminar, file);
     }
 
 }
