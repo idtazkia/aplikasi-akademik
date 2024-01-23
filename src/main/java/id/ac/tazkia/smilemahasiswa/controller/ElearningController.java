@@ -5,10 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.GradeDto;
 import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlAttendanceLogDosenDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlAttendanceLogMahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeGradesDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeItemsDto;
+import id.ac.tazkia.smilemahasiswa.dto.elearning.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DisableMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.MahasiswaDisabledDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -428,6 +425,65 @@ public class ElearningController {
         } else {
             model.addAttribute("statusImportDosen2", krsDao.findStatusImportNilaiDosen2(tahunAktif, page));
         }
+
+    }
+
+    @GetMapping("/elearning/data/statusImportAll")
+    public void dataStatusImportAll(HttpServletResponse response) throws Exception {
+
+
+        TahunAkademik tahunAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        List<StatusImportNilaiDosenIntDto> statusImportDosenList = krsDao.findStatusImportNilaiDosenList(tahunAktif);
+
+        String[] columns = {"Dosen","Nama Matakuliah","Status Import Tugas","Status Import UTS","Status Import UAS","Nama Matakuliah English","Kode Matakuliah", "Nama Kelas", "ID Number Elearning", "Nama Prodi"};
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Data Status Import");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+
+        Row headerRow = sheet.createRow(0);
+        for (int h = 0; h < columns.length; h++) {
+            Cell cell = headerRow.createCell(h);
+            cell.setCellValue(columns[h]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1 ;
+        for (StatusImportNilaiDosenIntDto listImp : statusImportDosenList){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(listImp.getDosen());
+            row.createCell(1).setCellValue(listImp.getNamaMatakuliah());
+            row.createCell(2).setCellValue(listImp.getStatusImportTugas());
+            row.createCell(3).setCellValue(listImp.getStatusImportUts());
+            row.createCell(4).setCellValue(listImp.getStatusImportUas());
+            row.createCell(5).setCellValue(listImp.getNamaMatakuliahEnglish());
+            row.createCell(6).setCellValue(listImp.getKodeMatakuliah());
+            row.createCell(7).setCellValue(listImp.getNamaKelas());
+            row.createCell(8).setCellValue(listImp.getIdNumberElearning());
+            row.createCell(9).setCellValue(listImp.getNamaProdi());
+        }
+
+
+
+        for (int as = 0; as < columns.length; as++) {
+            sheet.autoSizeColumn(as);
+        }
+
+
+        String namaFile = "Data Status Import Dosen";
+        String extentionX = ".xlsx";
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", "attachment; filename=\"" + namaFile + "_" + tahunAktif.getNamaTahunAkademik() + extentionX + "\"");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 
