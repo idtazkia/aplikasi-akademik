@@ -891,7 +891,6 @@ public class StudiesActivityController {
                 presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
                 presensiDosen.setTanggalInput(LocalDateTime.now());
                 sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
-                sesiKuliah.setTanggalInput(LocalDateTime.now());
                 sesiKuliahDao.save(sesiKuliah);
                 presensiDosenDao.save(presensiDosen);
 
