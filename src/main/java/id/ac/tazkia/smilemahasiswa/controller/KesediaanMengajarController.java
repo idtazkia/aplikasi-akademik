@@ -147,7 +147,7 @@ public class KesediaanMengajarController {
         model.addAttribute("pertanyaan", kesediaanMengajarPertanyaanDao.findByStatusOrderByUrutanAsc(StatusRecord.AKTIF));
         model.addAttribute("subPertanyaan", kesediaanMengajarSubPertanyaanDao.findByStatus(StatusRecord.AKTIF));
 
-        return "/kesediaanMengajar/dosen";
+        return "kesediaanMengajar/dosen";
 
     }
 
