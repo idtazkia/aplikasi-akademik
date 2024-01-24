@@ -723,8 +723,8 @@ public class StudyActivityController {
             total = total + matkur.getJumlahSks();
         }
         log.info("total Sks : {}", total);
-        if (total > 20) {
-            attributes.addFlashAttribute("sksLebih", "Maksimal 20 SKS");
+        if (total > 24) {
+            attributes.addFlashAttribute("sksLebih", "Maksimal 24 SKS");
             return "redirect:../mbkm";
         }
 
