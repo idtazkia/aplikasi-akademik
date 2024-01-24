@@ -618,11 +618,22 @@
                                                             Surat Tugas</a>
                                                     </button>
                                                     <button
-                                                        th:if="${data.publish == data.publish.NONAKTIF && data.statusSidang == data.statusSidang.APPROVED}"
+                                                        th:if="${data.publish == data.publish.NONAKTIF &&
+                                                        data.statusSidang == data.statusSidang.APPROVED &&
+                                                        data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}"
                                                         type="button"
                                                         class="btn btn-info btn-outline-primary btn-sm fas fa-share"
                                                         data-toggle="modal" aria-haspopup="true"
                                                         th:data-target="${'#modal-publish1'+data.id}"> Publish</button>
+
+                                                    <button th:if="${data.publish == data.publish.NONAKTIF &&
+                                                        data.statusSidang == data.statusSidang.APPROVED &&
+                                                        data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}"
+                                                        type="button"
+                                                        class="btn btn-info btn-outline-primary btn-sm fas fa-pencil-alt"
+                                                        data-toggle="modal" aria-haspopup="true"
+                                                        th:data-target="${'#modal-publish1'+data.id}"> Penilaian Jurnal</button>
+
                                                     <button type="button"
                                                         class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
                                                         data-toggle="dropdown" aria-haspopup="true"
@@ -687,7 +698,44 @@
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
                                                                 </div>
-                                                                <div class="modal-body">
+                                                                <div class="modal-body" th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}">
+                                                                    <div class="alert alert-danger alert-with-icon"
+                                                                        th:id="${data.id+'-alertSave'}"
+                                                                        style="display: none">
+                                                                        <button type="button" aria-hidden="true"
+                                                                            class="close" data-dismiss="alert"
+                                                                            aria-label="Close">
+                                                                            <i class="fas fa-warning"></i>
+                                                                        </button>
+                                                                        <span data-notify="icon"
+                                                                            class="tim-icons icon-trophy"></span>
+                                                                        <span id="textAlert"><b> Maaf! - </b>Mohon Lengkapi Komponen Nilai</span>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Jurnal</label>
+                                                                                <select id="jurnalId" class="form-control">
+                                                                                    <option disabled selected>---</option>
+                                                                                    <option th:each="item : ${jurnal}" th:text="${item.nama}" th:value="${item.id}">Sinta 1</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Grade</label>
+                                                                                <select id="gradeId" required
+                                                                                    class="form-control">
+                                                                                    <option disabled selected>----</option>
+                                                                                    <option th:each="grade : ${grade}" th:text="${grade.nama}" th:value="${grade.id}">Sinta 1</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="modal-body"
+                                                                    th:if="${data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}">
                                                                     <div class="alert alert-danger alert-with-icon"
                                                                         th:id="${data.id+'-alertSave'}"
                                                                         style="display: none">
@@ -846,6 +894,7 @@
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
+
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" id="sidangId"
@@ -853,7 +902,13 @@
                                                                     <button type="button" class="btn btn-secondary"
                                                                         data-dismiss="modal">tutup</button>
                                                                     <button type="submit" th:id="${data.id}"
+                                                                        th:if="${data.seminar.note.jenis !=
+                                                                        data.seminar.note.jenis.JURNAL}"
                                                                         class="btn btn-primary publish-data">Publish</button>
+                                                                    <button type="submit" th:id="${data.id}"
+                                                                        th:if="${data.seminar.note.jenis ==
+                                                                        data.seminar.note.jenis.JURNAL}"
+                                                                            class="btn btn-primary publish-jurnal">Publish</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1002,4 +1057,43 @@
         })
 
     });
+
+    $(".publish-jurnal").click(function (e) {
+        var id = this.id;
+        var token = $("input[name='_csrf']").val();
+        var url = "/graduation/jurnal/publish";
+        e.preventDefault();
+        console.log(id)
+
+        $.ajax({
+            url: url + '?sidang=' + id,
+            contentType: "application/json;charset=UTF-8",
+            headers: {
+                "X-CSRF-TOKEN": token
+            },
+            method: 'post',
+            dataType: 'JSON',
+            data: JSON.stringify({
+                "id": id,
+                "jurnalId": $('#jurnalId').val(),
+                "gradeId": $('#gradeId').val(),
+            }),
+            error: function (data) {
+                if (data.responseText == "lengkapi") {
+                    document.getElementById(id + '-alertSave').style.display = "block";
+                    setTimeout(function () {
+                        document.getElementById(id + 'alertSave').style.display = "none";
+                    }, 5000);
+                }
+
+                if (data.responseText == "berhasil") {
+                    window.location.reload();
+                }
+
+
+            }
+        })
+
+    });
+    
 </script>
