@@ -189,7 +189,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <center
-                                                                        th:if="${data.status == data.status.APPROVED}">
+                                                                        th:if="${data.status == data.status.APPROVED && data.note.jenis != data.note.jenis.JURNAL}">
                                                                         <b>Room</b>
                                                                         <p th:text="${data.ruangan.namaRuangan}">Abu
                                                                             Hanifah 1</p>
@@ -529,22 +529,16 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
-                                                            <!--                                                            <button type="button" class="btn btn-primary">Publish</button>-->
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <!--<td>
-                                            <button class="btn btn-success btn-sm" th:if="${data.statusSempro == data.statusSempro.APPROVED}" th:text="${data.statusSempro}">Approved</button>
-                                            <button class="btn btn-warning btn-sm" th:if="${data.statusSempro == data.statusSempro.WAITING}" th:text="${data.statusSempro}">Waiting</button>
-
-                                            <button class="btn btn-danger btn-sm" th:if="${data.statusSempro == data.statusSempro.REJECTED}" th:text="${data.statusSempro}">Rejected</button>
-                                        </td>-->
                                         <td>
                                             <button th:if="${data.publish == 'NONAKTIF' && data.status == data.status.APPROVED}" type="button" class="btn btn-info btn-outline-success btn-sm fas fa-share"
                                                     data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish1'+data.id}"> Publish</button>
-                                            <button type="button" class="btn btn-success btn-sm" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'AKTIF'}">
+                                            <button type="button" class="btn btn-success btn-sm"
+                                                th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'AKTIF' && data.note.jenis != data.note.jenis.JURNAL }">
                                                 <a class="text-white" th:href="@{/suratTugas/seminar/pdf(seminar = ${data.id})}">Cetak Surat Tugas</a>
                                             </button>
 
@@ -566,12 +560,29 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <form th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}" method="post">
+                                                            <form
+                                                                th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
+                                                                method="post"
+                                                                th:if="${data.note.jenis != data.note.jenis.JURNAL}">
                                                                 <div class="form-group">
                                                                     <textarea name="keterangan" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <button class="btn btn-success" type="submit">Approved</button>
+                                                                </div>
+                                                            </form>
+
+                                                            <form
+                                                                th:action="@{/graduation/seminar/approved-jurnal (seminar = ${data.id})}"
+                                                                method="post" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
+                                                                <div class="form-group">
+                                                                    <textarea name="keterangan" class="form-control"
+                                                                        placeholder="Comment" id="" cols="30"
+                                                                        rows="10"></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button class="btn btn-success"
+                                                                        type="submit">Approved</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -603,9 +614,24 @@
                                                 </div>
                                             </div>
 
-                                            <button type="button" class="btn btn-primary btn-outline-primary btn-sm" data-toggle="modal"  th:data-target="${'#modal-default' + data.id}">
+                                            <button type="button" class="btn btn-primary btn-outline-primary btn-sm" data-toggle="modal" th:if="${data.note.jenis != data.note.jenis.JURNAL}"  th:data-target="${'#modal-default' + data.id}">
                                                 <i class="fas fa-list"></i> Detail Seminar
                                             </button>
+
+                                            <button type="button" th:if="${data.note.jenis == data.note.jenis.JURNAL}"
+                                                class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat
+                                                File</button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Draft Jurnal</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'pendaftaran'})}" target="_blank">Form Pendaftaran</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ijazah'})}" target="_blank">Ijazah</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'turnitin'})}" target="_blank">Turnitin</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'loa'})}" target="_blank">LOA</a>
+                                                </div>
 
                                             <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish1'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">

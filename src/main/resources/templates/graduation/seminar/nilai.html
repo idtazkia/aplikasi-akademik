@@ -127,7 +127,8 @@
                             Comment
                         </b>
                     </div>
-                    <span th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                    <span
+                        th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '01' && seminar.note.jenis != seminar.note.jenis.JURNAL}">
                         <div class="col-md-12 col-xs-12 margin-col">
                             <div class="card-green">
                                 <b class="card-title">Komentar Ketua Penguji (<span th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
