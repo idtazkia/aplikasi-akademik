@@ -1157,12 +1157,16 @@ public class SidangController {
         model.addAttribute("sidang", sidang);
         Long failed = sidangDao.checkTidakLulus(sidang.getSeminar());
         if (sidang.getPublish() == StatusRecord.AKTIF) {
-            if (failed > 0) {
-                return "redirect:list-daftar-ulang?id=" + sidang.getSeminar().getId();
-
-            } else {
+            if (sidang.getSeminar().getNote().getJenis().equals(StatusRecord.JURNAL)) {
                 return "redirect:nilai?id=" + sidang.getId();
+            }else{
+                if (failed > 0) {
+                    return "redirect:list-daftar-ulang?id=" + sidang.getSeminar().getId();
 
+                } else {
+                    return "redirect:nilai?id=" + sidang.getId();
+
+                }
             }
         } else {
             return "graduation/sidang/mahasiswa/success";
@@ -1274,7 +1278,6 @@ public class SidangController {
             @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
-        model.addAttribute("jurnal", kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(),StatusRecord.AKTIF));
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
 
         if (tahunAkademik != null) {
@@ -1282,6 +1285,9 @@ public class SidangController {
                     .findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
                             tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),
                             Arrays.asList(StatusApprove.REJECTED), page));
+        model.addAttribute("jurnal",
+                kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(), StatusRecord.AKTIF));
+
         }
     }
 
