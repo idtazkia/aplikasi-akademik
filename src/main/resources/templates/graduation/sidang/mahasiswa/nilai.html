@@ -141,12 +141,13 @@
                             <b class="card-text" style="color: #f25a50;" th:if="${sidang.nilai < 70}">Tidak Lulus</b>
 
                         </div>
-                        <div class="col-md-12 col-xs-12" style="margin-bottom: 10px;">
+                        <div class="col-md-12 col-xs-12" style="margin-bottom: 10px;" th:if="${sidang.seminar.note.jenis != sidang.seminar.note.jenis.JURNAL}">
                             <b class="card-title" style="font-size: 18px;">
                                 Comment
                             </b>
                         </div>
-                        <span th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                        <span
+                            th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '01' && sidang.seminar.note.jenis != sidang.seminar.note.jenis.JURNAL}">
                             <div class="col-md-12 col-xs-12 margin-col">
                                 <div class="card-green">
                                     <b class="card-title">Komentar Ketua Penguji (<span
