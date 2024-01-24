@@ -29,8 +29,7 @@
                                         <div class="breadcomb-ctn">
                                             <h2 th:if="${note.jenis != note.jenis.JURNAL}">Sempro</h2>
                                             <h2 th:if="${note.jenis == note.jenis.JURNAL}">Pendaftaran Publikasi Jurnal</h2>
-                                            <a th:if="${note.jenis != note.jenis.JURNAL}"
-                                                th:href="@{/graduation/seminar/formulir (id = ${note.id})}"
+                                            <a th:href="@{/graduation/seminar/formulir (id = ${note.id})}"
                                                 class="btn btn-info btn-sm">
                                                 Download Formulir
                                             </a>
@@ -109,8 +108,8 @@
                                 </div>
 
                                 <div class="col-md-6 col-xs-12" th:if="${note.jenis == note.jenis.JURNAL}">
-                                    <form th:action="@{/graduation/sempro-publikasi}" th:object="${seminar}" method="post"
-                                        enctype="multipart/form-data">
+                                    <form th:action="@{/graduation/sempro-publikasi}" th:object="${seminar}"
+                                        method="post" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label>NIM</label>
                                             <br>
