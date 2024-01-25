@@ -30,8 +30,12 @@
                                             <h2 th:if="${note.jenis != note.jenis.JURNAL}">Sempro</h2>
                                             <h2 th:if="${note.jenis == note.jenis.JURNAL}">Pendaftaran Publikasi Jurnal</h2>
                                             <a th:href="@{/graduation/seminar/formulir (id = ${note.id})}"
-                                                class="btn btn-info btn-sm">
+                                                class="btn btn-info btn-sm" th:if="${note.jenis != note.jenis.JURNAL}">
                                                 Download Formulir
+                                            </a>
+                                            <a th:href="@{/sample/form-jurnal}"
+                                                class="btn btn-info btn-sm" th:if="${note.jenis == note.jenis.JURNAL}">
+                                                Download Surat Permohonan Pernyataan Kelulusan
                                             </a>
                                         </div>
                                     </div>
@@ -132,12 +136,12 @@
                                         </div>
                                         <input type="hidden" name="note" th:value="${note.id}">
                                         <div class="form-group">
-                                            <label>Draft Jurnal</label>
+                                            <label>Artikel Jurnal & LOA</label>
                                             <input type="file" required accept="application/pdf" name="jurnal"
                                                 class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <label>Form Pendaftaran</label>
+                                            <label>Surat Permohonan Pernyataan Kelulusan</label>
                                             <input type="file" required accept="application/pdf" name="pendaftaran"
                                                 class="form-control">
                                         </div>
@@ -154,11 +158,6 @@
                                         <div class="form-group">
                                             <label>Ijazah</label>
                                             <input type="file" required accept="application/pdf" name="ijazah"
-                                                class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Turnitin</label>
-                                            <input type="file" required accept="application/pdf" name="turnitin"
                                                 class="form-control">
                                         </div>
                                         <div class="form-group">

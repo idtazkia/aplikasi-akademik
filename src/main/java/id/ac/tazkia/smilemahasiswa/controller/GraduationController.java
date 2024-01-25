@@ -199,6 +199,9 @@ public class GraduationController {
     @Value("classpath:sample/sempro1.odt")
     private Resource formulirSempro1;
 
+    @Value("classpath:sample/jurnal.docx")
+    private Resource formulirJurnal;
+
     // Attribute
 
     @ModelAttribute("dosen")
@@ -747,6 +750,14 @@ public class GraduationController {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=Example-File.xlsx");
         FileCopyUtils.copy(example.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
+    }
+
+    @GetMapping("/sample/form-jurnal")
+    public void downloadContohFileJurnal(HttpServletResponse response) throws Exception {
+        response.setContentType("application/msword");
+        response.setHeader("Content-Disposition", "attachment; filename=Surat Permohonan Pernyataan Kelulusan.docx");
+        FileCopyUtils.copy(formulirJurnal.getInputStream(), response.getOutputStream());
         response.getOutputStream().flush();
     }
 
