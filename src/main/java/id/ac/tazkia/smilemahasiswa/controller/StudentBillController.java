@@ -1209,10 +1209,10 @@ public class StudentBillController {
             t.setTahunAkademik(tagihan.getTahunAkademik());
             t.setStatusTagihan(StatusTagihan.AKTIF);
             t.setStatus(StatusRecord.AKTIF);
-            log.info("Tagihan : {}", t.toString());
+//            log.info("Tagihan : {}", t.toString());
             tagihanDao.save(t);
 
-            log.info("Tagihan : {}", tagihan);
+//            log.info("Tagihan : {}", tagihan);
             if (cicilan != null) {
                 for (int i = 1; i<=cicilan; i++) {
                     BigDecimal totalCicilan = requestCicilanDao.hitungCicilan(t.getNilaiTagihan(), cicilan);

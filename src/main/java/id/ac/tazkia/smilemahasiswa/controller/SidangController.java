@@ -1296,14 +1296,14 @@ public class SidangController {
             @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
-        model.addAttribute("jurnal",
-                kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(), StatusRecord.AKTIF));
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
 
         if (tahunAkademik != null) {
             model.addAttribute("listSidang", sidangDao
                     .findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
                             tahunAkademik, prodi, StatusApprove.APPROVED, Arrays.asList(StatusApprove.REJECTED), page));
+            model.addAttribute("jurnal",
+                    kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(), StatusRecord.AKTIF));
         }
     }
 
