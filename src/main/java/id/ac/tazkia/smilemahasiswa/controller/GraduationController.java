@@ -1134,8 +1134,7 @@ public class GraduationController {
     @PostMapping("/graduation/sempro-publikasi")
     public String prosesSeminarPublikasi(@Valid Seminar seminar,
             BindingResult error, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
-            MultipartFile ktp, MultipartFile ijazah, MultipartFile turnitin,
-            @RequestParam(required = false) MultipartFile loa, @RequestParam(required = false) MultipartFile berita,
+            MultipartFile ktp, MultipartFile ijazah, @RequestParam(required = false) MultipartFile berita,
             Authentication currentUser) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -1275,62 +1274,6 @@ public class GraduationController {
 
         } else {
             seminar.setFileIjazah(seminar.getFileIjazah());
-        }
-
-        if (!turnitin.isEmpty() || turnitin != null) {
-            String namaFile = turnitin.getName();
-            String jenisFile = turnitin.getContentType();
-            String namaAsli = turnitin.getOriginalFilename();
-            Long ukuran = turnitin.getSize();
-
-            // memisahkan extensi
-            String extension = "";
-
-            int i = namaAsli.lastIndexOf('.');
-            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
-            if (i > p) {
-                extension = namaAsli.substring(i + 1);
-            }
-
-            String idFile = UUID.randomUUID().toString();
-            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
-            new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-            turnitin.transferTo(tujuan);
-
-            seminar.setFileTurnitin(idFile + "." + extension);
-
-        } else {
-            seminar.setFileTurnitin(seminar.getFileTurnitin());
-        }
-
-        if (!loa.isEmpty() || loa != null) {
-            String namaFile = loa.getName();
-            String jenisFile = loa.getContentType();
-            String namaAsli = loa.getOriginalFilename();
-            Long ukuran = loa.getSize();
-
-            // memisahkan extensi
-            String extension = "";
-
-            int i = namaAsli.lastIndexOf('.');
-            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
-            if (i > p) {
-                extension = namaAsli.substring(i + 1);
-            }
-
-            String idFile = UUID.randomUUID().toString();
-            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
-            new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-            loa.transferTo(tujuan);
-
-            seminar.setFileLoa(idFile + "." + extension);
-
-        } else {
-            seminar.setFileLoa(seminar.getFileLoa());
         }
 
         if (berita != null) {
