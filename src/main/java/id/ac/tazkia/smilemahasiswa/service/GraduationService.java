@@ -205,33 +205,33 @@ public class GraduationService {
 
         switch (file) {
             case "jurnal":
-
+                fileUpload = seminar.getFileSkripsi();
                 break;
 
             case "pendaftaran":
                 fileUpload = seminar.getFileFormulir();
-            break;
+                break;
 
             case "bimbingan":
                 fileUpload = seminar.getFileBimbingan();
-            break;
+                break;
 
             case "ktp":
                 fileUpload = seminar.getFileKtp();
-            break;
+                break;
 
             case "ijazah":
                 fileUpload = seminar.getFileIjazah();
-            break;
+                break;
 
             case "turnitin":
                 fileUpload = seminar.getFileTurnitin();
-            break;
+                break;
 
             case "loa":
                 fileUpload = seminar.getFileLoa();
 
-            break;
+                break;
 
             default:
                 break;

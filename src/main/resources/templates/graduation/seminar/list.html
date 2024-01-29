@@ -573,7 +573,7 @@
                                                             </form>
 
                                                             <form
-                                                                th:action="@{/graduation/seminar/approved-jurnal (seminar = ${data.id})}"
+                                                                th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
                                                                 method="post" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
                                                                 <div class="form-group">
                                                                     <textarea name="keterangan" class="form-control"
@@ -629,8 +629,6 @@
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ijazah'})}" target="_blank">Ijazah</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'turnitin'})}" target="_blank">Turnitin</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'loa'})}" target="_blank">LOA</a>
                                                 </div>
 
                                             <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish1'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

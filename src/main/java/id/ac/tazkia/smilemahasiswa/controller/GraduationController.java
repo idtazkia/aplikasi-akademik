@@ -1529,7 +1529,7 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/approved-jurnal")
     public String approvedJurnal(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
-        seminar.setKomentarAkademik(keterangan);
+        seminar.setKomentar(keterangan);
         seminar.setStatus(StatusApprove.APPROVED);
         seminar.setStatusSempro(StatusApprove.APPROVED);
         seminar.setPublish("AKTIF");
