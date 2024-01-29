@@ -461,6 +461,9 @@
                     </a>
                     <div class="collapse" id="navbar-grad">
                         <ul class="nav nav-sm flex-column">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1')">
+                                <a th:href="@{/graduation/periodeWisuda/list}" class="nav-link">Kalender Wisuda</a>
+                            </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1')">
                                 <a th:href="@{/graduation/magang/admin/list}" class="nav-link">Laporan Magang</a>
                             </li>

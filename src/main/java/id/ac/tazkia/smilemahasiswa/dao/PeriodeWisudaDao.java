@@ -1,13 +1,15 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
+import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 
 public interface PeriodeWisudaDao extends PagingAndSortingRepository<PeriodeWisuda, String> {
 
@@ -15,8 +17,17 @@ public interface PeriodeWisudaDao extends PagingAndSortingRepository<PeriodeWisu
 
     List<PeriodeWisuda> findByStatusNotInOrderByTanggalWisudaDesc(List<StatusRecord> statusRecord);
 
-    Page<PeriodeWisuda> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
+    Page<PeriodeWisuda> findByStatusNotInOrderByNumberDesc(List<StatusRecord> asList, Pageable page);
 
     PeriodeWisuda findByStatus(StatusRecord statusRecord);
+
+    @Query(value = "SELECT max(number) as number FROM smile.periode_wisuda where status not in ('HAPUS') ", nativeQuery = true)
+    Integer getLastNumber();
+
+    @Modifying
+    @Query(value = "update periode_wisuda set number = number - 1 where number > ?1 and status not in ('HAPUS')", nativeQuery = true)
+    void generateNumber(Integer number);
+
+    List<PeriodeWisuda> findByNumberGreaterThanAndStatusNotIn(Integer number, List<StatusRecord> status);
 
 }

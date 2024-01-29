@@ -58,8 +58,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Kampus</th>
-                                <th>Tanggal Mulai</th>
-                                <th>Tanggal Selesai</th>
+                                <th>Tanggal Wisuda</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -69,8 +68,7 @@
                                 <td th:text="${(row.index + 1) + (listPeriode.number * listPeriode.size)}">01</td>
                                 <td th:text="${data.nama}">Campus Code</td>
 
-                                <td th:text="${#temporals.format(data.tanggalMulai, 'dd - MMM - yyyy')}"></td>
-                                <td th:text="${#temporals.format(data.tanggalSelesai, 'dd - MMM - yyyy')}"></td>
+                                <td th:text="${#temporals.format(data.tanggalWisuda, 'dd - MMM - yyyy')}"></td>
                                 <td>
                                     <a href="" class="btn btn-success btn-success btn-sm" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.status}"></a>
                                     <a href="" class="btn btn-danger btn-danger btn-sm" th:if="${data.status.NONAKTIF}== ${data.status}" th:text="${data.status}"></a>

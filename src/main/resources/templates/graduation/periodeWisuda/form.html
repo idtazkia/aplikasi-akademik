@@ -50,7 +50,7 @@
 
                             <div class="form-group">
                                 <label>Nama</label>
-                                <input type="text" name="nama" class="form-control" th:field="*{nama}">
+                                <input type="text" name="nama" class="form-control" readonly th:value="${nama}">
                             </div>
 
                             <div class="form-group">
@@ -59,13 +59,23 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Tanggal Mulai Periode</label>
-                                <input type="date" name="tanggalMulai" class="form-control" th:field="*{tanggalMulai}">
+                                <label>Tanggal Tutup Sidang</label>
+                                <input type="date" name="tutupSidang" class="form-control" th:field="*{tutupSidang}">
                             </div>
 
                             <div class="form-group">
-                                <label>Tanggal Selesai Periode</label>
-                                <input type="date" name="tanggalSelesai" class="form-control" th:field="*{tanggalSelesai}">
+                                <label>Tanggal Buka Sidang</label>
+                                <input type="date" name="bukaSidang" class="form-control" th:field="*{bukaSidang}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Tutup LOA</label>
+                                <input type="date" name="tutupLoa" class="form-control" th:field="*{tutupLoa}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Buka LOA</label>
+                                <input type="date" name="bukaLoa" class="form-control" th:field="*{bukaLoa}">
                             </div>
 
                             <input type="hidden" name="id" th:field="*{id}">

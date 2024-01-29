@@ -45,6 +45,16 @@ public class PeriodeWisuda {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tutupSidang;
 
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate bukaLoa;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tutupLoa;
+    
+    private Integer number;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.NONAKTIF;
 

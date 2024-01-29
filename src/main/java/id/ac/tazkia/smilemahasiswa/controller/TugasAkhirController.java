@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.GraduationService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -83,6 +85,9 @@ public class TugasAkhirController {
     @Autowired
     private BeasiswaDao beasiswaDao;
 
+    @Autowired
+    private GraduationService graduationService;
+
     @Value("${upload.wisuda}")
     private String wisudaFolder;
 
@@ -105,13 +110,14 @@ public class TugasAkhirController {
                     .findByStatusNotInAndNamaContainingIgnoreCase(Arrays.asList(StatusRecord.HAPUS), search, page));
         } else {
             model.addAttribute("listPeriode",
-                    periodeWisudaDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
+                    periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS), page));
         }
     }
 
     @GetMapping("/graduation/periodeWisuda/form")
     public void formPeriode(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("newPeriode", new PeriodeWisuda());
+        model.addAttribute("nama", "LULUSAN KE " + graduationService.intToRoman(periodeWisudaDao.getLastNumber() + 1));
 
         if (id != null && !id.isEmpty()) {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findById(id).get();
@@ -127,17 +133,25 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/periodeWisuda/new")
     public String inputPeriode(@Valid PeriodeWisuda wisuda) {
-
+        wisuda.setNumber(periodeWisudaDao.getLastNumber() + 1);
         periodeWisudaDao.save(wisuda);
         return "redirect:list";
 
     }
 
+    @Transactional
     @PostMapping("/graduation/periodeWisuda/delete")
     public String deletePeriode(@RequestParam PeriodeWisuda wisuda) {
 
         wisuda.setStatus(StatusRecord.HAPUS);
         periodeWisudaDao.save(wisuda);
+
+        List<PeriodeWisuda> listPeriode = periodeWisudaDao.findByNumberGreaterThanAndStatusNotIn(wisuda.getNumber(), Arrays.asList(StatusRecord.HAPUS));
+        for(PeriodeWisuda periodeWisuda : listPeriode){
+            periodeWisuda.setNumber(periodeWisuda.getNumber()-1);
+            periodeWisuda.setNama("LULUSAN KE " + graduationService.intToRoman(periodeWisuda.getNumber()));
+            periodeWisudaDao.save(periodeWisuda);
+        }
         return "redirect:list";
 
     }
