@@ -546,7 +546,22 @@
                                                 Approved
                                             </button>
 
+                                            <button type="button" class="btn btn-success btn-outline-success btn-sm"
+                                                data-toggle="modal"
+                                                th:data-target="${'#modal-approvedakademik' + data.id}"
+                                                th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis == data.note.jenis.JURNAL}">
+                                                Approved
+                                            </button>
+
                                             <button type="button" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejectakademik' + data.id}" th:if="${data.status == data.status.WAITING}">
+                                                Reject
+                                            </button>
+
+                                            <button type="button" class="btn btn-danger btn-outline-danger btn-sm"
+                                                data-toggle="modal"
+                                                th:data-target="${'#modal-rejectakademik' + data.id}"
+                                                th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis
+                                                == data.note.jenis.JURNAL}">
                                                 Reject
                                             </button>
 
@@ -573,8 +588,26 @@
                                                             </form>
 
                                                             <form
+                                                                th:action="@{/graduation/seminar/approved-jurnal (seminar = ${data.id})}"
+                                                                method="post" th:if="${data.note.jenis ==
+                                                                data.note.jenis.JURNAL &&
+                                                                data.status == data.status.APPROVED_AKADEMIK}">
+                                                                <div class="form-group">
+                                                                    <textarea name="keterangan" class="form-control"
+                                                                        placeholder="Comment" id="" cols="30"
+                                                                        rows="10"></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button class="btn btn-success"
+                                                                        type="submit">Approved</button>
+                                                                </div>
+                                                            </form>
+
+                                                            <form
                                                                 th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
-                                                                method="post" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
+                                                                method="post"
+                                                                th:if="${data.note.jenis == data.note.jenis.JURNAL &&
+                                                                data.status == data.status.WAITING}">
                                                                 <div class="form-group">
                                                                     <textarea name="keterangan" class="form-control"
                                                                         placeholder="Comment" id="" cols="30"
@@ -624,7 +657,7 @@
                                                 File</button>
 
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Draft Jurnal</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Artikel Jurnal & LOA</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'pendaftaran'})}" target="_blank">Form Pendaftaran</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
