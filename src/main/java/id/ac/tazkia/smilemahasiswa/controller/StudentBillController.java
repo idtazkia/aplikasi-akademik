@@ -583,7 +583,7 @@ public class StudentBillController {
 
         model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan1));
         model.addAttribute("pembayaran", pembayaranDao.cekPembayaran(tagihan));
-        model.addAttribute("detailPembayaran", pembayaranDao.findByTagihanAndStatus(tagihan1, StatusRecord.AKTIF, page));
+        model.addAttribute("detailPembayaran", pembayaranDao.findByTagihanAndStatusOrderByWaktuBayar(tagihan1, StatusRecord.AKTIF, page));
         model.addAttribute("tagihan", tagihan1);
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         if (cekCicilan != null){
@@ -2090,7 +2090,7 @@ public class StudentBillController {
         Integer jumlahCicilan = requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF);
         model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
         model.addAttribute("bill", tagihan);
-        model.addAttribute("pembayaran", pembayaranDao.findByTagihanAndStatus(tagihan, StatusRecord.AKTIF, page));
+        model.addAttribute("pembayaran", pembayaranDao.findByTagihanAndStatusOrderByWaktuBayar(tagihan, StatusRecord.AKTIF, page));
 
     }
 

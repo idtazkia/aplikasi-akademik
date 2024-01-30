@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, String> {
 
-    Page<Pembayaran> findByTagihanAndStatus(Tagihan tagihan, StatusRecord statusRecord, Pageable page);
+    Page<Pembayaran> findByTagihanAndStatusOrderByWaktuBayar(Tagihan tagihan, StatusRecord statusRecord, Pageable page);
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b\n" +
             "on a.id_tagihan=b.id\n" +

@@ -102,6 +102,6 @@ public class Jadwal extends Auditable {
     @JoinColumn(name = "akses_uas")
     private Dosen aksesUas;
 
-    private String finalPloting;
+    private String finalPloting = "WAITING";
 
 }

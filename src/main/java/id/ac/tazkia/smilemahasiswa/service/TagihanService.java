@@ -206,7 +206,7 @@ public class TagihanService {
                 .debitur(tagihan.getMahasiswa().getNim())
                 .keterangan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                         + " a.n. " +tagihan.getMahasiswa().getNama())
-                .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .tanggalJatuhTempo(Date.from(tagihan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.CREATE)
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
@@ -221,7 +221,7 @@ public class TagihanService {
                 .debitur(tagihan.getMahasiswa().getNim())
                 .keterangan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                         + " a.n. " + tagihan.getMahasiswa().getNama())
-                .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .tanggalJatuhTempo(Date.from(tagihan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.REPLACE)
                 .nomorTagihanLama(tagihan.getNomor())
                 .build();
