@@ -1505,6 +1505,7 @@ public class GraduationController {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
             if ("kps".equalsIgnoreCase(user.getRole().getName())) {
+                model.addAttribute("kps", user.getRole());
                 model.addAttribute("listSempro", seminarDao
                         .findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(
                                 tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED, StatusApprove.WAITING),

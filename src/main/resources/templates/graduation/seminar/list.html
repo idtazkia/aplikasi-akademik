@@ -549,7 +549,7 @@
                                             <button type="button" class="btn btn-success btn-outline-success btn-sm"
                                                 data-toggle="modal"
                                                 th:data-target="${'#modal-approvedakademik' + data.id}"
-                                                th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis == data.note.jenis.JURNAL}">
+                                                th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis == data.note.jenis.JURNAL && kps != null}">
                                                 Approved
                                             </button>
 
@@ -561,7 +561,7 @@
                                                 data-toggle="modal"
                                                 th:data-target="${'#modal-rejectakademik' + data.id}"
                                                 th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis
-                                                == data.note.jenis.JURNAL}">
+                                                == data.note.jenis.JURNAL && kps != null}">
                                                 Reject
                                             </button>
 
@@ -651,17 +651,32 @@
                                                 <i class="fas fa-list"></i> Detail Seminar
                                             </button>
 
-                                            <button type="button" th:if="${data.note.jenis == data.note.jenis.JURNAL}"
-                                                class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
+                                            <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat
                                                 File</button>
 
-                                                <div class="dropdown-menu">
+                                                <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Artikel Jurnal & LOA</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'pendaftaran'})}" target="_blank">Permohonan Pernyataan Kelulusan</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
                                                     <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ijazah'})}" target="_blank">Ijazah</a>
+                                                </div>
+
+                                                <div class="dropdown-menu" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/bimbingan/(seminar=${data.id})}" target="_blank">Kartu Bimbingan</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/skripsi/(seminar=${data.id})}" target="_blank">Skripsi Bab 1 - 3</a>
+                                                </div>
+
+                                                <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/skripsi/(seminar=${data.id})}" target="_blank">Draft Seminar</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/bimbingan/(seminar=${data.id})}" target="_blank">Laporan Kehadiran Seminar</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/fileturnitin/(seminar=${data.id})}" target="_blank">Hasil Turnitin</a>
+                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/covernote/(seminar=${data.id})}" target="_blank">Cover Note (Ringkasan Proposal)</a>
                                                 </div>
 
                                             <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish1'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
