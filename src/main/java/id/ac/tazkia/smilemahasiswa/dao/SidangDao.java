@@ -70,7 +70,7 @@ public interface SidangDao extends PagingAndSortingRepository<Sidang, String> {
         @Query(value = "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id where n.id_mahasiswa = ?1 and s.status_sidang not in ('HAPUS')", nativeQuery = true)
         List<Object> cekSidang(Mahasiswa mahasiswa);
 
-        @Query(value = "select * FROM sidang where status_sidang = 'FAILED' AND id_seminar = ?1", nativeQuery = true)
+        @Query(value = "select count(*)  FROM sidang where status_sidang = 'FAILED' AND id_seminar = ?1", nativeQuery = true)
         Long checkTidakLulus(Seminar seminar);
 
 }

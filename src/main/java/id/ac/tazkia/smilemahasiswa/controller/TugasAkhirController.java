@@ -1,14 +1,29 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
-import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.GraduationService;
-import id.ac.tazkia.smilemahasiswa.service.MailService;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,24 +40,44 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import id.ac.tazkia.smilemahasiswa.dao.AyahDao;
+import id.ac.tazkia.smilemahasiswa.dao.BeasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.IbuDao;
+import id.ac.tazkia.smilemahasiswa.dao.KategoriTugasAkhirDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.MatakuliahDao;
+import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dao.WisudaDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
+import id.ac.tazkia.smilemahasiswa.entity.Ayah;
+import id.ac.tazkia.smilemahasiswa.entity.Ibu;
+import id.ac.tazkia.smilemahasiswa.entity.Jenis;
+import id.ac.tazkia.smilemahasiswa.entity.JenisKelamin;
+import id.ac.tazkia.smilemahasiswa.entity.JenisValidasi;
+import id.ac.tazkia.smilemahasiswa.entity.KategoriTugasAkhir;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.GraduationService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
 
 @Controller
 public class TugasAkhirController {
@@ -62,9 +97,6 @@ public class TugasAkhirController {
 
     @Autowired
     private SidangDao sidangDao;
-
-    @Autowired
-    private TranscriptDao transcriptDao;
 
     @Autowired
     WisudaDao wisudaDao;
