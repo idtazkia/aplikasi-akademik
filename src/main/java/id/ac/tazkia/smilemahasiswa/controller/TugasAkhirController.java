@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.GraduationService;
@@ -55,11 +56,15 @@ public class TugasAkhirController {
     @Autowired
     KrsDetailDao krsDetailDao;
 
+
+    @Autowired
+    private MatakuliahDao matakuliahDao;
+
     @Autowired
     private SidangDao sidangDao;
 
     @Autowired
-    private TahunAkademikDao tahunAkademikDao;
+    private TranscriptDao transcriptDao;
 
     @Autowired
     WisudaDao wisudaDao;
@@ -146,9 +151,10 @@ public class TugasAkhirController {
         wisuda.setStatus(StatusRecord.HAPUS);
         periodeWisudaDao.save(wisuda);
 
-        List<PeriodeWisuda> listPeriode = periodeWisudaDao.findByNumberGreaterThanAndStatusNotIn(wisuda.getNumber(), Arrays.asList(StatusRecord.HAPUS));
-        for(PeriodeWisuda periodeWisuda : listPeriode){
-            periodeWisuda.setNumber(periodeWisuda.getNumber()-1);
+        List<PeriodeWisuda> listPeriode = periodeWisudaDao.findByNumberGreaterThanAndStatusNotIn(wisuda.getNumber(),
+                Arrays.asList(StatusRecord.HAPUS));
+        for (PeriodeWisuda periodeWisuda : listPeriode) {
+            periodeWisuda.setNumber(periodeWisuda.getNumber() - 1);
             periodeWisuda.setNama("LULUSAN KE " + graduationService.intToRoman(periodeWisuda.getNumber()));
             periodeWisudaDao.save(periodeWisuda);
         }
@@ -676,9 +682,9 @@ public class TugasAkhirController {
             extension = wisuda.getFoto().substring(i + 1);
         }
 
-         Files.move(lokasiFoto, lokasiFoto.resolveSibling(
-         wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
-         + extension));
+        Files.move(lokasiFoto, lokasiFoto.resolveSibling(
+                wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
+                        + extension));
         wisuda.setFoto(wisuda.getMahasiswa().getNim() + "_" + wisuda.getMahasiswa().getNama() + "."
                 + extension);
         wisuda.setStatus(StatusApprove.APPROVED);
@@ -700,7 +706,8 @@ public class TugasAkhirController {
 
     @GetMapping("/upload/{wisuda}/fotowisuda/")
     public ResponseEntity<byte[]> fotoWisuda(@PathVariable Wisuda wisuda, Model model) throws Exception {
-        String lokasiFile = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator + wisuda.getMahasiswa().getIdProdi().getNamaProdi() + File.separator
+        String lokasiFile = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                + wisuda.getMahasiswa().getIdProdi().getNamaProdi() + File.separator
                 + wisuda.getMahasiswa().getNim()
                 + File.separator + wisuda.getFoto();
 
@@ -1400,9 +1407,10 @@ public class TugasAkhirController {
     @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal2() throws Exception {
 
-        List<Wisuda> cekMahasiswaWisuda =  wisudaDao.findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(periodeWisudaDao.findByStatus(StatusRecord.AKTIF), StatusApprove.APPROVED);
-        for (Wisuda wisuda : cekMahasiswaWisuda){
-            System.out.println(wisuda.getMahasiswa().getNim() +" : update filename wisuda ");
+        List<Wisuda> cekMahasiswaWisuda = wisudaDao.findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(
+                periodeWisudaDao.findByStatus(StatusRecord.AKTIF), StatusApprove.APPROVED);
+        for (Wisuda wisuda : cekMahasiswaWisuda) {
+            System.out.println(wisuda.getMahasiswa().getNim() + " : update filename wisuda ");
             String lokasiUpload = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
                     + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
                     + File.separator + wisuda.getMahasiswa().getNim();
