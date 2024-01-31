@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJenisTagihan, String> {
 
-    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, String angkatan, String prodi, Pageable page);
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> status, TahunAkademik tahun, String angkatan, List<StatusRecord> asList, TahunAkademik akademik, String prodi, Pageable page);
 
     Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
 
-    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndBeasiswaNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, String angkatan, String prodi, Pageable page);
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndBeasiswaNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndBeasiswaNotNullAndProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> status, TahunAkademik tahun, String angkatan, List<StatusRecord> asList, TahunAkademik akademik, String prodi, Pageable page);
 
     Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndBeasiswaNotNullOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
 

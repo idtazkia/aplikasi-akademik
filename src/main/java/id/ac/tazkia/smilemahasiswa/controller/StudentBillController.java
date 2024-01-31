@@ -366,7 +366,7 @@ public class StudentBillController {
         }else{
             if (StringUtils.hasText(search)){
                 model.addAttribute("search", search);
-                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, page));
             }else{
                 model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
             }
@@ -506,9 +506,24 @@ public class StudentBillController {
 
     }
 
-//    public double calculatePercentage(double obstance, double total){
-//        return obstance * 100 / total;
-//    }
+    // list semua tagihan paling baru
+    @GetMapping("/studentBill/billAdmin/tagihan")
+    public void allTagihan(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String search, @PageableDefault(size = 10) Pageable page){
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("allTagihan", tagihanDao.findByStatusNotInAndMahasiswaNamaContainingIgnoreCaseOrStatusNotInAndMahasiswaNimContainingIgnoreCaseOrStatusNotInAndMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalPembuatanDesc(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), search, Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), search, Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), search, page));
+            if (tahunAkademik != null) {
+                model.addAttribute("selectTahun", tahunAkademik);
+                model.addAttribute("allTagihan", tagihanDao.findByStatusNotInAndTahunAkademikAndMahasiswaNamaContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndMahasiswaNimContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalPembuatanDesc(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), tahunAkademik, search, page));
+            }
+        }else{
+            model.addAttribute("allTagihan", tagihanDao.findByStatusNotInOrderByTanggalPembuatanDesc(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), page));
+            if (tahunAkademik != null) {
+                model.addAttribute("selectTahun", tahunAkademik);
+                model.addAttribute("allTagihan", tagihanDao.findByStatusNotInAndTahunAkademikOrderByTanggalPembuatanDesc(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF), tahunAkademik, page));
+            }
+        }
+    }
 
     @GetMapping("/studentBill/billAdmin/date")
     public void formDate(Model model, @RequestParam(required = false) String id){
@@ -3228,7 +3243,7 @@ public class StudentBillController {
         }else {
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("list", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndBeasiswaNotNullAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
+                model.addAttribute("list", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndBeasiswaNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndBeasiswaNotNullAndProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, page));
             }else {
                 model.addAttribute("list", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndBeasiswaNotNullOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
             }

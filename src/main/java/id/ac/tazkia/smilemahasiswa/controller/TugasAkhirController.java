@@ -1436,7 +1436,7 @@ public class TugasAkhirController {
         }
     }
 
-    @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
+//    @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal2() throws Exception {
 
         List<Wisuda> cekMahasiswaWisuda = wisudaDao.findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(

@@ -87,24 +87,6 @@ public class TagihanService {
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
-    @Autowired
-    private MahasiswaCicilanDao cicilanDao;
-
-    @Autowired
-    private RequestPenangguhanDao requestPenangguhanDao;
-
-    @Autowired
-    private TagihanBeasiswaDao tagihanBeasiswaDao;
-
-    @Autowired
-    private KrsDetailDao krsDetailDao;
-
-    @Autowired
-    private JadwalDao jadwalDao;
-
-    @Autowired
-    private KelasDao kelasDao;
-
     public void generateTagihanBeasiswa(TahunAkademik tahunAkademik, Program program, List<Mahasiswa> mahasiswas){
         if (!mahasiswas.isEmpty()) {
             log.info("cek mahasiswa {} ", mahasiswas);

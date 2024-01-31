@@ -19,7 +19,13 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Page<Tagihan> findByStatusNotInAndMahasiswaAndTahunAkademik(List<StatusRecord> asList, Mahasiswa mhs, TahunAkademik tahunAkademik, Pageable page);
     
-    Page<Tagihan> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
+    Page<Tagihan> findByStatusNotInAndMahasiswaNamaContainingIgnoreCaseOrStatusNotInAndMahasiswaNimContainingIgnoreCaseOrStatusNotInAndMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalPembuatanDesc(List<StatusRecord> asList, String nama, List<StatusRecord> status, String nim, List<StatusRecord> listStatus, String prodi, Pageable page);
+
+    Page<Tagihan> findByStatusNotInOrderByTanggalPembuatanDesc(List<StatusRecord> asList, Pageable page);
+
+    Page<Tagihan> findByStatusNotInAndTahunAkademikAndMahasiswaNamaContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndMahasiswaNimContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalPembuatanDesc(List<StatusRecord> asList, TahunAkademik tahun, String nama, List<StatusRecord> status, TahunAkademik akademik, String nim, List<StatusRecord> listStatus, TahunAkademik tahunAkademik, String prodi, Pageable page);
+
+    Page<Tagihan> findByStatusNotInAndTahunAkademikOrderByTanggalPembuatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
 
     Page<Tagihan> findByStatusAndMahasiswaOrderByNilaiJenisTagihan(StatusRecord statusRecord, Mahasiswa mhs, Pageable page);
 
