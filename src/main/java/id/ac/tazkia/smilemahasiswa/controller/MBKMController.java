@@ -165,6 +165,10 @@ public class MBKMController {
                     dosen = dosenDao.findById("9ea8dfe9-704d-4ed2-984e-e53611d6ecf5").get();
                 } else if ("01".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
                     dosen = dosenDao.findById("dinad").get();
+                } else if ("02".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("Putrisa").get();
+                } else if ("06".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId()) || "09".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("unangf").get();
                 }else{
                     dosen = dosenDao.findById("YaserT").get();
                 }
