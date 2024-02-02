@@ -525,6 +525,20 @@ public class StudentBillController {
         }
     }
 
+    @PostMapping("/studentBill/billAdmin/resendTagihan")
+    public String resendTagihan(@RequestParam Tagihan tagihan){
+
+        if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL) {
+            RequestCicilan cicilan = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+            if (cicilan != null) {
+                tagihanService.ubahJadiCicilan(cicilan);
+            }
+        }else{
+            tagihanService.requestCreateTagihan(tagihan);
+        }
+        return "redirect:/tagihan";
+    }
+
     @GetMapping("/studentBill/billAdmin/date")
     public void formDate(Model model, @RequestParam(required = false) String id){
 
@@ -1216,7 +1230,9 @@ public class StudentBillController {
             t.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                     + " a.n. " +tagihan.getMahasiswa().getNama());
             t.setNilaiTagihan(tagihan.getNilaiTagihan());
-            t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
+            if (tagihan.getNilaiTagihanAsli() == null){
+                t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
+            }
             t.setAkumulasiPembayaran(BigDecimal.ZERO);
             t.setTanggalPembuatan(LocalDate.now());
             t.setTanggalJatuhTempo(tagihan.getTahunAkademik().getTanggalMulaiUas().minusDays(2));
@@ -1224,10 +1240,8 @@ public class StudentBillController {
             t.setTahunAkademik(tagihan.getTahunAkademik());
             t.setStatusTagihan(StatusTagihan.AKTIF);
             t.setStatus(StatusRecord.AKTIF);
-//            log.info("Tagihan : {}", t.toString());
             tagihanDao.save(t);
 
-//            log.info("Tagihan : {}", tagihan);
             if (cicilan != null) {
                 for (int i = 1; i<=cicilan; i++) {
                     BigDecimal totalCicilan = requestCicilanDao.hitungCicilan(t.getNilaiTagihan(), cicilan);
@@ -1302,7 +1316,9 @@ public class StudentBillController {
             t.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                     + " a.n. " +tagihan.getMahasiswa().getNama());
             t.setNilaiTagihan(tgh.getNilaiTagihan().add(tagihan.getNilaiTagihan()));
-            t.setNilaiTagihanAsli(tgh.getNilaiTagihan());
+            if (tagihan.getNilaiTagihanAsli() == null){
+                t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
+            }
             t.setAkumulasiPembayaran(BigDecimal.ZERO);
             t.setTanggalPembuatan(LocalDate.now());
             t.setTanggalJatuhTempo(tagihan.getTahunAkademik().getTanggalMulaiUas().minusDays(2));

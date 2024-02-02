@@ -61,6 +61,11 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label>Tahun Akademik</label>
+                                            <input type="text" readonly th:value="${tahun.namaTahunAkademik}" name="tahunAkademik" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
                                             <label>Jenis Tagihan</label>
                                             <select id="select2-jenis" onchange="jenisTagihan()"
                                                     th:field="*{nilaiJenisTagihan}" required class="form-control" >
@@ -76,24 +81,18 @@
                                     <div class="col-md-6">
 
                                         <div class="form-group">
-                                            <label>Tahun Akademik</label>
-                                            <input type="text" readonly th:value="${tahun.namaTahunAkademik}" name="tahunAkademik" class="form-control">
+                                            <label>Nilai</label>
+                                            <input type="number" id="nilaiTagihan" th:field="*{nilaiTagihan}" name="nilaiTagihan" class="form-control"
+                                                   placeholder="0.00" >
                                         </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Nilai</label>
-                                                    <input type="number" id="nilaiTagihan" th:field="*{nilaiTagihan}" name="nilaiTagihan" class="form-control"
-                                                           placeholder="0.00" >
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Cicilan</label>
-                                                    <input type="number" name="cicilan" class="form-control" placeholder="Cicilan" th:value="${cicilan}">
-                                                </div>
-                                            </div>
+                                        <div class="form-group">
+                                            <label>Nilai Asli</label>
+                                            <input type="number" id="nilaiTagihanAsli" th:field="*{nilaiTagihanAsli}" name="nilaiTagihanAsli" class="form-control"
+                                                   placeholder="0.00" >
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Cicilan</label>
+                                            <input type="number" name="cicilan" class="form-control" placeholder="Cicilan" th:value="${cicilan}">
                                         </div>
 
                                     </div>
@@ -151,6 +150,8 @@
         $.getJSON(url, function (data) {
             $('#nilaiTagihan').val(data.nilai);
             document.getElementById("nilaiTagihan").value = data.nilai;
+            $('#nilaiTagihanAsli').val(data.nilai);
+            document.getElementById("nilaiTagihanAsli").value = data.nilai;
         });
     }
 
