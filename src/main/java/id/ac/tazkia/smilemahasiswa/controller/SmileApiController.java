@@ -3,16 +3,20 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
 import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
 import id.ac.tazkia.smilemahasiswa.dao.KelasDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanDto;
 import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasDto;
 import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.service.KrsService;
+import id.ac.tazkia.smilemahasiswa.service.TranscriptService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,10 @@ public class SmileApiController {
     private KelasDao kelasDao;
     @Autowired
     private KaryawanDao karyawanDao;
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
+
+    @Autowired private TranscriptService transcriptService;
 
     //detailJadwal
     @GetMapping("/api/getDetailJadwal")
@@ -121,4 +129,15 @@ public class SmileApiController {
         return adto;
 
     }
+
+    @PostMapping("/api/import-transkript/{angkatan}")
+    @ResponseBody
+    public BaseResponse importIpkKrs(@PathVariable String angkatan) {
+
+        List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF, angkatan);
+        BaseResponse response = transcriptService.inputTrancript(mahasiswa);
+
+        return response;
+    }
+
 }

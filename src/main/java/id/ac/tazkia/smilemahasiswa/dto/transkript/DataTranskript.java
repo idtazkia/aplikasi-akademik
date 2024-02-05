@@ -14,4 +14,6 @@ public interface DataTranskript {
     String getGrade();
     BigDecimal getMutu();
 
+    String getIdmatakuliah();
+
 }

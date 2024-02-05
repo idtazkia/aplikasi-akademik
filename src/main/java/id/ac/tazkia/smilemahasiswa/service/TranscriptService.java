@@ -2,12 +2,21 @@ package id.ac.tazkia.smilemahasiswa.service;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MatakuliahDao;
+import id.ac.tazkia.smilemahasiswa.dao.TranskriptDao;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Matakuliah;
+import id.ac.tazkia.smilemahasiswa.entity.Transkript;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.Local;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,10 +29,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Transactional
+@Slf4j
 public class TranscriptService {
 
     @Value("${logo.surat}")
     private String logo;
+
+    @Autowired
+    private KrsDetailDao krsDetailDao;
+
+    @Autowired
+    private MatakuliahDao matakuliahDao;
+
+    @Autowired
+    private TranskriptDao transkriptDao;
 
     // transkrip sementara
     public void transkripSementara(@RequestParam Mahasiswa mhs, @RequestParam(required = false) List<Object[]> semester1, @RequestParam(required = false)List<Object[]> semester2,
@@ -1391,4 +1411,38 @@ public class TranscriptService {
 
     }
 
+    public BaseResponse inputTrancript(List<Mahasiswa> mahasiswas){
+        BaseResponse response = null;
+
+        for (Mahasiswa mhs : mahasiswas){
+            List<DataTranskript> listTranscript = krsDetailDao.listTranskript(mhs);
+
+            for (DataTranskript data : listTranscript){
+                log.info("Input data transkript mahasiswa {} - {} sem {} matkul {} grade {}", mhs.getNim(), mhs.getNama(), data.getSemester(), data.getMatkul(), data.getGrade());
+                saveTranskript(data, mhs);
+            }
+        }
+
+        response = BaseResponse.builder()
+                .code("200").message("Berhasil Import")
+                .build();
+
+        return response;
+    }
+
+    public void saveTranskript(DataTranskript data, Mahasiswa mahasiswa){
+
+        Matakuliah m = matakuliahDao.findById(data.getIdmatakuliah()).get();
+        Transkript cekData = transkriptDao.findByMahasiswaAndMatakuliahAndSemester(mahasiswa, m, data.getSemester());
+        if (cekData == null) {
+            Transkript transkript = new Transkript();
+            transkript.setSemester(data.getSemester());
+            transkript.setMahasiswa(mahasiswa);
+            transkript.setMatakuliah(m);
+            transkript.setSks(data.getSks());
+            transkript.setBobot(data.getBobot());
+            transkript.setGrade(data.getGrade());
+            transkriptDao.save(transkript);
+        }
+    }
 }

@@ -366,7 +366,7 @@ public class StudentBillController {
         }else{
             if (StringUtils.hasText(search)){
                 model.addAttribute("search", search);
-                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, page));
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProgramNamaProgramContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, page));
             }else{
                 model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
             }
@@ -1310,12 +1310,14 @@ public class StudentBillController {
 
         }else if (tgh.getTahunAkademik() != tahunAkademik && tgh.getLunas() == false){
 
+            Integer sisaCicilan = tgh.getNilaiTagihan().intValue() - tgh.getAkumulasiPembayaran().intValue();
+
             Tagihan t = new Tagihan();
             t.setMahasiswa(mhs);
             t.setNilaiJenisTagihan(tagihan.getNilaiJenisTagihan());
             t.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                     + " a.n. " +tagihan.getMahasiswa().getNama());
-            t.setNilaiTagihan(tgh.getNilaiTagihan().add(tagihan.getNilaiTagihan()));
+            t.setNilaiTagihan(tagihan.getNilaiTagihan().add(new BigDecimal(sisaCicilan)));
             if (tagihan.getNilaiTagihanAsli() == null){
                 t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
             }

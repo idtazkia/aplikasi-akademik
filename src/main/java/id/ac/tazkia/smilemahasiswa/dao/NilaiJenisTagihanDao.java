@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJenisTagihan, String> {
 
-    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> status, TahunAkademik tahun, String angkatan, List<StatusRecord> asList, TahunAkademik akademik, String prodi, Pageable page);
+    Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProgramNamaProgramContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> status, TahunAkademik tahun, String angkatan, List<StatusRecord> asList, TahunAkademik akademik, String prodi, List<StatusRecord> st, TahunAkademik tahunAkademik, String program, Pageable page);
 
     Page<NilaiJenisTagihan> findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
 

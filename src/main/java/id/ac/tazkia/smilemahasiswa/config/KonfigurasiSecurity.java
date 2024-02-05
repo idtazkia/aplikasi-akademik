@@ -237,6 +237,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/performance/mahasiswa")
                 .antMatchers("/api/enrollKrsMahasiswa")
                 .antMatchers("/import-ipk-sks/{tahun}")
+                .antMatchers("/api/import-transkript/{angkatan}")
                 .antMatchers("/update-sesikuliah/{id}")
                 .antMatchers("/generate-sesikuliah")
                 .antMatchers("/regenerate-sesikuliah")

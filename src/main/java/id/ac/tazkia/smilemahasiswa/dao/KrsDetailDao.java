@@ -830,7 +830,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         + //
                         "coalesce(b.nama_matakuliah_english, a.nama_matakuliah_english) as course, coalesce(b.bobot,a.bobot) as bobot, coalesce(b.grade, a.grade) as grade,\n"
                         + //
-                        "coalesce(b.sks, a.sks) as sks, coalesce(b.semester, a.semester) as semester, coalesce(b.bobot,a.bobot) * coalesce(b.sks, a.sks) as mutu from\n"
+                        "coalesce(b.sks, a.sks) as sks, coalesce(b.semester, a.semester) as semester, coalesce(b.bobot,a.bobot) * coalesce(b.sks, a.sks) as mutu, coalesce(b.id_matakuliahh, a.id_matakuliah) as idmatakuliah from\n"
                         + //
                         "(select a.* ,  GROUP_CONCAT('(', b.id_matakuliah_setara, ')' SEPARATOR ', ') AS setara,\n" + //
                         "GROUP_CONCAT('(', c.id_matakuliah, ')' SEPARATOR ', ') AS setara2 from\n" + //
