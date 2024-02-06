@@ -103,6 +103,12 @@
                                                         <div class="text-muted text-center mt-2 mb-3">
                                                             <small>Action</small></div>
                                                         <div class="btn-wrapper text-center">
+                                                            <button class="btn btn-primary btn-icon"
+                                                                onclick="editKelas()">
+                                                                <span class="btn-inner--icon"><i
+                                                                        class="fas fa-pencil-alt"></i></span>
+                                                                <span class="btn-inner--text">Edit</span>
+                                                            </button>
                                                             <button onclick="actionHapus()"
                                                                 class="btn btn-danger btn-icon">
                                                                 <span class="btn-inner--icon"><i
@@ -144,7 +150,8 @@
                                             </div>
 
                                             <div class="modal-footer">
-                                                <button onclick="hapusKelas()" type="button" class="btn btn-white">Hapus</button>
+                                                <button onclick="hapusKelas()" type="button"
+                                                    class="btn btn-white">Hapus</button>
                                                 <button type="button" class="btn btn-link text-white ml-auto"
                                                     data-dismiss="modal">Tutup</button>
                                             </div>
@@ -259,6 +266,10 @@
 
     function tampilMahasiswa() {
         location.href = '/equipment/class/view?kelas=' + document.getElementById('idKelas').value
+    }
+
+    function editKelas() {
+        location.href = '/equipment/class/form?id=' + document.getElementById('idKelas').value
     }
 
     function tambahMahasiswaKelas() {
