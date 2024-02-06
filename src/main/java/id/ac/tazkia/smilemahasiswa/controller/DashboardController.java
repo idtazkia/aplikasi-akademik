@@ -949,7 +949,6 @@ public class DashboardController {
             cuti.setKpsApproved(StatusApprove.APPROVED);
             cuti.setStatusPengajuaan(StatusApprove.APPROVED);
             log.info("Auto Approved Cuti {} ", mahasiswa.getNama());
-            tagihanService.createTagihanCuti(mahasiswa);
         }
 
         cuti.setDosenWaliApproved(StatusApprove.APPROVED);
@@ -967,7 +966,6 @@ public class DashboardController {
         cuti.setStatusPengajuaan(StatusApprove.APPROVED);
         cuti.setKpsApproved(StatusApprove.APPROVED);
         cutiDao.save(cuti);
-        tagihanService.createTagihanCuti(mahasiswa);
         return "redirect:/admin";
     }
 

@@ -1189,6 +1189,8 @@ public class StudyActivityController {
         cuti.setTahunAkademik(tahun);
         cutiDao.save(cuti);
 
+        tagihanService.createTagihanCuti(mahasiswa);
+
         return "redirect:/du/cuti/list";
 
     }
