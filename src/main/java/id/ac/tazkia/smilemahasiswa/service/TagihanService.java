@@ -128,10 +128,12 @@ public class TagihanService {
         if (cekTagihanCuti == null) {
 
             BigDecimal nilai = null;
-            if ("01".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getId())) {
-                nilai = new BigDecimal(250000);
-            }
-            if ("02".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getId())) {
+            NilaiJenisTagihan biayaUKT = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihanKodeIn(mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), tahun, mahasiswa.getIdProgram(), StatusRecord.AKTIF, TAGIHAN_KRS);
+            if (biayaUKT != null) {
+                Integer hitung = biayaUKT.getNilai().intValue() * 25 / 100;
+                nilai = new BigDecimal(hitung);
+                log.info("Biaya Cuti : {}", nilai);
+            }else{
                 nilai = new BigDecimal(1000000);
             }
 

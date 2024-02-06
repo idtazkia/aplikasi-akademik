@@ -103,6 +103,7 @@
                                 <th>Nomor Tagihan</th>
                                 <th>Nilai Tagihan</th>
                                 <th>Dibayar</th>
+                                <th>Status</th>
                                 <th>Tanggal</th>
                                 <th></th>
                             </tr>
@@ -117,45 +118,83 @@
                                 <td th:text="${data.nomor}"></td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${#temporals.format(data.tanggalPembuatan, 'dd-MM-yyyy')}"></td>
                                 <td>
-                                    <a href="#!" class="btn btn-info btn-sm"><i class="fa fa-file-import"></i> Send</a>
+                                    <a  class="btn btn-info btn-sm" href="#!"
+                                        th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
+                                        th:text="${data.statusTagihan}">
+                                    </a>
 
-<!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
-<!--                                        <i class="fas fa-trash"></i>-->
-<!--                                    </button>-->
+                                    <a type="button" class="btn btn-success btn-sm" href="#!"
+                                       th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}"
+                                       th:text="${data.statusTagihan}">
+                                    </a>
 
-<!--                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">-->
-<!--                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">-->
-<!--                                            <div class="modal-content bg-gradient-danger">-->
+                                    <a type="button" class="btn btn-warning ger btn-sm" href="#!"
+                                       th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
+                                       th:text="${data.statusTagihan}">
+                                    </a>
 
-<!--                                                <div class="modal-header">-->
-<!--                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>-->
-<!--                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                                                        <span aria-hidden="true">×</span>-->
-<!--                                                    </button>-->
-<!--                                                </div>-->
+                                    <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                       th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                       th:text="${data.statusTagihan}">
+                                    </a>
 
-<!--                                                <div class="modal-body">-->
+                                    <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                       th:if="${data.statusTagihan.PERINGANAN} == ${data.statusTagihan}"
+                                       th:text="${data.statusTagihan}">
+                                    </a>
 
-<!--                                                    <div class="py-3 text-center">-->
-<!--                                                        <i class="far fa-trash-alt fa-3x"></i>-->
-<!--                                                        <h4 class="heading mt-4">Are you sure ?</h4>-->
-<!--                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>-->
-<!--                                                    </div>-->
+                                    <a type="button" class="btn btn-primary btn-sm" href="#!"
+                                       th:if="${data.statusTagihan.BEASISWA} == ${data.statusTagihan}"
+                                       th:text="${data.statusTagihan}">
+                                    </a>
+                                </td>
+                                <td th:text="${#temporals.format(data.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
+                                <td th:if="${data.statusTagihan.LUNAS} != ${data.statusTagihan}">
 
-<!--                                                </div>-->
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#modal-send' + data.id}">
+                                        <i class="fas fa-file-import"></i>
+                                    </button>
 
-<!--                                                <div class="modal-footer">-->
-<!--                                                    <form method="post" th:action="@{/studentBill/valueType/delete(nilaiJenisTagihan = ${data.id})}">-->
-<!--                                                        <button type="submit" class="btn btn-white">Delete</button>-->
-<!--                                                    </form>-->
-<!--                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>-->
-<!--                                                </div>-->
+                                    <div class="modal fade" th:id="${'modal-send'+data.id}" tabindex="-1"
+                                         role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                        <div class="modal-dialog modal-info modal-dialog-centered modal-"
+                                             role="document">
+                                            <div class="modal-content bg-gradient-info">
 
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title" id="modal-title-notification">Your attention
+                                                        is required</h6>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="py-3 text-center">
+                                                        <i class="ni ni-send ni-3x"></i>
+                                                        <h4 class="heading mt-4">Are you sure ?</h4>
+<!--                                                        <p>Once deleted, you will not be able to recover this imaginary-->
+<!--                                                            file!</p>-->
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <form th:action="@{/studentBill/billAdmin/resendTagihan(tagihan = ${data.id})}"
+                                                          method="post">
+                                                        <button type="submit" class="btn btn-white">Send</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-link text-white ml-auto"
+                                                            data-dismiss="modal">Tutup
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>
