@@ -284,6 +284,7 @@ public class SidangController {
         } else {
             model.addAttribute("seminar", seminar);
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+            KrsDetail krsDetail = null;
 
             if (jenjang.equals("02")) {
                 TahunAkademik ta = null;
@@ -315,8 +316,20 @@ public class SidangController {
 
                     }
                 }
-                //
-                KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
+
+                if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
+                        && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
+                    krsDetail = krsDetailDao.cariUjianTesis(seminar.getNote().getMahasiswa(), ta);
+
+                } else if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 03
+                        && seminar.getNote().getMahasiswa().getIdProdi().getId()
+                                .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                    krsDetail = krsDetailDao.cariUjianTesis(seminar.getNote().getMahasiswa(), ta);
+
+                } else {
+                    krsDetail = krsDetailDao.cariThesisSemester(seminar.getNote().getMahasiswa(), ta);
+                }
+
                 if (krsDetail != null) {
                     return "graduation/sidang/mahasiswa/pendaftaran";
                 } else {
@@ -355,7 +368,7 @@ public class SidangController {
                         }
                     }
 
-                    KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
+                    krsDetail = krsDetailDao.cariThesisSemester(mahasiswa, ta);
                     if (krsDetail != null) {
                         return "graduation/sidang/mahasiswa/pendaftaran";
                     } else {
@@ -1159,7 +1172,7 @@ public class SidangController {
         if (sidang.getPublish() == StatusRecord.AKTIF) {
             if (sidang.getSeminar().getNote().getJenis().equals(StatusRecord.JURNAL)) {
                 return "redirect:nilai?id=" + sidang.getId();
-            }else{
+            } else {
                 if (failed > 0) {
                     return "redirect:list-daftar-ulang?id=" + sidang.getSeminar().getId();
 
@@ -1285,8 +1298,8 @@ public class SidangController {
                     .findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(
                             tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),
                             Arrays.asList(StatusApprove.REJECTED), page));
-        model.addAttribute("jurnal",
-                kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(), StatusRecord.AKTIF));
+            model.addAttribute("jurnal",
+                    kriteriaJurnalDao.findByJenjangAndStatus(prodi.getIdJenjang(), StatusRecord.AKTIF));
 
         }
     }
@@ -1890,7 +1903,7 @@ public class SidangController {
         KriteriaJurnal kriteriaJurnal = null;
         if (jurnalDto.getJurnalId() == null) {
             return "lengkapi";
-        }else{
+        } else {
             kriteriaJurnal = kriteriaJurnalDao.findById(jurnalDto.getJurnalId()).get();
         }
 
@@ -1919,8 +1932,6 @@ public class SidangController {
         mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
         mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
         mahasiswaDao.save(mahasiswa);
-
-
 
         return "berhasil";
     }
