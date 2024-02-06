@@ -126,7 +126,7 @@
                                     <li><a th:href="@{/graduation/register}">Tugas Akhir</a></li>
                                     <li><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
                                     <li><a th:href="@{/kewajiban/daftar}">Bebas Kewajiban</a></li>
-                                    <li><a th:href="@{/tahfidz}">Laporan Magang</a></li>
+                                    <li><a th:href="@{/graduation/magang}">Laporan Magang</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -174,7 +174,7 @@
                             </li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/kewajiban/daftar}">Bebas Kewajiban</a></li>
-                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/graduation/daftar-magang}">Laporan Magang</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/graduation/magang}">Laporan Magang</a></li>
                         </ul>
                     </div>
                     <div id="Adm" class="tab-pane notika-tab-menu-bg animated flipInX">
