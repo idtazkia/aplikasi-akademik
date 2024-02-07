@@ -21,7 +21,7 @@ public interface PeriodeWisudaDao extends PagingAndSortingRepository<PeriodeWisu
 
     PeriodeWisuda findByStatus(StatusRecord statusRecord);
 
-    @Query(value = "SELECT max(number) as number FROM smile.periode_wisuda where status not in ('HAPUS') ", nativeQuery = true)
+    @Query(value = "SELECT max(number) as number FROM periode_wisuda where status not in ('HAPUS') ", nativeQuery = true)
     Integer getLastNumber();
 
     @Modifying
