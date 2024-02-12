@@ -55,7 +55,6 @@ public class PresensiDosen {
     private String barcodeNow;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull
     private LocalDateTime tanggalInput;
 
 }

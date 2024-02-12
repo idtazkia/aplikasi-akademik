@@ -46,7 +46,6 @@ public class SesiKuliah {
     private String rps;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull
     private LocalDateTime tanggalInput;
     
     @JoinColumn(name = "id_detail_pertemuan")
