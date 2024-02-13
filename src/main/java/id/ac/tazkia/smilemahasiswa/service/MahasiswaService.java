@@ -253,7 +253,7 @@ public class MahasiswaService {
         return response;
     }
 
-    @Scheduled(cron = "0 00 02 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
     public void importIpkSksS1(){
         Jenjang jenjang = jenjangDao.findById("01").get();
         List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByIdProdiIdJenjangAndStatusAndStatusAktifIn(jenjang, StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
