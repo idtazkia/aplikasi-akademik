@@ -322,7 +322,7 @@ public class StudyActivityController {
             model.addAttribute("tSemester", total);
 
             // MBKM
-            if (total > 8) {
+            if (total > 7) {
                 model.addAttribute("mbkm", "Pilihan MBKM terbuka");
             }
             List<KrsDetail> cekKrs = krsDetailDao.cariKrsSelainMBKM(k.getId());
