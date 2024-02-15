@@ -57,7 +57,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Tahun Akademik</label>
-                                        <select name="tahunAkademik" class="form-control">
+                                        <select id="tahunId" name="tahunAkademik" class="form-control">
                                             <option th:each="data : ${tahunAkademik}"
                                                     th:text="${data.namaTahunAkademik}"
                                                     th:selected="(${data} == *{selectedTahun})"
@@ -224,7 +224,9 @@
 
         $('#modal-mbkm'+id).modal('show');
 
-        const url = '/get-matkul-mbkm/'+id;
+        var tahun = $('#tahunId').val();
+
+        const url = '/get-matkul-mbkm-tahun/'+id+'/'+tahun;
         $.getJSON(url, function (data){
             $('#table-mbkm tbody').empty();
 

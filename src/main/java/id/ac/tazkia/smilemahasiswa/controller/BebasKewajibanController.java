@@ -106,8 +106,13 @@ public class BebasKewajibanController {
                 return "redirect:/kewajiban/mahasiswa/detail";
             }
         }else{
-            return "/kewajiban/gagal";
+            return "redirect:/kewajiban/gagal";
         }
+    }
+
+    @GetMapping("/kewajiban/gagal")
+    public void kewajibanGagal(){
+
     }
 
     @GetMapping("/kewajiban/mahasiswa/detail")

@@ -95,6 +95,15 @@ public class MBKMController {
 
         return matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF);
     }
+    @GetMapping("/get-matkul-mbkm-tahun/{id}/{tahun}")
+    @ResponseBody
+    public List<MatakuliahMbkm> getRequestMatkulMBKMbyTahun(@PathVariable String id, @PathVariable String tahun) {
+        Mahasiswa mhs = mahasiswaDao.findById(id).get();
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        PendaftaranMbkm pendaftar = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
+
+        return matakuliahMbkmDao.findByPendaftaranMbkmAndStatus(pendaftar, StatusRecord.AKTIF);
+    }
 
     @GetMapping("/get-matkul-mbkm-approved/{id}")
     @ResponseBody
