@@ -98,120 +98,124 @@ public class KrsService {
             KrsApproval cekApproval = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(krs, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
             if (cekApproval == null) {
                 Integer tSemester = krsDetailDao.cariSemester(mahasiswa.getId(), tahunAkademik.getId());
-                Ipk cekIpk = ipkDao.findByMahasiswa(mahasiswa);
-                log.info("Proses KrsApproval Mahasiswa {} NIM {} Jenjang {} Prodi {}", mahasiswa.getNama(), mahasiswa.getNim(), mahasiswa.getIdProdi().getIdJenjang().getNamaJenjang(), mahasiswa.getIdProdi().getNamaProdi());
-                if ("S1".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())){
-                    if (cekIpk.getIpk().compareTo(BATAS_KRS) < 0){
-                        log.info("IPK dibawah 3!");
-                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                    } else if (cekIpk.getIpk().compareTo(BATAS_KRS) > 0) {
-                        log.info("IPK di atas 3!");
-                        switch (tSemester){
-                            case 1:
-                                if (cekIpk.getSksTotal() < 12){
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
+                if (tSemester == 0) {
+                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                }else{
+                    Ipk cekIpk = ipkDao.findByMahasiswa(mahasiswa);
+                    log.info("Proses KrsApproval Mahasiswa {} NIM {} Jenjang {} Prodi {}", mahasiswa.getNama(), mahasiswa.getNim(), mahasiswa.getIdProdi().getIdJenjang().getNamaJenjang(), mahasiswa.getIdProdi().getNamaProdi());
+                    if ("S1".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())){
+                        if (cekIpk.getIpk().compareTo(BATAS_KRS) < 0){
+                            log.info("IPK dibawah 3!");
+                            createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                        } else if (cekIpk.getIpk().compareTo(BATAS_KRS) > 0) {
+                            log.info("IPK di atas 3!");
+                            switch (tSemester){
+                                case 1:
+                                    if (cekIpk.getSksTotal() < 12){
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 2:
+                                    if (cekIpk.getSksTotal() < 24){
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 3:
+                                    if (cekIpk.getSksTotal() < 44){
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 4:
+                                    if (cekIpk.getSksTotal() < 64) {
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 5:
+                                    if (cekIpk.getSksTotal() < 84) {
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 6:
+                                    if (cekIpk.getSksTotal() < 104) {
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 7:
+                                    if (cekIpk.getSksTotal() < 124) {
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 8:
+                                    if (cekIpk.getSksTotal() < 144) {
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                default:
                                     createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 2:
-                                if (cekIpk.getSksTotal() < 24){
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 3:
-                                if (cekIpk.getSksTotal() < 44){
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 4:
-                                if (cekIpk.getSksTotal() < 64) {
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 5:
-                                if (cekIpk.getSksTotal() < 84) {
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 6:
-                                if (cekIpk.getSksTotal() < 104) {
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 7:
-                                if (cekIpk.getSksTotal() < 124) {
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 8:
-                                if (cekIpk.getSksTotal() < 144) {
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            default:
-                                createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                break;
+                                    break;
+                            }
+                        }else{
+                            createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
                         }
-                    }else{
-                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                    }
-                }else if ("S2".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
-                    if (cekIpk.getIpk().compareTo(BATAS_KRS) < 0){
-                        log.info("Ipk di bawah 3 S2!");
-                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                    } else if (cekIpk.getIpk().compareTo(BATAS_KRS) > 0) {
-                        log.info("Ipk di atas 3 S2!");
-                        switch (tSemester){
-                            case 1:
-                                if (cekIpk.getSksTotal() < 12){
+                    }else if ("S2".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
+                        if (cekIpk.getIpk().compareTo(BATAS_KRS) < 0){
+                            log.info("Ipk di bawah 3 S2!");
+                            createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                        } else if (cekIpk.getIpk().compareTo(BATAS_KRS) > 0) {
+                            log.info("Ipk di atas 3 S2!");
+                            switch (tSemester){
+                                case 1:
+                                    if (cekIpk.getSksTotal() < 12){
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 2:
+                                    if (cekIpk.getSksTotal() < 24){
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 3:
+                                    if (cekIpk.getSksTotal() < 24){
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                case 4:
+                                    if (cekIpk.getSksTotal() < 24) {
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
+                                    }else{
+                                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
+                                    }
+                                    break;
+                                default:
+                                    log.info("Lebih dari semester 4 S2!");
                                     createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 2:
-                                if (cekIpk.getSksTotal() < 24){
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 3:
-                                if (cekIpk.getSksTotal() < 24){
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            case 4:
-                                if (cekIpk.getSksTotal() < 24) {
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                }else{
-                                    createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
-                                }
-                                break;
-                            default:
-                                log.info("Lebih dari semester 4 S2!");
-                                createKrsApproval(krs, mahasiswa, StatusApprove.WAITING);
-                                break;
+                                    break;
+                            }
+                        } else{
+                            createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
                         }
-                    } else{
-                        createKrsApproval(krs, mahasiswa, StatusApprove.APPROVED);
                     }
                 }
             }

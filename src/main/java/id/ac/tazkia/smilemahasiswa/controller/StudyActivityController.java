@@ -512,103 +512,107 @@ public class StudyActivityController {
             KrsApproval cek = krsApprovalDao.findByKrsAndMahasiswaAndStatusNotIn(k, mahasiswa, Arrays.asList(StatusApprove.HAPUS));
             if (cek == null) {
                 Integer tSemester = krsDetailDao.cariSemester(mahasiswa.getId(), tahunAkademik.getId());
-                BigDecimal batas = new BigDecimal(3);
-                Ipk cekIpk = ipkDao.findByMahasiswa(mahasiswa);
-                log.info("Proses KrsApproval Mahasiswa {} NIM {} Jenjang {} Prodi {}", mahasiswa.getNama(), mahasiswa.getNim(), mahasiswa.getIdProdi().getIdJenjang().getNamaJenjang(), mahasiswa.getIdProdi().getNamaProdi());
-                if ("S1".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
-                    if (cekIpk.getIpk().compareTo(batas) <= 0){
-                        log.info("Ipk di bawah 3!");
-                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                    } else if (cekIpk.getIpk().compareTo(batas) > 0) {
-                        log.info("Ipk di atas 3!");
-                        if (tSemester == 1){
-                            if (cekIpk.getSksTotal() < 12){
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 2){
-                            if (cekIpk.getSksTotal() < 24){
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 3){
-                            if (cekIpk.getSksTotal() < 44){
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 4) {
-                            if (cekIpk.getSksTotal() < 64) {
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 5) {
-                            if (cekIpk.getSksTotal() < 84) {
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 6){
-                            if (cekIpk.getSksTotal() < 104) {
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 7){
-                            if (cekIpk.getSksTotal() < 124) {
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 8){
-                            if (cekIpk.getSksTotal() < 144) {
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        }
-                    } else{
-                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                    }
-                } else if ("S2".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
-                    if (cekIpk.getIpk().compareTo(batas) <= 0){
-                        log.info("Ipk di bawah 3 S2!");
-                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                    } else if (cekIpk.getIpk().compareTo(batas) > 0) {
-                        log.info("Ipk di atas 3 S2!");
-                        if (tSemester == 1){
-                            if (cekIpk.getSksTotal() < 12){
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 2){
-                            if (cekIpk.getSksTotal() < 24){
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 3){
-                            if (cekIpk.getSksTotal() < 24){
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        } else if (tSemester == 4) {
-                            if (cekIpk.getSksTotal() < 24) {
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
-                            }else{
-                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
-                            }
-                        }else{
-                            log.info("Lebih dari semester 4 S2!");
+                if (tSemester == 0) {
+                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                }else{
+                    BigDecimal batas = new BigDecimal(3);
+                    Ipk cekIpk = ipkDao.findByMahasiswa(mahasiswa);
+                    log.info("Proses KrsApproval Mahasiswa {} NIM {} Jenjang {} Prodi {}", mahasiswa.getNama(), mahasiswa.getNim(), mahasiswa.getIdProdi().getIdJenjang().getNamaJenjang(), mahasiswa.getIdProdi().getNamaProdi());
+                    if ("S1".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
+                        if (cekIpk.getIpk().compareTo(batas) <= 0){
+                            log.info("Ipk di bawah 3!");
                             krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        } else if (cekIpk.getIpk().compareTo(batas) > 0) {
+                            log.info("Ipk di atas 3!");
+                            if (tSemester == 1){
+                                if (cekIpk.getSksTotal() < 12){
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 2){
+                                if (cekIpk.getSksTotal() < 24){
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 3){
+                                if (cekIpk.getSksTotal() < 44){
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 4) {
+                                if (cekIpk.getSksTotal() < 64) {
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 5) {
+                                if (cekIpk.getSksTotal() < 84) {
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 6){
+                                if (cekIpk.getSksTotal() < 104) {
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 7){
+                                if (cekIpk.getSksTotal() < 124) {
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 8){
+                                if (cekIpk.getSksTotal() < 144) {
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            }
+                        } else{
+                            krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
                         }
-                    } else{
-                        krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                    } else if ("S2".equalsIgnoreCase(mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang())) {
+                        if (cekIpk.getIpk().compareTo(batas) <= 0){
+                            log.info("Ipk di bawah 3 S2!");
+                            krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                        } else if (cekIpk.getIpk().compareTo(batas) > 0) {
+                            log.info("Ipk di atas 3 S2!");
+                            if (tSemester == 1){
+                                if (cekIpk.getSksTotal() < 12){
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 2){
+                                if (cekIpk.getSksTotal() < 24){
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 3){
+                                if (cekIpk.getSksTotal() < 24){
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            } else if (tSemester == 4) {
+                                if (cekIpk.getSksTotal() < 24) {
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                                }else{
+                                    krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                                }
+                            }else{
+                                log.info("Lebih dari semester 4 S2!");
+                                krsService.createKrsApproval(k, mahasiswa, StatusApprove.WAITING);
+                            }
+                        } else{
+                            krsService.createKrsApproval(k, mahasiswa, StatusApprove.APPROVED);
+                        }
                     }
                 }
             }
