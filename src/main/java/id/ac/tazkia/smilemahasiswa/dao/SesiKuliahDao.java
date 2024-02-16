@@ -59,6 +59,8 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
 
         List<SesiKuliah> findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(Jadwal jadwal, List<StatusRecord> status);
 
+        List<SesiKuliah> findByJadwalAndPresensiDosenStatusNotIn(Jadwal jadwal, List<StatusRecord> status);
+
         @Modifying
         @Query(value = "update sesi_kuliah set rps = '' where id_jadwal = ?1", nativeQuery = true)
         void updateRps(String idJadwal);

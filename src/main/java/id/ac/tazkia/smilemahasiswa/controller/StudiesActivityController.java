@@ -405,11 +405,16 @@ public class StudiesActivityController {
 
         @GetMapping("/studiesActivity/attendance/detail")
         public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
-                List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal,
-                                Arrays.asList(StatusRecord.HAPUS));
+                List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal, Arrays.asList(StatusRecord.HAPUS));
                 if (!cekRps.isEmpty()) {
                         model.addAttribute("gagal", "Submit RPS terlebih dahulu!");
                 }
+
+                List<SesiKuliah> cekSesi = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotIn(jadwal, Arrays.asList(StatusRecord.HAPUS));
+                if (!cekSesi.isEmpty()) {
+                        model.addAttribute("valid", "sudah tergenerate");
+                }
+
                 model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
                 model.addAttribute("dosenUtama", jadwal.getDosen());
                 model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
