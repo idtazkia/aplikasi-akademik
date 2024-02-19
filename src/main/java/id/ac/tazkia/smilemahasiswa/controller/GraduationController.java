@@ -999,7 +999,7 @@ public class GraduationController {
     @PostMapping("/graduation/sempro")
     public String prosesSeminar(@Valid Seminar seminar,
             BindingResult error, MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
-            Authentication currentUser, MultipartFile formulir) throws Exception {
+            Authentication currentUser, MultipartFile formulir, MultipartFile kehadiran) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -1029,6 +1029,31 @@ public class GraduationController {
 
         } else {
             seminar.setFileBimbingan(seminar.getFileBimbingan());
+        }
+
+        if (!kehadiran.isEmpty() || kehadiran != null) {
+            String namaAsli = kehadiran.getOriginalFilename();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kehadiran.transferTo(tujuan);
+
+            seminar.setFileKehadiran(idFile + "." + extension);
+
+        } else {
+            seminar.setFileKehadiran(seminar.getFileBimbingan());
         }
 
         if (!formulir.isEmpty() || formulir != null) {
@@ -1673,6 +1698,34 @@ public class GraduationController {
             } else if (seminar.getFileSkripsi().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (seminar.getFileSkripsi().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+    }
+
+    @GetMapping("/upload/{seminar}/kehadiran/")
+    public ResponseEntity<byte[]> fileKehadiran(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileKehadiran();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileKehadiran().toLowerCase().endsWith("jpeg")
+                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileKehadiran().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileKehadiran().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
             } else {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

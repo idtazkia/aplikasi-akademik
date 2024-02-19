@@ -175,7 +175,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12 col-xs-12 margin-col">
+                        <div class="col-md-12 col-xs-12 margin-col" th:if="${seminar.note.dosen2 != null}">
                             <div class="card-red">
                                 <b class="card-title">Pembimbing 2 (<span th:text="${seminar.note.dosen2.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
                                 <p class="p-comment" th:text="${seminar.komentarPembimbing2}" th:if="${seminar.komentarPembimbing2 != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.

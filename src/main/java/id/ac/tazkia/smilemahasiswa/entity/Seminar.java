@@ -48,6 +48,7 @@ public class Seminar {
     private String fileIjazah;
     private String fileKtp;
     private String fileBerita;
+    private String fileKehadiran;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
