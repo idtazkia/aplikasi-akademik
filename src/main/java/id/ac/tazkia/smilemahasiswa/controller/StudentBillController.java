@@ -2805,7 +2805,7 @@ public class StudentBillController {
 
     @GetMapping("/rekap/pembayaran")
     public void rekapPembayaran(@RequestParam String mulai, @RequestParam String sampai, HttpServletResponse response) throws IOException{
-        String[] columns = {"No", "Nim", "Nama", "Angaktan", "Prodi", "Jenis Tagihan", "Tahun Akademik", "Bank", "Jumlah", "Tanggal Transfer", "Referensi"};
+        String[] columns = {"No", "Nim", "Nama", "Angaktan", "Program", "Prodi", "Jenis Tagihan", "Tahun Akademik", "Bank", "Jumlah", "Tanggal Transfer", "Referensi"};
 
         List<PembayaranDto> listPembayaran = pembayaranDao.downloadPembayaran(mulai, sampai);
 
@@ -2837,13 +2837,14 @@ public class StudentBillController {
             row.createCell(1).setCellValue(p.getNim());
             row.createCell(2).setCellValue(p.getNama());
             row.createCell(3).setCellValue(p.getAngkatan());
-            row.createCell(4).setCellValue(p.getProdi());
-            row.createCell(5).setCellValue(p.getJenisTagihan());
-            row.createCell(6).setCellValue(p.getTahunAkademik());
-            row.createCell(7).setCellValue(p.getBank());
-            row.createCell(8).setCellValue(p.getJumlah().intValue());
-            row.createCell(9).setCellValue(p.getTanggalTransaksi().format(DateTimeFormatter.ISO_LOCAL_DATE));
-            row.createCell(10).setCellValue(p.getReferensi());
+            row.createCell(4).setCellValue(p.getProgram());
+            row.createCell(5).setCellValue(p.getProdi());
+            row.createCell(6).setCellValue(p.getJenisTagihan());
+            row.createCell(7).setCellValue(p.getTahunAkademik());
+            row.createCell(8).setCellValue(p.getBank());
+            row.createCell(9).setCellValue(p.getJumlah().intValue());
+            row.createCell(10).setCellValue(p.getTanggalTransaksi().format(DateTimeFormatter.ISO_LOCAL_DATE));
+            row.createCell(11).setCellValue(p.getReferensi());
         }
 
         for (int i = 0; i < columns.length; i++){

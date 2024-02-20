@@ -14,6 +14,8 @@ public interface PembayaranDto {
 
     String getAngkatan();
 
+    String getProgram();
+
     String getProdi();
 
     String getJenisTagihan();
