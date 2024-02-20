@@ -265,11 +265,14 @@ public class KrsService {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         for (String m : mahasiswa){
             Mahasiswa mhs = mahasiswaDao.findById(m).get();
-            EnableKrs enableKrs = new EnableKrs();
-            enableKrs.setMahasiswa(mhs);
-            enableKrs.setTahunAkademik(tahunAkademik);
-            enableKrs.setTanggalKadaluarsa(kadaluarsa);
-            enableKrsDao.save(enableKrs);
+            EnableKrs valid = enableKrsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mhs, StatusRecord.AKTIF);
+            if (valid == null) {
+                EnableKrs enableKrs = new EnableKrs();
+                enableKrs.setMahasiswa(mhs);
+                enableKrs.setTahunAkademik(tahunAkademik);
+                enableKrs.setTanggalKadaluarsa(kadaluarsa);
+                enableKrsDao.save(enableKrs);
+            }
         }
     }
 

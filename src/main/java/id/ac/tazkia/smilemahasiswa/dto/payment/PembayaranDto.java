@@ -11,6 +11,11 @@ public interface PembayaranDto {
     String getIdTagihan();
     String getNim();
     String getNama();
+
+    String getAngkatan();
+
+    String getProdi();
+
     String getJenisTagihan();
 
     String getTahunAkademik();
