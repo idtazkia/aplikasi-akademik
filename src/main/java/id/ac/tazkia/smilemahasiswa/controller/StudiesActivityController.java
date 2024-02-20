@@ -30,6 +30,7 @@ import javax.validation.Valid;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.GeneratedKrsDto;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.BorderExtent;
@@ -98,36 +99,6 @@ import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
-import id.ac.tazkia.smilemahasiswa.entity.Akses;
-import id.ac.tazkia.smilemahasiswa.entity.BobotTugas;
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.Hari;
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.JadwalDosen;
-import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
-import id.ac.tazkia.smilemahasiswa.entity.Kelas;
-import id.ac.tazkia.smilemahasiswa.entity.KelasMahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.Krs;
-import id.ac.tazkia.smilemahasiswa.entity.KrsApproval;
-import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
-import id.ac.tazkia.smilemahasiswa.entity.NilaiTugas;
-import id.ac.tazkia.smilemahasiswa.entity.PendaftaranMbkm;
-import id.ac.tazkia.smilemahasiswa.entity.PraKrsSp;
-import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
-import id.ac.tazkia.smilemahasiswa.entity.PresensiMahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.Rps;
-import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
-import id.ac.tazkia.smilemahasiswa.entity.Soal;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
-import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
-import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KrsService;
 import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
@@ -1147,6 +1118,29 @@ public class StudiesActivityController {
                 model.addAttribute("lebih", lebih);
                 model.addAttribute("kosong", kosong);
 
+        }
+
+        @GetMapping("/studiesActivity/krs/enable")
+        public void listEnableKrs(Model model, @PageableDefault(size = 10) Pageable page){
+
+                model.addAttribute("listMahasiswa", krsService.mhsKrs());
+                model.addAttribute("listKrs", krsService.listEnableKrs(page));
+                model.addAttribute("tahun", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+        }
+
+        @PostMapping("/studiesActivity/krs/enable/save")
+        public String saveEnableKrs(@RequestParam(required = false) String[] mahasiswa, @RequestParam(required = false) String tanggalKadaluarsa){
+                LocalDate kadaluarsa = LocalDate.parse(tanggalKadaluarsa);
+                krsService.saveEnabelKrs(mahasiswa, kadaluarsa);
+                return "redirect:";
+        }
+
+        @PostMapping("/studiesActivity/krs/enable/edit")
+        public String editEnableKrs(@RequestParam(required = false) EnableKrs enableKrs, @RequestParam(required = false) String tanggalKadaluarsa){
+                LocalDate kadaluarsa = LocalDate.parse(tanggalKadaluarsa);
+                krsService.updateEnabelKrs(enableKrs, kadaluarsa);
+                return "redirect:";
         }
 
         @PostMapping("/studiesActivity/krs/form")

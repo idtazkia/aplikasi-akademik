@@ -142,6 +142,9 @@ public class StudyActivityController {
     @Autowired
     private KrsService krsService;
 
+    @Autowired
+    private EnableKrsDao enableKrsDao;
+
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
         return konsentrasiDao.findByStatus(StatusRecord.AKTIF);
@@ -292,8 +295,15 @@ public class StudyActivityController {
                 jumlahSks = Long.valueOf(0);
             }
 
-            if (tahunAkademikProdi.getSelesaiKrs().compareTo(LocalDate.now()) >= 0) {
-                model.addAttribute("validasi", ta);
+            if (LocalDate.now().compareTo(tahunAkademikProdi.getSelesaiKrs()) >= 0) {
+                EnableKrs cek = enableKrsDao.findByTahunAkademikAndMahasiswaAndStatus(k.getTahunAkademik(), k.getMahasiswa(), StatusRecord.AKTIF);
+                if (cek == null) {
+                    model.addAttribute("validasi", ta);
+                }else{
+                    if (LocalDate.now().compareTo(cek.getTanggalKadaluarsa()) >= 0) {
+                        model.addAttribute("validasi", ta);
+                    }
+                }
             }
 
             Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());

@@ -6,9 +6,14 @@ import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +32,10 @@ public class KrsService {
     @Autowired private KrsApprovalDao krsApprovalDao;
 
     @Autowired private IpkDao ipkDao;
+
+    @Autowired private EnableKrsDao enableKrsDao;
+
+    @Autowired private TahunAkademikDao tahunAkademikDao;
 
     public BaseResponse updateIpKrsApi(List<Mahasiswa> mhs){
         BaseResponse response = null;
@@ -234,6 +243,39 @@ public class KrsService {
             ka.setStatus(status);
             krsApprovalDao.save(ka);
         }
+    }
+
+    public Page<EnableKrs> listEnableKrs(Pageable page){
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        return enableKrsDao.findByTahunAkademik(tahunAkademik, page);
+    }
+
+    public List<Mahasiswa> mhsKrs(){
+        List<Mahasiswa> listMahasiswa = new ArrayList<>();
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        List<Krs> getMhs = krsDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF);
+        for (Krs m : getMhs){
+            Mahasiswa mhs = m.getMahasiswa();
+            listMahasiswa.add(mhs);
+        }
+        return listMahasiswa;
+    }
+
+    public void saveEnabelKrs(String[] mahasiswa, LocalDate kadaluarsa){
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        for (String m : mahasiswa){
+            Mahasiswa mhs = mahasiswaDao.findById(m).get();
+            EnableKrs enableKrs = new EnableKrs();
+            enableKrs.setMahasiswa(mhs);
+            enableKrs.setTahunAkademik(tahunAkademik);
+            enableKrs.setTanggalKadaluarsa(kadaluarsa);
+            enableKrsDao.save(enableKrs);
+        }
+    }
+
+    public void updateEnabelKrs(EnableKrs enableKrs, LocalDate kadaluarsa){
+        enableKrs.setTanggalKadaluarsa(kadaluarsa);
+        enableKrsDao.save(enableKrs);
     }
 
 }
