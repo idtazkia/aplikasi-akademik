@@ -348,7 +348,7 @@ public class SidangController {
                         ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
                                 kode);
                     } else {
-                        if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0) {
+                        if (LocalDate.now().isEqual(tahunAkademik.getTanggalMulai()) || LocalDate.now().isAfter(tahunAkademik.getTanggalMulai())) {
                             ta = tahunAkademik;
                         } else {
                             int last = tahunAkademik.getKodeTahunAkademik().length();
