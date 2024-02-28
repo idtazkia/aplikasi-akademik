@@ -407,10 +407,10 @@ public class StudiesActivityController {
             sesiKuliah.setWaktuMulai(masuk);
             sesiKuliah.setWaktuSelesai(keluar);
             sesiKuliahDao.save(sesiKuliah);
-            
+
             return "redirect:detail?jadwal=" + presensiDosen.getJadwal().getId();
         }
-        
+
 
         @GetMapping("/sample/rps")
         public void downloadContohFileInputRPS(HttpServletResponse response) throws IOException {
@@ -7445,6 +7445,38 @@ public class StudiesActivityController {
                                         tahun.getId(), dosen.getId(), page));
                 }
         }
+
+        // Status Pembayaran KRS
+        @GetMapping("/studiesActivity/krs/statusPembayaran")
+        public void statusPembayaranKrs(Model model, @RequestParam(required = false) Prodi prodi,
+                              @RequestParam(required = false) String angkatan, @RequestParam(required = false) Dosen dosen,
+                              String search, @PageableDefault(size = 10) Pageable page) {
+
+                TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+                model.addAttribute("selectProdi", prodi);
+//                model.addAttribute("selectAngkatan", angkatan);
+//                model.addAttribute("selectDosen", dosen);
+
+
+                if(prodi != null){
+                        if (StringUtils.hasText(search)) {
+                                model.addAttribute("search", search);
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1ProdiSearch(tahunAkademik,search,prodi,page));
+                        }else{
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1Prodi(tahunAkademik,prodi,page));
+                        }
+                }else{
+                        if (StringUtils.hasText(search)) {
+                                model.addAttribute("search", search);
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1Search(tahunAkademik,search,page));
+                        }else{
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik,page));
+                        }
+                }
+
+        }
+
 
         @GetMapping("/studiesActivity/transcript/transkriptindo2")
         public void transkriptFormat2(@RequestParam(required = false) String nim, HttpServletResponse response)
