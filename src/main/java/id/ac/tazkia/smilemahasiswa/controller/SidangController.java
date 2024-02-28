@@ -321,7 +321,7 @@ public class SidangController {
                         && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
                     krsDetail = krsDetailDao.cariUjianTesis(seminar.getNote().getMahasiswa(), ta);
 
-                } else if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 03
+                } else if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
                         && seminar.getNote().getMahasiswa().getIdProdi().getId()
                                 .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
                     krsDetail = krsDetailDao.cariUjianTesis(seminar.getNote().getMahasiswa(), ta);

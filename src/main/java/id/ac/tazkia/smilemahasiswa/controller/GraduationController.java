@@ -351,7 +351,7 @@ public class GraduationController {
                         model.addAttribute("valid", "dosen2");
                     }
 
-                    if (Integer.parseInt(mahasiswa.getAngkatan()) >= 03
+                    if (Integer.parseInt(mahasiswa.getAngkatan()) >= 21
                             && mahasiswa.getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
                         model.addAttribute("valid", "dosen2");
 
@@ -533,7 +533,7 @@ public class GraduationController {
             model.addAttribute("valid", "dosen2");
         }
 
-        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 21
                 && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
             model.addAttribute("valid", "dosen2");
 
@@ -606,7 +606,7 @@ public class GraduationController {
             model.addAttribute("valid", "dosen2");
         }
 
-        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+        if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 21
                 && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
             model.addAttribute("valid", "dosen2");
 
@@ -893,7 +893,7 @@ public class GraduationController {
                     && note.getMahasiswa().getIdProdi().getId().equals("05")) {
                 krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
 
-            } else if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 03
+            } else if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 21
                     && note.getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
                 krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
 
@@ -1963,7 +1963,7 @@ public class GraduationController {
             model.addAttribute("valid", "dosen2");
         }
 
-        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 03
+        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
                 && seminar.getNote().getMahasiswa().getIdProdi().getId()
                         .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
             model.addAttribute("valid", "dosen2");
@@ -2727,7 +2727,7 @@ public class GraduationController {
                 } else {
                     return "lengkapi";
                 }
-            } else if (Integer.parseInt(angkatan) >= 03
+            } else if (Integer.parseInt(angkatan) >= 21
                     && prodi.getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
                 Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
                 if (nilaiKosong == null) {
