@@ -170,6 +170,14 @@ public class MailService {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tlc/reject.html");
     }
 
+    public void mailApproveTQC(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+        templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tqc/approve.html");
+    }
+
+    public void mailRejectTQC(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+        templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tqc/reject.html");
+    }
+
     public void mailApproveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/akademik/approve.html");
     }

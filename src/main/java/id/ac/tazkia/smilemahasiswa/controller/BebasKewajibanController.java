@@ -42,6 +42,7 @@ public class BebasKewajibanController {
     public static final List<String> USER_PERPUS = Arrays.asList("perpustakaan", "kabagperpus");
     public static final List<String> USER_FINANCE = Arrays.asList("finance", "kabagfinance");
     public static final List<String> USER_TLC = Arrays.asList("tlc", "staftlc");
+    public static final List<String> USER_TQC = Arrays.asList("staftqc");
     public static final List<String> USER_AKADEMIK = Arrays.asList("akademik1", "akademik2", "kabagakademik", "superuser");
 
     @Value("${upload.sertifikatTlc}")
@@ -129,27 +130,32 @@ public class BebasKewajibanController {
         model.addAttribute("bebasKewajiban", bebasKewajiban);
         model.addAttribute("listKewajibanMahasiswa", kewajibanPerpusMahasiswaDao.findByBebasKewajibanOrderByKewajibanPerpusId(bebasKewajiban));
         // sertifikasi tlc
-        model.addAttribute("listSertifikat", kewajibanSertifikatTlcDao.findByStatusAndBebasKewajiban(StatusRecord.AKTIF, bebasKewajiban));
+        model.addAttribute("listSertifikat", kewajibanSertifikatTlcDao.findByStatusAndBebasKewajibanAndTipe(StatusRecord.AKTIF, bebasKewajiban, Tipe.TLC));
+        model.addAttribute("listMutqin", kewajibanSertifikatTlcDao.findByStatusAndBebasKewajibanAndTipe(StatusRecord.AKTIF, bebasKewajiban, Tipe.TQC));
 
         // cek histori komentar
         HistoriBebasKewajiban perpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF);
         HistoriBebasKewajiban kabagperpus = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KABAG_PERPUS, StatusRecord.AKTIF);
         HistoriBebasKewajiban keuangan = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.KEUANGAN, StatusRecord.AKTIF);
         HistoriBebasKewajiban tlc = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.TLC, StatusRecord.AKTIF);
+        HistoriBebasKewajiban tqc = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.TQC, StatusRecord.AKTIF);
         HistoriBebasKewajiban akademik = historiBebasKewajibanDao.findFirstByBebasKewajibanAndByBagianAndStatusOrderByWaktuInputDesc(bebasKewajiban, ByBagian.AKADEMIK, StatusRecord.AKTIF);
         if (perpus != null) {
             model.addAttribute("hPerpus", perpus);
         }
-        if (perpus != null) {
+        if (kabagperpus != null) {
             model.addAttribute("hKabagPerpus", kabagperpus);
         }
-        if (perpus != null) {
+        if (keuangan != null) {
             model.addAttribute("hKeuangan", keuangan);
         }
-        if (perpus != null) {
+        if (tlc != null) {
             model.addAttribute("hTlc", tlc);
         }
-        if (perpus != null) {
+        if (tqc != null) {
+            model.addAttribute("hTqc", tqc);
+        }
+        if (akademik != null) {
             model.addAttribute("hAkademik", akademik);
         }
 
@@ -188,10 +194,11 @@ public class BebasKewajibanController {
             tlc.setTanggalUjian(LocalDate.parse(tanggal));
             tlc.setKeteranganUjian(ByBagian.DIKAMPUS);
             tlc.setJenisTes(jenis);
+            tlc.setTipe(Tipe.TLC);
             kewajibanSertifikatTlcDao.save(tlc);
 
             PendaftaranBebasKewajiban kewajiban = tlc.getBebasKewajiban();
-            kewajiban.setStatusApproveTlc(StatusApprove.WAITING);
+            kewajiban.setStatusApproveTlc(StatusApprove.WAITING_TLC);
             bebasKewajibanDao.save(kewajiban);
 
         }
@@ -232,10 +239,53 @@ public class BebasKewajibanController {
             tlc.setTanggalUjian(LocalDate.parse(tanggal));
             tlc.setKeteranganUjian(ByBagian.DILUAR);
             tlc.setJenisTes(jenis);
+            tlc.setTipe(Tipe.TLC);
             kewajibanSertifikatTlcDao.save(tlc);
 
             PendaftaranBebasKewajiban kewajiban = tlc.getBebasKewajiban();
-            kewajiban.setStatusApproveTlc(StatusApprove.WAITING);
+            kewajiban.setStatusApproveTlc(StatusApprove.WAITING_TLC);
+            bebasKewajibanDao.save(kewajiban);
+        }
+
+        return "redirect:/kewajiban/mahasiswa/detail";
+    }
+
+    @PostMapping("/kewajiban/mahasiswa/tqc/update")
+    public String sertiTqcUpload(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, MultipartFile file) throws IOException {
+        KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
+        if (cek == null) {
+
+            KewajibanSertifikatTlc tlc = new KewajibanSertifikatTlc();
+
+            String idPeserta = bebasKewajiban.getMahasiswa().getNim();
+
+            String namaAsli = file.getOriginalFilename();
+
+            // Memisahkan extension
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = uploadTlc + File.separator + idPeserta;
+            log.info("Info lokasi upload : {}", lokasiUpload);
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            file.transferTo(tujuan);
+            tlc.setFile(idFile + "." + extension);
+            tlc.setBebasKewajiban(bebasKewajiban);
+            tlc.setKeteranganUjian(ByBagian.HAFIDZPRENEUR);
+            tlc.setJenisTes("MUTQIN");
+            tlc.setTipe(Tipe.TQC);
+            kewajibanSertifikatTlcDao.save(tlc);
+
+            PendaftaranBebasKewajiban kewajiban = tlc.getBebasKewajiban();
+            kewajiban.setStatusApproveTlc(StatusApprove.WAITING_TQC);
             bebasKewajibanDao.save(kewajiban);
         }
 
@@ -279,6 +329,9 @@ public class BebasKewajibanController {
         }
         if (USER_TLC.contains(user.getRole().getId())) {
             return "redirect:/kewajiban/admin/tlc/list";
+        }
+        if (USER_TQC.contains(user.getRole().getId())) {
+            return "redirect:/kewajiban/admin/tqc/list";
         }
         if (USER_AKADEMIK.contains(user.getRole().getId())) {
             return "redirect:/kewajiban/admin/akademik/list";
@@ -452,15 +505,14 @@ public class BebasKewajibanController {
 
     @GetMapping("/kewajiban/admin/tlc/list")
     public void listTlc(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, String search){
-
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotInAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, Arrays.asList(StatusApprove.APPROVED, StatusApprove.WAITING_TQC), search, search, page));
         }else{
-            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotInOrderByTanggalRequest(StatusRecord.AKTIF, Arrays.asList(StatusApprove.APPROVED, StatusApprove.WAITING_TQC), page));
         }
         model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.TLC, StatusRecord.AKTIF));
-        model.addAttribute("sertifikat", kewajibanSertifikatTlcDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("sertifikat", kewajibanSertifikatTlcDao.findByStatusAndTipe(StatusRecord.AKTIF, Tipe.TLC));
     }
 
     @GetMapping("/kewajiban/admin/tlc/approval")
@@ -534,7 +586,7 @@ public class BebasKewajibanController {
         bebasKewajiban.setStatusApproveTlc(StatusApprove.REJECTED);
         bebasKewajibanDao.save(bebasKewajiban);
 
-        List<KewajibanSertifikatTlc> listSerti = kewajibanSertifikatTlcDao.findByStatusAndBebasKewajiban(StatusRecord.AKTIF, bebasKewajiban);
+        List<KewajibanSertifikatTlc> listSerti = kewajibanSertifikatTlcDao.findByStatusAndBebasKewajibanAndTipe(StatusRecord.AKTIF, bebasKewajiban, Tipe.TLC);
         for (KewajibanSertifikatTlc serti : listSerti){
             serti.setStatus(StatusRecord.HAPUS);
             kewajibanSertifikatTlcDao.save(serti);
@@ -544,6 +596,55 @@ public class BebasKewajibanController {
         mailService.mailRejectTlc(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/tlc/list";
+    }
+
+    // BAGIAN TQC
+    @GetMapping("/kewajiban/admin/tqc/list")
+    public void listKewajibanTQC(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) String search){
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotInAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, Arrays.asList(StatusApprove.APPROVED, StatusApprove.WAITING_TLC), search, search, page));
+        }else{
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApproveTlcNotInOrderByTanggalRequest(StatusRecord.AKTIF, Arrays.asList(StatusApprove.APPROVED, StatusApprove.WAITING_TLC), page));
+        }
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.TQC, StatusRecord.AKTIF));
+        model.addAttribute("sertifikat", kewajibanSertifikatTlcDao.findByStatusAndTipe(StatusRecord.AKTIF, Tipe.TQC));
+    }
+
+    @GetMapping("/kewajiban/admin/tqc/approval")
+    public void historiApprovalTqc(Model model){
+        model.addAttribute("list", bebasKewajibanDao.historiApproval(ByBagian.TQC.toString()));
+        model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.TQC, StatusRecord.AKTIF));
+    }
+
+    @PostMapping("/kewajiban/admin/tqc/approve")
+    public String approveTqc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        bebasKewajiban.setStatusApproveTlc(StatusApprove.APPROVED);
+        bebasKewajibanDao.save(bebasKewajiban);
+
+        bebasKewajibanService.saveTqc(bebasKewajiban, komentar, user);
+        mailService.mailApproveTQC(bebasKewajiban, "DONE");
+
+        return "redirect:/kewajiban/admin/tqc/list";
+    }
+
+    @PostMapping("/kewajiban/admin/tqc/reject")
+    public String rejectTqc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        bebasKewajiban.setStatusApproveTlc(StatusApprove.REJECTED);
+        bebasKewajibanDao.save(bebasKewajiban);
+
+        List<KewajibanSertifikatTlc> listSerti = kewajibanSertifikatTlcDao.findByStatusAndBebasKewajibanAndTipe(StatusRecord.AKTIF, bebasKewajiban, Tipe.TQC);
+        for (KewajibanSertifikatTlc serti : listSerti){
+            serti.setStatus(StatusRecord.HAPUS);
+            kewajibanSertifikatTlcDao.save(serti);
+        }
+
+        bebasKewajibanService.saveTqc(bebasKewajiban, komentar, user);
+        mailService.mailRejectTQC(bebasKewajiban, komentar);
+
+        return "redirect:/kewajiban/admin/tqc/list";
     }
 
     // BAGIAN AKADEMIK

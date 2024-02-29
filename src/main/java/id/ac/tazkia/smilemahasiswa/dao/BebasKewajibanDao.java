@@ -23,14 +23,14 @@ public interface BebasKewajibanDao extends PagingAndSortingRepository<Pendaftara
 
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKeuanganNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
-    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
+    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotInOrderByTanggalRequest(StatusRecord status, List<StatusApprove> statusApprove, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveAkademikNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
 
     List<PendaftaranBebasKewajiban> findByStatusAndStatusApprovePerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim);
 
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKeuanganNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
-    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
+    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotInAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, List<StatusApprove> statusApprove, String nama, String nim, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveAkademikNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaAngkatanContainingIgnoreCaseOrMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, String angkatan, String namaProdi, Pageable page);
 
     @Query(value = "select pb.id, m.nim, m.nama, p.nama_prodi, m.angkatan, hb.waktu_input as waktu, hb.status_approve, coalesce(u.username, '-') as username, pb.nilai_toefl, pb.nilai_ielts from pendaftaran_bebas_kewajiban pb inner join histori_bebas_kewajiban hb on pb.id=hb.id_pendaftaran inner join mahasiswa m on pb.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join s_user u on hb.user_modified=u.id where hb.status_approve='APPROVED' and by_bagian=?1 group by pb.id_mahasiswa order by waktu_input desc", nativeQuery = true)

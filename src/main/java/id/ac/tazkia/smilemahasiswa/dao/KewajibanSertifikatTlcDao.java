@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.KewajibanSertifikatTlc;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.PendaftaranBebasKewajiban;
+import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.Tipe;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -12,8 +13,8 @@ public interface KewajibanSertifikatTlcDao extends PagingAndSortingRepository<Ke
 
     KewajibanSertifikatTlc findByBebasKewajibanAndStatus(PendaftaranBebasKewajiban bebasKewajiban, StatusRecord status);
 
-    List<KewajibanSertifikatTlc> findByStatusAndBebasKewajiban(StatusRecord status, PendaftaranBebasKewajiban bebasKewajiban);
+    List<KewajibanSertifikatTlc> findByStatusAndBebasKewajibanAndTipe(StatusRecord status, PendaftaranBebasKewajiban bebasKewajiban, Tipe tipe);
 
-    List<KewajibanSertifikatTlc> findByStatus(StatusRecord status);
+    List<KewajibanSertifikatTlc> findByStatusAndTipe(StatusRecord status, Tipe tipe);
 
 }

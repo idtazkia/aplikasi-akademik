@@ -262,6 +262,7 @@
                                             <button class="btn btn-warning btn-sm" th:if="${data.status == data.status.APPROVED_AKADEMIK}">Menunggu Persetujuan</button>
 
                                             <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.REJECTED}">Ditolak</button>
+                                            <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.FAILED}">Tidak Lulus</button>
 
                                             <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish'+data.id}" th:if="${data.ketuaPenguji != null && data.tanggalUjian != null}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Bebas Kewajiban</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Bebas Kewajiban </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <form method="get">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <a th:href="@{/kewajiban/admin/tqc/approval}" class="btn btn-sm btn-success">Histori Approval</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">NIM</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Prodi</th>
+                                    <th scope="col">Angkatan</th>
+                                    <th scope="col">Tanggal Pengajuan</th>
+                                    <th scope="col" width="30px;">Status</th>
+                                    <th scope="col"></th>
+                                    <th scope="col" colspan="2"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listMahasiswa}">
+                                    <td th:text="${(row.index + 1) + (listMahasiswa.number * listMahasiswa.size)}">1</td>
+                                    <td th:text="${data.mahasiswa.nim}">12</td>
+                                    <td th:text="${data.mahasiswa.nama}">12</td>
+                                    <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
+                                    <td th:text="${data.mahasiswa.angkatan}">2020</td>
+                                    <td th:text="${#temporals.format(data.tanggalRequest, 'dd-MM-yyyy')}"></td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING_TQC}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.APPROVED}">
+                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
+                                        <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
+                                    </td>
+
+                                    <td>
+                                        <!--button-->
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#modal-detail' + data.id}">
+                                            Detail
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'modal-detail'+data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Detail</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div th:if="${not #lists.isEmpty(sertifikat)}" th:each="serti, row : ${sertifikat}">
+                                                            <h4 th:if="${data.id == serti.bebasKewajiban.id}" th:text="${'Keterangan Ujian : ' + serti.keteranganUjian}">DIKAMPUSCENAH</h4>
+                                                            <ul class="list-group">
+                                                                <li th:if="${data.id == serti.bebasKewajiban.id}" class="list-group-item">Jenis : <p th:text="${serti.jenisTes}"></p></li>
+                                                                <li th:if="${data.id == serti.bebasKewajiban.id && serti.keteranganUjian == serti.keteranganUjian.HAFIDZPRENEUR}" class="list-group-item">File :
+                                                                    <a class="btn btn-sm btn-warning" th:if="${data.id == serti.bebasKewajiban.id}" th:href="@{/kewajiban/{sertifikat}/tlc(sertifikat=${serti.id})}">lihat file</a> </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING || data.statusApproveTlc == data.statusApproveTlc.WAITING_TQC ||
+                                    data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
+                                        <!--button-->
+                                        <button type="button" class="btn btn-success btn-outline-success btn-sm" data-toggle="modal" th:data-target="${'#modal-approvedakademik' + data.id}">
+                                            Approved
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'modal-approvedakademik'+data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content">
+                                                    <form th:action="@{/kewajiban/admin/tqc/approve(bebasKewajiban=${data.id})}" method="post">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Perhatian!</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Pastikan bahwa nama tersebut telah menyelesaikan persyaratan dan </p>
+                                                            <p>dinyatakan lulus.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success" type="submit">Approved</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING || data.statusApproveTlc == data.statusApproveTlc.WAITING_TQC ||
+                                    data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
+                                        <button type="submit" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejected'+data.id}">Rejected</button>
+                                        <div class="modal fade" th:id="${'modal-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h2>Histori Komentar</h2>
+                                                        <div th:each="histori, row:${histori}">
+                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
+                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
+                                                        </div>
+                                                        <form th:action="@{/kewajiban/admin/tqc/reject(bebasKewajiban=${data.id})}" method="post">
+                                                            <div class="form-group">
+                                                                <label for="keterangan">Komentar</label>
+                                                                <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="10"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button class="btn btn-danger" type="submit">Reject</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer py-4">
+                            <nav aria-label="...">
+                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+
+<!--modal-->
+
+</body>
+</html>
+
+<script>
+
+</script>

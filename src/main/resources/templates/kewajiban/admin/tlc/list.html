@@ -89,6 +89,9 @@
                                     <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING}">
                                         <button type="button" class="btn btn-warning btn-sm">WAITING</button>
                                     </td>
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING_TLC}">
+                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
+                                    </td>
                                     <td th:if="${data.statusApproveTlc == data.statusApproveTlc.APPROVED}">
                                         <button type="button" class="btn btn-success btn-sm">APPROVED</button>
                                     </td>
@@ -131,7 +134,8 @@
                                         </div>
                                     </td>
 
-                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING || data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING || data.statusApproveTlc == data.statusApproveTlc.WAITING_TLC ||
+                                    data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
                                         <!--button-->
                                         <button type="button" class="btn btn-success btn-outline-success btn-sm" data-toggle="modal" th:data-target="${'#modal-approvedakademik' + data.id}">
                                             Approved
@@ -177,7 +181,8 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING || data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
+                                    <td th:if="${data.statusApproveTlc == data.statusApproveTlc.WAITING || data.statusApproveTlc == data.statusApproveTlc.WAITING_TLC ||
+                                    data.statusApproveTlc == data.statusApproveTlc.REJECTED}">
                                         <button type="submit" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejected'+data.id}">Rejected</button>
                                         <div class="modal fade" th:id="${'modal-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">

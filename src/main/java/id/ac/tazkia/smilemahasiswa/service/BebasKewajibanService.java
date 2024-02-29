@@ -237,6 +237,23 @@ public class BebasKewajibanService {
 
     }
 
+    public void saveTqc(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
+
+        if (bebasKewajiban.getStatusApproveTlc() == StatusApprove.APPROVED) {
+            komentar = "Done";
+        }
+
+        HistoriBebasKewajiban historiBebasKewajiban = new HistoriBebasKewajiban();
+        historiBebasKewajiban.setBebasKewajiban(bebasKewajiban);
+        historiBebasKewajiban.setKomentar(komentar);
+        historiBebasKewajiban.setByBagian(ByBagian.TQC);
+        historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
+        historiBebasKewajiban.setUser(user);
+        historiBebasKewajiban.setUrutan(4);
+        historiBebasKewajibanDao.save(historiBebasKewajiban);
+
+    }
+
     public void saveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
 
         if (bebasKewajiban.getStatusApproveAkademik() == StatusApprove.APPROVED) {

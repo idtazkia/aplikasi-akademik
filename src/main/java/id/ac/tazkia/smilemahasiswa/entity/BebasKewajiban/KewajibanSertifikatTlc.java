@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban;
 
+import groovy.cli.TypedOption;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import lombok.Data;
@@ -32,6 +33,9 @@ public class KewajibanSertifikatTlc {
     private ByBagian keteranganUjian;
 
     private String jenisTes;
+
+    @Enumerated(EnumType.STRING)
+    private Tipe tipe;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
