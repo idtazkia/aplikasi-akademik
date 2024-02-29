@@ -165,4 +165,34 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "    and b.pertemuan_ke = ?3 order by g.nama_karyawan ASC", nativeQuery = true)
     List<ReportUjianDto> reportUjian(TahunAkademik tahunAkademik, Prodi prodi, String jenis);
 
+    @Query(value = "select id,dosen,?1 as dari, ?2 as sampai,  terlambat, concat(round((terlambat * 100)/total,0),'%') as persentase_terlambat,\n" +
+            "tepat_waktu,concat(round((tepat_waktu * 100)/total,0),'%') as persentase_tepat_waktu, total  from\n" +
+            "(select id,dosen, count(dosen) as total, sum(if(status = 'TERLAMBAT',1,0)) as terlambat,  sum(if(status = 'TEPAT_WAKTU',1,0)) as tepat_waktu from\n" +
+            "(select id,nama_karyawan as dosen, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
+            "(select d.id,e.nama_karyawan, c.jam_mulai, a.waktu_mulai + interval 7 hour as waktu_mulai, \n" +
+            "TIMEDIFF(b.waktu_masuk + interval 7 hour,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "from sesi_kuliah as a\n" +
+            "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
+            "inner join jadwal as c on a.id_jadwal = c.id\n" +
+            "inner join dosen as d on b.id_dosen = d.id\n" +
+            "inner join karyawan as e on d.id_karyawan = e.id\n" +
+            "where date(a.waktu_mulai) >= ?1 and date(a.waktu_mulai) <= ?2)as a)\n" +
+            "as a group by dosen) as a", nativeQuery = true)
+    List<Object[]> rekapPresensiDosen(LocalDate dari, LocalDate sampai);
+
+    @Query(value = "select nama_karyawan as dosen, nama_matakuliah, nama_kelas,jam_mulai,waktu_mulai, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
+            "(select e.nama_karyawan,nama_matakuliah, nama_kelas, STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T') as jam_mulai, a.waktu_mulai + interval 7 hour as waktu_mulai, \n" +
+            "TIMEDIFF(b.waktu_masuk + interval 7 hour,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "from sesi_kuliah as a\n" +
+            "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
+            "inner join jadwal as c on a.id_jadwal = c.id\n" +
+            "inner join dosen as d on b.id_dosen = d.id\n" +
+            "inner join karyawan as e on d.id_karyawan = e.id\n" +
+            "inner join matakuliah_kurikulum as f on c.id_matakuliah_kurikulum = f.id\n" +
+            "inner join matakuliah as g on f.id_matakuliah = g.id\n" +
+            "inner join kelas as h on c.id_kelas = h.id\n" +
+            "where d.id = ?1 and date(a.waktu_mulai) >= ?2 and date(a.waktu_mulai) <= ?3)as a\n" +
+            "order by waktu_mulai", nativeQuery = true)
+    List<Object[]> detailPresensiDosen(String idDosen, LocalDate dari, LocalDate sampai);
+
 }

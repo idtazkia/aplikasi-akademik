@@ -35,6 +35,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Controller
@@ -1535,6 +1539,31 @@ public class ReportController {
         response.setHeader("Content-Disposition", "attachment; filename=Data-Report-Ujian-"+ LocalDate.now()+".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
+    }
+
+    // REKAP PRESENSI DOSEN
+
+    @GetMapping("/report/recapitulation/presensiDosen/list")
+    public void listPresensiDosen(Model model, @RequestParam(required = false) String dari, @RequestParam(required = false) String sampai){
+        if (dari != null && sampai != null) {
+            model.addAttribute("tglDari", dari);
+            model.addAttribute("tglSampai", sampai);
+
+            model.addAttribute("listPresensi", presensiDosenDao.rekapPresensiDosen(LocalDate.parse(dari), LocalDate.parse(sampai)));
+        }else{
+            LocalDate now = LocalDate.now(ZoneId.systemDefault());
+            model.addAttribute("tglDari", now.with(TemporalAdjusters.firstDayOfMonth()));
+            model.addAttribute("tglSampai", now.with(TemporalAdjusters.lastDayOfMonth()));
+            model.addAttribute("listPresensi", presensiDosenDao.rekapPresensiDosen(now.with(TemporalAdjusters.firstDayOfMonth()), now.with(TemporalAdjusters.lastDayOfMonth())));
+        }
+    }
+
+    @GetMapping("/report/recapitulation/presensiDosen/detail")
+    public void detailPresensiDosen(Model model, @RequestParam Dosen dosen, @RequestParam String dari, @RequestParam String sampai){
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("tglDari", dari);
+        model.addAttribute("tglSampai", sampai);
+        model.addAttribute("detail", presensiDosenDao.detailPresensiDosen(dosen.getId(), LocalDate.parse(dari), LocalDate.parse(sampai)));
     }
 
 }

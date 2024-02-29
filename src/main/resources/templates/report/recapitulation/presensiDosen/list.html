@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Presensi</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Rekap</h5>
+                                        <span class="h2 font-weight-bold mb-0">Presensi Dosen</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data Presensi</h3>
+                    </div>
+                    <div class="card-footer" >
+                        <div class="card shadow" style="margin-top: 10px; margin-bottom: 10px;">
+                            <form method="get">
+                                <div class="card-header border-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            <input type="date" class="form-control" th:value="${tglDari}"
+                                                   name="dari" >
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            -
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="date" class="form-control" th:value="${tglSampai}"
+                                                   name="sampai" >
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
+                                        </div>
+<!--                                        <div class="col text-right">-->
+<!--                                            <h3 class="mb-0"><i class="fas fa-book"></i> &nbsp; Jumlah SKS (<span style="color: red"></span>)</h3>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="data-table-1" class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Dosen</th>
+                                                <th>Period</th>
+                                                <th>Terlambat</th>
+                                                <th>Persentase </th>
+                                                <th>Tepat Waktu</th>
+                                                <th>Persentase </th>
+                                                <th>Total</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:if="${!#lists.isEmpty(listPresensi)}" th:each="rekap, row : ${listPresensi}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td>
+                                                    <a th:href="@{/report/recapitulation/presensiDosen/detail(dosen=${rekap[0]}, dari=${tglDari}, sampai=${tglSampai})}" th:text="${rekap[1]}"></a>
+                                                </td>
+                                                <td th:text="${(rekap[2] + ' - ' + rekap[3])}"></td>
+                                                <td th:text="${rekap[4]}"></td>
+                                                <td th:text="${rekap[5]}"></td>
+                                                <td th:text="${rekap[6]}"></td>
+                                                <td th:text="${rekap[7]}"></td>
+                                                <td th:text="${rekap[8]}"></td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(listPresensi)}">
+                                                <td colspan="7" class="text-center">
+                                                    <h2>Tidak ada data presensi dosen!</h2>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
