@@ -38,9 +38,9 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
     List<PresensiDosenDto> listPresensiDosen2(Jadwal jadwal);
 
 
-    @Query(value = "\tselect d.nama_karyawan as dosen, e.nama_kelas as kelas, nama_matakuliah as matkul,b.jam_mulai as mulai, a.waktu_masuk as realisasi,\n"
+    @Query(value = "\tselect d.nama_karyawan as dosen, e.nama_kelas as kelas, nama_matakuliah as matkul,b.jam_mulai as mulai, a.waktu_masuk + INTERVAL 7 HOUR as realisasi,\n"
             +
-            "\tTIMEDIFF(a.waktu_masuk,STR_TO_DATE(concat(date(a.waktu_masuk),' ',b.jam_mulai), '%Y-%m-%d %T')) as rangeWaktu, pertemuan, \n"
+            "\tTIMEDIFF(a.waktu_masuk + INTERVAL 7 HOUR,STR_TO_DATE(concat(date(a.waktu_masuk),' ',b.jam_mulai), '%Y-%m-%d %T')) as rangeWaktu, pertemuan, \n"
             +
             "\ta.status_presensi as presensi,count(g.id_sesi_kuliah) as jumlahMahasiswa, \n" +
             "\tsum(if(g.status_presensi = 'HADIR',1,0)) as hadir,\n" +
