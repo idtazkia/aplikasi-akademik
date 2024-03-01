@@ -39,6 +39,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -893,6 +894,7 @@ public class DashboardController {
         model.addAttribute("jmlMhsA", krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik, StatusRecord.AKTIF));
         model.addAttribute("jmlL", krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik, JenisKelamin.PRIA));
         model.addAttribute("jmlP", krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik, JenisKelamin.WANITA));
+        model.addAttribute("persentaseDosen", presensiDosenDao.persentaseKehadiranDosen(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()), LocalDate.now().with(TemporalAdjusters.lastDayOfMonth())));
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);

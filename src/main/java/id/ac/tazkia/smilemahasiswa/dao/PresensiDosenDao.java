@@ -176,7 +176,7 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
             "inner join dosen as d on b.id_dosen = d.id\n" +
             "inner join karyawan as e on d.id_karyawan = e.id\n" +
-            "where date(a.waktu_mulai) >= ?1 and date(a.waktu_mulai) <= ?2)as a)\n" +
+            "where b.status='AKTIF' and date(a.waktu_mulai) >= ?1 and date(a.waktu_mulai) <= ?2)as a)\n" +
             "as a group by dosen) as a", nativeQuery = true)
     List<Object[]> rekapPresensiDosen(LocalDate dari, LocalDate sampai);
 
@@ -191,8 +191,23 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "inner join matakuliah_kurikulum as f on c.id_matakuliah_kurikulum = f.id\n" +
             "inner join matakuliah as g on f.id_matakuliah = g.id\n" +
             "inner join kelas as h on c.id_kelas = h.id\n" +
-            "where d.id = ?1 and date(a.waktu_mulai) >= ?2 and date(a.waktu_mulai) <= ?3)as a\n" +
+            "where b.status='AKTIF' and d.id = ?1 and date(a.waktu_mulai) >= ?2 and date(a.waktu_mulai) <= ?3)as a\n" +
             "order by waktu_mulai", nativeQuery = true)
     List<Object[]> detailPresensiDosen(String idDosen, LocalDate dari, LocalDate sampai);
+
+    @Query(value = "select terlambat, concat(round((terlambat * 100)/total,0),'%') as persentase_terlambat,\n" +
+            "tepat_waktu,concat(round((tepat_waktu * 100)/total,0),'%') as persentase_tepat_waktu, total  from\n" +
+            "(select id,dosen, count(dosen) as total, sum(if(status = 'TERLAMBAT',1,0)) as terlambat,  sum(if(status = 'TEPAT_WAKTU',1,0)) as tepat_waktu from\n" +
+            "(select id,nama_karyawan as dosen, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
+            "(select d.id,e.nama_karyawan, c.jam_mulai, a.waktu_mulai + interval 7 hour as waktu_mulai, \n" +
+            "TIMEDIFF(b.waktu_masuk + interval 7 hour,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "from sesi_kuliah as a\n" +
+            "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
+            "inner join jadwal as c on a.id_jadwal = c.id\n" +
+            "inner join dosen as d on b.id_dosen = d.id\n" +
+            "inner join karyawan as e on d.id_karyawan = e.id\n" +
+            "where b.status='AKTIF' and date(a.waktu_mulai) >= ?1 and date(a.waktu_mulai) <= ?2)as a)\n" +
+            "as a) as a", nativeQuery = true)
+    Object persentaseKehadiranDosen(LocalDate dari, LocalDate sampai);
 
 }
