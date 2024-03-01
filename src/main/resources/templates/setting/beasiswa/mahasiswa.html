@@ -118,6 +118,7 @@
                                     <th>Prodi</th>
                                     <th>Angkatan</th>
                                     <th>IPK</th>
+                                    <th></th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -131,6 +132,43 @@
                                     <td th:text="${data[3]}"></td>
                                     <td th:text="${data[4]}"></td>
                                     <td th:text="${data[5]}"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning btn-sm" th:id="${data[8]}" onclick="detailIp(this.id)">
+                                            <i class="fas fa-eye"></i> Detail IP
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'modal-ip' + data[8]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title" id="modal-title-notification">Detail IP Per Semester</h6>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div class="table-responsive">
+                                                            <table id="table-ip" class="table align-items-center table-flush">
+                                                                <thead class="thead-light">
+                                                                <tr>
+                                                                    <th class="text-center">Tahun Akademik</th>
+                                                                    <th class="text-center">SKS</th>
+                                                                    <th class="text-center">IPS</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
                                     <td th:if="${data[6] == 'AKTIF'}"><span th:text="${data[6]}" class="btn btn-info btn-sm"></span></td>
                                     <td th:if="${data[6] == 'LULUS'}"><span th:text="${data[6]}" class="btn btn-success btn-sm"></span></td>
                                     <td th:if="${data[6] == 'CUTI'}"><span th:text="${data[6]}" class="btn btn-warning btn-sm"></span></td>
@@ -190,4 +228,25 @@
     $(document).ready(function (){
         $('.js-example-placeholder-single').select2();
     });
+
+    function detailIp(id){
+
+        $('#modal-ip'+id).modal('show');
+
+        const url = '/get-ip/'+id;
+        $.getJSON(url, function (data){
+            $('#table-ip tbody').empty();
+
+            $.each(data, function (key, entry){
+                let rowT1 = '<tr>' +
+                    '<td class="text-center">' + entry[0] + '</td>' +
+                    '<td class="text-center">' + entry[1] + '</td>' +
+                    '<td class="text-center">' + entry[2] + '</td>' +
+                    '</tr>';
+                $('#table-ip tbody').append(rowT1);
+
+                console.log("data request : " + entry);
+            });
+        });
+    }
 </script>

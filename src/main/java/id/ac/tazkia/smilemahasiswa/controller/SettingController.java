@@ -15,10 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -76,6 +73,9 @@ public class SettingController {
 
     @Autowired
     private MahasiswaBeasiswaDao mahasiswaBeasiswaDao;
+
+    @Autowired
+    private KrsDetailDao krsDetailDao;
 
 //    Attribute
 
@@ -470,6 +470,14 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         model.addAttribute("beasiswa", beasiswa);
         model.addAttribute("mahasiswa", beasiswaDao.rekapBeasiswaMahasiwa(id));
         model.addAttribute("listMahasiswa", mahasiswaDao.findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord.AKTIF, "AKTIF"));
+    }
+
+    @GetMapping("/get-ip/{id}")
+    @ResponseBody
+    public List<Object[]> getIpPerMahasiswa(@PathVariable String id){
+        Mahasiswa m = mahasiswaDao.findById(id).get();
+
+        return krsDetailDao.historyMahasiswa(m);
     }
 
     @GetMapping("/setting/beasiswa/rekap")
