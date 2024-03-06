@@ -7455,25 +7455,35 @@ public class StudiesActivityController {
                 TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
                 model.addAttribute("selectProdi", prodi);
-//                model.addAttribute("selectAngkatan", angkatan);
+                model.addAttribute("selectAngkatan", angkatan);
 //                model.addAttribute("selectDosen", dosen);
 
 
                 if(prodi != null){
                         if (StringUtils.hasText(search)) {
                                 model.addAttribute("search", search);
-                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1ProdiSearch(tahunAkademik,search,prodi,page));
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1ProdiSearch(tahunAkademik,search,prodi,angkatan,page));
                         }else{
-                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1Prodi(tahunAkademik,prodi,page));
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1Prodi(tahunAkademik,prodi,angkatan,page));
                         }
                 }else{
                         if (StringUtils.hasText(search)) {
                                 model.addAttribute("search", search);
-                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1Search(tahunAkademik,search,page));
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1Search(tahunAkademik,search,angkatan,page));
                         }else{
-                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik,page));
+                                model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik,angkatan,page));
                         }
                 }
+
+        }
+
+        @PostMapping("/studiesActivity/krs/statusPembayaran/statusAktif/save/{id}")
+        @ResponseBody
+        public void prosesPloting(@PathVariable String id,@RequestParam (required = false) String statusAktif){
+                Mahasiswa mahasiswa = mahasiswaDao.findById(id).get();
+
+                mahasiswa.setStatusAktif(statusAktif);
+                mahasiswaDao.save(mahasiswa);
 
         }
 
