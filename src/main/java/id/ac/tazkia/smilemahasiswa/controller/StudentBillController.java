@@ -54,6 +54,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -854,6 +855,27 @@ public class StudentBillController {
 
                             } else {
 
+                                if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
+                                    List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+                                    if (cekSisaCicilan != null) {
+                                        for (RequestCicilan listCicilan : cekSisaCicilan){
+                                            listCicilan.setStatus(StatusRecord.HAPUS);
+                                            listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                                            listCicilan.setStatusApprove(StatusApprove.HAPUS);
+                                            requestCicilanDao.save(listCicilan);
+                                        }
+                                    }
+                                }
+
+                                if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
+                                    RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
+                                    if (rp != null) {
+                                        rp.setStatus(StatusRecord.HAPUS);
+                                        rp.setStatusApprove(StatusApprove.HAPUS);
+                                        requestPenangguhanDao.save(rp);
+                                    }
+                                }
+
                                 tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
                                 tagihan1.setStatus(StatusRecord.NONAKTIF);
                                 tagihanDao.save(tagihan1);
@@ -881,27 +903,6 @@ public class StudentBillController {
                                 EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, false, tahun);
                                 if (enableFiture == null) {
                                     createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
-                                }
-
-                                if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
-                                    List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
-                                    if (cekSisaCicilan != null) {
-                                        for (RequestCicilan listCicilan : cekSisaCicilan){
-                                            listCicilan.setStatus(StatusRecord.HAPUS);
-                                            listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
-                                            listCicilan.setStatusApprove(StatusApprove.HAPUS);
-                                            requestCicilanDao.save(listCicilan);
-                                        }
-                                    }
-                                }
-
-                                if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
-                                    RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
-                                    if (rp != null) {
-                                        rp.setStatus(StatusRecord.HAPUS);
-                                        rp.setStatusApprove(StatusApprove.HAPUS);
-                                        requestPenangguhanDao.save(rp);
-                                    }
                                 }
 
                                 if (cicilan != null) {
@@ -2001,7 +2002,7 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/cicilan/payment/manual")
-    public String manualPaymentCicilan(@ModelAttribute @Valid Pembayaran pembayaran, @RequestParam(required = false) String tagihan,
+    public String manualPaymentCicilan(@ModelAttribute @Valid Pembayaran pembayaran, @RequestParam(required = false) String tagihan, @RequestParam String waktu,
                                        @RequestParam(required = false) String rc, MultipartFile fileBukti) throws IOException {
 
         Tagihan t = tagihanDao.findById(tagihan).get();
@@ -2038,7 +2039,9 @@ public class StudentBillController {
         pembayaran.setReferensi(idFile + "." + extension);
         fileBukti.transferTo(tujuan);
         log.debug("file sudah dicopy ke : {}" + tujuan.getAbsolutePath());
-        pembayaran.setWaktuBayar(LocalDateTime.now());
+        LocalDate date = LocalDate.parse(waktu);
+        LocalDateTime waktuBayar = date.atTime(LocalTime.now());
+        pembayaran.setWaktuBayar(waktuBayar);
         pembayaran.setAmount(requestCicilan.getNilaiCicilan());
         pembayaranDao.save(pembayaran);
 
@@ -2109,6 +2112,12 @@ public class StudentBillController {
 
         return "redirect:../../requestCicilan/approval?tagihan="+tagihan;
 
+    }
+
+    @PostMapping("/studentBill/requestCicilan/resend")
+    public String resendCicilan(@RequestParam RequestCicilan cicilan){
+
+        return "";
     }
 
     @GetMapping("/studentBill/requestCicilan/detail")
