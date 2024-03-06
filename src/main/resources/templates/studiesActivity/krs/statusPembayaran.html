@@ -133,14 +133,25 @@
                                                     </div>
                                                     <div class="input-group mb-3">
                                                         <select name="prodi" class="form-control">
-                                                            <option disabled selected>Pilih Prodi</option>
+                                                            <option disabled selected value="">-- Pilih Prodi --</option>
                                                             <option></option>
                                                             <option th:each="data : ${prodi}"
                                                                     th:selected="(${data} == *{selectProdi})"
                                                                     th:text="${data.namaProdi}"
-                                                                    th:value="${data.id}">STEI TAZKIA</option>
+                                                                    th:value="${data.id}">MBS</option>
                                                         </select>
                                                     </div>
+
+                                                    <div class="input-group mb-3">
+                                                        <select name="angkatan" class="form-control" required="required">
+                                                            <option value="" disabled selected>-- Pilih Angkatan--</option>
+                                                            <option th:each="data : ${angkatan}"
+                                                                    th:selected="(${data} == *{selectAngkatan})"
+                                                                    th:text="${data}"
+                                                                    th:value="${data}">ANGKATAN 2023</option>
+                                                        </select>
+                                                    </div>
+
                                                     <div class="row" style="padding-top: 10px; padding-bottom: 20px;">
                                                         <div class="col-md-12" style="text-align: center;">
                                                             <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>
@@ -167,7 +178,8 @@
                                                         <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>
                                                         <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
                                                         <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Total SKS</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status KRS</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Status Mahasiswa</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody class="marquee">
@@ -178,8 +190,28 @@
                                                         <td th:text="${data.getNamaProdi}"></td>
                                                         <td th:text="${data.getTotalSks}"></td>
                                                         <td th:text="${data.getStatusKrs}"></td>
+                                                        <input type="hidden" name="id">
+                                                        <td >
+                                                            <select name="statusAktif"
+                                                                    th:id="${data.getId}"
+                                                                    style="width: 100%!important;"
+                                                                    onchange="simpanStatusAktif(this)"
+                                                                    class="team js-example-basic-multiple js-states form-control js-data-example-ajax">
+
+                                                                <option th:text="${data.getStatusAktif}"></option>
+                                                                <option value="" disabled></option>
+                                                                <option value="" disabled>--Update Data--</option>
+                                                                <option value="AKTIF">AKTIF</option>
+                                                                <option value="NONAKTIF">NONAKTIF</option>
+                                                                <option value="MENGUNDURKAN_DIRI">MENGUNDURKAN_DIRI</option>
+                                                                <option value="CUTI">CUTI</option>
+                                                                <option value="LULUS">LULUS</option>
+
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                     </tbody>
+
                                                 </table>
                                             </div>
                                             <div class="card-footer py-4">
@@ -213,7 +245,39 @@
 </html>
 
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+
 <script>
+
+
+    function simpanStatusAktif(arg) {
+        var id = arg.getAttribute('id');
+        var value = arg.value;
+        var idMahasiswa = id.slice(0);
+
+        var token = $("input[name='_csrf']").val();
+        var url = "/studiesActivity/krs/statusPembayaran/statusAktif/save/" + idMahasiswa + '?statusAktif=' + value;
+
+        $.ajax({
+            url: url,
+            contentType: "application/json;charset=UTF-8",
+            headers: {"X-CSRF-TOKEN": token},
+            method: 'post',
+            dataType: 'JSON',
+            success: function (data) {
+
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Data Tersimpan ',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+
+            }
+        })
+    }
+
+
 
     $(".js-example-placeholder-single").select2({
         placeholder: "Pilih Salah Satu",

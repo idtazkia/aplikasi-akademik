@@ -1093,14 +1093,14 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         List<KrsDetail> findByKrsAndStatusAndStatusKonversiAndGradeIsNotNull(Krs krs, StatusRecord status, StatusRecord mbkm);
 
-        @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
+        @Query(value = "select a.id as id, a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
                         +
                         "if(c.id is null, 'BELUM BAYAR',\n" +
-                        "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs\n" +
+                        "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs, a.status_aktif as statusAktif\n" +
                         "from\n" +
-                        "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+                        "(select a.id, nim, a.nama, b.nama_prodi, a.status_aktif from mahasiswa as a\n" +
                         "inner join prodi as b on a.id_prodi = b.id\n" +
-                        "where a.status = 'AKTIF') as a\n" +
+                        "where a.status = 'AKTIF' and a.angkatan = ?2) as a\n" +
                         "left join\n" +
                         "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                         "from krs_detail as kd\n" +
@@ -1113,9 +1113,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "as c on a.id = c.id_mahasiswa\n" +
                         "order by a.nim", countQuery = "select count(a.id)\n" +
                 "from\n" +
-                "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+                "(select a.id, nim, a.nama, b.nama_prodi, a.status_aktif from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF') as a\n" +
+                "where a.status = 'AKTIF' and a.angkatan = ?2) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1127,16 +1127,16 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "(select id_mahasiswa,id from krs where status = 'AKTIF' and id_tahun_akademik = ?1) \n" +
                 "as c on a.id = c.id_mahasiswa\n" +
                 "order by a.nim", nativeQuery = true)
-        Page<TotalSksDto> listTotalSks1(TahunAkademik tahunAkademik, Pageable page);
+        Page<TotalSksDto> listTotalSks1(TahunAkademik tahunAkademik, String angkatan, Pageable page);
 
-        @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
+        @Query(value = "select a.id as id, a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
                 +
                 "if(c.id is null, 'BELUM BAYAR',\n" +
-                "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs\n" +
+                "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs, a.status_aktif as statusAktif\n" +
                 "from\n" +
-                "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+                "(select a.id, nim, a.nama, b.nama_prodi, a.status_aktif from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF' and a.nama LIKE %?2%) as a\n" +
+                "where a.status = 'AKTIF' and a.nama LIKE %?2% and a.angkatan = ?3) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1154,7 +1154,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "from\n" +
                 "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF') as a\n" +
+                "where a.status = 'AKTIF' and a.nama LIKE %?2% and a.angkatan = ?3) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1169,16 +1169,16 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "where krs.status = 'AKTIF' and krs.id_tahun_akademik = ?1 and mhw.nama LIKE %?2%) \n" +
                 "as c on a.id = c.id_mahasiswa\n" +
                 "order by a.nim", nativeQuery = true)
-        Page<TotalSksDto> listTotalSks1Search(TahunAkademik tahunAkademik, String search,Pageable page);
+        Page<TotalSksDto> listTotalSks1Search(TahunAkademik tahunAkademik, String search,String angkatan,Pageable page);
 
-        @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
+        @Query(value = "select a.id as id, a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
                 +
                 "if(c.id is null, 'BELUM BAYAR',\n" +
-                "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs\n" +
+                "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs, a.status_aktif as statusAktif\n" +
                 "from\n" +
-                "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+                "(select a.id, nim, a.nama, b.nama_prodi, a.status_aktif from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF' and b.id = ?2) as a\n" +
+                "where a.status = 'AKTIF' and b.id = ?2 and a.angkatan = ?3) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1193,7 +1193,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "from\n" +
                 "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF' and b.id = ?2) as a\n" +
+                "where a.status = 'AKTIF' and b.id = ?2 and a.angkatan = ?3) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1205,16 +1205,16 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "(select id_mahasiswa,id from krs where status = 'AKTIF' and id_tahun_akademik = ?1) \n" +
                 "as c on a.id = c.id_mahasiswa\n" +
                 "order by a.nim", nativeQuery = true)
-        Page<TotalSksDto> listTotalSks1Prodi(TahunAkademik tahunAkademik, Prodi prodi, Pageable page);
+        Page<TotalSksDto> listTotalSks1Prodi(TahunAkademik tahunAkademik, Prodi prodi,String angkatan, Pageable page);
 
-        @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
+        @Query(value = "select a.id as id, a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
                 +
                 "if(c.id is null, 'BELUM BAYAR',\n" +
-                "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs\n" +
+                "if(totalSks is null, 'BELUM KRS','SUDAH KRS')) as statusKrs, a.status_aktif as statusAktif\n" +
                 "from\n" +
-                "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
+                "(select a.id, nim, a.nama, b.nama_prodi, a.status_aktif from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF' and a.nama LIKE %?2% and b.id = ?3) as a\n" +
+                "where a.status = 'AKTIF' and a.nama LIKE %?2% and b.id = ?3 and a.angkatan = ?4) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1232,7 +1232,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "from\n" +
                 "(select a.id, nim, a.nama, b.nama_prodi from mahasiswa as a\n" +
                 "inner join prodi as b on a.id_prodi = b.id\n" +
-                "where a.status = 'AKTIF' and a.nama LIKE %?2% and b.id = ?3) as a\n" +
+                "where a.status = 'AKTIF' and a.nama LIKE %?2% and b.id = ?3 and a.angkatan = ?4) as a\n" +
                 "left join\n" +
                 "(select kd.id_mahasiswa, sum(mku.jumlah_sks) as totalSks\n" +
                 "from krs_detail as kd\n" +
@@ -1247,7 +1247,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "where krs.status = 'AKTIF' and krs.id_tahun_akademik = ?1 and mhw.nama LIKE %?2%) \n" +
                 "as c on a.id = c.id_mahasiswa\n" +
                 "order by a.nim", nativeQuery = true)
-        Page<TotalSksDto> listTotalSks1ProdiSearch(TahunAkademik tahunAkademik, String search, Prodi prodi,Pageable page);
+        Page<TotalSksDto> listTotalSks1ProdiSearch(TahunAkademik tahunAkademik, String search, Prodi prodi, String angkatan,Pageable page);
 
         @Query(value = "select a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
                         +
