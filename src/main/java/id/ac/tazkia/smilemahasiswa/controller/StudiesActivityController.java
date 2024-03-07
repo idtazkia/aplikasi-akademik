@@ -3407,7 +3407,7 @@ public class StudiesActivityController {
 
                         if (!validate.equals(0)) {
                                 predicateRow.createCell(1).setCellValue("Good");
-                                predicateRow.getCell(21).setCellStyle(styleData);
+                                predicateRow.getCell(1).setCellStyle(styleData);
                         } else {
                                 predicateRow.createCell(1).setCellValue("Excellent");
                                 predicateRow.getCell(1).setCellStyle(styleData);
