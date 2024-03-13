@@ -664,7 +664,7 @@ public class PresensiService {
         }
 
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
-        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai()));
+        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai().plusHours(7)));
         sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), sesiKuliah.getJadwal().getJamSelesai()));
         sesiKuliah.setDetailPertemuan(jadwalDto.getDetailPertemuan());
         sesiKuliah.setTanggalInput(LocalDateTime.now());
