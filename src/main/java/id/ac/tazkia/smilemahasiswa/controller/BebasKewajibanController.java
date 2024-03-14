@@ -359,9 +359,9 @@ public class BebasKewajibanController {
             model.addAttribute("kabag", "Kabag Perpus");
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
+                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
             }else{
-                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotOrderByTanggalRequest(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
+                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
             }
             model.addAttribute("listKewajiban", kewajibanPerpusMahasiswaDao.findAll());
             model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.KABAG_PERPUS, StatusRecord.AKTIF));

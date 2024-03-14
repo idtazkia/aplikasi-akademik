@@ -21,14 +21,14 @@ public interface BebasKewajibanDao extends PagingAndSortingRepository<Pendaftara
 
     List<PendaftaranBebasKewajiban> findByStatusAndStatusApprovePerpusNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove);
 
-    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
+    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotOrderByStatusApprovePerpus(StatusRecord status, StatusApprove statusApprove, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKeuanganNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotInOrderByTanggalRequest(StatusRecord status, List<StatusApprove> statusApprove, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveAkademikNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, Pageable page);
 
     List<PendaftaranBebasKewajiban> findByStatusAndStatusApprovePerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim);
 
-    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
+    Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByStatusApprovePerpus(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKeuanganNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveTlcNotInAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, List<StatusApprove> statusApprove, String nama, String nim, Pageable page);
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveAkademikNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaAngkatanContainingIgnoreCaseOrMahasiswaIdProdiNamaProdiContainingIgnoreCaseOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove, String nama, String nim, String angkatan, String namaProdi, Pageable page);
