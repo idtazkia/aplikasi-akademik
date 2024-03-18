@@ -762,8 +762,6 @@ public class GraduationController {
     }
 
     // Lecturer
-
-    @PreAuthorize("hasAnyAuthority('VIEW_DOSEN','VIEW_KPS')")
     @GetMapping("/graduation/lecture/list")
     public void listLecture(Authentication authentication, Model model) {
         User user = currentUserService.currentUser(authentication);
