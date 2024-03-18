@@ -3,15 +3,17 @@ package id.ac.tazkia.smilemahasiswa.service;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.PendaftaranBebasKewajiban;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -26,7 +28,7 @@ public class MailService {
     private MustacheFactory mustacheFactory;
 
     @Scheduled(cron = "0 00 20 * * *", zone = "Asia/Jakarta")
-    public void testNotifEmail(){
+    public void testNotifEmail() {
         gmailApiService.kirimEmail(
                 "Smile Notifikasi",
                 "smile.notifikasi@tazkia.ac.id",
@@ -36,33 +38,33 @@ public class MailService {
     }
 
     public void detailWisuda(WisudaDto wisudaDto) {
-            Mustache templateEmail = mustacheFactory.compile("templates/email/wisuda/detail.html");
-            Map<String, String> data = new HashMap<>();
-            data.put("nama", wisudaDto.getNama());
-            data.put("tanggal", wisudaDto.getTanggal().toString());
-            data.put("kelamin", wisudaDto.getKelamin());
-            data.put("ayah", wisudaDto.getAyah());
-            data.put("ibu", wisudaDto.getIbu());
-            data.put("nomor", wisudaDto.getNomor());
-            if (wisudaDto.getBeasiswa() != null) {
-                data.put("beasiswa", wisudaDto.getBeasiswa());
-            }else {
-                data.put("beasiswa", "-");
+        Mustache templateEmail = mustacheFactory.compile("templates/email/wisuda/detail.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nama", wisudaDto.getNama());
+        data.put("tanggal", wisudaDto.getTanggal().toString());
+        data.put("kelamin", wisudaDto.getKelamin());
+        data.put("ayah", wisudaDto.getAyah());
+        data.put("ibu", wisudaDto.getIbu());
+        data.put("nomor", wisudaDto.getNomor());
+        if (wisudaDto.getBeasiswa() != null) {
+            data.put("beasiswa", wisudaDto.getBeasiswa());
+        } else {
+            data.put("beasiswa", "-");
 
-            }
-            data.put("idBeasiswa", wisudaDto.getIdBeasiswa());
-            data.put("toga", wisudaDto.getToga());
-            data.put("judulIndo", wisudaDto.getJudulIndo());
-            data.put("judulInggris", wisudaDto.getJudulInggris());
+        }
+        data.put("idBeasiswa", wisudaDto.getIdBeasiswa());
+        data.put("toga", wisudaDto.getToga());
+        data.put("judulIndo", wisudaDto.getJudulIndo());
+        data.put("judulInggris", wisudaDto.getJudulInggris());
 
-            StringWriter output = new StringWriter();
-            templateEmail.execute(output, data);
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
 
-            gmailApiService.kirimEmail(
-                    "Smile Notifikasi",
-                    wisudaDto.getEmail(),
-                    "Pendaftaran Wisuda ",
-                    output.toString());
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                wisudaDto.getEmail(),
+                "Pendaftaran Wisuda ",
+                output.toString());
 
     }
 
@@ -83,7 +85,7 @@ public class MailService {
 
     }
 
-    public void validasiSoal(Soal soal,String status) {
+    public void validasiSoal(Soal soal, String status) {
         if (status.equals("APPROVE")) {
             Mustache templateEmail = mustacheFactory.compile("templates/email/soal/approve.html");
             Map<String, String> data = new HashMap<>();
@@ -102,7 +104,7 @@ public class MailService {
                     output.toString());
         }
 
-        if (status.equals("REJECT")){
+        if (status.equals("REJECT")) {
             Mustache templateEmail = mustacheFactory.compile("templates/email/soal/reject.html");
             Map<String, String> data = new HashMap<>();
             data.put("dosen", soal.getJadwal().getDosen().getKaryawan().getNamaKaryawan());
@@ -121,7 +123,7 @@ public class MailService {
         }
     }
 
-    public void suksesKrs(KrsApproval krsApproval, KelasMahasiswa kelasMahasiswa){
+    public void suksesKrs(KrsApproval krsApproval, KelasMahasiswa kelasMahasiswa) {
         Mustache templateEmail = mustacheFactory.compile("templates/email/krs/sukses.html");
         Map<String, String> data = new HashMap<>();
         data.put("nama", krsApproval.getMahasiswa().getNama());
@@ -138,55 +140,55 @@ public class MailService {
                 output.toString());
     }
 
-    public void mailApprovePerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailApprovePerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/perpustakaan/suksesStaff.html");
     }
 
-    public void mailRejectPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailRejectPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/perpustakaan/rejectStaff.html");
     }
 
-    public void mailApproveKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailApproveKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/perpustakaan/suksesKabag.html");
     }
 
-    public void mailRejectKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailRejectKabagPerpus(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/perpustakaan/rejectKabag.html");
     }
 
-    public void mailApproveKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailApproveKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/keuangan/approve.html");
     }
 
-    public void mailRejectKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailRejectKeuangan(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/keuangan/reject.html");
     }
 
-    public void mailApproveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailApproveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tlc/approve.html");
     }
 
-    public void mailRejectTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailRejectTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tlc/reject.html");
     }
 
-    public void mailApproveTQC(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailApproveTQC(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tqc/approve.html");
     }
 
-    public void mailRejectTQC(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailRejectTQC(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/tqc/reject.html");
     }
 
-    public void mailApproveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailApproveAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/akademik/approve.html");
     }
 
-    public void mailRejectAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar){
+    public void mailRejectAkademik(PendaftaranBebasKewajiban bebasKewajiban, String komentar) {
         templateKewajiban(bebasKewajiban, komentar, "templates/email/bebasKewajiban/akademik/reject.html");
     }
 
-    private void templateKewajiban(PendaftaranBebasKewajiban bebasKewajiban, String komentar, String lokasiTemplate){
+    private void templateKewajiban(PendaftaranBebasKewajiban bebasKewajiban, String komentar, String lokasiTemplate) {
         Mustache templateEmail = mustacheFactory.compile(lokasiTemplate);
         Map<String, String> data = new HashMap<>();
         data.put("nama", bebasKewajiban.getMahasiswa().getNama());
@@ -195,7 +197,7 @@ public class MailService {
         data.put("prodi", bebasKewajiban.getMahasiswa().getIdProdi().getNamaProdi());
         if (bebasKewajiban.getMahasiswa().getIdKonsentrasi() == null) {
             data.put("konsentrasi", "-");
-        }else{
+        } else {
             data.put("konsentrasi", bebasKewajiban.getMahasiswa().getIdKonsentrasi().getNamaKonsentrasi());
         }
         data.put("komentar", komentar);
@@ -209,7 +211,7 @@ public class MailService {
                 output.toString());
     }
 
-    public void templateNotifAdmin(PendaftaranBebasKewajiban bebasKewajiban, String bagian, String username){
+    public void templateNotifAdmin(PendaftaranBebasKewajiban bebasKewajiban, String bagian, String username) {
         Mustache templateEmail = mustacheFactory.compile("templates/email/bebasKewajiban/admin/request.html");
         Map<String, String> data = new HashMap<>();
         data.put("nama", bebasKewajiban.getMahasiswa().getNama());
@@ -226,22 +228,27 @@ public class MailService {
                 output.toString());
     }
 
-    
-    public void attendanceReminder(Jadwal jadwal) {
-            Mustache templateEmail = mustacheFactory.compile("templates/email/attendance/reminder.html");
-            Map<String, String> data = new HashMap<>();
-            data.put("dosen", jadwal.getDosen().getKaryawan().getNamaKaryawan());
-            data.put("matakuliah", jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-            data.put("kelas", jadwal.getKelas().getNamaKelas());
 
-            StringWriter output = new StringWriter();
-            templateEmail.execute(output, data);
+    public void attendanceReminder(SesiKuliah sesiKuliah, Jadwal jadwal) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/attendance/reminder.html");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id"));
+        String tanggal = sesiKuliah.getWaktuMulai().format(formatter);
 
-            gmailApiService.kirimEmail(
-                    "Smile Notifikasi",
-                    jadwal.getDosen().getKaryawan().getIdUser().getUsername(),
-                    "Attendance Reminder ",
-                    output.toString());
+        Map<String, String> data = new HashMap<>();
+        data.put("dosen", jadwal.getDosen().getKaryawan().getNamaKaryawan());
+        data.put("matakuliah", jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        data.put("kelas", jadwal.getKelas().getNamaKelas());
+        data.put("tanggal", tanggal);
+        data.put("pertemuan", sesiKuliah.getPertemuanKe().toString());
+
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                jadwal.getDosen().getKaryawan().getIdUser().getUsername(),
+                "Attendance Reminder ",
+                output.toString());
 
     }
 
