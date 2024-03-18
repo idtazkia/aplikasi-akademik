@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>KRS</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -127,10 +129,15 @@
                                             <div class="form-group">
                                                 <form method="get">
                                                     <div class="input-group mb-3">
-
-                                                        <input type="text" name="search" class="form-control" placeholder="Cari Nama Mahasiswa/i" th:value="${search}">
-
+                                                        <select name="angkatan" class="form-control" required="required">
+                                                            <option value="" disabled selected>-- Pilih Angkatan--</option>
+                                                            <option th:each="data : ${angkatan}"
+                                                                    th:selected="(${data} == *{selectAngkatan})"
+                                                                    th:text="${data}"
+                                                                    th:value="${data}">ANGKATAN 2023</option>
+                                                        </select>
                                                     </div>
+
                                                     <div class="input-group mb-3">
                                                         <select name="prodi" class="form-control">
                                                             <option disabled selected value="">-- Pilih Prodi --</option>
@@ -143,13 +150,9 @@
                                                     </div>
 
                                                     <div class="input-group mb-3">
-                                                        <select name="angkatan" class="form-control" required="required">
-                                                            <option value="" disabled selected>-- Pilih Angkatan--</option>
-                                                            <option th:each="data : ${angkatan}"
-                                                                    th:selected="(${data} == *{selectAngkatan})"
-                                                                    th:text="${data}"
-                                                                    th:value="${data}">ANGKATAN 2023</option>
-                                                        </select>
+
+                                                        <input type="text" name="search" class="form-control" placeholder="Cari Nama Mahasiswa/i" th:value="${search}">
+
                                                     </div>
 
                                                     <div class="row" style="padding-top: 10px; padding-bottom: 20px;">
@@ -163,9 +166,18 @@
                                         </div>
 
                                     </div>
+
                                     <div class="card mb-4">
+
                                         <div class="card-header pb-0">
-                                            <h4>List Total SKS</h4>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <h3 class="box-title">List Total SKS</h3>
+                                                </div>
+                                                <div class="col-sm-6" align="right">
+                                                    Show entries <span sd:page-size-selector="javascript"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="card-body px-0 pt-0 pb-2">
                                             <!--                                    <div class="table-responsive p-0">-->
@@ -243,9 +255,8 @@
 </body>
 
 </html>
-
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
 <script>
 
 
@@ -257,6 +268,9 @@
         var token = $("input[name='_csrf']").val();
         var url = "/studiesActivity/krs/statusPembayaran/statusAktif/save/" + idMahasiswa + '?statusAktif=' + value;
 
+        console.log("Token:", token);
+        console.log("URL:", url);
+
         $.ajax({
             url: url,
             contentType: "application/json;charset=UTF-8",
@@ -264,6 +278,7 @@
             method: 'post',
             dataType: 'JSON',
             success: function (data) {
+                console.log("Data saved successfully:", data); // Add this line for debugging
 
                 Swal.fire({
                     position: 'top-end',
@@ -272,10 +287,14 @@
                     showConfirmButton: false,
                     timer: 2000
                 })
-
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", error)
             }
         })
     }
+
+
 
 
 
