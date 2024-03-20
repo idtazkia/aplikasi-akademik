@@ -86,12 +86,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Dosen :</label>
-                                            <select name="dosen" th:field="*{dosen}" class="form-control">
-                                                <option value=""></option>
-                                                <option th:each="dosen : ${teamTeaching}"
-                                                    th:text="${dosen.dosen.karyawan.namaKaryawan}"
-                                                    th:value="${dosen.dosen.id}">sdasd</option>
-                                            </select>
+                                            <input type="text" class="form-control" readonly th:value="${sesi.dosen.karyawan.namaKaryawan}">
+                                            <input type="hidden" name="dosen" th:field="*{dosen}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
