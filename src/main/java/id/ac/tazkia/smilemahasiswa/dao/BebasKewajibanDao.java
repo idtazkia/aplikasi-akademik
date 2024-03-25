@@ -19,6 +19,8 @@ public interface BebasKewajibanDao extends PagingAndSortingRepository<Pendaftara
 
     PendaftaranBebasKewajiban findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusRecord statusRecord);
 
+    PendaftaranBebasKewajiban findByMahasiswaAndStatusApproveTlc(Mahasiswa mhs, StatusApprove status);
+
     List<PendaftaranBebasKewajiban> findByStatusAndStatusApprovePerpusNotOrderByTanggalRequest(StatusRecord status, StatusApprove statusApprove);
 
     Page<PendaftaranBebasKewajiban> findByStatusAndStatusApproveKabagPerpusNotOrderByStatusApprovePerpus(StatusRecord status, StatusApprove statusApprove, Pageable page);

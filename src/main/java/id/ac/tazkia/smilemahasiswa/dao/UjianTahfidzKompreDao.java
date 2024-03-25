@@ -17,6 +17,8 @@ public interface UjianTahfidzKompreDao extends PagingAndSortingRepository<UjianT
     @Query(value = "SELECT * FROM ujian_tahfidz_kompre where id_mahasiswa = ?1 and jenis_ujian = ?2 order by tanggal_pengajuan desc limit 1", nativeQuery = true)
     UjianTahfidzKompre getUjianTerakhir(Mahasiswa mahasiswa,String jenis);
 
+    UjianTahfidzKompre findByMahasiswaAndJenisUjianAndStatusLulus(Mahasiswa mhs, String jenis, StatusRecord status);
+
     List<UjianTahfidzKompre> findByMahasiswaAndJenisUjian(Mahasiswa mahasiswa,String  ujian);
 
     List<UjianTahfidzKompre> findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord statusRecord, String statusAdmin);

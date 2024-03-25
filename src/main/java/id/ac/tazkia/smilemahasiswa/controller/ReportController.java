@@ -112,6 +112,18 @@ public class ReportController {
     @Autowired
     private PendaftaranMbkmDao pendaftaranMbkmDao;
 
+    @Autowired
+    private NoteDao noteDao;
+
+    @Autowired
+    private SidangDao sidangDao;
+
+    @Autowired
+    private UjianTahfidzKompreDao ujianTahfidzKompreDao;
+
+    @Autowired
+    private BebasKewajibanDao bebasKewajibanDao;
+
     @Value("${upload.soal}")
     private String uploadFolder;
 
@@ -461,6 +473,9 @@ public class ReportController {
             String URL = "https://api.whatsapp.com/send?phone=" + mahasiswa.getTeleponSeluler();
             String urlProdi = "https://smile.tazkia.ac.id/mahasiswa/form?mahasiswa=" + mahasiswa.getNim();
             KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
+            Note note = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
+            Seminar seminar = seminarDao.findByNoteAndStatus(note, StatusApprove.APPROVED);
+            Sidang sidang = sidangDao.findBySeminarAndStatusSidang(seminar, StatusApprove.APPROVED);
 
             model.addAttribute("mhs", mahasiswa);
             model.addAttribute("kelas", kelasMahasiswa);
@@ -474,6 +489,13 @@ public class ReportController {
             model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
             model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
             model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
+            model.addAttribute("pembimbing", note);
+            model.addAttribute("seminar", seminar);
+            model.addAttribute("sidang", sidang);
+            model.addAttribute("tahfidz", ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianTahfidz", StatusRecord.LULUS));
+            model.addAttribute("kompre", ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianKomprehensif", StatusRecord.LULUS));
+            model.addAttribute("inggris", bebasKewajibanDao.findByMahasiswaAndStatusApproveTlc(mahasiswa, StatusApprove.APPROVED));
+            model.addAttribute("konversi", krsDetailDao.findByMahasiswaAndStatusAndStatusKonversi(mahasiswa, StatusRecord.AKTIF, StatusRecord.AKTIF));
 
         }
     }

@@ -34,6 +34,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         List<KrsDetail> findByStatusKonversiAndStatusAndKrsAndMahasiswa(StatusRecord mbkm, StatusRecord status, Krs krs, Mahasiswa mahasiswa);
 
+        List<KrsDetail> findByMahasiswaAndStatusAndStatusKonversi(Mahasiswa mhs, StatusRecord status, StatusRecord konversi     );
+
         @Query(value = "select kd.id,kd.kode_uts,m.nama_matakuliah,coalesce((select count(a.id)as jml_mangkir from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah = b.id inner join presensi_dosen as c on b.id_presensi_dosen = c.id where a.id_mahasiswa=?1 and a.id_krs_detail=kd.id and a.status='AKTIF' and c.status='AKTIF' and a.status_presensi in ('MANGKIR')),0) as total from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id  where kd.id_mahasiswa = ?1 and kd.id_tahun_akademik = ?2 and kd.status = 'AKTIF'", nativeQuery = true)
         List<Object> kartuUtsMahasiswa(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
