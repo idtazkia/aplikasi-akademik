@@ -22,30 +22,28 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
                         "\tFROM sesi_kuliah as sk\n" +
                         "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
                         "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
-                        "\twhere pd.id_tahun_akademik = ?1 \n" +
-                        "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
+                        "\twhere pd.id_tahun_akademik = ?1 and pd.waktu_masuk <= CURDATE())\n" +
                         "as persentase\n" +
                         "FROM sesi_kuliah as sk\n" +
                         "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
                         "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
-                        "where jd.id_tahun_akademik = ?1 and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11' \n"
+                        "where jd.id_tahun_akademik = ?1 and pd.waktu_masuk <= CURDATE()\n"
                         +
                         "and sk.pertemuan in ('Online','Pengganti Online')", nativeQuery = true)
         Object jmlKelasOnline(TahunAkademik tahunAkademik);
 
-        @Query(value = "SELECT COUNT(*) as kelasOnline, COUNT(*) * 100 / (SELECT COUNT(*)\n" +
+        @Query(value = "SELECT COUNT(*) as kelasOffline, COUNT(*) * 100 / (SELECT COUNT(*)\n" +
                         "\tFROM sesi_kuliah as sk\n" +
                         "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
                         "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
-                        "\twhere pd.id_tahun_akademik = 'f635cb68-3da5-4e11-8213-7020636034a2' \n" +
-                        "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
+                        "\twhere pd.id_tahun_akademik = ?1 and pd.waktu_masuk <= CURDATE())\n" +
                         "as persentase\n" +
                         "FROM sesi_kuliah as sk\n" +
                         "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
                         "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
-                        "where jd.id_tahun_akademik = 'f635cb68-3da5-4e11-8213-7020636034a2' and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11' \n"
+                        "where jd.id_tahun_akademik = ?1 and pd.waktu_masuk <= CURDATE()\n"
                         +
-                        "and sk.pertemuan in ('Offline','Pengganti Offline')", nativeQuery = true)
+                        "and sk.pertemuan in ('Offline','Pengganti Offline','Belum Mengajar')", nativeQuery = true)
         Object jmlKelasOffline(TahunAkademik tahunAkademik);
 
         @Query(value = "SELECT sk.* FROM sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen = pd.id where sk.id_jadwal = ?1 "
@@ -70,7 +68,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
                         "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
                         "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
                         "where pd.id_tahun_akademik = ?1 \n" +
-                        "and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11'", nativeQuery = true)
+                        "and pd.waktu_masuk <= CURDATE()", nativeQuery = true)
         Object jmlSemuaKelas(TahunAkademik tahunAkademik);
 
         @Query(value = "SELECT COUNT(*) as jumlahKelasKosong, COUNT(*) * 100 / (SELECT COUNT(*)\n" +
@@ -78,7 +76,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
                         "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
                         "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
                         "\twhere pd.id_tahun_akademik = ?1 \n" +
-                        "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
+                        "\tand pd.waktu_masuk <= CURDATE())\n" +
                         "as persentase\n" +
                         "FROM sesi_kuliah as sk\n" +
                         "inner join presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
@@ -92,7 +90,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
                         "where pd.id_tahun_akademik = ?1 and pd.status_presensi in ('BELUM_MENGAJAR','TERLAMBAT')\n" +
                         "and mk.nama_matakuliah not in ('Skripsi','Tesis','Magang','Student Dynamic Session','Ujian Proposal','Ujian Tesis') \n"
                         +
-                        "and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11'\n" +
+                        "and pd.waktu_masuk <= CURDATE()\n" +
                         "and (sk.rps = '' or sk.rps is null)\n" +
                         "ORDER BY sk.waktu_mulai ASC\n", nativeQuery = true)
         Object jmlKelasKosong(TahunAkademik tahunAkademik);

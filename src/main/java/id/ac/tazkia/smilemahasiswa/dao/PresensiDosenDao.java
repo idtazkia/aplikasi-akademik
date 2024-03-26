@@ -65,12 +65,12 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
             "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
             "\twhere pd.id_tahun_akademik = ?1 \n" +
-            "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
+            "\tand pd.waktu_masuk <= CURDATE())\n" +
             "as persentase\n" +
             "FROM sesi_kuliah as sk\n" +
             "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
             "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
-            "where pd.id_tahun_akademik = ?1 and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11'\n" +
+            "where pd.id_tahun_akademik = ?1 and pd.waktu_masuk <= CURDATE()\n" +
             "and pd.status_presensi = ?2", nativeQuery = true)
     Object jmlKelasOntime(TahunAkademik tahunAkademik, String statusPresensi);
 
@@ -79,12 +79,12 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
             "\tINNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
             "\twhere pd.id_tahun_akademik = ?1 \n" +
-            "\tand pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11')\n" +
+            "\tand pd.waktu_masuk <= CURDATE())\n" +
             "as persentase\n" +
             "FROM sesi_kuliah as sk\n" +
             "INNER JOIN presensi_dosen as pd on sk.id_presensi_dosen = pd.id\n" +
             "inner join jadwal as jd on pd.id_jadwal = jd.id\n" +
-            "where pd.id_tahun_akademik = ?1 and pd.waktu_masuk < CURDATE() and sk.waktu_mulai >= '2023-09-11'\n" +
+            "where pd.id_tahun_akademik = ?1 and pd.waktu_masuk <= CURDATE()\n" +
             "and pd.status_presensi in ('TERLAMBAT','BELUM_MENGAJAR')", nativeQuery = true)
     Object jmlKelasTerlambat(TahunAkademik tahunAkademik);
 
