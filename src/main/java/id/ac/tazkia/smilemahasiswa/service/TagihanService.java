@@ -154,7 +154,7 @@ public class TagihanService {
             tagihan.setNilaiTagihan(jenisTagihanBaru.getNilai());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(tahun.getTanggalMulaiUas().minusDays(2));
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusMonths(8));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahun);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -170,7 +170,7 @@ public class TagihanService {
             tagihan.setNilaiTagihan(cekTagihanCuti.getNilai());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(tahun.getTanggalMulaiUas().minusDays(2));
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusMonths(8));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahun);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -484,7 +484,7 @@ public class TagihanService {
             tagihan.setNilaiTagihan(jenisTagihanBaru.getNilai());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusMonths(8));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahunAkademik);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
@@ -500,7 +500,7 @@ public class TagihanService {
             tagihan.setNilaiTagihan(cekJenisTagihan.getNilai());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
-            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusMonths(8));
             tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
             tagihan.setTahunAkademik(tahunAkademik);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
