@@ -2120,7 +2120,7 @@ public class GraduationController {
             @RequestParam(required = false) BigDecimal ub, @RequestParam(required = false) BigDecimal uc,
             @RequestParam(required = false) BigDecimal ud, @RequestParam(required = false) BigDecimal ue,
             @RequestParam(required = false) BigDecimal uf, @RequestParam(required = false) String komentarPenguji) {
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setUa(ua);
             seminar.setUb(ub);
             seminar.setUc(uc);
