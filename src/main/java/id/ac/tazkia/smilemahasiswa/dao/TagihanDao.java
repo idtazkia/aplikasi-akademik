@@ -31,6 +31,8 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Tagihan findByNomor(String nomor);
 
+    Tagihan findByNomorAndStatusTagihan(String nomor, StatusTagihan statusTagihan);
+
     @Query(value = "select coalesce(sum(nilai_tagihan),0) as tagihan from tagihan\n" +
             "where id_tahun_akademik=?1 and id_mahasiswa=?2 and status!='HAPUS'", nativeQuery = true)
     BigDecimal totalTagihanPerTahunAkademikDanMahasiswa(String idTahunAkademik, String idMahasiswa);

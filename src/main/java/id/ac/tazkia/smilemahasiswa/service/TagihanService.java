@@ -1,10 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.payment.HapusTagihanRequest;
-import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
-import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
-import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanResponse;
+import id.ac.tazkia.smilemahasiswa.dto.payment.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -13,6 +10,9 @@ import org.apache.tomcat.jni.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +32,7 @@ import java.util.List;
 @Service
 @Transactional
 @Slf4j
+@EnableScheduling
 public class TagihanService {
 
     private static final DateTimeFormatter FORMATTER_ISO_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -258,6 +259,18 @@ public class TagihanService {
                 .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeBiaya())
                 .build();
         kafkaSender.requsetHapusTagihan(hapusTagihan);
+    }
+
+    public void kirimCicilanJatuhTempo(HapusTagihanResponse hapusTagihanResponse){
+        Tagihan tagihan = tagihanDao.findByNomorAndStatusTagihan(hapusTagihanResponse.getNomorTagihan(), StatusTagihan.DICICIL);
+        if (tagihan != null) {
+            RequestCicilan rc = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+            if (rc != null) {
+                mengirimCicilanSelanjutnya(rc);
+            }
+        }else{
+            log.info("tagihan dengan nomor {} bukan tagihan cicilan", hapusTagihanResponse.getNomorTagihan());
+        }
     }
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){

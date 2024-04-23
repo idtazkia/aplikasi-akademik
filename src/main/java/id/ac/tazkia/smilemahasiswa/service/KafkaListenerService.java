@@ -9,6 +9,7 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanResponse;
 import id.ac.tazkia.smilemahasiswa.dto.payment.VaResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,6 @@ public class KafkaListenerService {
 
     @Autowired
     private VirtualAccountDao virtualAccountDao;
-
-    @Autowired
-    private RequestCicilanDao requestCicilanDao;
 
     @Autowired private JenisTagihanDao jenisTagihanDao;
 
@@ -183,7 +181,7 @@ public class KafkaListenerService {
 
             if (response.getSukses()) {
                 log.debug("Hapus tagihan sukses : {}", response.getDebitur());
-//                kirimTagihanAfterDelete(response);
+                tagihanService.kirimCicilanJatuhTempo(response);
             }
 
 

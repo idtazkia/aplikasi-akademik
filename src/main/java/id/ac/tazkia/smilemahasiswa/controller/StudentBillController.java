@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Controller @Slf4j
 public class StudentBillController {
@@ -2036,7 +2037,7 @@ public class StudentBillController {
         log.debug("Lokasi Upload : {}" + lokasiUpload);
         new File(lokasiUpload).mkdirs();
         File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-        pembayaran.setReferensi(idFile + "." + extension);
+        pembayaran.setReferensi(idFile + '.' + extension);
         fileBukti.transferTo(tujuan);
         log.debug("file sudah dicopy ke : {}" + tujuan.getAbsolutePath());
         LocalDate date = LocalDate.parse(waktu);
@@ -3116,7 +3117,7 @@ public class StudentBillController {
     }
 
 
-    @Scheduled(cron = "0 00 19 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 20 * * *", zone = "Asia/Jakarta")
     public void akumulasiTagihan(){
 
         List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(3));
@@ -3156,7 +3157,8 @@ public class StudentBillController {
                     cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
                     requestCicilanDao.save(cicilanSelanjutnya);
 
-                    tagihanService.ubahJadiCicilan(cicilanSelanjutnya);
+                    tagihanService.hapusTagihan(cariCicilanHariIni.getTagihan());
+//                    tagihanService.ubahJadiCicilan(cicilanSelanjutnya);
 
                 }else{
                     log.info("Tidak ada cicilan selanjutnya!");
