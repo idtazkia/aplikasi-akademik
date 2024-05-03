@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
 import id.ac.tazkia.smilemahasiswa.service.BebasKewajibanService;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.ElearningWebClientService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class BebasKewajibanController {
     @Value("${upload.sertifikatTlc}")
     private String uploadTlc;
 
+    @Value("${upload.rejectedTlc}")
+    private String rejectedByTlc;
+
     @Autowired
     BebasKewajibanDao bebasKewajibanDao;
 
@@ -89,6 +93,8 @@ public class BebasKewajibanController {
 
     @Autowired
     MailService mailService;
+    @Autowired
+    private ElearningWebClientService elearningWebClientService;
 
     // halaman mahasiswa
 
@@ -561,7 +567,9 @@ public class BebasKewajibanController {
         }
         bebasKewajibanDao.save(bebasKewajiban);
 
-        bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user);
+        String file = "-";
+
+        bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user, file);
         mailService.mailApproveTlc(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/tlc/list";
@@ -581,7 +589,7 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/admin/tlc/reject")
-    public String rejectTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
+    public String rejectTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, MultipartFile file, Authentication authentication) throws IOException {
         User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveTlc(StatusApprove.REJECTED);
         bebasKewajibanDao.save(bebasKewajiban);
@@ -592,10 +600,53 @@ public class BebasKewajibanController {
             kewajibanSertifikatTlcDao.save(serti);
         }
 
-        bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user);
+        String namaAsli = file.getOriginalFilename();
+
+        String extension = "";
+
+        int i = namaAsli.lastIndexOf('.');
+        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+        if (i > p) {
+            extension = namaAsli.substring(i + 1);
+        }
+
+        String idFile = UUID.randomUUID().toString();
+        String lokasiUpload = rejectedByTlc + File.separator + bebasKewajiban.getMahasiswa().getNim();
+        log.info("Lokasi Upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdirs();
+        String namaFile = idFile + "." + extension;
+        File tujuan = new File(lokasiUpload + File.separator + namaFile);
+        file.transferTo(tujuan);
+
+
+        bebasKewajibanService.saveTlc(bebasKewajiban, komentar, user, namaFile);
         mailService.mailRejectTlc(bebasKewajiban, komentar);
 
         return "redirect:/kewajiban/admin/tlc/list";
+    }
+
+    @GetMapping("/kewajiban/rejected/{rejected}/tlc")
+    public ResponseEntity<byte[]> showFileRejected(@PathVariable HistoriBebasKewajiban rejected){
+        String lokasiFile = rejectedByTlc + File.separator + rejected.getBebasKewajiban().getMahasiswa().getNim() + File.separator + rejected.getFile();
+        log.debug("lokasi file : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (rejected.getFile().toLowerCase().endsWith("jpeg") || rejected.getFile().toLowerCase().endsWith("jpg")){
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            }else if (rejected.getFile().toLowerCase().endsWith("png")){
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (rejected.getFile().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            }else{
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        }catch (Exception err){
+            log.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // BAGIAN TQC

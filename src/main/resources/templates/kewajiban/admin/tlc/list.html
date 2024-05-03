@@ -199,10 +199,14 @@
                                                             <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
                                                             <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
                                                         </div>
-                                                        <form th:action="@{/kewajiban/admin/tlc/reject(bebasKewajiban=${data.id})}" method="post">
+                                                        <form th:action="@{/kewajiban/admin/tlc/reject(bebasKewajiban=${data.id})}" method="post" enctype="multipart/form-data">
                                                             <div class="form-group">
                                                                 <label for="keterangan">Komentar</label>
-                                                                <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="10"></textarea>
+                                                                <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="5"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="file">Upload file</label>
+                                                                <input type="file" name="file" id="file" class="form-control">
                                                             </div>
                                                             <div class="form-group">
                                                                 <button class="btn btn-danger" type="submit">Reject</button>

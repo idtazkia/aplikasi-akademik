@@ -220,7 +220,7 @@ public class BebasKewajibanService {
 
     }
 
-    public void saveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user){
+    public void saveTlc(PendaftaranBebasKewajiban bebasKewajiban, String komentar, User user, String file){
 
         if (bebasKewajiban.getStatusApproveTlc() == StatusApprove.APPROVED) {
             komentar = "Done";
@@ -233,6 +233,7 @@ public class BebasKewajibanService {
         historiBebasKewajiban.setStatusApprove(bebasKewajiban.getStatusApproveTlc());
         historiBebasKewajiban.setUser(user);
         historiBebasKewajiban.setUrutan(4);
+        historiBebasKewajiban.setFile(file);
         historiBebasKewajibanDao.save(historiBebasKewajiban);
 
     }

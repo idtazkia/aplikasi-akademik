@@ -42,4 +42,6 @@ public class HistoriBebasKewajiban {
 
     private Integer urutan;
 
+    private String file;
+
 }

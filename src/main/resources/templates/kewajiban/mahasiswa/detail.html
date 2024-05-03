@@ -247,6 +247,9 @@
                             <div th:if="${hTlc != null}">
                                 <b th:text="${#temporals.format(hTlc.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hTlc.statusApprove}"></b>
                                 <p th:text="${hTlc.komentar}"></p>
+                                <div th:if="${hTlc.statusApprove.REJECTED == hTlc.statusApprove}">
+                                    <a class="btn btn-warning btn-sm" th:href="@{/kewajiban/rejected/{rejected}/tlc(rejected=${hTlc.id})}" target="_blank">Lihat Document</a>
+                                </div>
                             </div>
                             <br>
                             <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING || bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TLC ||
@@ -287,11 +290,11 @@
                                             <div class="row row-cols-2">
                                                 <div class="form-group pt-4 pb-2">
                                                     <label for="tanggal">Input Tanggal Ujian : </label>
-                                                    <input type="date" id="tanggal" name="tanggal" class="form-control" required>
+                                                    <input type="date" id="tanggal" name="tanggal" class="form-control" required="required">
                                                 </div>
                                                 <div class="form-group pt-4 pb-2">
                                                     <label for="tempat">Tempat Ujian : </label>
-                                                    <input type="text" id="tempat" name="tempat" class="form-control" required>
+                                                    <input type="text" id="tempat" name="tempat" class="form-control" required="required" pattern="[A-Za-z0-9]{1,20}">
                                                 </div>
                                             </div>
                                             <div class="row row-cols-2">
