@@ -2699,7 +2699,7 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/payment/manual")
-    public String paymentManual(@ModelAttribute @Valid Pembayaran pembayaran,
+    public String paymentManual(@ModelAttribute @Valid Pembayaran pembayaran, @RequestParam String waktu,
                                 MultipartFile fileBukti) throws IOException {
 
         String idPeserta = pembayaran.getTagihan().getMahasiswa().getNim();
@@ -2735,7 +2735,9 @@ public class StudentBillController {
 
         Tagihan tagihan = pembayaran.getTagihan();
         log.debug("bank : " + pembayaran.getBank());
-        pembayaran.setWaktuBayar(LocalDateTime.now());
+        LocalDate date = LocalDate.parse(waktu);
+        LocalDateTime waktuBayar = date.atTime(LocalTime.now());
+        pembayaran.setWaktuBayar(waktuBayar);
         pembayaran.setAmount(tagihan.getNilaiTagihan());
         pembayaranDao.save(pembayaran);
 
