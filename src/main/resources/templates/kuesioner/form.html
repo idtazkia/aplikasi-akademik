@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Kuesioner</title>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Kuesioner </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/kuesioner}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${success != null}">
+                                    <strong th:text="${success}">Holy guacamole!</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${error != null}">
+                                    <strong th:text="${error}">Holy guacamole!</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p><b>Judul</b></p>
+                        <p th:text="${kuesioner.judul}"></p>
+                        <p><b>Deskripsi</b></p>
+                        <p th:text="${kuesioner.deskripsi}"></p>
+                        <form th:action="@{/kuesioner/pertanyaan/save}" method="post">
+                            <div class="form-group">
+                                <label>Pertanyaan</label>
+                                <input type="text" class="form-control" name="pertanyaan" required>
+                                <input type="hidden" name="kuesioner" th:value="${kuesioner.id}">
+                                <input type="hidden" name="urutan" th:value="${urutan + 1}">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Pertanyaan</label>
+                                <select name="jenisPertanyaan" id="jenis" class="form-control" onchange="showElement()" required>
+                                    <option value="">-- Pilih Salah Satu --</option>
+                                    <option value="pilihanGanda">Pilihan Ganda</option>
+                                    <option value="skalaLinear">Skala Linear</option>
+                                    <option value="jawabanSingkat">Jawaban Singkat</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="pilihanGanda" style="display: none;">
+                                <label>Pilihan Ganda</label>
+                                <table id="pilihanGandaTable" class="mb-3">
+                                    <!-- Baris repeater akan ditambahkan di sini -->
+                                </table>
+                                <button type="button" class="btn btn-info btn-sm mb-3" onclick="tambahPilihan()">Tambah Opsi Pilihan Ganda</button>
+                            </div>
+                            <div class="form-group" id="skalaLinear" style="display: none;">
+                                <label>Skala Linear</label>
+                                <table class="mb-3">
+                                    <tr>
+                                        <td>
+                                            <select name="skalaLinearAwal" class="form-control" id="awal">
+                                                <option value="0">0</option>
+                                                <option value="1" selected>1</option>
+                                            </select>
+                                        </td>
+                                        <td style="padding-left: 10px; padding-right: 10px">sampai</td>
+                                        <td>
+                                            <select name="skalaLinearAkhir" class="form-control" id="akhir">
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5" selected>5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="mb-3">
+                                    <tr>
+                                        <td><b class="btn btn-info btn-sm" id="textAwal">1</b></td>
+                                        <td style="padding-left: 10px;"><input type="text" name="opsiSkalaLinearAwal" class="form-control" placeholder="Label (Opsional)"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b class="btn btn-info btn-sm" id="textAkhir">1</b></td>
+                                        <td style="padding-left: 10px;"><input type="text" name="opsiSkalaLinearAkhir" class="form-control" placeholder="Label (Opsional)"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="form-group" id="jawabanSingkat" style="display: none;">
+                                <label>Jenis pertanyaan yang Anda pilih : Jawaban Singkat</label>
+                            </div>
+                            <div class="form-group">
+                                <label>Wajib Isi</label>
+                                <br>
+                                <label class="switch">
+                                    <input type="checkbox" name="wajibIsi" value="wajib">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Pertanyaan</th>
+                                        <th>Jenis Pertanyaan</th>
+                                        <th>Wajib Isi</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, row:${listPertanyaan}">
+                                        <td th:text="${(row.index + 1)}"></td>
+                                        <td th:text="${data.pertanyaan}"></td>
+                                        <td th:text="${data.jenisPertanyaan}"></td>
+                                        <td>
+                                            <span th:if="${data.wajibIsi == null}">Tidak Wajib</span>
+                                            <span th:if="${data.wajibIsi != null}">Wajib</span>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm" th:href="@{/kuesioner/pertanyaan/edit(id = ${data.id})}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/kuesioner/pertanyaan/delete(id = ${data.id})}"
+                                               onclick="return confirm('Anda Yakin untuk menghapus data ini ?')"
+                                               class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script>
+        function showElement() {
+            var jenis = document.getElementById("jenis").value;
+            document.getElementById("pilihanGanda").style.display = "none";
+            document.getElementById("skalaLinear").style.display = "none";
+            document.getElementById("jawabanSingkat").style.display = "none";
+
+            if (jenis === "pilihanGanda") {
+                document.getElementById("pilihanGanda").style.display = "block";
+            } else if (jenis === "skalaLinear") {
+                document.getElementById("skalaLinear").style.display = "block";
+            } else if (jenis === "jawabanSingkat") {
+                document.getElementById("jawabanSingkat").style.display = "block";
+            }
+        }
+
+        var count = 0;
+        updateText();
+
+        tambahPilihan();
+
+        function tambahPilihan() {
+            var table = document.getElementById("pilihanGandaTable");
+            var newRow = table.insertRow();
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            count++;
+            cell1.innerHTML = '<div style="width: 25px; height: 25px; background: white; border-radius: 100%; border: 2px #ebebeb solid;"></div>';
+            cell2.innerHTML = '<input type="text" name="pilihanGanda" placeholder="Opsi ' + count + '" class="form-control" style="margin-left: 10px; required">';
+            cell3.innerHTML = '<button type="button" style="margin-left: 20px;" onclick="hapusPilihan(this)" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>';
+
+            var inputs = newRow.querySelectorAll('input[name="pilihanGanda"]');
+            inputs.forEach(function(input) {
+                input.addEventListener('change', function() {
+                    if (!input.value.trim()) {
+                        input.setCustomValidity('Kolom tidak boleh kosong');
+                    } else {
+                        input.setCustomValidity('');
+                    }
+                });
+            });
+        }
+
+        function hapusPilihan(button) {
+            count--;
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+
+            var table = document.getElementById("pilihanGandaTable");
+            var rows = table.getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                cells[1].getElementsByTagName("input")[0].placeholder = "Opsi " + (i + 1);
+            }
+        }
+
+        function updateText() {
+            var awal = document.getElementById("awal").value;
+            var akhir = document.getElementById("akhir").value;
+            document.getElementById("textAwal").innerText = awal;
+            document.getElementById("textAkhir").innerText = akhir;
+        }
+
+        // Menjalankan fungsi updateText saat nilai select berubah
+        document.getElementById("awal").addEventListener("change", updateText);
+        document.getElementById("akhir").addEventListener("change", updateText);
+
+        // Memastikan nilai textAwal dan textAkhir sesuai saat halaman dimuat
+        updateText();
+    </script>
+</th:block>
+</body>
+</html>
