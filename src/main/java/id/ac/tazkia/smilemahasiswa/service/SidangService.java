@@ -1005,7 +1005,7 @@ public class SidangService {
         paragrafkosong.add(new Chunk("Seminar Proposal", fontB));
         paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
         paragrafkosong.add(new Chunk(seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
-        paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
+        paragrafkosong.add(new Chunk(" Institut Agama Islam Tazkia ", fStandard));
         paragrafkosong.add(new Chunk(seminar.getTahunAkademik().getNamaTahunAkademik(), fStandard));
         paragrafkosong.add(new Chunk(" sebagai berikut:", fStandard));
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
