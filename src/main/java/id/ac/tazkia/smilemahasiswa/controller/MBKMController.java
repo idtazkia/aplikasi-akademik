@@ -229,7 +229,8 @@ public class MBKMController {
         List<MatakuliahMbkm> listMahasiswa = matakuliahMbkmDao.findByPendaftaranMbkmAndStatus(mbkm, StatusRecord.FINISHED);
         if (listMahasiswa != null || !listMahasiswa.isEmpty()) {
             for (MatakuliahMbkm listMatkur : listMahasiswa){
-                matakuliahMbkmDao.delete(listMatkur);
+                listMatkur.setStatus(StatusRecord.REJECTED);
+                matakuliahMbkmDao.save(listMatkur);
             }
         }
 
@@ -238,9 +239,11 @@ public class MBKMController {
             List<KrsDetail> matkul = krsDetailDao.findByKrsAndStatusAndStatusKonversi(krs, StatusRecord.AKTIF, StatusRecord.MBKM);
             if (matkul != null || !matkul.isEmpty()) {
                 for (KrsDetail mat : matkul){
-                    krsDetailDao.delete(mat);
+                    mat.setStatus(StatusRecord.HAPUS);
+                    krsDetailDao.save(mat);
                     Jadwal jadwal = mat.getJadwal();
-                    jadwalDao.delete(jadwal);
+                    jadwal.setStatus(StatusRecord.HAPUS);
+                    jadwalDao.save(jadwal);
                 }
             }
         }

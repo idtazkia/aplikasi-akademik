@@ -190,11 +190,11 @@
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <div th:if="${data.statusApproval == data.statusApproval.APPROVED}">
-                                                                <form th:action="@{/mbkm/waiting(mbkm = ${data.id})}" method="post">
-                                                                    <button class="btn btn-primary btn-sm">Set Waiting</button>
-                                                                </form>
-                                                            </div>
+<!--                                                            <div th:if="${data.statusApproval == data.statusApproval.APPROVED}">-->
+<!--                                                                <form th:action="@{/mbkm/waiting(mbkm = ${data.id})}" method="post">-->
+<!--                                                                    <button class="btn btn-primary btn-sm">Set Waiting</button>-->
+<!--                                                                </form>-->
+<!--                                                            </div>-->
                                                             <div>
                                                                 <form th:action="@{/mbkm/cancel(mbkm = ${data.id})}" method="post">
                                                                     <button class="btn btn-danger btn-sm">Cancel</button>
