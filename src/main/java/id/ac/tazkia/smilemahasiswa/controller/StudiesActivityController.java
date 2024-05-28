@@ -1368,7 +1368,7 @@ public class StudiesActivityController {
 
         @GetMapping("/studiesActivity/assesment/listdosen")
         public void listPenilaianDosen(Model model, Authentication authentication,
-                        @RequestParam(required = false) TahunAkademik tahunAkademik) {
+                                       @RequestParam(required = false) TahunAkademik tahunAkademik) {
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
                 Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -1378,11 +1378,15 @@ public class StudiesActivityController {
 
                         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
                         model.addAttribute("jadwal",
-                                        jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahunAkademik));
+                                jadwalDosenDao
+                                        .findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(
+                                                Arrays.asList(StatusRecord.HAPUS), tahunAkademik, dosen));
                         model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademik));
                 } else {
                         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-                        model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahun));
+                        model.addAttribute("jadwal", jadwalDosenDao
+                                .findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(
+                                        Arrays.asList(StatusRecord.HAPUS), tahun, dosen));
                 }
 
         }

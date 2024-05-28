@@ -73,31 +73,32 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Kode</th>
-                                <th scope="col">Nama Dosen</th>
-                                <th scope="col">Kelas </th>
+                                <th scope="col">Ruangan</th>
                                 <th scope="col">Hari</th>
                                 <th scope="col">Waktu</th>
-                                <th></th>
-                                <th></th>
+                                <th scope="col">Matakuliah</th>
+                                <th scope="col">Kelas</th>
+                                <th scope="col">Dosen</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
 
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="data,row : ${jadwal}">
-                                <td th:text="${(row.index + 1)}">1</td>
-                                <td th:text="${data.namaMatkuliah}">Basic Econometrics	</td>
-                                <td th:text="${data.namaDosen}">Aam Slamet Rusydiana	</td>
-                                <td th:text="${data.namaKelas}">MBS-D-18	</td>
-                                <td th:text="${data.hari}">Wednesday</td>
+                                <td th:text="${row.index + 1}"></td>
+                                <td th:text="${data.jadwal.ruangan.namaRuangan}"></td>
+                                <td th:text="${data.jadwal.hari.namaHari}"></td>
+                                <td><span  th:text="${data.jadwal.jamMulai}"></span> -
+                                    <span th:text="${data.jadwal.jamSelesai}"></span></td>
+                                <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                <td th:text="${data.jadwal.kelas.namaKelas}"></td>
+                                <td th:text="${data.dosen.karyawan.namaKaryawan}"></td>
+                                <td><b th:text="${data.statusJadwalDosen}"></b></td>
                                 <td>
-                                    <span  th:text="${data.jamMulai}"></span> -
-                                    <span th:text="${data.jamSelesai}"></span>
-                                </td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}"><i class="fas fa-eye"></i> Show</button>
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.jadwal.id}"><i class="fas fa-eye"></i> Show</button>
 
-                                    <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal fade" th:id="${'modal-notification'+data.jadwal.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
 
@@ -109,7 +110,7 @@
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>Quiz</small></div>
                                                             <div class="btn-wrapper text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/upload/rps(jadwal = ${data.id}) }" class="btn btn-neutral btn-icon">
+                                                                <a th:href="@{/studiesActivity/assesment/upload/rps(jadwal = ${data.jadwal.id}) }" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fa fa-book"></i></span>
                                                                     <span class="btn-inner--text">Upload RPS</span>
                                                                 </a>
@@ -118,15 +119,15 @@
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>Assesment</small></div>
                                                             <div class="btn-wrapper text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
+                                                                <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${data.jadwal.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
                                                                     <span class="btn-inner--text">Pembobotan</span>
                                                                 </a>
-                                                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
+                                                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${data.jadwal.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
                                                                     <span class="btn-inner--text">Penilaian</span>
                                                                 </a>
-                                                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
+                                                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.jadwal.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
                                                                     <span class="btn-inner--text">Upload Nilai</span>
                                                                 </a>
@@ -135,7 +136,7 @@
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>Evaluation</small></div>
                                                             <div class="btn-wrapper text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Edom Dosen</i></a>
+                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.jadwal.id})}" class="btn btn-primary"><i class="fas fa-cog"> Edom Dosen</i></a>
                                                             </div>
                                                         </div>
 
