@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
 
@@ -722,7 +722,7 @@
                                                                                 </div>
                                                                                 <!-- or use a table instead -->
 
-                                                                                <div class="table-responsive">
+                                                                                <div class="table-responsive" th:if="${data.kriteriaJurnal != null}">
                                                                                     <table
                                                                                             class="table table-striped table-borderless border-0 border-b-2 brc-default-l1">
                                                                                         <thead
