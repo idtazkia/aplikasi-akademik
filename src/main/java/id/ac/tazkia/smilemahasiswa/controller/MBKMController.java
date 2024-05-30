@@ -338,16 +338,17 @@ public class MBKMController {
             String pilihan = request.getParameter("grade-"+matkul.getId());
             if (pilihan != null || !pilihan.trim().isEmpty()) {
                 Grade grade = gradeDao.findByNama(pilihan);
-                matkul.setGrade(pilihan);
-                matkul.setNilaiAkhir(grade.getBawah());
-                matkul.setBobot(grade.getBobot());
-                matkul.setFinalisasi("FINAL");
-                krsDetailDao.save(matkul);
+                if (grade != null) {
+                    matkul.setGrade(pilihan);
+                    matkul.setNilaiAkhir(grade.getBawah());
+                    matkul.setBobot(grade.getBobot());
+                    matkul.setFinalisasi("FINAL");
+                    krsDetailDao.save(matkul);
 
-                Jadwal j = matkul.getJadwal();
-                j.setFinalStatus("FINAL");
-                jadwalDao.save(j);
-
+                    Jadwal j = matkul.getJadwal();
+                    j.setFinalStatus("FINAL");
+                    jadwalDao.save(j);
+                }
             }
         }
 

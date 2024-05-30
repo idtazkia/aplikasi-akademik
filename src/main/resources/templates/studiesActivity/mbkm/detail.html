@@ -71,6 +71,7 @@
                                     <td>
                                         <div class="form-group">
                                             <select th:name="${'grade-'+data.id}" class="form-control">
+                                                <option value="-" selected></option>
                                                 <option th:each="gd : ${grade}"
                                                         th:text="${gd.nama}"
                                                         th:selected="${gd.nama == data.grade}"
