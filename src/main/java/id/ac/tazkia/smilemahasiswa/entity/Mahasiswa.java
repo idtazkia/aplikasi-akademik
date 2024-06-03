@@ -9,6 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Entity
 @Data
@@ -169,4 +172,21 @@ public class Mahasiswa {
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalDisahkan;
+
+    public String selectionText() {
+        return "";
+    }
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id"));
+
+    // Constructor
+    public void tampilTanggalLahir(LocalDate date) {
+        this.tanggalLahir = date;
+    }
+
+
+    // Formatter untuk dateTime
+    public String formatTanggalLahir() {
+        return tanggalLahir.format(formatter);
+    }
 }
