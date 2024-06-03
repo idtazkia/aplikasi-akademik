@@ -121,6 +121,11 @@
 
                                 </ul>
                             </li>
+                            <li><a data-toggle="collapse" data-target="#democrou" href="#">TLC</a>
+                                <ul id="tlc" class="collapse dropdown-header-top">
+                                    <li><a th:href="@{/kuesioner/toefl/view}">TOEFL</a></li>
+                                </ul>
+                            </li>
                             <li><a data-toggle="collapse" data-target="#demodepart" th:href="@{/graduation/register}">Graduation</a>
                                 <ul id="d" class="collapse dropdown-header-top">
                                     <li><a th:href="@{/graduation/register}">Tugas Akhir</a></li>
@@ -149,6 +154,7 @@
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/study/comingsoon}"><i class="fa fa-user"></i> Study Activites</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/studentBill/bill/list}"> Student Bill</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#Charts"><i class="fa fa-bar-chart"></i> Report</a>
+                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#menuTLC"><i class="fa fa-pencil"></i> TLC</a>
                     <li sec:authorize="hasAuthority('VIEW_PARENT')"><a th:href="@{/report/transcriptParent}"><i class="fa fa-bar-chart"></i> Laporan Transkript</a>
                     </li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#gra"><i class="fa fa-graduation-cap"></i> Graduation</a>
@@ -159,6 +165,11 @@
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/khs}">KHS</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/transcript}">Transcript</a></li>
+                        </ul>
+                    </div>
+                    <div id="menuTLC" class="tab-pane notika-tab-menu-bg animated flipInX">
+                        <ul class="notika-main-menu-dropdown">
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/toefl/view}">TOEFL</a></li>
                         </ul>
                     </div>
                     <div id="Tables" class="tab-pane notika-tab-menu-bg animated flipInX">

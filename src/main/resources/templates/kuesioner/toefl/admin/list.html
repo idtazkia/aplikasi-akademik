@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>List TOEFL/IELTS</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">TOEFL/IELTS</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data TOEFL/IELTS</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+<!--                                button download -->
+                            </div>
+                            <div class="card-body text-right">
+                                <form method="get">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <div class="row">
+                                                <div class="col-md-7"></div>
+                                                <div class="col-md-5">
+                                                    <input type="hidden" name="status" th:value="${status}" class="form-control">
+                                                    <div class="input-group mb-3" style="margin-top: 10px;">
+                                                        <input type="text" th:value="${search}" name="search" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-default" type="submit">Search</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+<!--                                    Waiting -->
+                                    <div class="col-md-6" th:if="${status == null}">
+                                        <a th:href="@{/kuesioner/toefl/admin/list(status = 'WAITING')}" style="width: 100%;" class="btn btn-secondary">Menunggu Proses</a>
+                                    </div>
+                                    <div class="col-md-6" th:if="${status != null && status == 'WAITING'}">
+                                        <a th:href="@{/kuesioner/toefl/admin/list(status = 'WAITING')}" style="width: 100%;" class="btn btn-primary">Menunggu Proses</a>
+                                    </div>
+                                    <div class="col-md-6" th:if="${status != null && status != 'WAITING'}">
+                                        <a th:href="@{/kuesioner/toefl/admin/list(status = 'WAITING')}" style="width: 100%;" class="btn btn-secondary">Menunggu Proses</a>
+                                    </div>
+
+<!--                                    History -->
+                                    <div class="col-md-6" th:if="${status == null}">
+                                        <a th:href="@{/kuesioner/toefl/admin/list(status = 'HISTORY')}" style="width: 100%;" class="btn btn-secondary">Diproses</a>
+                                    </div>
+                                    <div class="col-md-6" th:if="${status != null && status == 'HISTORY'}">
+                                        <a th:href="@{/kuesioner/toefl/admin/list(status = 'HISTORY')}" style="width: 100%;" class="btn btn-primary">Diproses</a>
+                                    </div>
+                                    <div class="col-md-6" th:if="${status != null && status != 'HISTORY'}">
+                                        <a th:href="@{/kuesioner/toefl/admin/list(status = 'HISTORY')}" style="width: 100%;" class="btn btn-secondary">Diproses</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Nim</th>
+                                        <th>Nama</th>
+                                        <th>Jenis Test</th>
+                                        <th>Ujian Ke</th>
+                                        <th>Status</th>
+                                        <th align="center">#</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="data, row : ${listPrediksi}">
+                                            <td th:text="${(row.index + 1) + (listPrediksi.number * listPrediksi.size)}">1</td>
+                                            <td th:text="${data.mahasiswa.nim}">123456</td>
+                                            <td th:text="${data.mahasiswa.nama}">Gifar Haidar</td>
+                                            <td th:text="${data.jenisTest}">MBS</td>
+                                            <td th:text="${data.ujianKe}">1</td>
+                                            <td>
+                                                <button class="btn btn-warning btn-sm"   th:if="${data.status == data.status.WAITING}">Menunggu Persetujuan TLC</button>
+                                                <button class="btn btn-warning btn-sm" data-toggle="modal" aria-haspopup="true"  th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.WAITING}">Menunggu</button>
+                                                <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true"  th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.LULUS}">Lulus</button>
+                                                <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true"  th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.DINILAI}">Sudah Dinilai</button>
+                                                <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.TIDAK_LULUS}">Tidak Lulus</button>
+                                                <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.TIDAK_LULUS}">Tidak Lulus</button>
+                                                <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.REJECTED}">DItolak</button>
+                                            </td>
+                                            <td>
+                                                <button th:if="${data.status == data.status.WAITING}" class="btn btn-sm btn-success" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modalApprove'+data.id}">Setuju</button>
+                                                <button th:if="${data.status == data.status.WAITING}" class="btn btn-sm btn-danger" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modalReject'+data.id}">Tolak</button>
+                                                <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.WAITING}" class="btn btn-sm btn-primary" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modalPenilaian'+data.id}">Penilaian</button>
+                                                <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.DINILAI}" class="btn btn-sm btn-primary" th:text="${'Nilai ' + data.nilai}">Detail</button>
+                                            </td>
+
+<!--                                            Modal Penilaian-->
+                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modalPenilaian'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <form method="post" th:action="@{/kuesioner/toefl/admin/nilai}">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Penilaian TOEFL</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>NIM</label>
+                                                                            <input type="text" disabled th:value="${data.mahasiswa.nim}" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Nama</label>
+                                                                            <input type="text" disabled th:value="${data.mahasiswa.nama}" class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" >
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label>LISTENING COMPREHENSION</label>
+                                                                            <input type="number" name="nilaiListening" id="nilai-listening" step="any" max="100" placeholder="0" required class="form-control nilai" />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label>STRUCTURE</label>
+                                                                            <input type="number" id="nilai-structure" name="nilaiStructure" step="any"  max="100" placeholder="0" required class="form-control nilai" />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label>READING COMPREHENSION</label>
+                                                                            <input type="number" id="nilai-reading" name="nilaiReading" step="any" max="100" placeholder="0" required class="form-control nilai" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" id="id" name="id" th:value="${data.id}">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
+                                                                <button type="submit" th:id="${data.id}" class="btn btn-primary publish-data">Nilai</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+<!--                                            Modal Appprovel-->
+                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modalApprove'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <form method="post" th:action="@{/kuesioner/toefl/admin/approve (id = ${data.id})}">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Persetujuan TOEFL/IELTS</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>NIM</label>
+                                                                            <input type="text" disabled th:value="${data.mahasiswa.nim}" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Nama</label>
+                                                                            <input type="text" disabled th:value="${data.mahasiswa.nama}" class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kembali</button>
+                                                                <button type="submit" class="btn btn-primary publish-data">Setuju</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+<!--                                            Modal Reject-->
+                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modalReject'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <form method="post" th:action="@{/kuesioner/toefl/admin/reject}">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Penilaian TOEFL</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>NIM</label>
+                                                                            <input type="text" disabled th:value="${data.mahasiswa.nim}" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Nama</label>
+                                                                            <input type="text" disabled th:value="${data.mahasiswa.nama}" class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id" th:value="${data.id}">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kembali</button>
+                                                                <button type="submit" class="btn btn-danger publish-data">Reject</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+
+<!--                                            Modal Detail-->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer py-4">
+                                <nav aria-label="...">
+                                    <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                        <li class="disabled"><a href="#" aria-label="Previous"><span
+                                                aria-hidden="true">&laquo;</span></a>
+                                        </li>
+                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+    document.getElementsByClassName('nilai').addEventListener('input', function (event) {
+        const input = event.target;
+        const errorMessage = document.getElementById('error-message');
+
+        // Menghapus pesan error ketika input valid
+        errorMessage.style.display = 'none';
+
+        // Menggunakan regex untuk mengizinkan angka dan desimal
+        const validNumberPattern = /^\d*\.?\d*$/;
+
+        // Mengecek apakah nilai input valid
+        if (!validNumberPattern.test(input.value) || parseFloat(input.value) > 100) {
+            // Menampilkan pesan error jika input tidak valid
+            errorMessage.style.display = 'block';
+
+            // Jika nilai melebihi 100, set nilai ke 100
+            if (parseFloat(input.value) > 100) {
+                input.value = '100';
+            } else {
+                input.value = input.value.slice(0, -1); // Menghapus karakter terakhir yang tidak valid
+            }
+        }
+    });
+</script>
