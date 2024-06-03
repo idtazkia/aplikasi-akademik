@@ -1272,4 +1272,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "order by a.nim;", nativeQuery = true)
         List<TotalSksDto> listTotalSks2(TahunAkademik tahunAkademik, Dosen dosen);
 
+        @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id \n"
+                +
+                "inner join matakuliah as m on mk.id_matakuliah = m.id inner join tahun_akademik as t on kd.id_tahun_akademik = t.id\n"
+                +
+                "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and m.nama_matakuliah = 'Ujian Tesis' order by t.kode_tahun_akademik desc limit 1", nativeQuery = true)
+        KrsDetail cariUjianThesis(Mahasiswa mahasiswa);
+
 }

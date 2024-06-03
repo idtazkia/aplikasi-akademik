@@ -410,6 +410,15 @@ public class TagihanService {
             }
         }
 
+        if (TAGIHAN_TOEFL.equals(pt.getKodeJenisBiaya()) || TAGIHAN_IELTS.equals(pt.getKodeJenisBiaya())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.PREDIKSI_TEST, false);
+            if (ef != null) {
+                ef.setEnable(true);
+                ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(ef);
+            }
+        }
+
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
@@ -477,6 +486,14 @@ public class TagihanService {
             jenisTagihan = jenisTagihanDao.findByKodeAndStatus(TAGIHAN_IELTS, StatusRecord.AKTIF);
             nilai = new BigDecimal(200000);
         }
+
+        EnableFiture enableFiture = new EnableFiture();
+        enableFiture.setFitur(StatusRecord.PREDIKSI_TEST);
+        enableFiture.setMahasiswa(mahasiswa);
+        enableFiture.setEnable(false);
+        enableFiture.setTahunAkademik(tahunAkademik);
+        enableFiture.setKeterangan("Enable Fiture " + jenis);
+        enableFitureDao.save(enableFiture);
 
         NilaiJenisTagihan cekJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
                 mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jenisTagihan);
