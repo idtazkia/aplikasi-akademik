@@ -618,7 +618,8 @@
                         <div style="overflow-y: scroll; height: 420px;">
                             <div class="row" style="padding-bottom: 16px; padding-top: 16px; padding-left: 20px; padding-right: 20px;" th:each="data : ${list}">
                                 <div class="col-md-12 card" style="margin-bottom: 5px;">
-                                    <b><h5>Magang</h5></b>
+                                    <b th:if="${data.jenis == data.jenis.MAGANG}" th:text="${data.jenis.getDisplayName}"><h5>Magang</h5></b>
+                                    <b th:if="${data.jenis == data.jenis.MBKM}" th:text="${data.jenis.getDisplayName}"><h5>Magang</h5></b>
                                     <div style="width: 30px; height: 5px; background-color: #0c85d0; border-radius: 10px;"></div>
                                     <br>
                                     <div class="wrapper">

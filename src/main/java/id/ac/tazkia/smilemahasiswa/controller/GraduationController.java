@@ -2854,22 +2854,21 @@ public class GraduationController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         List<FileMagang> list = fileMagangDao.findByMahasiswaAndStatusInOrderByStatusDesc(mahasiswa,
-                Arrays.asList(StatusApprove.WAITING, StatusApprove.REJECTED));
+                Arrays.asList(StatusApprove.WAITING, StatusApprove.REJECTED, StatusApprove.APPROVED));
 
         FileMagang waiting = fileMagangDao.findByStatusAndMahasiswa(StatusApprove.WAITING, mahasiswa);
-        FileMagang approved = fileMagangDao.findByStatusAndMahasiswa(StatusApprove.APPROVED, mahasiswa);
         if (waiting != null) {
             model.addAttribute("waiting", waiting);
         }
 
         model.addAttribute("list", list);
 
-        if (approved != null) {
-            return "redirect:succes-magang";
-        } else {
+        // if (approved != null) {
+            // return "redirect:succes-magang";
+        // } else {
             return "graduation/magang/mahasiswa/list";
 
-        }
+        // }
 
     }
 
