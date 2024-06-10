@@ -18,7 +18,7 @@ public interface JadwalTugasJawabanDao extends PagingAndSortingRepository<Jadwal
 
     List<JadwalTugasJawaban> findByJadwalTugasAndMahasiswa(JadwalTugas jadwalTugas, Mahasiswa mahsiswa);
 
-    @Query("select coalesce(count(tj.id), 0) as total from JadwalTugasJawaban tj where tj.jadwalTugas = :jawdalTugas and tj.mahasiswa = :mahasiswa")
-    Object[] cariTotalTugas(@Param("jadwalTugas") JadwalTugas jadwalTugas, @Param("mahasiswa") Mahasiswa mahasiswa);
+//    @Query("select coalesce(count(tj.id), 0) as total from JadwalTugasJawaban tj where tj.jadwalTugas = :jawdalTugas and tj.mahasiswa = :mahasiswa")
+//    Object[] cariTotalTugas(@Param("jadwalTugas") JadwalTugas jadwalTugas, @Param("mahasiswa") Mahasiswa mahasiswa);
 
 }
