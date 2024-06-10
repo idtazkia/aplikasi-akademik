@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.KlasemenDosenIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.TotalSksDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
@@ -190,6 +191,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "where a.id_krs = ?1 and a.status = 'AKTIF' and a.status_konversi is null \n" +
                         "group by a.id_krs", nativeQuery = true)
         Long cariJumlahSks(String idKrs);
+
+        @Query("select coalesce(sum(kd.matakuliahKurikulum.jumlahSks), 0) as totalSks from KrsDetail kd where kd.finalisasi='FINAL' and kd.status='AKTIF' and kd.statusKonversi is null and kd.grade not in('E', 'D') and kd.tahunAkademik.jenis != 'PENDEK' and kd.mahasiswa= :mahasiswa and kd.tahunAkademik != :tahun")
+        Long jumlahSksLulus(@Param("mahasiswa") Mahasiswa mhs, @Param("tahun") TahunAkademik tahun);
 
         @Query(value = "select e.nama_matakuliah, count(c.id) as total, round(((count(c.id)*100)/3),2) as persentase  from (select * from krs_detail where status='AKTIF' and id_mahasiswa=?1)a inner join (select * from krs where status='AKTIF' and id_mahasiswa=?1 and id_tahun_akademik=?2)b on a.id_krs = b.id inner join (select aa.* from presensi_mahasiswa as aa inner join sesi_kuliah as bb on aa.id_sesi_kuliah = bb.id inner join presensi_dosen as cc on bb.id_presensi_dosen = cc.id where cc.status='AKTIF' and aa.id_mahasiswa = ?1 and aa.status = 'AKTIF' and aa.status_presensi in ('MANGKIR','TERLAMBAT'))c on a.id = c.id_krs_detail inner join matakuliah_kurikulum as d on a.id_matakuliah_kurikulum=d.id inner join matakuliah as e on d.id_matakuliah=e.id group by id_krs_Detail", nativeQuery = true)
         List<Object[]> persentaseKehadiran(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
