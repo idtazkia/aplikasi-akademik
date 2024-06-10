@@ -1,184 +1,186 @@
  <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+ <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Sidang</title>
-</head>
+ <head>
+     <meta charset="UTF-8">
+     <title>Sidang</title>
+ </head>
 
-<body>
-<div layout:fragment="main">
-    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-        <div class="container-fluid">
-            <div class="header-body">
-                <!-- Card stats -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card card-stats mb-4 mb-xl-0">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Sidang</span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div
-                                                class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                            <i class="fas fa-user-astronaut"></i>
-                                        </div>
-                                    </div>
-                                </div>
+ <body>
+     <div layout:fragment="main">
+         <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+             <div class="container-fluid">
+                 <div class="header-body">
+                     <!-- Card stats -->
+                     <div class="row">
+                         <div class="col-xl-12 col-lg-12">
+                             <div class="card card-stats mb-4 mb-xl-0">
+                                 <div class="card-body">
+                                     <div class="row">
+                                         <div class="col">
+                                             <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                             <span class="h2 font-weight-bold mb-0">Sidang</span>
+                                         </div>
+                                         <div class="col-auto">
+                                             <div
+                                                 class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                                 <i class="fas fa-user-astronaut"></i>
+                                             </div>
+                                         </div>
+                                     </div>
 
-                            </div>
-                        </div>
-                    </div>
+                                 </div>
+                             </div>
+                         </div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
 
-    <div class="container-fluid mt--7">
-        <!-- Table -->
-        <div class="row">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="mb-0">Data List</h3>
-                            </div>
-                            <div class="col text-right">
-                                <button type="button" class="btn btn-sm btn-default" data-toggle="modal"
-                                        data-target="#rekap"><i class="fas fa-book"></i> Rekap Tugas Akhir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
+         <div class="container-fluid mt--7">
+             <!-- Table -->
+             <div class="row">
+                 <div class="col">
+                     <div class="card shadow">
+                         <div class="card-header border-0">
+                             <div class="row align-items-center">
+                                 <div class="col">
+                                     <h3 class="mb-0">Data List</h3>
+                                 </div>
+                                 <div class="col text-right">
+                                     <button type="button" class="btn btn-sm btn-default" data-toggle="modal"
+                                         data-target="#rekap"><i class="fas fa-book"></i> Rekap Tugas Akhir
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="card-body">
 
-                        <div class="modal fade" id="rekap" tabindex="-1" role="dialog"
-                             aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form method="get" th:action="@{/report/tugas_akhir}">
-                                        <div class="modal-body" th:if="${selectedProdi != null}">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Prodi</label>
-                                                        <input type="text" class="form-control" readonly
-                                                               th:value="${selectedProdi.namaProdi}">
-                                                        <input type="hidden" name="prodi"
-                                                               th:value="${selectedProdi.id}">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Angkatan</label>
-                                                        <select name="angkatan" class="form-control">
-                                                            <option value=""></option>
-                                                            <option th:each="data : ${angkatan}" th:text="${data}"
-                                                                    th:value="${data}"></option>
-                                                        </select>
+                             <div class="modal fade" id="rekap" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog" role="document">
+                                     <div class="modal-content">
+                                         <div class="modal-header">
+                                             <h5 class="modal-title">Modal title</h5>
+                                             <button type="button" class="close" data-dismiss="modal"
+                                                 aria-label="Close">
+                                                 <span aria-hidden="true">&times;</span>
+                                             </button>
+                                         </div>
+                                         <form method="get" th:action="@{/report/tugas_akhir}">
+                                             <div class="modal-body" th:if="${selectedProdi != null}">
+                                                 <div class="row">
+                                                     <div class="col-md-6">
+                                                         <div class="form-group">
+                                                             <label>Prodi</label>
+                                                             <input type="text" class="form-control" readonly
+                                                                 th:value="${selectedProdi.namaProdi}">
+                                                             <input type="hidden" name="prodi"
+                                                                 th:value="${selectedProdi.id}">
+                                                         </div>
+                                                     </div>
+                                                     <div class="col-md-6">
+                                                         <div class="form-group">
+                                                             <label>Angkatan</label>
+                                                             <select name="angkatan" class="form-control">
+                                                                 <option value=""></option>
+                                                                 <option th:each="data : ${angkatan}" th:text="${data}"
+                                                                     th:value="${data}"></option>
+                                                             </select>
 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Close
-                                            </button>
-                                            <button type="submit" class="btn btn-primary">Create</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="modal-footer">
+                                                 <button type="button" class="btn btn-secondary"
+                                                     data-dismiss="modal">Close
+                                                 </button>
+                                                 <button type="submit" class="btn btn-primary">Create</button>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </div>
+                             </div>
 
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>Tahun Akademik</label>
-                                        <select name="tahunAkademik" required class="form-control">
-                                            <option value="" selected disabled>-- Select One --</option>
-                                            <option th:each="tahun : ${tahun}"
-                                                    th:selected="(${tahun} == *{selectedTahun})"
-                                                    th:text="${tahun.namaTahunAkademik}" th:value="${tahun.id}">
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>Program Study</label>
-                                        <select name="prodi" required class="form-control">
-                                            <option value="" selected disabled>-- Select One --</option>
-                                            <option th:each="prodi : ${prodi}"
-                                                    th:selected="(${prodi} == *{selectedProdi})"
-                                                    th:text="${prodi.namaProdi}" th:value="${prodi.id}"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i>
-                                        Show
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-body" th:if="${selectedTahun != null}">
-                        <div class="card shadow">
-                            <div class="card-header border-0">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h3 class="mb-0">List</h3>
-                                    </div>
-                                    <div class="col text-right">
-                                        <a th:href="@{/sidang/download(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"
-                                           class="btn btn-sm btn-success"><i class="fas fa-download"></i> Download
-                                            Excel</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
-                                    <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">NIM</th>
-                                        <th scope="col">Nama</th>
-                                        <th scope="col">Pembimbing 1</th>
-                                        <th scope="col">Tanggal Ujian</th>
-                                        <th scope="col">Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="data,row : ${listSidang}">
-                                        <td
-                                                th:text="${(row.index + 1) + (listSidang.number * listSidang.size)}">
-                                            1
-                                        </td>
-                                        <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
-                                        <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
-                                        <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad
-                                            Rafizki
-                                        </td>
-                                        <td th:if="${data.tanggalUjian != null}"
-                                            th:text="${#temporals.format(data.tanggalUjian, 'EE, dd - MMM - yyyy')}"></td>
+                             <form method="get">
+                                 <div class="row">
+                                     <div class="col-md-6 col-xs-12">
+                                         <div class="form-group">
+                                             <label>Tahun Akademik</label>
+                                             <select name="tahunAkademik" required class="form-control">
+                                                 <option value="" selected disabled>-- Select One --</option>
+                                                 <option th:each="tahun : ${tahun}"
+                                                     th:selected="(${tahun} == *{selectedTahun})"
+                                                     th:text="${tahun.namaTahunAkademik}" th:value="${tahun.id}">
+                                                 </option>
+                                             </select>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 col-xs-12">
+                                         <div class="form-group">
+                                             <label>Program Study</label>
+                                             <select name="prodi" required class="form-control">
+                                                 <option value="" selected disabled>-- Select One --</option>
+                                                 <option th:each="prodi : ${prodi}"
+                                                     th:selected="(${prodi} == *{selectedProdi})"
+                                                     th:text="${prodi.namaProdi}" th:value="${prodi.id}"></option>
+                                             </select>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="row">
+                                     <div class="col-md-12 text-center">
+                                         <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i>
+                                             Show
+                                         </button>
+                                     </div>
+                                 </div>
+                             </form>
+                         </div>
+                         <div class="card-body" th:if="${selectedTahun != null}">
+                             <div class="card shadow">
+                                 <div class="card-header border-0">
+                                     <div class="row align-items-center">
+                                         <div class="col">
+                                             <h3 class="mb-0">List</h3>
+                                         </div>
+                                         <div class="col text-right">
+                                             <a th:href="@{/sidang/download(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"
+                                                 class="btn btn-sm btn-success"><i class="fas fa-download"></i> Download
+                                                 Excel</a>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="table-responsive">
+                                     <table class="table align-items-center table-flush">
+                                         <thead class="thead-light">
+                                             <tr>
+                                                 <th scope="col">#</th>
+                                                 <th scope="col">NIM</th>
+                                                 <th scope="col">Nama</th>
+                                                 <th scope="col">Pembimbing 1</th>
+                                                 <th scope="col">Tanggal Ujian</th>
+                                                 <th scope="col">Status</th>
+                                                 <th>Action</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+                                             <tr th:each="data,row : ${listSidang}">
+                                                 <td
+                                                     th:text="${(row.index + 1) + (listSidang.number * listSidang.size)}">
+                                                     1
+                                                 </td>
+                                                 <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
+                                                 <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki
+                                                 </td>
+                                                 <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">
+                                                     Muhammmad
+                                                     Rafizki
+                                                 </td>
+                                                 <td th:if="${data.tanggalUjian != null}" th:text="${#temporals.format(data.tanggalUjian, 'EE, dd - MMM - yyyy')}"></td>
                                         <td th:if="${data.tanggalUjian == null}" th:text="${'-'}"></td>
                                         <td>
                                             <button class="btn btn-warning btn-sm"
@@ -839,7 +841,8 @@
                                                     aria-expanded="false">Lihat File
                                             </button>
                                             <div class="dropdown-menu"
-                                                 th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                 th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01' &&
+                                                 data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}">
                                                 <a class="dropdown-item" target="_blank"
                                                    th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">File
                                                     Skripsi</a>
@@ -862,7 +865,27 @@
                                             </div>
 
                                             <div class="dropdown-menu"
-                                                 th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}">
+                                                <a class="dropdown-item"
+                                                    th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'jurnal'})}"
+                                                    target="_blank">Artikel Jurnal & LOA</a>
+                                                <a class="dropdown-item"
+                                                    th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'pendaftaran'})}"
+                                                    target="_blank">Permohonan Pernyataan Kelulusan</a>
+                                                <a class="dropdown-item"
+                                                    th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'bimbingan'})}"
+                                                    target="_blank">Kartu Bimbingan</a>
+                                                <a class="dropdown-item"
+                                                    th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'ktp'})}"
+                                                    target="_blank">KTP</a>
+                                                <a class="dropdown-item"
+                                                    th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'ijazah'})}"
+                                                    target="_blank">Ijazah</a>
+                                            </div>
+
+                                            <div class="dropdown-menu"
+                                                 th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02' &&
+                                                 data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}">
                                                 <a class="dropdown-item" target="_blank"
                                                    th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">File
                                                     Thesis</a>

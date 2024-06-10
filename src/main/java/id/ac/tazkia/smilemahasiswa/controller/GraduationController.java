@@ -2044,7 +2044,8 @@ public class GraduationController {
             @RequestParam(required = false) BigDecimal kd, @RequestParam(required = false) BigDecimal ke,
             @RequestParam(required = false) String beritaAcara,
             @RequestParam(required = false) BigDecimal kf, @RequestParam(required = false) String komentarKetua) {
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
+                || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setKa(ka);
             seminar.setKb(kb);
             seminar.setKc(kc);
@@ -2120,7 +2121,8 @@ public class GraduationController {
             @RequestParam(required = false) BigDecimal ub, @RequestParam(required = false) BigDecimal uc,
             @RequestParam(required = false) BigDecimal ud, @RequestParam(required = false) BigDecimal ue,
             @RequestParam(required = false) BigDecimal uf, @RequestParam(required = false) String komentarPenguji) {
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
+                || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setUa(ua);
             seminar.setUb(ub);
             seminar.setUc(uc);
@@ -2193,7 +2195,8 @@ public class GraduationController {
             @RequestParam(required = false) BigDecimal pb, @RequestParam(required = false) BigDecimal pc,
             @RequestParam(required = false) BigDecimal pd, @RequestParam(required = false) BigDecimal pe,
             @RequestParam(required = false) BigDecimal pf, @RequestParam(required = false) String komentarPembimbing) {
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
+                || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setPa(pa);
             seminar.setPb(pb);
             seminar.setPc(pc);
@@ -2863,12 +2866,7 @@ public class GraduationController {
 
         model.addAttribute("list", list);
 
-        // if (approved != null) {
-            // return "redirect:succes-magang";
-        // } else {
-            return "graduation/magang/mahasiswa/list";
-
-        // }
+        return "graduation/magang/mahasiswa/list";
 
     }
 

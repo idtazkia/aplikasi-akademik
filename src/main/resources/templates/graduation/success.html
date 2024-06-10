@@ -159,7 +159,12 @@
                     Lanjut ke sempro !
                 </a>
                 <a th:href="@{/graduation/sempro (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;"
-                    th:if="${note.jenis == note.jenis.JURNAL}">
+                    th:if="${note.mahasiswa.idProdi.idJenjang.id == '01' &&  note.jenis == note.jenis.JURNAL}">
+                    Lanjut ke Jurnal!
+                </a>
+
+                <a th:href="@{/graduation/sempropasca (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;"
+                    th:if="${note.jenis == note.jenis.JURNAL && note.mahasiswa.idProdi.idJenjang.id == '02' }">
                     Lanjut ke Jurnal!
                 </a>
             </div>
