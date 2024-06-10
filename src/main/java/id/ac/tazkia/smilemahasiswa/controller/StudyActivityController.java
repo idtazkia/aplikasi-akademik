@@ -5,22 +5,30 @@ import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.KrsService;
-import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import id.ac.tazkia.smilemahasiswa.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -30,6 +38,9 @@ import java.util.*;
 public class StudyActivityController {
 
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40", "44");
+
+    @Value("${upload.tugas.dosen}")
+    private String uploadTugas;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -140,10 +151,22 @@ public class StudyActivityController {
     private FileMbkmDao fileMbkmDao;
 
     @Autowired
+    private MateriMengajarDao materiMengajarDao;
+
+    @Autowired
+    private JadwalTugasDao jadwalTugasDao;
+
+    @Autowired
     private KrsService krsService;
 
     @Autowired
     private EnableKrsDao enableKrsDao;
+
+    @Autowired
+    private JadwalTugasJawabanDao tugasJawabanDao;
+
+    @Autowired
+    private TugasMateriService tugasMateriService;
 
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
@@ -325,14 +348,12 @@ public class StudyActivityController {
 
             model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
 
-            TahunAkademik tahunAwal = tahunAkademikDao.tahunAkademikAwal(mahasiswa.getId());
-            TahunAkademik tahunAkhir = tahunAkademikDao.tahunAkademikAkhir(mahasiswa.getId());
-            Integer total = tahunAkademikDao.countByKodeTahunAkademikGreaterThanEqualAndKodeTahunAkademikLessThanEqualAndStatusNotInAndJenisNotIn(tahunAwal.getKodeTahunAkademik(), tahunAkhir.getKodeTahunAkademik(), Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusRecord.PENDEK));
+            Long totalSks = krsDetailDao.jumlahSksLulus(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
 
-            model.addAttribute("tSemester", total);
+            model.addAttribute("sksLulus", totalSks);
 
             // MBKM
-            if (total > 7) {
+            if (totalSks >= 100) {
                 model.addAttribute("mbkm", "Pilihan MBKM terbuka");
             }
             List<KrsDetail> cekKrs = krsDetailDao.cariKrsSelainMBKM(k.getId());

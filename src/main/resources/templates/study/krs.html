@@ -68,6 +68,7 @@
                                <strong>Daftar KRS</strong>
                             </div>
                             <div class="col-md-6 col-xs-12 text-right">
+                                <input type="hidden" th:value="${sksLulus}">
                                 <div class="dropdown-trig-an-list" th:if="${mbkm != null && existMbkm == null && existKrs == null}">
                                     <div class="dropdown-trig-sgn pull-right">
                                         <button class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-plus-square"></i> Tambah KRS</button>
