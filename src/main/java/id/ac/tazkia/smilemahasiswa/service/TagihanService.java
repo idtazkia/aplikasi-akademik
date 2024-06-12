@@ -521,6 +521,8 @@ public class TagihanService {
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
+            requestCreateTagihan(tagihan);
+
         }else{
             Tagihan tagihan = new Tagihan();
             tagihan.setMahasiswa(mahasiswa);
@@ -535,6 +537,8 @@ public class TagihanService {
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
+            requestCreateTagihan(tagihan);
+
         }
 
     }
