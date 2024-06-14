@@ -8,6 +8,13 @@ import id.ac.tazkia.smilemahasiswa.dto.prediksitest.TestDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +28,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,6 +76,11 @@ public class KuesionerController {
 
     @Value("${upload.prediksiTest}")
     private String uploadPrediksiTest;
+
+    @ModelAttribute("angkatan")
+    public Iterable<Mahasiswa> angkatan() {
+        return mahasiswaDao.cariAngkatan();
+    }
 
     @GetMapping("/kuesioner")
     public String listKuesioner(Model model, @PageableDefault Pageable pageable){
@@ -311,6 +328,102 @@ public class KuesionerController {
                 model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(pageable));
             }
         }
+    }
+
+    @GetMapping("/kuesioner/toefl/download")
+    public void downloadRekap(@RequestParam String angkatan, HttpServletResponse response) throws IOException {
+        String[] columns = {"NO", "Timestamps", "NIM", "Full Name", "Place, Date of Birth", "Department"};
+
+        List<PrediksiTest> listMhs = prediksiTestDao.findByMahasiswaAngkatanAndStatusAndStatusUjian(angkatan, StatusRecord.AKTIF, StatusUjian.LULUS);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Prediksi Test Angkatan " + angkatan);
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:F1"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A2:F2"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A3:F3"));
+
+        Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setUnderline(HSSFFont.U_SINGLE);
+        titleFont.setFontHeightInPoints((short) 12);
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+
+        CellStyle titleStyle = workbook.createCellStyle();
+        titleStyle.setFont(titleFont);
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setAlignment(HorizontalAlignment.CENTER);
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+
+        int rowTitle1 = 0;
+        Row titleRow = sheet.createRow(rowTitle1);
+        titleRow.createCell(0).setCellValue("TOEFL PREDICTION TEST");
+        titleRow.getCell(0).setCellStyle(titleStyle);
+
+        int rowTitle2 = 1;
+        Row titleRow2 = sheet.createRow(rowTitle2);
+        titleRow2.createCell(0).setCellValue("TAZKIA LANGUAGE CENTER");
+        titleRow2.getCell(0).setCellStyle(titleStyle);
+
+        int rowTitle3 = 2;
+        Row titleRow3 = sheet.createRow(rowTitle3);
+        titleRow3.createCell(0).setCellValue("Sentul, " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+        titleRow3.getCell(0).setCellStyle(titleStyle);
+
+        Row headerRow = sheet.createRow(4);
+
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        int rowNum = 5;
+        int baris = 1;
+
+        for (PrediksiTest list : listMhs){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list.getTanggalUpload().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:ss")));
+            row.createCell(2).setCellValue(list.getMahasiswa().getNim());
+            row.createCell(3).setCellValue(list.getMahasiswa().getNama());
+            row.createCell(4).setCellValue(list.getMahasiswa().getTempatLahir() + ", " + list.getMahasiswa().getTanggalLahir().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+            row.createCell(5).setCellValue(list.getMahasiswa().getIdProdi().getKodeProdi());
+
+            row.getCell(0).setCellStyle(dataStyle);
+            row.getCell(1).setCellStyle(dataStyle);
+            row.getCell(2).setCellStyle(dataStyle);
+            row.getCell(3).setCellStyle(dataStyle);
+            row.getCell(4).setCellStyle(dataStyle);
+            row.getCell(5).setCellStyle(dataStyle);
+        }
+
+        for (int i = 0; i < columns.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Prediksi Test Angkatan " + angkatan + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
     @PostMapping("/kuesioner/toefl/admin/approve")
