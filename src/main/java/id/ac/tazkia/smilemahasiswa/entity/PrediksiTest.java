@@ -31,10 +31,10 @@ public class PrediksiTest {
     @Enumerated(EnumType.STRING)
     private JenisTest jenisTest;
 
-    private BigDecimal nilaiListening;
-    private BigDecimal nilaiReading;
-    private BigDecimal nilaiStructure;
-    private BigDecimal nilai;
+    private Integer nilaiListening;
+    private Integer nilaiReading;
+    private Integer nilaiStructure;
+    private Integer nilai;
 
     @Enumerated(EnumType.STRING)
     private StatusUjian statusUjian= StatusUjian.WAITING;

@@ -19,21 +19,21 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
     @Query(value = "select max(ujian_ke) from prediksi_test where id_mahasiswa = ?1 and status in ('AKTIF', 'WAITING')", nativeQuery = true)
     Integer findMaxUjian(Mahasiswa mahasiswa);
 
-        @Query(value = "SELECT pt.* FROM prediksi_test pt " +
-                "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id " +
-                "INNER JOIN prodi p ON m.id_prodi = p.id " +
-                "WHERE pt.status not in ('HAPUS') AND pt.status_ujian = ?2 " +
-                "AND (m.nama LIKE %?1% OR m.nim LIKE %?1%) " +
-                "GROUP BY pt.id_mahasiswa " +
-                "ORDER BY pt.ujian_ke DESC",
-                countQuery = "SELECT COUNT(*) FROM (SELECT pt.id_mahasiswa FROM prediksi_test pt " +
-                        "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id " +
-                        "INNER JOIN prodi p ON m.id_prodi = p.id " +
-                        "WHERE pt.status not in ('HAPUS') AND pt.status_ujian = ?2 " +
-                        "AND (m.nama LIKE %?1% OR m.nim LIKE %?1%) " +
-                        "GROUP BY pt.id_mahasiswa) AS countQuery",
-                nativeQuery = true)
-        Page<PrediksiTest> findByNamaOrNimAndStatusUjian(String keyword, String statusUjian, Pageable pageable);
+    @Query(value = "SELECT pt.* FROM prediksi_test pt " +
+            "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id " +
+            "INNER JOIN prodi p ON m.id_prodi = p.id " +
+            "WHERE pt.status not in ('HAPUS') AND pt.status_ujian = ?2 " +
+            "AND (m.nama LIKE %?1% OR m.nim LIKE %?1%) " +
+            "GROUP BY pt.id_mahasiswa " +
+            "ORDER BY m.angkatan DESC",
+            countQuery = "SELECT COUNT(*) FROM (SELECT pt.id_mahasiswa FROM prediksi_test pt " +
+                    "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id " +
+                    "INNER JOIN prodi p ON m.id_prodi = p.id " +
+                    "WHERE pt.status not in ('HAPUS') AND pt.status_ujian = ?2 " +
+                    "AND (m.nama LIKE %?1% OR m.nim LIKE %?1%) " +
+                    "GROUP BY pt.id_mahasiswa) AS countQuery",
+            nativeQuery = true)
+    Page<PrediksiTest> findByNamaOrNimAndStatusUjian(String keyword, String statusUjian, Pageable pageable);
 
     @Query(value = "SELECT pt.*\n" +
             "FROM prediksi_test pt\n" +
@@ -49,7 +49,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
             "      AND sub_pt.status NOT IN ('HAPUS')\n" +
             "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
             "  )\n" +
-            "ORDER BY pt.ujian_ke DESC",
+            "ORDER BY m.angkatan DESC",
             countQuery = "SELECT count(pt.*)\n" +
                     "FROM prediksi_test pt\n" +
                     "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id\n" +
@@ -64,7 +64,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
                     "      AND sub_pt.status NOT IN ('HAPUS')\n" +
                     "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
                     "  )\n" +
-                    "ORDER BY pt.ujian_ke DESC;",
+                    "ORDER BY m.angkatan DESC;",
             nativeQuery = true)
     Page<PrediksiTest> findByNamaOrNimAndStatusUjianNotIn(String keyword, String statusUjian, Pageable pageable);
 
@@ -81,7 +81,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
             "      AND sub_pt.status NOT IN ('HAPUS')\n" +
             "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
             "  )\n" +
-            "ORDER BY pt.ujian_ke DESC",
+            "ORDER BY m.angkatan DESC",
             countQuery = "SELECT count(pt.*)\n" +
                     "FROM prediksi_test pt\n" +
                     "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id\n" +
@@ -95,14 +95,15 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
                     "      AND sub_pt.status NOT IN ('HAPUS')\n" +
                     "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
                     "  )\n" +
-                    "ORDER BY pt.ujian_ke DESC;",
+                    "ORDER BY m.angkatan DESC;",
             nativeQuery = true)
-    Page<PrediksiTest> findByDistincMahasiswa( Pageable pageable);
+    Page<PrediksiTest> findByDistincMahasiswa(Pageable pageable);
 
     @Query(value = "SELECT pt.id as id,m.nim as nim,m.nama as nama,p.nama_prodi as prodi,pt.ujian_ke as ujian,pt.status_ujian as status,pt.file_bukti as file,pt.tanggal_upload as tanggal FROM prediksi_test as pt inner join mahasiswa as m on pt.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where pt.status = 'AKTIF' and pt.status_ujian = ?1", nativeQuery = true)
     Page<PrediksiTestDto> list(StatusUjian statusUjian, Pageable pageable);
 
     Page<PrediksiTest> findByStatusNotInAndStatusUjian(List<StatusRecord> statusRecord, StatusUjian statusUjian, Pageable pageable);
+
     Page<PrediksiTest> findByStatusNotInAndStatusUjianNotIn(List<StatusRecord> statusRecord, List<StatusUjian> statusUjian, Pageable pageable);
 
     List<PrediksiTest> findByMahasiswaAndStatusNotInOrderByUjianKeAsc(Mahasiswa mahasiswa, List<StatusRecord> statusRecord);
