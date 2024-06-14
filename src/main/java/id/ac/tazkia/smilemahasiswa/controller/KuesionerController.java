@@ -8,10 +8,8 @@ import id.ac.tazkia.smilemahasiswa.dto.prediksitest.TestDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,15 +28,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +67,8 @@ public class KuesionerController {
 
     @Autowired
     private  TahunAkademikDao tahunAkademikDao;
+    @Autowired
+    private KonversiNilaiToeflDao konversiNilaiToeflDao;
 
     @Value("${upload.prediksiTest}")
     private String uploadPrediksiTest;
@@ -498,15 +494,17 @@ public class KuesionerController {
     @PostMapping("/kuesioner/toefl/admin/nilai")
     public String penilaianToefl(@Valid TestDto testDto){
         PrediksiTest prediksiTest = prediksiTestDao.findById(testDto.getId()).get();
-        prediksiTest.setNilaiReading(testDto.getNilaiReading());
-        prediksiTest.setNilaiListening(testDto.getNilaiListening());
-        prediksiTest.setNilaiStructure(testDto.getNilaiStructure());
-        BigDecimal nilaiAkhir = prediksiTest.getNilaiReading()
-                .add(prediksiTest.getNilaiListening())
-                .add(prediksiTest.getNilaiStructure())
-                .divide(BigDecimal.valueOf(3), 1, RoundingMode.HALF_UP);
-        prediksiTest.setNilai(nilaiAkhir.multiply(BigDecimal.TEN));
-        prediksiTest.setStatusUjian(StatusUjian.DINILAI);
+        prediksiTest.setNilaiReading(konversiNilaiToeflDao.findById(testDto.getNilaiReading()).get().getReading());
+        prediksiTest.setNilaiListening(konversiNilaiToeflDao.findById(testDto.getNilaiListening()).get().getListening());
+        prediksiTest.setNilaiStructure(konversiNilaiToeflDao.findById(testDto.getNilaiStructure()).get().getStructure());
+        Integer nilaiAkhir = (prediksiTest.getNilaiReading() +  prediksiTest.getNilaiListening() + prediksiTest.getNilaiStructure()) / 3;
+        prediksiTest.setNilai(nilaiAkhir * 10);
+        if (prediksiTest.getNilai() >= 500) {
+            prediksiTest.setStatusUjian(StatusUjian.LULUS);
+
+        }else{
+            prediksiTest.setStatusUjian(StatusUjian.TIDAK_LULUS);
+        }
         prediksiTestDao.save(prediksiTest);
 
         return "redirect:list?status=WAITING";
@@ -525,6 +523,35 @@ public class KuesionerController {
         Mahasiswa mahasiswa = mahasiswaDao.findById(id).get();
         return prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS));
     }
+
+    @GetMapping("/kuesioner/ielts/view")
+    public String viewKuesionerIelts(Model model, Authentication authentication) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,
+                StatusRecord.PREDIKSI_TEST, true);
+
+        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
+        if (totalTest < 1) {
+            return "kuesioner/ielts/view";
+        } else {
+            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswa(
+                    Arrays.asList(StatusRecord.HAPUS),
+                    Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa);
+            if (validate != null) {
+                return "redirect:list";
+            } else {
+                if (enableFiture != null) {
+                    return "kuesioner/ielts /view";
+                } else {
+                    return "redirect:list";
+                }
+            }
+        }
+    }
+
 
 
 }
