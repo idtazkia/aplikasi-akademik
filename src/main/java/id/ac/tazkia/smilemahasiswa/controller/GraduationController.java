@@ -2686,7 +2686,7 @@ public class GraduationController {
             }
         }
 
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
