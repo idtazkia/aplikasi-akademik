@@ -459,8 +459,16 @@ public class ReportController {
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
 
-            List<ScheduleDto> jadwal = jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahunAkademik);
-            model.addAttribute("jadwal", jadwal);
+            String tlc = "staftlc";
+
+            if (tlc.equals(user.getRole().getId())){
+                List<ScheduleDto> jadwal = jadwalDao.lecturerAssesmentAll(StatusRecord.AKTIF, tahunAkademik);
+                model.addAttribute("jadwal", jadwal);
+            }else{
+                List<ScheduleDto> jadwal = jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahunAkademik);
+                model.addAttribute("jadwal", jadwal);
+
+            }
         }
 
     }

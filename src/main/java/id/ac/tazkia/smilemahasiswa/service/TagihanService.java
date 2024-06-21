@@ -534,6 +534,7 @@ public class TagihanService {
             tagihan.setTanggalPembuatan(LocalDate.now());
             tagihan.setTanggalPenangguhan(tanggalJatuhTempo);
             tagihan.setTanggalJatuhTempo(tanggalJatuhTempo);
+            tagihan.setTahunAkademik(tahunAkademik);
             tagihan.setStatusTagihan(StatusTagihan.AKTIF);
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
