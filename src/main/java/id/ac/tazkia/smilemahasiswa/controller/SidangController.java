@@ -1918,6 +1918,7 @@ public class SidangController {
         sidang.setStatusSidang(StatusApprove.APPROVED);
         sidang.setPublish(StatusRecord.AKTIF);
         sidang.setTanggalUjian(LocalDate.now());
+        sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
         sidangDao.save(sidang);
 
         Mahasiswa mahasiswa = sidang.getSeminar().getNote().getMahasiswa();
