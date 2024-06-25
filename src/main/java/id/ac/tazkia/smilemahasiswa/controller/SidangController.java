@@ -1594,9 +1594,21 @@ public class SidangController {
             }
             // {"No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua",
             // "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu"};
-            row.createCell(4).setCellValue(data.getKetuaPenguji().getKaryawan().getNamaKaryawan());
-            row.createCell(5).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
-            row.createCell(6).setCellValue(data.getPembimbing().getKaryawan().getNamaKaryawan());
+            if (data.getKetuaPenguji() == null){
+                row.createCell(4).setCellValue("-");
+            }else{
+                row.createCell(4).setCellValue(data.getKetuaPenguji().getKaryawan().getNamaKaryawan());
+            }
+            if (data.getDosenPenguji() == null) {
+                row.createCell(5).setCellValue("-");
+            }else{
+                row.createCell(5).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
+            }
+            if (data.getPembimbing() == null) {
+                row.createCell(6).setCellValue("-");
+            }else{
+                row.createCell(6).setCellValue(data.getPembimbing().getKaryawan().getNamaKaryawan());
+            }
             row.createCell(7).setCellValue(data.getJamMulai() + " - " + data.getJamSelesai());
             row.createCell(8).setCellValue(data.getNilai().toString());
             if (data.getNilai().compareTo(new BigDecimal(80)) >= 0
