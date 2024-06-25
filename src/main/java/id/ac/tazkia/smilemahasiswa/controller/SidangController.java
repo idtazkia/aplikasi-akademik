@@ -1917,6 +1917,7 @@ public class SidangController {
         sidang.setKriteriaJurnal(kriteriaJurnal);
         sidang.setStatusSidang(StatusApprove.APPROVED);
         sidang.setPublish(StatusRecord.AKTIF);
+        sidang.setTanggalUjian(LocalDate.now());
         sidangDao.save(sidang);
 
         Mahasiswa mahasiswa = sidang.getSeminar().getNote().getMahasiswa();
