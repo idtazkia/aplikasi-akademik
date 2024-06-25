@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -348,7 +349,8 @@ public class StudyActivityController {
 
             model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
 
-            Long totalSks = krsDetailDao.jumlahSksLulus(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+            int totalSks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
             model.addAttribute("sksLulus", totalSks);
 
