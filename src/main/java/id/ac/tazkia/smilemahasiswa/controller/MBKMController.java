@@ -176,6 +176,8 @@ public class MBKMController {
                     dosen = dosenDao.findById("dinad").get();
                 } else if ("02".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
                     dosen = dosenDao.findById("Putrisa").get();
+                } else if ("03".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("wikus").get();
                 } else if ("06".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId()) || "09".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
                     dosen = dosenDao.findById("unangf").get();
                 }else{
