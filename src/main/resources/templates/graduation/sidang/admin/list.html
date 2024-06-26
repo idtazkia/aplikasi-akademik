@@ -1168,7 +1168,7 @@
                                                             <button type="submit" th:id="${data.id}"
                                                                     th:if="${data.seminar.note.jenis ==
                                                                         data.seminar.note.jenis.JURNAL}"
-                                                                    class="btn btn-primary publish-jurnal">Publish
+                                                                    class="btn btn-primary publish-jurnal">Publish Jurnal
                                                             </button>
                                                         </div>
                                                     </div>
@@ -1340,8 +1340,8 @@
             dataType: 'JSON',
             data: JSON.stringify({
                 "id": id,
-                "jurnalId": $('#jurnalId').val(),
-                "gradeId": $('#gradeId').val(),
+                "jurnalId": document.getElementById('jurnalId').value,
+                "gradeId": document.getElementById('gradeId').value
             }),
             error: function (data) {
                 if (data.responseText == "lengkapi") {

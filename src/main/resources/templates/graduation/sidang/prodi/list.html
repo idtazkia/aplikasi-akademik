@@ -628,8 +628,8 @@
             dataType: 'JSON',
             data: JSON.stringify({
                 "id": id,
-                "jurnalId": $('#jurnalId').val(),
-                "gradeId": $('#gradeId').val(),
+                "jurnalId": document.getElementById('jurnalId').value,
+                "gradeId": document.getElementById('gradeId').value
             }),
             error: function (data) {
                 if (data.responseText == "lengkapi") {
