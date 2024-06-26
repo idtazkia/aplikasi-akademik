@@ -80,7 +80,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i> Show</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i> Show
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -93,7 +94,8 @@
                                         <h3 class="mb-0">List</h3>
                                     </div>
                                     <div class="col text-right">
-                                        <a th:href="@{/sidang/download(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" class="btn btn-sm btn-success"><i class="fas fa-download"></i> Download Excel</a>
+                                        <a th:href="@{/sidang/download(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"
+                                           class="btn btn-sm btn-success"><i class="fas fa-download"></i> Download Excel</a>
                                     </div>
                                 </div>
                             </div>
@@ -114,22 +116,45 @@
                                         <td th:text="${(row.index + 1) + (listSidang.number * listSidang.size)}">1</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
-                                        <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki</td>
+                                        <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad
+                                            Rafizki
+                                        </td>
                                         <td>
-                                            <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">Menunggu jadwal sidang</button>
-                                            <button class="btn btn-primary btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF}">Menunggu Penilaian & Publish Nilai</button>
-                                            <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"  th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">LULUS</button>
-                                            <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai < 70}">TIDAK LULUS</button>
-                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish'+data.id}" th:if="${data.ketuaPenguji != null && data.tanggalUjian != null}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <button class="btn btn-warning btn-sm"
+                                                    th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">
+                                                Menunggu jadwal sidang
+                                            </button>
+                                            <button class="btn btn-primary btn-sm" data-toggle="modal"
+                                                    aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"
+                                                    th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF}">
+                                                Menunggu Penilaian & Publish Nilai
+                                            </button>
+                                            <button class="btn btn-success btn-sm" data-toggle="modal"
+                                                    aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"
+                                                    th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">
+                                                LULUS
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                                    aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"
+                                                    th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai < 70}">
+                                                TIDAK LULUS
+                                            </button>
+                                            <div class="modal fade bd-example-modal-lg fade"
+                                                 th:id="${'modal-publish'+data.id}"
+                                                 th:if="${data.ketuaPenguji != null && data.tanggalUjian != null}"
+                                                 role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" >Detail Nilai</h5>
-                                                            <a th:href="@{/graduation/sidang/admin/score(sidang = ${data.id}, akses = 'prodi')}" class="btn btn-sm btn-default"><i class="fas fa-edit"></i></i> Edit Nilai</a>
+                                                            <h5 class="modal-title">Detail Nilai</h5>
+                                                            <a th:href="@{/graduation/sidang/admin/score(sidang = ${data.id}, akses = 'prodi')}"
+                                                               class="btn btn-sm btn-default"><i
+                                                                    class="fas fa-edit"></i></i> Edit Nilai</a>
 
                                                         </div>
                                                         <div class="modal-body">
-                                                            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+                                                            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+                                                                  rel="stylesheet"/>
 
                                                             <div class="page-content container">
                                                                 <div class="page-header text-blue-d2">
@@ -148,53 +173,110 @@
                                                                             <div class="row">
                                                                                 <div class="col-12">
                                                                                     <b>Judul Skripsi/Tesis</b>
-                                                                                    <p class="text-sm" style="white-space: pre-wrap" th:text="${data.judulTugasAkhir}">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+                                                                                    <p class="text-sm"
+                                                                                       style="white-space: pre-wrap"
+                                                                                       th:text="${data.judulTugasAkhir}">
+                                                                                        Far far away, behind the word
+                                                                                        mountains, far from the
+                                                                                        countries Vokalia and
+                                                                                        Consonantia, there live the
+                                                                                        blind texts. Separated they live
+                                                                                        in Bookmarksgrove right at the
+                                                                                        coast of the Semantics, a large
+                                                                                        language ocean.</p>
                                                                                     <b>Judul Inggris Skripsi/Tesis</b>
-                                                                                    <p class="text-sm" style="white-space: pre-wrap" th:text="${data.judulInggris}">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+                                                                                    <p class="text-sm"
+                                                                                       style="white-space: pre-wrap"
+                                                                                       th:text="${data.judulInggris}">A
+                                                                                        small river named Duden flows by
+                                                                                        their place and supplies it with
+                                                                                        the necessary regelialia. It is
+                                                                                        a paradisematic country, in
+                                                                                        which roasted parts of sentences
+                                                                                        fly into your mouth.</p>
                                                                                 </div>
                                                                             </div>
                                                                             <!-- .row -->
 
-                                                                            <hr class="row brc-default-l1 mx-n1 mb-4" />
+                                                                            <hr class="row brc-default-l1 mx-n1 mb-4"/>
 
                                                                             <div class="row">
                                                                                 <div class="col-sm-6">
                                                                                     <div>
                                                                                         <span class="text-sm text-grey-m2 align-middle">Tanggal :</span>
-                                                                                        <span class="text-600 text-110 text-blue align-middle"><strong th:text="${' ' + #temporals.day(data.tanggalUjian) + ' - ' + #temporals.monthNameShort(data.tanggalUjian) + ' - ' + #temporals.year(data.tanggalUjian)}"></strong></span>
+                                                                                        <span class="text-600 text-110 text-blue align-middle"><strong
+                                                                                                th:text="${' ' + #temporals.day(data.tanggalUjian) + ' - ' + #temporals.monthNameShort(data.tanggalUjian) + ' - ' + #temporals.year(data.tanggalUjian)}"></strong></span>
                                                                                     </div>
                                                                                     <div class="text-grey-m2">
                                                                                         <div class="my-1">
                                                                                             <span class="text-sm text-grey-m2 align-middle">Jam     :</span>
-                                                                                            <span class="text-600 text-110 text-blue align-middle"><strong th:text="${data.jamMulai + ' - ' + data.jamSelesai}"></strong></span>
+                                                                                            <span class="text-600 text-110 text-blue align-middle"><strong
+                                                                                                    th:text="${data.jamMulai + ' - ' + data.jamSelesai}"></strong></span>
                                                                                         </div>
                                                                                         <div class="my-1">
                                                                                             <span class="text-sm text-grey-m2 align-middle">Ruangan     :</span>
-                                                                                            <span class="text-600 text-110 text-blue align-middle"><strong th:text="${data.ruangan.namaRuangan}"></strong></span>
+                                                                                            <span class="text-600 text-110 text-blue align-middle"><strong
+                                                                                                    th:text="${data.ruangan.namaRuangan}"></strong></span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <!-- /.col -->
 
                                                                                 <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
-                                                                                    <hr class="d-sm-none" />
+                                                                                    <hr class="d-sm-none"/>
                                                                                     <div class="text-grey-m2">
                                                                                         <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
                                                                                             Detail Dosen
                                                                                         </div>
 
-                                                                                        <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Ketua :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">asdasdasd</span> </div>
+                                                                                        <div class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Ketua :</span>
+                                                                                            <span class="text-600 text-110 text-blue align-middle"
+                                                                                                  th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">asdasdasd</span>
+                                                                                        </div>
 
-                                                                                        <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Dosen Penguji :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.dosenPenguji.karyawan.namaKaryawan}">asdasdasd</span></div>
+                                                                                        <div class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Dosen Penguji :</span>
+                                                                                            <span class="text-600 text-110 text-blue align-middle"
+                                                                                                  th:text="${data.dosenPenguji.karyawan.namaKaryawan}">asdasdasd</span>
+                                                                                        </div>
 
-                                                                                        <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing 1:</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.pembimbing.karyawan.namaKaryawan}">asdasdasd</span> </div>
+                                                                                        <div class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Pembimbing 1:</span>
+                                                                                            <span class="text-600 text-110 text-blue align-middle"
+                                                                                                  th:text="${data.pembimbing.karyawan.namaKaryawan}">asdasdasd</span>
+                                                                                        </div>
 
-                                                                                        <div th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing 2 :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.pembimbing2.karyawan.namaKaryawan}">asdasdasd</span> </div>
+                                                                                        <div th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}"
+                                                                                             class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Pembimbing 2 :</span>
+                                                                                            <span class="text-600 text-110 text-blue align-middle"
+                                                                                                  th:text="${data.pembimbing2.karyawan.namaKaryawan}">asdasdasd</span>
+                                                                                        </div>
 
 
-                                                                                        <div th:if="${data.publish.NONAKTIF == data.publish}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-warning badge-pill px-25">Belum Publish</span></div>
-                                                                                        <div th:if="${data.publish.AKTIF == data.publish && data.nilai >= 70}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-success badge-pill px-25">Lulus</span></div>
-                                                                                        <div th:if="${data.publish.AKTIF == data.publish && data.nilai < 70}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-danger badge-pill px-25">Tidak Lulus</span></div>
+                                                                                        <div th:if="${data.publish.NONAKTIF == data.publish}"
+                                                                                             class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Status:</span>
+                                                                                            <span class="badge badge-warning badge-pill px-25">Belum Publish</span>
+                                                                                        </div>
+                                                                                        <div th:if="${data.publish.AKTIF == data.publish && data.nilai >= 70}"
+                                                                                             class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Status:</span>
+                                                                                            <span class="badge badge-success badge-pill px-25">Lulus</span>
+                                                                                        </div>
+                                                                                        <div th:if="${data.publish.AKTIF == data.publish && data.nilai < 70}"
+                                                                                             class="my-2"><i
+                                                                                                class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                                                                                            <span class="text-600 text-90">Status:</span>
+                                                                                            <span class="badge badge-danger badge-pill px-25">Tidak Lulus</span>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <!-- /.col -->
@@ -213,81 +295,176 @@
                                                                                             <th>Ketua</th>
                                                                                             <th>Penguji</th>
                                                                                             <th>Pembimbing 1</th>
-                                                                                            <th th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">Pembimbing 2</th>
+                                                                                            <th th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                                                Pembimbing 2
+                                                                                            </th>
                                                                                         </tr>
                                                                                         </thead>
 
-                                                                                        <tbody class="text-95 text-secondary-d3" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                                                        <tbody class="text-95 text-secondary-d3"
+                                                                                               th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                                                                                         <tr></tr>
                                                                                         <tr>
                                                                                             <td>1</td>
                                                                                             <td>Pembahasan</td>
-                                                                                            <td align="center" th:text="${data.ka}">90.00</td>
-                                                                                            <td align="center" th:text="${data.ua}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pa}">90.00</td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ka}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ua}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pa}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
 
                                                                                         <tr>
                                                                                             <td>2</td>
                                                                                             <td>Penguasaan Materi</td>
-                                                                                            <td align="center" th:text="${data.kb}">90.00</td>
-                                                                                            <td align="center" th:text="${data.ub}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pb}">90.00</td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.kb}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ub}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pb}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
 
                                                                                         <tr>
                                                                                             <td>3</td>
                                                                                             <td>Teknik Penulisan</td>
-                                                                                            <td align="center" th:text="${data.kc}">90.00</td>
-                                                                                            <td align="center" th:text="${data.uc}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pc}">90.00</td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.kc}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.uc}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pc}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
 
                                                                                         <tr>
                                                                                             <td>4</td>
-                                                                                            <td>Presentasi dan Pemaparan</td>
-                                                                                            <td align="center" th:text="${data.kd}">90.00</td>
-                                                                                            <td align="center" th:text="${data.ud}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pd}">90.00</td>
+                                                                                            <td>Presentasi dan
+                                                                                                Pemaparan
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.kd}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ud}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pd}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
                                                                                         </tbody>
 
-                                                                                        <tbody class="text-95 text-secondary-d3" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                                        <tbody class="text-95 text-secondary-d3"
+                                                                                               th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                                                         <tr></tr>
                                                                                         <tr>
                                                                                             <td>1</td>
                                                                                             <td>Presentasi</td>
-                                                                                            <td align="center" th:text="${data.ka}">90.00</td>
-                                                                                            <td align="center" th:text="${data.ua}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pa2}">90.00</td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ka}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ua}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pa}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pa2}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
 
                                                                                         <tr>
                                                                                             <td>2</td>
-                                                                                            <td>Penguasaan Materi dan Metodologi</td>
-                                                                                            <td align="center" th:text="${data.kb}">90.00</td>
-                                                                                            <td align="center" th:text="${data.ub}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pb}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pb2}">90.00</td>
+                                                                                            <td>Penguasaan Materi dan
+                                                                                                Metodologi
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.kb}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ub}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pb}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pb2}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
 
                                                                                         <tr>
                                                                                             <td>3</td>
-                                                                                            <td>Penulisandan Pengembangan Materi Metodologi</td>
-                                                                                            <td align="center" th:text="${data.kc}">90.00</td>
-                                                                                            <td align="center" th:text="${data.uc}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pc}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pc2}">90.00</td>
+                                                                                            <td>Penulisandan
+                                                                                                Pengembangan Materi
+                                                                                                Metodologi
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.kc}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.uc}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pc}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pc2}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
 
                                                                                         <tr>
                                                                                             <td>4</td>
                                                                                             <td>Argumentasi</td>
-                                                                                            <td align="center" th:text="${data.kd}">90.00</td>
-                                                                                            <td align="center" th:text="${data.ud}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pd}">90.00</td>
-                                                                                            <td align="center" th:text="${data.pd2}">90.00</td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.kd}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.ud}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pd}">
+                                                                                                90.00
+                                                                                            </td>
+                                                                                            <td align="center"
+                                                                                                th:text="${data.pd2}">
+                                                                                                90.00
+                                                                                            </td>
                                                                                         </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -305,13 +482,14 @@
                                                                                                 Total :
                                                                                             </div>
                                                                                             <div class="col-5">
-                                                                                                <span class="text-120 text-secondary-d1"><strong th:text="${data.nilai}"></strong></span>
+                                                                                                <span class="text-120 text-secondary-d1"><strong
+                                                                                                        th:text="${data.nilai}"></strong></span>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
 
-                                                                                <hr />
+                                                                                <hr/>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -328,37 +506,44 @@
                                         </td>
                                         <td>
                                             <a class="btn btn-primary btn-outline-success btn-sm"
-                                                th:if="${data.publish == data.publish.NONAKTIF && data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}"
-                                                th:href="@{/graduation/sidang/prodi/penjadwalan(id = ${data.id})}">
+                                               th:if="${data.publish == data.publish.NONAKTIF && data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}"
+                                               th:href="@{/graduation/sidang/prodi/penjadwalan(id = ${data.id})}">
                                                 <i class="fas fa-calendar-check"></i> Buat Jadwal
                                             </a>
                                             <button type="button" class="btn btn-primary btn-outline-danger btn-sm"
-                                                th:if="${data.publish == data.publish.NONAKTIF && data.statusSidang != data.statusSidang.APPROVED &&  data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}"
-                                                th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
+                                                    th:if="${data.publish == data.publish.NONAKTIF && data.statusSidang != data.statusSidang.APPROVED &&  data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}"
+                                                    th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
-                                            <button th:if="${data.publish == data.publish.NONAKTIF && data.statusSidang == data.statusSidang.APPROVED}"  type="button" class="btn btn-info btn-outline-primary btn-sm fas fa-share"
-                                                    data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish1'+data.id}"> Publish</button>
+                                            <button th:if="${data.publish == data.publish.NONAKTIF && data.statusSidang == data.statusSidang.APPROVED}"
+                                                    type="button"
+                                                    class="btn btn-info btn-outline-primary btn-sm fas fa-share"
+                                                    data-toggle="modal" aria-haspopup="true"
+                                                    th:data-target="${'#modal-publish1'+data.id}"> Publish
+                                            </button>
 
-                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish1'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal fade bd-example-modal-lg fade"
+                                                 th:id="${'modal-publish1'+data.id}" role="dialog"
+                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">Detail Nilai</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
                                                         <div class="modal-body"
-                                                            th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}">
+                                                             th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}">
                                                             <div class="alert alert-danger alert-with-icon"
-                                                                th:id="${data.id+'-alertSave'}" style="display: none">
+                                                                 th:id="${data.id+'-alertSave'}" style="display: none">
                                                                 <button type="button" aria-hidden="true" class="close"
-                                                                    data-dismiss="alert" aria-label="Close">
+                                                                        data-dismiss="alert" aria-label="Close">
                                                                     <i class="fas fa-warning"></i>
                                                                 </button>
                                                                 <span data-notify="icon"
-                                                                    class="tim-icons icon-trophy"></span>
+                                                                      class="tim-icons icon-trophy"></span>
                                                                 <span id="textAlert"><b> Maaf! - </b>Mohon Lengkapi
                                                                     Komponen Nilai</span>
                                                             </div>
@@ -367,10 +552,11 @@
                                                                     <div class="form-group">
                                                                         <label>Jurnal</label>
                                                                         <select id="jurnalId" class="form-control">
-                                                                            <option value="-" >---</option>
+                                                                            <option value="-">---</option>
                                                                             <option th:each="item : ${jurnal}"
-                                                                                th:text="${item.nama}"
-                                                                                th:value="${item.id}">Sinta 1</option>
+                                                                                    th:text="${item.nama}"
+                                                                                    th:value="${item.id}">Sinta 1
+                                                                            </option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -378,42 +564,63 @@
                                                                     <div class="form-group">
                                                                         <label>Grade</label>
                                                                         <select id="gradeId" required
-                                                                            class="form-control">
+                                                                                class="form-control">
                                                                             <option value="-">----</option>
                                                                             <option th:each="grade : ${grade}"
-                                                                                th:text="${grade.nama}"
-                                                                                th:value="${grade.id}">Sinta 1</option>
+                                                                                    th:text="${grade.nama}"
+                                                                                    th:value="${grade.id}">Sinta 1
+                                                                            </option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-body"
-                                                            th:if="${data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}">
-                                                            <div class="alert alert-danger alert-with-icon" th:id="${data.id+'-alertSave'}" style="display: none">
-                                                                <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                                             th:if="${data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}">
+                                                            <div class="alert alert-danger alert-with-icon"
+                                                                 th:id="${data.id+'-alertSave'}" style="display: none">
+                                                                <button type="button" aria-hidden="true" class="close"
+                                                                        data-dismiss="alert" aria-label="Close">
                                                                     <i class="fas fa-warning"></i>
                                                                 </button>
-                                                                <span data-notify="icon" class="tim-icons icon-trophy"></span>
+                                                                <span data-notify="icon"
+                                                                      class="tim-icons icon-trophy"></span>
                                                                 <span id="textAlert"><b> Maaf! - </b>Nilai Belum Lengkap.</span>
                                                             </div>
                                                             <table class="table table-bordered table-hover">
                                                                 <thead class="thead-light">
-                                                                <tr class="table-primary" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
-                                                                    <th><center><b>Ketua Penguji</b></center></th>
-                                                                    <th><center><b>Penguji</b></center></th>
-                                                                    <th><center><b>Pembimbing 1</b></center></th>
+                                                                <tr class="table-primary"
+                                                                    th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                                    <th>
+                                                                        <center><b>Ketua Penguji</b></center>
+                                                                    </th>
+                                                                    <th>
+                                                                        <center><b>Penguji</b></center>
+                                                                    </th>
+                                                                    <th>
+                                                                        <center><b>Pembimbing 1</b></center>
+                                                                    </th>
 
                                                                 </tr>
-                                                                <tr class="table-primary" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
-                                                                    <th><center><b>Ketua Penguji</b></center></th>
-                                                                    <th><center><b>Penguji</b></center></th>
-                                                                    <th><center><b>Pembimbing 1</b></center></th>
-                                                                    <th><center><b>Pembimbing 2</b></center></th>
+                                                                <tr class="table-primary"
+                                                                    th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                    <th>
+                                                                        <center><b>Ketua Penguji</b></center>
+                                                                    </th>
+                                                                    <th>
+                                                                        <center><b>Penguji</b></center>
+                                                                    </th>
+                                                                    <th>
+                                                                        <center><b>Pembimbing 1</b></center>
+                                                                    </th>
+                                                                    <th>
+                                                                        <center><b>Pembimbing 2</b></center>
+                                                                    </th>
 
                                                                 </tr>
                                                                 </thead>
-                                                                <tbody class="table-primary" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                                <tbody class="table-primary"
+                                                                       th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                                                                 <tr class="table-primary">
                                                                     <td align="center" th:text="${data.ka}">90.00</td>
                                                                     <td align="center" th:text="${data.ua}">90.00</td>
@@ -434,16 +641,23 @@
                                                                     <td align="center" th:text="${data.ud}">90.00</td>
                                                                     <td align="center" th:text="${data.pd}">90.00</td>
                                                                 </tr>
-                                                                <tr class="table-primary" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                                <tr class="table-primary"
+                                                                    th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                                                                     <td align="center"><b>Total</b></td>
-                                                                    <td align="center"><b th:text="${data.nilai}">90.00</b></td>
+                                                                    <td align="center"><b
+                                                                            th:text="${data.nilai}">90.00</b></td>
                                                                     <td align="center">
-                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
-                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                        <h3 th:if="${data.nilai >= 70}"><span
+                                                                                class="badge badge-success">LULUS</span>
+                                                                        </h3>
+                                                                        <h3 th:if="${data.nilai < 70}"><span
+                                                                                class="badge badge-success">TIDAK LULUS</span>
+                                                                        </h3>
                                                                     </td>
                                                                 </tr>
                                                                 </tbody>
-                                                                <tbody class="table-primary" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                <tbody class="table-primary"
+                                                                       th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                                 <tr class="table-primary">
                                                                     <td align="center" th:text="${data.ka}">90.00</td>
                                                                     <td align="center" th:text="${data.ua}">90.00</td>
@@ -468,12 +682,18 @@
                                                                     <td align="center" th:text="${data.pd}">90.00</td>
                                                                     <td align="center" th:text="${data.pd2}">90.00</td>
                                                                 </tr>
-                                                                <tr class="table-primary" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                <tr class="table-primary"
+                                                                    th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                                     <td align="center"><b>Total</b></td>
-                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
+                                                                    <td align="center" colspan="2"><b
+                                                                            th:text="${data.nilai}">90.00</b></td>
                                                                     <td align="center">
-                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
-                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                        <h3 th:if="${data.nilai >= 70}"><span
+                                                                                class="badge badge-success">LULUS</span>
+                                                                        </h3>
+                                                                        <h3 th:if="${data.nilai < 70}"><span
+                                                                                class="badge badge-success">TIDAK LULUS</span>
+                                                                        </h3>
                                                                     </td>
                                                                 </tr>
                                                                 </tbody>
@@ -481,55 +701,155 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <input type="hidden" id="sidangId" th:value="${data.id}">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">tutup
+                                                            </button>
                                                             <button type="submit" th:id="${data.id}" th:if="${data.seminar.note.jenis !=
                                                                         data.seminar.note.jenis.JURNAL}"
-                                                                class="btn btn-primary publish-data">Publish</button>
+                                                                    class="btn btn-primary publish-data">Publish
+                                                            </button>
                                                             <button type="submit" th:id="${data.id}" th:if="${data.seminar.note.jenis ==
                                                                         data.seminar.note.jenis.JURNAL}"
-                                                                class="btn btn-primary publish-jurnal">Publish</button>
+                                                                    class="btn btn-primary publish-jurnal">Publish
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat File</button>
-                                            <div class="dropdown-menu" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">Draft Sidang</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/pendaftaran/(sidang=${data.id})}">Form Pendaftaran</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/ijazah/(sidang=${data.id})}">Ijazah</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/ktp/(sidang=${data.id})}">Ktp</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/bimbinganSidang/(sidang=${data.id})}">Kartu Bimbingan</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji Plagiarisme</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/berita/(sidang=${data.id})}">Berita Acara Sempro</a>
+
+                                            <div class="modal fade bd-example-modal-lg fade"
+                                                 th:id="${'modal-publish-jurnal'+data.id}" role="dialog"
+                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <form method="post"
+                                                              th:action="@{/graduation/jurnal/publishnilai}">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Detail Nilai</h5>
+                                                                <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body"
+                                                                 th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Jurnal</label>
+                                                                            <select name="jurnalId" required
+                                                                                    class="form-control">
+                                                                                <option value="-">---</option>
+                                                                                <option th:each="item : ${jurnal}"
+                                                                                        th:text="${item.nama}"
+                                                                                        th:value="${item.id}">Sinta 1
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Grade</label>
+                                                                            <select required name="gradeId"
+                                                                                    class="form-control">
+                                                                                <option value="-">----</option>
+                                                                                <option th:each="grade : ${grade}"
+                                                                                        th:text="${grade.nama}"
+                                                                                        th:value="${grade.id}">Sinta 1
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="id"
+                                                                       th:value="${data.id}">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">tutup
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Publish
+                                                                    Jurnal
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div class="dropdown-menu" th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">Draft Sidang</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/pendaftaran/(sidang=${data.id})}">Form Pendaftaran</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/persetujuan/(sidang=${data.id})}">Persetujuan Dospem</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/ktp/(sidang=${data.id})}">CV</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/bimbinganSidang/(sidang=${data.id})}">Kehadiran Sidang</a>
-                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji Plagiarisme</a>
+                                            <button type="button"
+                                                    class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Lihat File
+                                            </button>
+                                            <div class="dropdown-menu"
+                                                 th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">Draft
+                                                    Sidang</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/pendaftaran/(sidang=${data.id})}">Form
+                                                    Pendaftaran</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/ijazah/(sidang=${data.id})}">Ijazah</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/ktp/(sidang=${data.id})}">Ktp</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/bimbinganSidang/(sidang=${data.id})}">Kartu
+                                                    Bimbingan</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji
+                                                    Plagiarisme</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/berita/(sidang=${data.id})}">Berita Acara
+                                                    Sempro</a>
+                                            </div>
+
+                                            <div class="dropdown-menu"
+                                                 th:if="${data.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">Draft
+                                                    Sidang</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/pendaftaran/(sidang=${data.id})}">Form
+                                                    Pendaftaran</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/persetujuan/(sidang=${data.id})}">Persetujuan
+                                                    Dospem</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/ktp/(sidang=${data.id})}">CV</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/bimbinganSidang/(sidang=${data.id})}">Kehadiran
+                                                    Sidang</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji
+                                                    Plagiarisme</a>
                                             </div>
                                         </td>
 
-                                        <div class="modal fade" th:id="${'modal-tolak'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade" th:id="${'modal-tolak'+data.id}" role="dialog"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form th:action="@{/graduation/sidang/prodi/tolak (id = ${data.id})}" method="post">
+                                                        <form th:action="@{/graduation/sidang/prodi/tolak (id = ${data.id})}"
+                                                              method="post">
                                                             <div class="form-group">
-                                                                <textarea name="komentarProdi" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
+                                                                <textarea name="komentarProdi" class="form-control"
+                                                                          placeholder="Comment" cols="30"
+                                                                          rows="10"></textarea>
                                                             </div>
                                                             <input type="hidden" name="id" th:value="${data.id}">
                                                             <div class="form-group">
-                                                                <button class="btn btn-danger" type="submit">Tolak</button>
+                                                                <button class="btn btn-danger" type="submit">Tolak
+                                                                </button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -579,29 +899,29 @@
 </body>
 </html>
 <script>
-    $(".publish-data").click(function(e) {
+    $(".publish-data").click(function (e) {
         var id = this.id;
         var token = $("input[name='_csrf']").val();
         var url = "/graduation/sidang/dosen/publish";
         e.preventDefault();
 
         $.ajax({
-            url: url+'?sidang='+id,
+            url: url + '?sidang=' + id,
             contentType: "application/json;charset=UTF-8",
             headers: {"X-CSRF-TOKEN": token},
             method: 'post',
             dataType: 'JSON',
             data: JSON.stringify({
-                "id" : id,
+                "id": id,
             }), error: function (data) {
-                if (data.responseText == "lengkapi"){
-                    document.getElementById(id+'-alertSave').style.display = "block";
+                if (data.responseText == "lengkapi") {
+                    document.getElementById(id + '-alertSave').style.display = "block";
                     setTimeout(function () {
-                        document.getElementById(id+'alertSave').style.display = "none";
+                        document.getElementById(id + 'alertSave').style.display = "none";
                     }, 5000);
                 }
 
-                if (data.responseText == "berhasil"){
+                if (data.responseText == "berhasil") {
                     window.location.reload();
                 }
 

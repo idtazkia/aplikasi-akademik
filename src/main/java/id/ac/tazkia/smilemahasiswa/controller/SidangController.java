@@ -1950,6 +1950,90 @@ public class SidangController {
         return "berhasil";
     }
 
+    @PostMapping("/graduation/jurnal/publishnilai")
+    public String publishNilaiJurnalAdmin(@Valid JurnalDto jurnalDto) {
+        Sidang sidang = sidangDao.findById(jurnalDto.getId()).get();
+        Grade grade = null;
+        KriteriaJurnal kriteriaJurnal = null;
+        if (jurnalDto.getJurnalId() == null) {
+            System.out.println("lengkapi");
+        } else {
+            kriteriaJurnal = kriteriaJurnalDao.findById(jurnalDto.getJurnalId()).get();
+        }
+
+        if (jurnalDto.getGradeId() == null) {
+            System.out.println("lengkapi");
+        } else {
+            grade = gradeDao.findById(jurnalDto.getGradeId()).get();
+        }
+
+        sidang.setNilai(grade.getBawah());
+        sidang.setKriteriaJurnal(kriteriaJurnal);
+        sidang.setStatusSidang(StatusApprove.APPROVED);
+        sidang.setPublish(StatusRecord.AKTIF);
+        sidang.setTanggalUjian(LocalDate.now());
+        sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
+        sidangDao.save(sidang);
+
+        Mahasiswa mahasiswa = sidang.getSeminar().getNote().getMahasiswa();
+        KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
+
+        cariThesis.setNilaiAkhir(grade.getBawah());
+        cariThesis.setGrade(grade.getNama());
+        cariThesis.setBobot(grade.getBobot());
+        cariThesis.setFinalisasi("FINAL");
+        krsDetailDao.save(cariThesis);
+
+        mahasiswa.setTanggalLulus(LocalDate.now());
+        mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
+        mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
+        mahasiswaDao.save(mahasiswa);
+
+        return "redirect:../sidang/admin/list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+mahasiswa.getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/jurnal/publishdosen")
+    public String publishNilaiJurnalDOsen(@Valid JurnalDto jurnalDto) {
+        Sidang sidang = sidangDao.findById(jurnalDto.getId()).get();
+        Grade grade = null;
+        KriteriaJurnal kriteriaJurnal = null;
+        if (jurnalDto.getJurnalId() == null) {
+            System.out.println("lengkapi");
+        } else {
+            kriteriaJurnal = kriteriaJurnalDao.findById(jurnalDto.getJurnalId()).get();
+        }
+
+        if (jurnalDto.getGradeId() == null) {
+            System.out.println("lengkapi");
+        } else {
+            grade = gradeDao.findById(jurnalDto.getGradeId()).get();
+        }
+
+        sidang.setNilai(grade.getBawah());
+        sidang.setKriteriaJurnal(kriteriaJurnal);
+        sidang.setStatusSidang(StatusApprove.APPROVED);
+        sidang.setPublish(StatusRecord.AKTIF);
+        sidang.setTanggalUjian(LocalDate.now());
+        sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
+        sidangDao.save(sidang);
+
+        Mahasiswa mahasiswa = sidang.getSeminar().getNote().getMahasiswa();
+        KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
+
+        cariThesis.setNilaiAkhir(grade.getBawah());
+        cariThesis.setGrade(grade.getNama());
+        cariThesis.setBobot(grade.getBobot());
+        cariThesis.setFinalisasi("FINAL");
+        krsDetailDao.save(cariThesis);
+
+        mahasiswa.setTanggalLulus(LocalDate.now());
+        mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
+        mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
+        mahasiswaDao.save(mahasiswa);
+
+        return "redirect:../sidang/admin/list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+mahasiswa.getIdProdi().getId();
+    }
+
     // file
     @GetMapping("/upload/{sidang}/sidang/")
     public ResponseEntity<byte[]> sidang(@PathVariable Sidang sidang, Model model) throws Exception {
