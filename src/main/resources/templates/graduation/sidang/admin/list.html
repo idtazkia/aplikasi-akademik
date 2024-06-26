@@ -940,7 +940,7 @@
                                                                     <div class="form-group">
                                                                         <label>Jurnal</label>
                                                                         <select id="jurnalId" class="form-control">
-                                                                            <option disabled selected>---</option>
+                                                                            <option value="-">---</option>
                                                                             <option th:each="item : ${jurnal}"
                                                                                     th:text="${item.nama}"
                                                                                     th:value="${item.id}">Sinta 1
@@ -953,7 +953,7 @@
                                                                         <label>Grade</label>
                                                                         <select id="gradeId" required
                                                                                 class="form-control">
-                                                                            <option disabled selected>----</option>
+                                                                            <option value="-">----</option>
                                                                             <option th:each="grade : ${grade}"
                                                                                     th:text="${grade.nama}"
                                                                                     th:value="${grade.id}">Sinta 1
