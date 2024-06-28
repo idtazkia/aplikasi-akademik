@@ -9,176 +9,10 @@
     <title>Assesment</title>
 </head>
 <body>
-<th:block layout:fragment="script">
-    <script th:inline="javascript">
-
-        $('.filterme').keypress(function(eve) {
-            var charCode = (evt.which) ? evt.which : event.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57))
-                return false;
-
-            return true;
-        });
-
-
-        var delay = (function () {
-            var timer = 0;
-            return function (callback, ms) {
-                clearTimeout(timer);
-                timer = setTimeout(callback, ms);
-            };
-        })();
-
-        $(document).ready(
-            function() {
-                setInterval(function() {
-                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
-                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                        document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
-                        // console.log(data);
-                    });
-
-                }, 5000);  //Delay here = 5 seconds
-            });
-
-
-
-        //function uts
-        function myFunction(arg) {
-            var id = arg.getAttribute('id');
-            var value = arg.value;
-
-            // var idKrs = evt.getAttribute('id');
-            // var valueKrs = evt.value;
-            console.log(id);
-            console.log(value);
-            console.log($("input[name='" + id + '-' + 'krs' + "']").val());
-
-            $(document).keyup(function (e) {
-                delay(function () {
-                    console.log(id);
-                    var url = "/studiesActivity/assesment/score";
-                    var token = $("input[name='_csrf']").val();
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json;charset=UTF-8",
-                        headers: {"X-CSRF-TOKEN": token},
-                        url: url,
-                        data: JSON.stringify({
-                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
-                            "sds" : $("input[name='" + id + '-' + 'sds' + "']").val(),
-                            "absen" : $("input[name='" + id + '-' + 'absen' + "']").val(),
-                            "uts" : value,
-                            "nilai": "",
-                            "tugas": "",
-                            "uas" : ""
-                        })
-                    }, 500);
-                    delay(function () {
-                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
-                            document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
-                            console.log(data);
-                        });
-                    }, 2000);
-
-                }, 1000);
-
-            });
-        }
-
-
-
-        //function tugas
-        function lookup(arg) {
-            var id = arg.getAttribute('id');
-            var value = arg.value;
-
-            var mahasiswa = /*[[${jsMahasiswa}]]*/["001", "002"];
-            var i;
-
-            console.log(id);
-
-            $(document).keyup(function (e) {
-                delay(function () {
-
-                    var url = "/studiesActivity/assesment/score";
-                    var token = $("input[name='_csrf']").val();
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json;charset=UTF-8",
-                        headers: {"X-CSRF-TOKEN": token},
-                        data: JSON.stringify({
-
-                            "nilai": $("input[name='" + id + "']").val(),
-                            "tugas": $("input[name='" + id + '-' + 'id' + "']").val(),
-                            "sds": $("input[name='" + id + '-' + 'sds' + "']").val(),
-                            "absen": $("input[name='" + id + '-' + 'absen' + "']").val(),
-                            "krs": $("input[name='" + id + '-' + 'krs' + "']").val()
-                        }),
-                        url: url
-                    }, 500);
-                    delay(function () {
-                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
-                            document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
-                            console.log(data);
-                        });
-                    }, 2000);
-
-                }, 1000);
-
-            });
-        }
-
-
-        function hitungUas(arg) {
-            var id = arg.getAttribute('id');
-            var value = arg.value;
-
-            $(document).keyup(function (e) {
-                delay(function () {
-                    console.log(id);
-                    var url = "/studiesActivity/assesment/score";
-                    var token = $("input[name='_csrf']").val();
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json;charset=UTF-8",
-                        headers: {"X-CSRF-TOKEN": token},
-                        url: url,
-                        data: JSON.stringify({
-                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
-                            "absen" : $("input[name='" + id + '-' + 'absen' + "']").val(),
-                            "sds" : $("input[name='" + id + '-' + 'sds' + "']").val(),
-                            "uts" : "",
-                            "nilai": "",
-                            "tugas": "",
-                            "uas" : value
-                        })
-                    }, 500);
-                    delay(function () {
-                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
-                            document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
-                            console.log(data);
-                        });
-                    }, 2000);
-
-                }, 1000);
-
-            });
-        }
-
-    </script>
-</th:block>
 <div layout:fragment="main">
     <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
         <div class="container-fluid">
             <div class="header-body">
-                <!-- Card stats -->
                 <div class="row">
                     <div class="col-xl-12 col-lg-12">
                         <div class="card card-stats mb-4 mb-xl-0">
@@ -186,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Score</h5>
-                                        <span class="h2 font-weight-bold mb-0">Assesment </span>
+                                        <span class="h2 font-weight-bold mb-0">Assesment</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -194,11 +28,9 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -214,28 +46,32 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${detailJadwal.id})}" style="width: 100%;" class="btn btn-secondary">Pembobotan</a>
+                                <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${detailJadwal.id})}"
+                                   style="width: 100%;" class="btn btn-secondary">Pembobotan</a>
                             </div>
                             <div class="col-md-3">
                                 <a href="#" style="width: 100%;" class="btn btn-primary">Penilaian</a>
                             </div>
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${detailJadwal.id})}" style="width: 100%;" class="btn btn-secondary">Submit Nilai</a>
+                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${detailJadwal.id})}"
+                                   style="width: 100%;" class="btn btn-secondary">Submit Nilai</a>
                             </div>
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/list}" style="width: 100%;" class="btn btn-secondary">Back</a>
+                                <a th:href="@{/studiesActivity/assesment/list}" style="width: 100%;"
+                                   class="btn btn-secondary">Back</a>
                             </div>
-
                         </div>
                     </div>
+
                     <div class="table-responsive">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
                                 <th><b class="mb-0">Tahun Akademik</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th th:text="${detailJadwal.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Ganjil</th>
-
+                                <th th:text="${detailJadwal.tahunAkademik.namaTahunAkademik}">2019/2020 Semester
+                                    Ganjil
+                                </th>
                                 <th><b class="mb-0">Program Studi</b></th>
                                 <th style="width: 0px;">:</th>
                                 <th th:text="${detailJadwal.prodi.namaProdi}">Ekonomi Syariah</th>
@@ -245,8 +81,9 @@
                             <tr>
                                 <th><b class="mb-0">Mata Kuliah</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th th:text="${detailJadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Basic Econometrics</th>
-
+                                <th th:text="${detailJadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Basic
+                                    Econometrics
+                                </th>
                                 <th><b class="mb-0">Dosen</b></th>
                                 <th style="width: 0px;">:</th>
                                 <th th:text="${detailJadwal.dosen.karyawan.namaKaryawan}">Aam Slamet Rusydiana</th>
@@ -256,10 +93,12 @@
                             <tr>
                                 <th><b class="mb-0">SKS</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th><span th:text="${detailJadwal.matakuliahKurikulum.jumlahSks}"></span> , Peserta : <span th:text="${jumlahMahasiswa}"></span> , Absensi Dosen : <span th:text="${absensi}"></span></th>
-
+                                <th><span th:text="${detailJadwal.matakuliahKurikulum.jumlahSks}"></span> , Peserta :
+                                    <span th:text="${jumlahMahasiswa}"></span> , Absensi Dosen : <span
+                                            th:text="${absensi}"></span></th>
                                 <th><b class="mb-0">Kelas</b></th>
                                 <th style="width: 0px;">:</th>
+                                <input type="hidden" id="jadwalId" th:value="${detailJadwal.id}">
                                 <th th:text="${detailJadwal.kelas.namaKelas}">ES-18-R</th>
                             </tr>
                             </thead>
@@ -269,9 +108,9 @@
                                 <th style="width: 0px;">:</th>
                                 <th>
                                     <span th:text="${detailJadwal.hari.namaHariEng}"></span>
-                                    <small style="font-size: 8px" th:text="${detailJadwal.jamMulai + ' - ' + detailJadwal.jamSelesai}">13.00-15.00</small>
+                                    <small style="font-size: 8px"
+                                           th:text="${detailJadwal.jamMulai + ' - ' + detailJadwal.jamSelesai}">13.00-15.00</small>
                                 </th>
-
                             </tr>
                             </thead>
                         </table>
@@ -284,74 +123,219 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table-striped table-bordered" style="font-size: 10px;" border="1">
+                                    <table class="table-striped table-bordered freeze-table" border="1">
                                         <thead class="thead-light">
                                         <tr>
-                                            <th><center>NIM</center></th>
-                                            <th><center>Mahasiswa</center></th>
-                                            <th><center>Σ PRS</center></th>
-                                            <th><center>PRS</center></th>
-                                            <th><center>SDS</center></th>
-                                            <th th:each="tugas :${bobotTugas}"><center>Tgs <span th:text="${tugas.nama + '  ' + tugas.bobot +'%'}">
-                                                0.00%</span></center></th>
-                                            <th><center>UTS
-                                                <span th:text="${detailJadwal.bobotUts + '%'}">
-                                                0.00%</span></center></th>
-                                            <th><center>UAS <span th:text="${detailJadwal.bobotUas + '%'}">
-                                                0.00%</span></center></th>
-                                            <th><center>NA</center></th>
-                                            <th><center>Grade</center></th>
+                                            <th width="10%" class="col-id-no fixed-header">
+                                                <center>NIM</center>
+                                            </th>
+                                            <th class="col-first-name fixed-header">
+                                                <center>Mahasiswa</center>
+                                            </th>
+                                            <th>
+                                                <center>Σ PRS</center>
+                                            </th>
+                                            <th>
+                                                <center>PRS</center>
+                                            </th>
+                                            <th th:each="tugas :${bobotTugas}">
+                                                <center>Tgs <span th:text="${tugas.nama + '  ' + tugas.bobot +'%'}">0.00%</span>
+                                                </center>
+                                            </th>
+                                            <th>
+                                                <center>UTS <span th:text="${detailJadwal.bobotUts + '%'}">0.00%</span>
+                                                </center>
+                                            </th>
+                                            <th>
+                                                <center>UAS <span th:text="${detailJadwal.bobotUas + '%'}">0.00%</span>
+                                                </center>
+                                            </th>
+                                            <th>
+                                                <center>NA</center>
+                                            </th>
+                                            <th>
+                                                <center>Grade</center>
+                                            </th>
                                         </tr>
                                         </thead>
-
-
-
-
                                         <tr th:each="data,row : ${jadwal}">
-                                            <td th:text="${data.nim}" width="5%">12345678</td>
-                                            <td th:text="${data.nama}" width="12%" height="50px">Naufal Rizqullah Al Banjar</td>
-                                            <td width="5%" th:text="${data.absmahasiswa}" th:if="${data.absmahasiswa != null}"><center>14</center></td>
-                                            <td width="5%" th:if="${data.absmahasiswa == null}"><center>0</center></td>
-                                            <td width="5%" th:text="${data.nilaiabsen}" th:if="${data.nilaiabsen != null}"><center>1</center></td>
-                                            <td width="5%" th:if="${data.nilaiabsen == null}"><center>0.00</center></td>
-                                            <td width="4%" th:if="${data.sds != null}" th:text="${data.sds}"><center>1</center></td>
-                                            <td width="4%" th:if="${data.sds == null}"><center>0</center></td>
-                                            <td width="5%" th:each="tugas :${bobotTugas}"><center>
-                                                <input th:each="nilai :${nilaiTugas}" th:if="${nilai.id == data.krs && nilai.nama == tugas.id}" type="text" style="width: 50px;" class="filterme" th:name="${tugas.id + '-' + data.nim}" onkeyup="lookup(this);" th:id="${tugas.id + '-' + data.nim}" th:placeholder="${nilai.bobot}">
-                                                <input type="hidden" th:value="${tugas.id}" th:name="${tugas.id + '-' + data.nim + '-' + 'id'}">
-                                                <input type="hidden" th:value="${data.krs}" th:name="${tugas.id + '-' + data.nim + '-' + 'krs'}">
-                                                <input type="hidden" th:value="${data.nilaiabsen}" th:name="${tugas.id + '-' + data.nim + '-' + 'absen'}">
-                                                <input type="hidden" th:if="${data.sds != null}" th:value="${data.sds}" th:name="${tugas.id + '-' + data.nim + '-' + 'sds'}">
-                                                <input type="hidden" th:if="${data.sds == null}"  th:name="${tugas.id + '-' + data.nim + '-' + 'sds'}" value="0">
-                                            </center></td>
-                                            <td width="5%"><center>
-                                                <input class="filterme" th:placeholder="${data.uts}" type="text" th:id="${data.nim + '-' + 'uts'}" th:name="${data.nim + 'uts'}"  onkeyup="myFunction(this);" style="width: 50px;">
-                                                <input type="hidden" th:name="${data.nim + '-' + 'uts' + '-' + 'krs'}" th:id="${data.nim + '-' + 'uts' + 'krs'}" th:value="${data.krs}">
-                                                <input type="hidden" th:name="${data.nim + '-' + 'uts' + '-' + 'absen'}" th:id="${data.nim + '-' + 'uts' + 'absen'}" th:value="${data.nilaiabsen}">
-                                                <input type="hidden" th:if="${data.sds != null}" th:name="${data.nim + '-' + 'uts' + '-' + 'sds'}" th:id="${data.nim + '-' + 'uts' + 'sds'}" th:value="${data.sds}">
-                                                <input type="hidden" th:if="${data.sds == null}" th:name="${data.nim + '-' + 'uts' + '-' + 'sds'}" th:id="${data.nim + '-' + 'uts' + 'sds'}" value="0">
-                                            </center></td>
-                                            <td width="5%"><center>
-                                                <input class="filterme" th:placeholder="${data.uas}" type="text" th:id="${data.nim + '-' + 'uas'}" th:name="${data.nim + 'uas'}" onkeyup="hitungUas(this);" style="width: 50px;">
-                                                <input type="hidden" th:name="${data.nim + '-' + 'uas' + '-' + 'krs'}" th:id="${data.nim + '-' + 'uas' + 'krs'}" th:value="${data.krs}">
-                                                <input type="hidden" th:if="${data.sds != null}" th:name="${data.nim + '-' + 'uas' + '-' + 'sds'}" th:id="${data.nim + '-' + 'uas' + 'sds'}" th:value="${data.sds}">
-                                                <input type="hidden" th:if="${data.sds == null}" th:name="${data.nim + '-' + 'uas' + '-' + 'sds'}" th:id="${data.nim + '-' + 'uas' + 'sds'}" value="0">
-                                                <input type="hidden" th:name="${data.nim + '-' + 'uas' + '-' + 'absen'}" th:id="${data.nim + '-' + 'uas' + 'absen'}" th:value="${data.nilaiabsen}">
-
-                                            </center></td>
-                                            <td width="20%"><center th:id="${data.nim}" th:text="${data.akhir}">89.00</center></td>
-                                            <td width="5%"><center th:id="${data.nim+'grade'}" th:text="${data.grade}">A</center></td>
+                                            <td scope="row" class="col-id-no" th:text="${data.mahasiswa.nim}"
+                                                width="5%">12345678
+                                            </td>
+                                            <td scope="row" class="col-first-name" th:text="${data.mahasiswa.nama}"
+                                                width="12%" height="50px">Naufal Rizqullah Al Banjar
+                                            </td>
+                                            <td width="5%" class="text-center" th:id="${'kehadiran-'+data.id}"
+                                                th:text="${data.jumlahKehadiran}">
+                                                <center>14</center>
+                                            </td>
+                                            <input type="hidden" name="absensi" th:id="${'absensi-'+data.id}"
+                                                   th:if="${data.nilaiPresensi == null}" value="0">
+                                            <input type="hidden" name="absensi" th:id="${'absensi-'+data.id}"
+                                                   th:if="${data.nilaiPresensi != null}"
+                                                   th:value="${data.nilaiPresensi}">
+                                            <td width="5%" th:id="${'presensi-'+data.id}"
+                                                th:text="${data.nilaiPresensi}">
+                                                <center>0.00</center>
+                                            </td>
+                                            <td width="5%" th:each="tugas :${bobotTugas}">
+                                                <center>
+                                                    <input type="text" style="width: 50px;" class="filterme"
+                                                           th:attr="data-type='tugas', data-tugas-id=${tugas.id}, data-id-krs-detail=${data.id}"
+                                                           th:id="${data.id+'-'+tugas.id + '-tugas'}"
+                                                           th:name="${data.mahasiswa.nim + '-' + tugas.id + '-tugas'}"
+                                                           onkeyup="delayedSave(this)">
+                                                </center>
+                                            </td>
+                                            <td width="5%">
+                                                <center>
+                                                    <input class="filterme" type="text"
+                                                           th:attr="data-type='uts', data-id-krs-detail=${data.id}"
+                                                           th:id="${data.id + '-uts'}"
+                                                           th:name="${data.id + '-uts'}" style="width: 50px;"
+                                                           onkeyup="delayedSave(this)">
+                                                </center>
+                                            </td>
+                                            <td width="5%">
+                                                <center>
+                                                    <input class="filterme" type="text"
+                                                           th:attr="data-type='uas', data-id-krs-detail=${data.id}"
+                                                           th:id="${data.id + '-uas'}"
+                                                           th:name="${data.id + '-uas'}" style="width: 50px;"
+                                                           onkeyup="delayedSave(this)">
+                                                </center>
+                                            </td>
+                                            <td width="10%">
+                                                <center th:id="${data.id}" th:text="${data.nilaiAkhir}">89.00</center>
+                                            </td>
+                                            <td width="5%">
+                                                <center th:id="${data.id+'grade'}" th:text="${data.grade}">A</center>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
 </div>
 </body>
 </html>
+<script>
+    let timer;
+
+    function delayedSave(element) {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            saveNilai(element);
+        }, 3000); // 3000 milidetik = 3 detik
+    }
+
+    $(document).ready(function () {
+        $('.filterme').on('keyup', function () {
+            delayedSave(this);
+        });
+
+        // Fetch and fill scores
+        fetch('/studiesActivity/assesment/list-mahasiswa/'+document.getElementById('jadwalId').value)
+            .then(response => response.json())
+            .then(data =>
+                fillScores(data.data)
+            );
+    });
+
+    function fillScores(data) {
+        data.forEach(item => {
+            const presensiElement = document.getElementById('kehadiran-' + item.id);
+            const kehadiranElement = document.getElementById('presensi-' + item.id);
+            const inputUas = document.getElementById(item.id + '-uas');
+            const inputUts = document.getElementById(item.id + '-uts');
+
+            if (!presensiElement || !kehadiranElement) {
+                // If either presensiElement or kehadiranElement is not found, skip this item
+                return;
+            }
+
+            // Update presensiElement
+            presensiElement.textContent = item.jumlahKehadiran;
+
+            // Update inputUts if nilaiUts is not null
+            if (item.nilaiUts !== null) {
+                inputUts.value = item.nilaiUts;
+            }
+
+            // Update inputUas if nilaiUas is not null
+            if (item.nilaiUas !== null) {
+                inputUas.value = item.nilaiUas;
+            }
+
+            // Update nilaiTugasList if it exists and has items
+            if (item.nilaiTugasList && item.nilaiTugasList.length > 0) {
+                item.nilaiTugasList.forEach(tugas => {
+                    const inputId = `${item.id}-${tugas.bobotTugas.id}-tugas`;
+                    const inputElement = document.getElementById(inputId);
+
+                    if (inputElement) {
+                        inputElement.value = tugas.nilai;
+                    } else {
+                        console.error(`Element with id '${inputId}' not found.`);
+                    }
+                });
+            }
+        });
+    }
+
+
+    function saveNilai(element) {
+        const id = $(element).attr('id');
+        const type = $(element).data('type');
+        const value = $(`#${id}`).val();
+        const idKrsDetail = $(element).data('id-krs-detail');
+        const idTugas = $(element).data('tugas-id') || null;  // Mendapatkan data tugas ID jika ada
+        const absensiValue = $(`#absensi-${idKrsDetail}`).val();
+
+        console.log({
+            krsDetail: idKrsDetail,
+            tugas: idTugas,
+            nilai: value,
+            absensi: absensiValue,
+            type: type
+        });
+
+        const token = $("input[name='_csrf']").val();
+
+        $.ajax({
+            url: '/studiesActivity/assesment/score',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=UTF-8",
+            headers: {"X-CSRF-TOKEN": token},
+            data: JSON.stringify({
+                krsDetail: idKrsDetail,
+                tugas: idTugas,
+                nilai: value,
+                absensi: absensiValue,
+                type: type
+            }),
+            success: function (response) {
+                console.log('Nilai berhasil disimpan');
+                $(`#${idKrsDetail}`).text(response.data.bobot);
+                $(`#${idKrsDetail + 'grade'}`).text(response.data.nama);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error saat menyimpan nilai: ' + error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('.filterme').on('keyup', function () {
+            delayedSave(this);
+        });
+    });
+</script>
+

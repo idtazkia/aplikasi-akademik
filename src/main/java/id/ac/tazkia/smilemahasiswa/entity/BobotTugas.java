@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -19,6 +20,7 @@ public class BobotTugas {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_jadwal")
+    @JsonBackReference
     private Jadwal jadwal;
 
     private String namaTugas;
@@ -26,6 +28,7 @@ public class BobotTugas {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @JsonBackReference
     private StatusRecord status = StatusRecord.AKTIF;
 
     private String pertemuan;

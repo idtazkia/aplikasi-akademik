@@ -2,13 +2,13 @@ package id.ac.tazkia.smilemahasiswa.dto.assesment;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ScoreInput {
-    private String krs;
+    private String krsDetail;
     private String tugas;
-    private String nilai;
-    private String uts;
-    private String uas;
-    private String sds;
-    private String absen;
+    private String type;
+    private BigDecimal nilai;
+    private BigDecimal absensi;
 }

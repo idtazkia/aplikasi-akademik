@@ -51,14 +51,20 @@
                                 <a href="#" style="width: 100%;" class="btn btn-primary">Pembobotan</a>
                             </div>
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${jadwal.id})}" th:if="${jadwal.finalStatus != 'FINAL'}" style="width: 100%;" class="btn btn-secondary">Penilaian</a>
-                                <a th:href="@{/studiesActivity/assesment/rekap(jadwal = ${jadwal.id})}" th:if="${jadwal.finalStatus == 'FINAL'}" style="width: 100%;" class="btn btn-secondary">Rekap Penilaian</a>
+                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${jadwal.id})}"
+                                   th:if="${jadwal.finalStatus != 'FINAL'}" style="width: 100%;"
+                                   class="btn btn-secondary">Penilaian</a>
+                                <a th:href="@{/studiesActivity/assesment/rekap(jadwal = ${jadwal.id})}"
+                                   th:if="${jadwal.finalStatus == 'FINAL'}" style="width: 100%;"
+                                   class="btn btn-secondary">Rekap Penilaian</a>
                             </div>
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${jadwal.id})}" style="width: 100%;" class="btn btn-secondary">Submit Nilai</a>
+                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${jadwal.id})}"
+                                   style="width: 100%;" class="btn btn-secondary">Submit Nilai</a>
                             </div>
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/list}" style="width: 100%;" class="btn btn-secondary">Kembali</a>
+                                <a th:href="@{/studiesActivity/assesment/list}" style="width: 100%;"
+                                   class="btn btn-secondary">Kembali</a>
                             </div>
 
                         </div>
@@ -66,21 +72,23 @@
                     <div class="table-responsive">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
-                                <tr>
-                                    <th><b class="mb-0">Tahun Akademik</b></th>
-                                    <th style="width: 0px;">:</th>
-                                    <th th:text="${jadwal.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Ganjil</th>
+                            <tr>
+                                <th><b class="mb-0">Tahun Akademik</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th th:text="${jadwal.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Ganjil</th>
 
-                                    <th><b class="mb-0">Program Studi</b></th>
-                                    <th style="width: 0px;">:</th>
-                                    <th th:text="${jadwal.prodi.namaProdi}">Ekonomi Syariah</th>
-                                </tr>
+                                <th><b class="mb-0">Program Studi</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th th:text="${jadwal.prodi.namaProdi}">Ekonomi Syariah</th>
+                            </tr>
                             </thead>
                             <thead>
                             <tr>
                                 <th><b class="mb-0">Mata Kuliah</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Basic Econometrics</th>
+                                <th th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Basic
+                                    Econometrics
+                                </th>
 
                                 <th><b class="mb-0">Dosen</b></th>
                                 <th style="width: 0px;">:</th>
@@ -91,7 +99,9 @@
                             <tr>
                                 <th><b class="mb-0">SKS</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th><span th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></span> , Peserta : <span th:text="${jumlahMahasiswa}"></span> , Absensi Dosen : <span th:text="${absensi}"></span></th>
+                                <th><span th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></span> , Peserta : <span
+                                        th:text="${jumlahMahasiswa}"></span> , Absensi Dosen : <span
+                                        th:text="${absensi}"></span></th>
 
                                 <th><b class="mb-0">Kelas</b></th>
                                 <th style="width: 0px;">:</th>
@@ -104,7 +114,8 @@
                                 <th style="width: 0px;">:</th>
                                 <th>
                                     <span th:text="${jadwal.hari.namaHariEng}"></span>
-                                    <small style="font-size: 8px" th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</small>
+                                    <small style="font-size: 8px"
+                                           th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</small>
                                 </th>
 
                             </tr>
@@ -114,8 +125,7 @@
 
                     <div class="card-body">
 
-                        <div class="alert alert-danger" th:if="${tidakvalid != null}">
-                            Data bobot umum / bobot tugas yang Anda masukan kurang atau lebih dari 100%, Silahkan lengkapi!
+                        <div class="alert alert-danger" id="error-message" style="display: none">
                         </div>
                         <div class="alert alert-danger" th:if="${gaadapres != null}">
                             Anda belum pernah masuk untuk mengajar
@@ -136,69 +146,64 @@
                                 <div class="row">
                                     <div class="col-md-6 col-xs-12">
                                         <div class="card shadow">
-                                            <form th:action="@{/studiesActivity/assesment/weight}" method="post" th:object="${jadwal}">
+                                            <form id="myForm" th:action="@{/studiesActivity/assesment/weight}"
+                                                  method="post" th:object="${jadwal}">
                                                 <div class="table-responsive">
                                                     <table class="table align-items-center table-flush">
                                                         <thead>
                                                         <tr>
                                                             <td><h5 class="mb-1">SDS</h5></td>
-                                                            <td th:if="${jadwal.matakuliahKurikulum.sds != null}"><input type="text" name="sds" th:value="${jadwal.matakuliahKurikulum.sds}" disabled class="form-control"></td>
-                                                            <td th:if="${jadwal.matakuliahKurikulum.sds == null}"><input type="text" name="sds" th:value="${0}" disabled class="form-control"></td>
+                                                            <td th:if="${jadwal.matakuliahKurikulum.sds != null}"><input
+                                                                    type="text" name="sds"
+                                                                    th:value="${jadwal.matakuliahKurikulum.sds}"
+                                                                    disabled class="form-control"></td>
+                                                            <td th:if="${jadwal.matakuliahKurikulum.sds == null}"><input
+                                                                    type="text" name="sds" th:value="${0}" disabled
+                                                                    class="form-control"></td>
                                                         </tr>
                                                         </thead>
                                                         <thead>
                                                         <tr>
                                                             <td><h5 class="mb-1">Presensi</h5></td>
-                                                            <td><input type="text" name="bobotPresensi" th:field="*{bobotPresensi}" class="form-control"></td>
+                                                            <td><input type="text" id="presensi" name="presensi"
+                                                                       th:field="*{bobotPresensi}" class="form-control">
+                                                            </td>
                                                         </tr>
                                                         </thead>
                                                         <thead>
                                                         <tr>
                                                             <td><h5 class="mb-1">Tugas</h5></td>
-                                                            <td><input type="text" name="bobotTugas" th:field="*{bobotTugas}" class="form-control"></td>
+                                                            <td><input type="text" id="tugas" name="tugas"
+                                                                       th:field="*{bobotTugas}" class="form-control">
+                                                            </td>
                                                         </tr>
                                                         </thead>
                                                         <thead>
                                                         <tr>
                                                             <td><h5 class="mb-1">Ujian Tengah Semester</h5></td>
-                                                            <td><input name="bobotUts" th:field="*{bobotUts}" type="text" class="form-control"></td>
+                                                            <td><input type="text" id="uts" name="uts"
+                                                                       th:field="*{bobotUts}" class="form-control"></td>
                                                         </tr>
                                                         </thead>
                                                         <thead>
                                                         <tr>
                                                             <td><h5 class="mb-1">Ujian Akhir Semester</h5></td>
-                                                            <td><input name="bobotUas" th:field="*{bobotUas}" type="text" class="form-control"></td>
+                                                            <td><input type="text" id="uas" name="uas"
+                                                                       th:field="*{bobotUas}" class="form-control"></td>
                                                         </tr>
                                                         </thead>
                                                         <thead>
                                                         <tr>
                                                             <td></td>
-                                                            <td><button type="submit" class="btn btn-primary">Save</button></td>
+                                                            <td>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                         </thead>
-
                                                     </table>
                                                 </div>
-                                                <input type="hidden" name="id" th:value="${jadwal.id}">
-                                                <input type="hidden" name="matakuliahKurikulum" th:value="${jadwal.matakuliahKurikulum.id}">
-                                                <input type="hidden" name="hari" th:value="${jadwal.hari.id}">
-                                                <input type="hidden" name="jamMulai" th:value="${jadwal.jamMulai+''}">
-                                                <input type="hidden" name="jamSelesai" th:value="${jadwal.jamSelesai+''}">
-                                                <input type="hidden" name="kapasitas" th:value="${jadwal.kapasitas}">
-                                                <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
-                                                <input type="hidden" name="tahunAkademikProdi" th:value="${jadwal.tahunAkademikProdi.id}">
-                                                <input type="hidden" name="prodi" th:value="${jadwal.prodi.id}">
-                                                <input type="hidden" name="dosen" th:value="${jadwal.dosen.id}">
-                                                <input type="hidden" name="ruangan" th:value="${jadwal.ruangan.id}">
-                                                <input type="hidden" name="kelas" th:value="${jadwal.kelas.id}">
-                                                <input type="hidden" name="jumlahSesi" th:value="${jadwal.jumlahSesi}">
-                                                <input type="hidden" name="finalStatus" th:value="${jadwal.finalStatus}">
-                                                <input type="hidden" name="program" th:value="${jadwal.program.id}">
-                                                <input type="hidden" name="status" th:value="${jadwal.status}">
-                                                <input type="hidden" name="sesi" th:value="${jadwal.sesi}">
-                                                <input type="hidden" name="statusUts" th:value="${jadwal.statusUts}">
-                                                <input type="hidden" name="statusUas" th:value="${jadwal.statusUas}">
-                                                <input type="hidden" name="idNumberElearning" th:value="${jadwal.idNumberElearning}">
+                                                <input type="hidden" name="jadwal" th:value="${jadwal.id}">
                                             </form>
                                         </div>
 
@@ -210,27 +215,33 @@
                                     <div class="col-md-12 col-xs-12">
                                         <div class="card shadow">
                                             <div class="card-header border-0">
-                                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                                        data-target="#exampleModal">
                                                     <i class="fas fa-plus-circle"></i> Komponen Nilai
                                                 </button>
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                         <div class="modal-content">
-                                                            <form th:action="@{/studiesActivity/assesment/task}" method="post">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Tambah Tugas</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
+                                                            <form th:action="@{/studiesActivity/assesment/task}"
+                                                                  method="post">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">
+                                                                        Tambah Tugas</h5>
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
                                                                     <div class="row">
                                                                         <div class="col-md-6 col-xs-12">
                                                                             <div class="form-group">
                                                                                 <label>Pertemuan :</label>
                                                                                 <select class="form-control"
-                                                                                        style="width: 100%!important;" name="pertemuan">
+                                                                                        style="width: 100%!important;"
+                                                                                        name="pertemuan">
                                                                                     <option value="1">1</option>
                                                                                     <option value="2">2</option>
                                                                                     <option value="3">3</option>
@@ -251,7 +262,8 @@
                                                                         <div class="col-md-6 col-xs-12">
                                                                             <div class="form-group">
                                                                                 <label>Bobot :</label>
-                                                                                <input type="number" name="bobot" class="form-control">
+                                                                                <input type="number" name="bobot"
+                                                                                       class="form-control">
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -259,18 +271,24 @@
                                                                         <div class="col-md-12">
                                                                             <div class="form-group">
                                                                                 <label>Nama Tugas :</label>
-                                                                                <input type="text" name="namaTugas" class="form-control">
+                                                                                <input type="text" name="namaTugas"
+                                                                                       class="form-control">
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                                                                    <input type="hidden" name="jadwal"
+                                                                           th:value="${jadwal.id}">
 
 
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                                            </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Close
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-primary">
+                                                                        Simpan
+                                                                    </button>
+                                                                </div>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -296,18 +314,30 @@
                                                         <td th:text="${data.namaTugas}">Jam</td>
                                                         <td th:text="${data.bobot}">Matakuliah</td>
                                                         <td>
-                                                            <a th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-editfas fa-edit"></i></a>
-                                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <a th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}"
+                                                               class="btn btn-primary btn-sm"><i
+                                                                    class="fas fa-editfas fa-edit"></i></a>
+                                                            <button type="button" class="btn btn-danger btn-sm"
+                                                                    data-toggle="modal"
+                                                                    th:data-target="${'#modal-notification'+data.id}">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
 
-                                                            <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                                                <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                            <div class="modal fade"
+                                                                 th:id="${'modal-notification'+data.id}" tabindex="-1"
+                                                                 role="dialog" aria-labelledby="modal-notification"
+                                                                 aria-hidden="true">
+                                                                <div class="modal-dialog modal-danger modal-dialog-centered modal-"
+                                                                     role="document">
                                                                     <div class="modal-content bg-gradient-danger">
 
                                                                         <div class="modal-header">
-                                                                            <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <h6 class="modal-title"
+                                                                                id="modal-title-notification">Your
+                                                                                attention is required</h6>
+                                                                            <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close">
                                                                                 <span aria-hidden="true">×</span>
                                                                             </button>
                                                                         </div>
@@ -316,17 +346,25 @@
 
                                                                             <div class="py-3 text-center">
                                                                                 <i class="far fa-trash-alt fa-3x"></i>
-                                                                                <h4 class="heading mt-4">Are you sure ?</h4>
-                                                                                <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                                <h4 class="heading mt-4">Are you sure
+                                                                                    ?</h4>
+                                                                                <p>Once deleted, you will not be able to
+                                                                                    recover this imaginary file!</p>
                                                                             </div>
 
                                                                         </div>
 
                                                                         <div class="modal-footer">
-                                                                            <form th:action="@{/studiesActivity/assesment/delete (id = ${data.id})}" method="post">
-                                                                                <button type="submit" class="btn btn-white">Delete</button>
+                                                                            <form th:action="@{/studiesActivity/assesment/delete (id = ${data.id})}"
+                                                                                  method="post">
+                                                                                <button type="submit"
+                                                                                        class="btn btn-white">Delete
+                                                                                </button>
                                                                             </form>
-                                                                            <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-link text-white ml-auto"
+                                                                                    data-dismiss="modal">Close
+                                                                            </button>
                                                                         </div>
 
                                                                     </div>
@@ -356,3 +394,35 @@
 </div>
 </body>
 </html>
+<script>
+    function validateForm(event) {
+        // Ambil nilai dari setiap input
+        var presensi = parseFloat(document.getElementById('presensi').value) || 0;
+        var tugas = parseFloat(document.getElementById('tugas').value) || 0;
+        var uts = parseFloat(document.getElementById('uts').value) || 0;
+        var uas = parseFloat(document.getElementById('uas').value) || 0;
+
+        // Hitung total nilai
+        var total = presensi + tugas + uts + uas;
+
+        // Dapatkan elemen untuk menampilkan pesan kesalahan
+        var errorDiv = document.getElementById('error-message');
+
+        // Cek apakah total sesuai dengan kriteria
+        if (total !== 100) {
+            errorDiv.innerText = 'Total nilai harus 100. Total saat ini: ' + total + '. Silakan perbaiki.';
+            errorDiv.style.display = 'block'; // Tampilkan pesan kesalahan
+            event.preventDefault(); // Mencegah pengiriman formulir
+            return false;
+        } else {
+            errorDiv.innerText = ''; // Kosongkan pesan kesalahan jika validasi berhasil
+            errorDiv.style.display = 'none'; // Sembunyikan pesan kesalahan
+        }
+
+        return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('myForm').addEventListener('submit', validateForm);
+    });
+</script>

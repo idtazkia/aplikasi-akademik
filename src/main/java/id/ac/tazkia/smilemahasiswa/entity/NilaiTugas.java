@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -17,6 +18,7 @@ public class NilaiTugas {
     private String id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_krs_detail")
     private KrsDetail krsDetail;
 
@@ -28,6 +30,7 @@ public class NilaiTugas {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @JsonBackReference
     private StatusRecord status = StatusRecord.AKTIF;
 
     private BigDecimal nilaiAkhir;

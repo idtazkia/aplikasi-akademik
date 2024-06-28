@@ -48,13 +48,13 @@ public class Jadwal extends Auditable {
     @JoinColumn(name = "id_dosen_pengampu")
     private Dosen dosen;
 
-    private BigDecimal bobotUts;
+    private BigDecimal bobotUts = BigDecimal.ZERO;
 
-    private BigDecimal bobotUas;
+    private BigDecimal bobotUas = BigDecimal.ZERO;
 
-    private BigDecimal bobotTugas;
+    private BigDecimal bobotTugas = BigDecimal.ZERO;
 
-    private BigDecimal bobotPresensi;
+    private BigDecimal bobotPresensi = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "id_ruangan")
