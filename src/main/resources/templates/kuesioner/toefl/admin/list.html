@@ -184,7 +184,8 @@
                                                 Menunggu
                                             </button>
                                             <button class="btn btn-success btn-sm" data-toggle="modal"
-                                                    aria-haspopup="true"
+                                                    th:data-target="${'#modal-detail' + data.id}"
+                                                    aria-haspopup="true" th:text="${data.nilai + ' ( Lulus )' }"
                                                     th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.LULUS}">
                                                 Lulus
                                             </button>
@@ -195,7 +196,9 @@
                                                 Dinilai
                                             </button>
                                             <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                                    th:text="${data.nilai + ' ( Tidak Lulus )' }"
                                                     aria-haspopup="true"
+                                                    th:data-target="${'#modal-detail' + data.id}"
                                                     th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.TIDAK_LULUS}">
                                                 Tidak
                                                 Lulus
@@ -228,7 +231,54 @@
                                                     class="btn btn-sm btn-primary"
                                                     th:text="${'Nilai ' + data.nilai}">Detail
                                             </button>
+                                            <div class="modal fade" th:id="${'modal-detail' + data.id}" tabindex="-1"
+                                                 role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-md modal-dialog-centered"
+                                                     role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Modal
+                                                                title</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="alert alert-info">
+                                                                *Hasil Listening,Structure,Reading adalah hasil konversi
+                                                            </div>
+                                                            <table class="table table-responsive table-striped">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Listening</th>
+                                                                    <th>Structure</th>
+                                                                    <th>Reading</th>
+                                                                    <th>Score</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td th:text="${data.nilaiListening}"></td>
+                                                                    <td th:text="${data.nilaiStructure}"></td>
+                                                                    <td th:text="${data.nilaiReading}"></td>
+                                                                    <td th:text="${data.nilai}"></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Close
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary">Save changes
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
+
 
                                         <!--                                            Modal Penilaian-->
                                         <div class="modal fade bd-example-modal-lg fade"
