@@ -63,7 +63,11 @@
                         </div>
                     </div>
 
-                    <div class="table-responsive">
+                    <div id="loading-message" style="display: block; text-align: center;">
+                        <p>Sedang mengambil data...</p>
+                    </div>
+
+                    <div class="table-responsive" id="data-container" style="display: none;">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
@@ -116,7 +120,7 @@
                         </table>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body" id="penilaian-container" style="display: none;">
                         <div class="card shadow">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">Penilaian</h3>
@@ -180,29 +184,29 @@
                                             </td>
                                             <td width="5%" th:each="tugas :${bobotTugas}">
                                                 <center>
-                                                    <input type="text" style="width: 50px;" class="filterme"
-                                                           th:attr="data-type='tugas', data-tugas-id=${tugas.id}, data-id-krs-detail=${data.id}"
+                                                    <input type="number" class="filterme" step="0.01" min="0" max="100"
+                                                           th:attr="data-type='tugas', data-id-krs-detail=${data.id}, data-tugas-id=${tugas.id}"
                                                            th:id="${data.id+'-'+tugas.id + '-tugas'}"
                                                            th:name="${data.mahasiswa.nim + '-' + tugas.id + '-tugas'}"
-                                                           onkeyup="delayedSave(this)">
+                                                           onkeyup="validateAndSave(this)">
                                                 </center>
                                             </td>
                                             <td width="5%">
                                                 <center>
-                                                    <input class="filterme" type="text"
+                                                    <input class="filterme" type="number" step="0.01" min="0" max="100"
                                                            th:attr="data-type='uts', data-id-krs-detail=${data.id}"
                                                            th:id="${data.id + '-uts'}"
                                                            th:name="${data.id + '-uts'}" style="width: 50px;"
-                                                           onkeyup="delayedSave(this)">
+                                                           onkeyup="validateAndSave(this)">
                                                 </center>
                                             </td>
                                             <td width="5%">
                                                 <center>
-                                                    <input class="filterme" type="text"
+                                                    <input class="filterme" type="number" step="0.01" min="0" max="100"
                                                            th:attr="data-type='uas', data-id-krs-detail=${data.id}"
                                                            th:id="${data.id + '-uas'}"
                                                            th:name="${data.id + '-uas'}" style="width: 50px;"
-                                                           onkeyup="delayedSave(this)">
+                                                           onkeyup="validateAndSave(this)">
                                                 </center>
                                             </td>
                                             <td width="10%">
@@ -228,6 +232,16 @@
 <script>
     let timer;
 
+    function validateAndSave(element) {
+        const value = element.value;
+        if (value < 0 || value > 100) {
+            alert("Nilai harus antara 0 dan 100.");
+            element.value = "";
+            return;
+        }
+        delayedSave(element);
+    }
+
     function delayedSave(element) {
         clearTimeout(timer);
         timer = setTimeout(function () {
@@ -237,15 +251,18 @@
 
     $(document).ready(function () {
         $('.filterme').on('keyup', function () {
-            delayedSave(this);
+            validateAndSave(this);
         });
 
         // Fetch and fill scores
         fetch('/studiesActivity/assesment/list-mahasiswa/'+document.getElementById('jadwalId').value)
             .then(response => response.json())
-            .then(data =>
-                fillScores(data.data)
-            );
+            .then(data => {
+                fillScores(data.data);
+                document.getElementById('loading-message').style.display = 'none';
+                document.getElementById('data-container').style.display = 'block';
+                document.getElementById('penilaian-container').style.display = 'block';
+            });
     });
 
     function fillScores(data) {
@@ -288,7 +305,6 @@
             }
         });
     }
-
 
     function saveNilai(element) {
         const id = $(element).attr('id');
@@ -334,8 +350,7 @@
 
     $(document).ready(function () {
         $('.filterme').on('keyup', function () {
-            delayedSave(this);
+            validateAndSave(this);
         });
     });
 </script>
-
