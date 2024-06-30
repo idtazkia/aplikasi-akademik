@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -91,24 +92,6 @@ import id.ac.tazkia.smilemahasiswa.dao.WisudaDao;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.EnableFiture;
-import id.ac.tazkia.smilemahasiswa.entity.FileMagang;
-import id.ac.tazkia.smilemahasiswa.entity.Hari;
-import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
-import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.Note;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.Ruangan;
-import id.ac.tazkia.smilemahasiswa.entity.Seminar;
-import id.ac.tazkia.smilemahasiswa.entity.Sidang;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
-import id.ac.tazkia.smilemahasiswa.entity.User;
-import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.GraduationService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
@@ -828,7 +811,7 @@ public class GraduationController {
 
                 }
             }
-
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
 
             if (krsDetail != null) {
@@ -837,7 +820,12 @@ public class GraduationController {
                 } else {
                     model.addAttribute("seminar", new Seminar());
                 }
-                return "graduation/sempro";
+
+                if (periodeWisuda.getTutupLoa().compareTo(LocalDate.now()) >= 0 && note.getJenis() == StatusRecord.JURNAL){
+                    return "redirect:loa";
+                }else {
+                    return "graduation/sempro";
+                }
             } else {
                 return "redirect:info";
             }
@@ -846,6 +834,11 @@ public class GraduationController {
 
             return "redirect:register";
         }
+
+    }
+
+    @GetMapping("/graduation/loa")
+    public void alertLoa(Model model) {
 
     }
 
