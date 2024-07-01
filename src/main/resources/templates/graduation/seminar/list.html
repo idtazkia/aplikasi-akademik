@@ -109,7 +109,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr th:each="data,row : ${listSempro}">
+                                            <tr th:each="data,row : ${listSempro}" th:if="${data.jenis != data.jenis.KONVERSI_JURNAL}">
                                                 <td
                                                     th:text="${(row.index + 1) + (listSempro.number * listSempro.size)}">
                                                     1</td>

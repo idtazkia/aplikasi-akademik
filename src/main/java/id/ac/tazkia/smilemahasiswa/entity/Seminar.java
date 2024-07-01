@@ -195,4 +195,7 @@ public class Seminar {
     @Column(columnDefinition = "LONGTEXT")
     private String komentarAkademik;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord jenis = StatusRecord.SEMPRO;
+
 }

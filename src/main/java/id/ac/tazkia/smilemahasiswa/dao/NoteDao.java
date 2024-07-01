@@ -35,4 +35,6 @@ public interface NoteDao extends PagingAndSortingRepository <Note, String> {
 
     List<Note> findByTahunAkademikAndMahasiswaIdProdiAndStatus(TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApprove);
 
+    @Query(value = "select n.* from note as n left join seminar as s on n.id = s.id_note where  n.jenis = 'JURNAL' and n.status = 'APPROVED' and s.id is null", nativeQuery = true)
+    List<Note> cariJurnal();
 }

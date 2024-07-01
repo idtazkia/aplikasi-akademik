@@ -3009,4 +3009,34 @@ public class GraduationController {
         return graduationService.getFileJurnal(seminar, file);
     }
 
+    @GetMapping("/graduation/konversi-seminar")
+    @ResponseBody
+    public String konversiSeminar(){
+        List<Note> noteList = noteDao.cariJurnal();
+        for (Note note : noteList){
+            System.out.println(note.getMahasiswa().getNim() + "  --  " + note.getMahasiswa().getNama());
+            Seminar seminar = new Seminar();
+            seminar.setStatusSempro(StatusApprove.APPROVED);
+            seminar.setNilai(new BigDecimal(70));
+            seminar.setStatus(StatusApprove.APPROVED);
+            seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            seminar.setTanggalUjian(LocalDate.now());
+            seminar.setRuangan(ruanganDao.findById("286f1174-4c36-456b-819d-6f23bd74d853").get());
+            seminar.setPenguji(note.getDosen());
+            seminar.setDosenPenguji(note.getDosen());
+            seminar.setKetuaPenguji(note.getDosen());
+            seminar.setJenis(StatusRecord.KONVERSI_JURNAL);
+            seminar.setTanggalInput(LocalDate.now());
+            seminar.setNote(note);
+            seminar.setJamMulai(LocalTime.now());
+            seminar.setJamSelesai(LocalTime.now());
+            seminar.setPublish("AKTIF");
+            seminarDao.save(seminar);
+
+            note.setJenis(StatusRecord.SKRIPSI);
+            noteDao.save(note);
+        }
+        return "sukses";
+    }
+
 }
