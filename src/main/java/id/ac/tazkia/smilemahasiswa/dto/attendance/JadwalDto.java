@@ -47,5 +47,10 @@ public class JadwalDto {
 
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime jamSelesaiString;
+    private StatusRecord ceramah;
+    private StatusRecord diskusi;
+    private StatusRecord presentasi;
+    private StatusRecord tanyajawab;
+    private StatusRecord kuis;
 
 }

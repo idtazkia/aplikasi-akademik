@@ -215,10 +215,9 @@
                                     <div class="col-md-12 col-xs-12">
                                         <div class="card shadow">
                                             <div class="card-header border-0">
-                                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
-                                                        data-target="#exampleModal">
+                                                <a th:href="@{/studiesActivity/assesment/tugas(jadwal=${jadwal.id})}" class="btn btn-warning btn-sm">
                                                     <i class="fas fa-plus-circle"></i> Komponen Nilai
-                                                </button>
+                                                </a>
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                                      aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -303,41 +302,32 @@
                                                         <th>#</th>
                                                         <th>Pertemuan Ke :</th>
                                                         <th>Nama Tugas</th>
-                                                        <th>Bobot tugas</th>
+                                                        <th>Bobot Tugas</th>
+                                                        <th>Tenggat Pengumpulan</th>
                                                         <th></th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     <tr th:each="data,row : ${bobot}">
                                                         <td th:text="${row.index + 1}">#</td>
-                                                        <td th:text="${data.pertemuan}">Ruangan</td>
+                                                        <td th:text="${data.pertemuanKe}">Ruangan</td>
                                                         <td th:text="${data.namaTugas}">Jam</td>
                                                         <td th:text="${data.bobot}">Matakuliah</td>
+                                                        <td th:text="${#temporals.format(data.tenggatWaktu, 'dd - MMM - yyyy')}">Matakuliah</td>
                                                         <td>
-                                                            <a th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}"
-                                                               class="btn btn-primary btn-sm"><i
-                                                                    class="fas fa-editfas fa-edit"></i></a>
-                                                            <button type="button" class="btn btn-danger btn-sm"
-                                                                    data-toggle="modal"
-                                                                    th:data-target="${'#modal-notification'+data.id}">
+                                                            <a th:href="@{/studiesActivity/assesment/collection (jadwalTugas = ${data.id})}" class="btn btn-info btn-sm"><i class="fas fa-list"></i></a>
+                                                            <a th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-editfas fa-edit"></i></a>
+                                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
 
-                                                            <div class="modal fade"
-                                                                 th:id="${'modal-notification'+data.id}" tabindex="-1"
-                                                                 role="dialog" aria-labelledby="modal-notification"
-                                                                 aria-hidden="true">
-                                                                <div class="modal-dialog modal-danger modal-dialog-centered modal-"
-                                                                     role="document">
+                                                            <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                                <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
                                                                     <div class="modal-content bg-gradient-danger">
 
                                                                         <div class="modal-header">
-                                                                            <h6 class="modal-title"
-                                                                                id="modal-title-notification">Your
-                                                                                attention is required</h6>
-                                                                            <button type="button" class="close"
-                                                                                    data-dismiss="modal"
-                                                                                    aria-label="Close">
+                                                                            <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                 <span aria-hidden="true">×</span>
                                                                             </button>
                                                                         </div>
@@ -346,25 +336,17 @@
 
                                                                             <div class="py-3 text-center">
                                                                                 <i class="far fa-trash-alt fa-3x"></i>
-                                                                                <h4 class="heading mt-4">Are you sure
-                                                                                    ?</h4>
-                                                                                <p>Once deleted, you will not be able to
-                                                                                    recover this imaginary file!</p>
+                                                                                <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                                <p>Once deleted, you will not be able to recover this imaginary file!</p>
                                                                             </div>
 
                                                                         </div>
 
                                                                         <div class="modal-footer">
-                                                                            <form th:action="@{/studiesActivity/assesment/delete (id = ${data.id})}"
-                                                                                  method="post">
-                                                                                <button type="submit"
-                                                                                        class="btn btn-white">Delete
-                                                                                </button>
+                                                                            <form th:action="@{/studiesActivity/assesment/delete (id = ${data.id})}" method="post">
+                                                                                <button type="submit" class="btn btn-white">Delete</button>
                                                                             </form>
-                                                                            <button type="button"
-                                                                                    class="btn btn-link text-white ml-auto"
-                                                                                    data-dismiss="modal">Close
-                                                                            </button>
+                                                                            <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
                                                                         </div>
 
                                                                     </div>

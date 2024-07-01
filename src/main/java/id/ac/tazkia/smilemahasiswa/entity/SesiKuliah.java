@@ -52,4 +52,19 @@ public class SesiKuliah {
     @ManyToOne
     private DetailPertemuan detailPertemuan;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord ceramah;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord diskusi;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord presentasi;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord tanyajawab;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord kuis;
+
 }

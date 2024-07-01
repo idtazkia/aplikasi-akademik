@@ -50,6 +50,7 @@
                                     <h3 class="mb-0">Form</h3>
                                 </div>
                                 <div class="col text-right">
+                                    <a th:href="@{/studiesActivity/attendance/detail(jadwal=${sesikuliah.jadwal.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                                 </div>
                             </div>
                         </div>
@@ -125,6 +126,23 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Kegiatan :</label><br>
+                                            <input type="checkbox" name="ceramah" id="ceramah" th:field="*{ceramah}" value="AKTIF">
+                                            <label for="ceramah">Ceramah</label>&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" name="diskusi" id="diskusi" th:field="*{diskusi}" value="AKTIF">
+                                            <label for="diskusi">Duskusi</label>&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" name="presentasi" id="presentasi" th:field="*{presentasi}" value="AKTIF">
+                                            <label for="presentasi">Presentasi</label>&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" name="tanyajawab" id="tanyajawab" th:field="*{tanyajawab}" value="AKTIF">
+                                            <label for="tanyajawab">Tanya Jawab</label>&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" name="kuis" id="kuis" th:field="*{kuis}" value="AKTIF">
+                                            <label for="kuis">Kuis</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type="hidden" name="id" th:field="*{id}">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -140,6 +158,99 @@
 
                     </div>
                 </div>
+                <div class="col">
+                    <div class="card shadow">
+                        <div class="card-header border-0">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h3 class="mb-0">Materi</h3>
+                                </div>
+                                <div class="col text-right">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Nama file</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row:${materi}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td >
+                                                    <a th:href="@{/materi/{id}/sesi(id=${data.id})}" target="_blank" th:text="${data.namaFile}"></a>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+
+                                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                            <div class="modal-content bg-gradient-danger">
+
+                                                                <div class="modal-header">
+                                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="modal-body">
+
+                                                                    <div class="py-3 text-center">
+                                                                        <i class="far fa-trash-alt fa-3x"></i>
+                                                                        <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="modal-footer">
+                                                                    <form method="post" th:action="@{/studiesActivity/attendance/materi/delete(materi = ${data.id})}">
+                                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                                    </form>
+                                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <form method="post" th:action="@{/studiesActivity/attendance/materi/input}" enctype="multipart/form-data">
+                                <div class="row">
+                                    <input type="hidden" name="sesiKuliah" th:value="${sesikuliah.id}">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Upload Materi :</label>
+                                            <input type="file" multiple name="materi" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
             </div>
 
         </div>

@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Upload Tugas</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Score</h5>
-                                        <span class="h2 font-weight-bold mb-0">Assesment </span>
+                                        <span class="h2 font-weight-bold mb-0">Tugas </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -39,19 +39,28 @@
     </div>
 
     <div class="container-fluid mt--7">
-        <div class="row">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <h3 class="mb-0">Bobot Tugas</h3>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/studiesActivity/assesment/edit}" method="post" th:object="${bobotTugas}">
+        <form method="post" th:action="@{/studiesActivity/assesment/edit}" th:object="${jadwalTugas}" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="card shadow">
+                        <div class="card-header border-0">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h3 class="mb-0">Form</h3>
+                                </div>
+                                <div class="col text-right">
+                                    <a th:href="@{/studiesActivity/assesment/weight(jadwal=${jadwalTugas.sesiKuliah.jadwal.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 col-xs-12">
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <input type="hidden" name="sesiKuliah" th:field="*{sesiKuliah}">
                                     <div class="form-group">
-                                        <label>Meeting :</label>
-                                        <select th:field="*{pertemuan}" name="pertemuan" class="form-control">
+                                        <label>Pertemuan :</label>
+                                        <select class="form-control" style="width: 100%!important;" name="pertemuanKe" th:field="*{pertemuanKe}">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -59,48 +68,133 @@
                                             <option value="5">5</option>
                                             <option value="6">6</option>
                                             <option value="7">7</option>
-                                            <option value="8">8</option>
                                             <option value="9">9</option>
                                             <option value="10">10</option>
                                             <option value="11">11</option>
                                             <option value="12">12</option>
                                             <option value="13">13</option>
                                             <option value="14">14</option>
+                                            <option value="15">15</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>Weight :</label>
-                                        <input type="text" th:field="*{bobot}" name="bobot" class="form-control">
+                                        <label>Bobot :</label>
+                                        <input type="number" name="bobot" th:max="${akumulasiBobot}" class="form-control" th:placeholder="${'Maks : ' + akumulasiBobot}" th:field="*{bobot}">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12 col-xs-12">
+                                <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Task Name :</label>
-                                        <input type="text" name="namaTugas" th:field="*{namaTugas}" maxlength="255" class="form-control">
+                                        <label>Nama Tugas :</label>
+                                        <input type="text" name="namaTugas" class="form-control" th:field="*{namaTugas}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Deskripsi :</label>
+                                        <textarea name="deskripsi" id="deskripsi" cols="30" rows="3" class="form-control" th:field="*{deskripsi}"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Petunjuk aktivitas :</label>
+                                        <textarea name="petunjukAktivitas" id="petunjuk" cols="30" rows="3" class="form-control" th:field="*{petunjukAktivitas}"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Upload File :</label>
+                                        <input type="file" name="fileTugas" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" name="file" th:field="*{file}">
+                                        <input type="hidden" name="namaFile" th:field="*{namaFile}">
+                                        <label>Tenggat waktu pengumpulan : </label>
+                                        <input type="date" name="tenggatWaktu" th:min="${now}" class="form-control" th:field="*{tenggatWaktu}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jenis Pengiriman : </label>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="checkbox" id="online" name="online" class="js-switch" value="ONLINE_TEKS" th:checked="${onlineteks}">
+                                                <label for="online">Online Teks</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="checkbox" id="uploadfile" name="upload" class="js-switch" value="UPLOAD_FILE"  th:checked="${uploadfile}">
+                                                <label for="uploadfile" >Upload file</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="upFile" class="form-group">
+                                        <label>Maksimal file yang bisa di upload : </label>
+                                        <input type="number" name="batasupload" class="form-control" th:field="*{maksFileUpload}">
                                     </div>
                                 </div>
+
                             </div>
-                            <input type="hidden" name="jadwal" th:field="*{jadwal}">
-                            <input type="hidden" name="id" th:field="*{id}">
-                            <input type="hidden" name="status" th:field="*{status}">
-                            <div class="row">
-                                <div class="col-md-12 col-xs-12 text-center">
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                        <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${bobotTugas.jadwal.id})}" class="btn btn-danger">Cancel</a>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
-                        </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12" id="question">
+                    <div class="card shadow">
+                        <div class="card-header border-0">
+                            <h3 class="mb-0">List Pertanyaan</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Masukkan Pertanyaan : </label>
+                                <textarea name="pertanyaan" id="pertanyaan" cols="30" rows="10" class="form-control" th:field="*{pertanyaan}"></textarea><br><br>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 </body>
 </html>
+<script>
+    $(function (){
+        $("#upFile").hide();
+        $("#question").hide();
+        var isOnlineChecked = $("#online").is(":checked");
+        if (isOnlineChecked){
+            $("#question").show();
+        }
+        var isUploadChecked = $("#uploadfile").is(":checked")
+        if (isUploadChecked){
+            $("#upFile").show();
+        }
+        $("#online").click(function (){
+            if ($("#online").is(":checked")){
+                $("#question").show();
+            }else{
+                $("#question").hide();
+            }
+        });
+        $("#uploadfile").click(function (){
+            if ($("#uploadfile").is(":checked")){
+                $("#upFile").show();
+            }else{
+                $("#upFile").hide();
+            }
+        });
+    })
+
+    // tinymce
+    tinymce.init({
+        selector: 'textarea#pertanyaan',
+        promotion: false,
+        statusbar: false,
+        toolbar: 'styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist| link image | print preview media fullscreen | ' +
+            'forecolor backcolor emoticons | help',
+        plugins: [
+            'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+            'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+            'media', 'table', 'emoticons', 'help'
+        ],
+    });
+
+</script>

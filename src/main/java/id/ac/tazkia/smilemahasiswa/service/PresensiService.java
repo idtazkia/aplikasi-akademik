@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -135,6 +136,7 @@ public class PresensiService {
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
+                updateNilaiPresensi(kd);
             }
 
         } else {
@@ -206,6 +208,7 @@ public class PresensiService {
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
+                updateNilaiPresensi(kd);
             }
 
         }
@@ -292,6 +295,7 @@ public class PresensiService {
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
+                updateNilaiPresensi(kd);
             }
 
         } else {
@@ -363,6 +367,7 @@ public class PresensiService {
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
+                updateNilaiPresensi(kd);
             }
 
         }
@@ -668,6 +673,11 @@ public class PresensiService {
         sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), sesiKuliah.getJadwal().getJamSelesai()));
         sesiKuliah.setDetailPertemuan(jadwalDto.getDetailPertemuan());
         sesiKuliah.setTanggalInput(LocalDateTime.now());
+        sesiKuliah.setCeramah(jadwalDto.getCeramah());
+        sesiKuliah.setDiskusi(jadwalDto.getDiskusi());
+        sesiKuliah.setPresentasi(jadwalDto.getPresentasi());
+        sesiKuliah.setTanyajawab(jadwalDto.getTanyajawab());
+        sesiKuliah.setKuis(jadwalDto.getKuis());
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());
@@ -755,6 +765,7 @@ public class PresensiService {
             presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
             presensiMahasiswa.setRating(0);
             presensiMahasiswaDao.save(presensiMahasiswa);
+            updateNilaiPresensi(kd);
         }
     }
 
@@ -777,6 +788,16 @@ public class PresensiService {
         return BaseResponse.builder()
                 .code("200").message("Berhasil Generate")
                 .build();
+    }
+
+    public void updateNilaiPresensi(KrsDetail kd){
+        Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(), StatusRecord.AKTIF, StatusPresensi.HADIR);
+        Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR, StatusPresensi.TERLAMBAT), StatusRecord.AKTIF, kd);
+
+        kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
+        kd.setJumlahKehadiran(presensiMhs);
+        krsDetailDao.save(kd);
+
     }
 
 }

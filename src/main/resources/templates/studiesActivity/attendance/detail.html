@@ -116,7 +116,10 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4" style="text-align: center; padding: 10px">
+                            <div class="col-md-3" style="text-align: center; padding: 10px">
+                                <b style="font-size: 17px" th:text="${jadwal.dosen.karyawan.namaKaryawan}">MUA-15</b>
+                            </div>
+                            <div class="col-md-3" style="text-align: center; padding: 10px">
                                 <b style="font-size: 17px"
                                     th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Intership</b>
                                 <br />
@@ -124,10 +127,10 @@
                                     3 SKS
                                 </p>
                             </div>
-                            <div class="col-md-4" style="text-align: center; padding: 10px">
+                            <div class="col-md-3" style="text-align: center; padding: 10px">
                                 <b style="font-size: 17px" th:text="${jadwal.kelas.namaKelas}">MUA-15</b>
                             </div>
-                            <div class="col-md-4" style="text-align: center; padding: 10px">
+                            <div class="col-md-3" style="text-align: center; padding: 10px">
                                 <b style="font-size: 17px">Schedule</b>
                                 <br />
                                 <p style="font-size: 14px"
@@ -161,30 +164,18 @@
                   <thead class="thead-light">
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Waktu Masuk</th>
-                      <th scope="col">Dosen</th>
-                      <th scope="col">Pertemuan</th>
+                      <th scope="col">Tanggal</th>
                       <th>Berita Acara</th>
-                      <th scope="col"></th>
+                      <th scope="col">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="headings" th:each="data,row : ${detail}">
                       <td th:text="${(row.index + 1)}">#</td>
-                      <td th:text="${data.masuk}">Jam</td>
-                      <td
-                        style="white-space: pre-wrap; word-wrap: break-word"
-                        th:utext="${data.dosen}"
-                      >
-                        Jam
-                      </td>
                       <td>
-                        <a class="btn btn-info text-white btn-sm">
-                          <span
-                            th:text="${data.pertemuan + ' ( ' + data.pertemuanke + ' )'}"
-                            >Notifications</span
-                          >
-                        </a>
+                          <span style="color: darkgoldenrod" th:text="${data.pertemuan + ' ( ' + data.pertemuanke + ' )'}"></span>
+                          <div style="color: darkcyan;" th:text="${#temporals.format(data.tanggalDate, 'EEE, dd MMM yyyy')}"></div>
+                          <div th:text="${#temporals.format(data.masuk, 'HH:ss') + ' - ' + #temporals.format(data.selesai, 'HH:ss')}"></div>
                       </td>
                       <td
                         style="white-space: pre-wrap; word-wrap: break-word"
@@ -307,6 +298,14 @@
                             </div>
                           </div>
                         </div>
+
+                          <a th:href="@{/studiesActivity/assesment/tugas (jadwal = ${jadwal.id}, sesi = ${data.pertemuanke})}"
+                             class="btn text-darker btn-warning btn-outline-warning btn-sm "
+                             aria-haspopup="true"
+                             aria-expanded="false">
+                              <i class="fas fa-edit"></i>
+                              Buat tugas
+                          </a>
                       </td>
                     </tr>
                   </tbody>

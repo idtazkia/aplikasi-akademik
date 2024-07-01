@@ -55,7 +55,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form th:action="@{/studiesActivity/attendance/mulai}" method="post"
+                                <form th:action="@{/studiesActivity/attendance/mulai}" method="post" enctype="multipart/form-data"
                                     th:object="${sesi}">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -131,6 +131,31 @@
                                                 <label>Berita Acara :</label>
                                                 <textarea name="beritaAcara" th:field="*{beritaAcara}"
                                                     class="form-control" id=""></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Upload Materi :</label>
+                                                <input type="file" required multiple name="materiMengajar" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Kegiatan :</label><br>
+                                                <input type="checkbox" name="ceramah" id="ceramah" value="AKTIF">
+                                                <label for="ceramah">Ceramah</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" name="diskusi" id="diskusi" value="AKTIF">
+                                                <label for="diskusi">Duskusi</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" name="presentasi" id="presentasi" value="AKTIF">
+                                                <label for="presentasi">Presentasi</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" name="tanyajawab" id="tanyajawab" value="AKTIF">
+                                                <label for="tanyajawab">Tanya Jawab</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" name="kuis" id="kuis" value="AKTIF">
+                                                <label for="kuis">Kuis</label>
                                             </div>
                                         </div>
                                     </div>

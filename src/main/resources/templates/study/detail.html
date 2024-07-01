@@ -95,25 +95,76 @@
                     <div class="basic-tb-hd">
                         <h2>Rekap Presensi</h2>
                     </div>
-                    <div class="bsc-tbl-st">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <tr>
-                                    <th>Status Presensi</th>
-                                    <th>Waktu Masuk</th>
-                                    <th>Berita Acara</th>
-                                </tr>
-                                <tr th:each="data : ${detail}">
-                                    <td th:text="${data[0]}" th:if="${data[0] == 'HADIR'}"><button class="bd-primary">Hadir</button></td>
-                                    <td th:if="${data[0] == 'TERLAMBAT'}"><button class="bd-danger"  th:text="${data[0]}" >Hadir</button></td>
-                                    <td th:if="${data[0] == 'MANGKIR'}"><button class="bd-danger" th:text="${data[0]}" >Hadir</button></td>
-                                    <td th:if="${data[0] == 'IZIN'}"><button class="bd-warning" th:text="${data[0]}" >Hadir</button></td>
-                                    <td th:if="${data[0] == 'SAKIT'}"><button class="bd-warning" th:text="${data[0]}" >Hadir</button></td>
-                                    <td th:text="${data[1]}"></td>
-                                    <td th:text="${data[3]}"></td>
-                                </tr>
-
-                            </table>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="accordion-stn">
+                                <div class="panel-group" data-collapse-color="nk-green" id="accordionGreen" role="tablist" aria-multiselectable="true">
+                                    <div th:each="data:${detail}" class="panel panel-collapse notika-accrodion-cus">
+                                        <div class="panel-heading" role="tab">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionGreen" th:href="${'#accordionGreen-'+data[4]}" aria-expanded="true">
+                                                    <div>Pertemuan ke - <span th:text="${data[5]}"></span> </div>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div th:id="${'accordionGreen-'+data[4]}" class="collapse" role="tabpanel">
+                                            <div class="panel-body">
+                                                <h4>Keterangan</h4>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div th:if="${data[0] == 'HADIR'}"><button class="bd-primary" th:text="${data[0]}" >Hadir</button></div>
+                                                        <div th:if="${data[0] == 'TERLAMBAT'}"><button class="bd-danger"  th:text="${data[0]}" >Hadir</button></div>
+                                                        <div th:if="${data[0] == 'MANGKIR'}"><button class="bd-danger" th:text="${data[0]}" >Hadir</button></div>
+                                                        <div th:if="${data[0] == 'IZIN'}"><button class="bd-warning" th:text="${data[0]}" >Hadir</button></div>
+                                                        <div th:if="${data[0] == 'SAKIT'}"><button class="bd-warning" th:text="${data[0]}" >Hadir</button></div>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <div class="mt-3" th:text="${'Waktu Masuk : ' + data[1]}"></div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <span th:text="${data[3]}"></span>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="tpgp-al-cl">
+                                                    <h4>Materi</h4>
+                                                    <ul class="tpdg-ul-circle" th:each="materi, row : ${materi}">
+                                                        <li th:if="${materi.sesiKuliah.id == data[4]}">
+                                                            <a th:href="@{/materi/{id}/sesi(id=${materi.id})}" target="_blank" th:text="${materi.namaFile}"></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <hr>
+                                                <div th:each="tugas, row : ${tugas}" th:if="${tugas.sesiKuliah.id == data[4]}" class="tpgp-al-cl">
+                                                    <h4>Tugas</h4>
+                                                    <h5 th:text="${'Judul Tugas : ' + tugas.namaTugas}"></h5>
+                                                    <div th:if="${tugas.file != null}"> <a th:href="@{/jadwal/{jadwal}/tugas(jadwal=${tugas.id})}" th:text="${tugas.namaFile}"></a></div>
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12 col-xs-12">
+                                                            <textarea th:text="${tugas.deskripsi}" cols="30" rows="10" class="form-control" readonly disabled>
+                                                                asoajdaosijdoa
+                                                            </textarea>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12 col-xs-12">
+                                                            <textarea th:text="${tugas.petunjukAktivitas}" cols="30" rows="10" class="form-control" readonly disabled>
+                                                                asoajdaosijdoa
+                                                            </textarea>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <h5 th:if="${tugas.tenggatWaktu < now}" style="color: red;">Pengumpulan tugas sudah melewati tenggat waktu <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy')}"></span></h5>
+                                                    <h5 th:if="${tugas.tenggatWaktu >= now}"  style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy')}"></span></h5>
+                                                    <a th:if="${tugas.tenggatWaktu >= now}" th:href="@{/study/tugas(jadwalTugas=${tugas.id}, jadwal=${jadwal.id})}" class="btn btn-info">Jawab Tugas</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -123,3 +174,23 @@
 </section>
 </body>
 </html>
+<script>
+    $(function (){
+
+    });
+
+    // tinymce
+    tinymce.init({
+        selector: 'textarea#jawab',
+        promotion: false,
+        statusbar: false,
+        toolbar: 'styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist| link image | print preview media fullscreen | ' +
+            'forecolor backcolor emoticons | help',
+        plugins: [
+            'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+            'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+            'media', 'table', 'emoticons', 'help'
+        ],
+    });
+</script>

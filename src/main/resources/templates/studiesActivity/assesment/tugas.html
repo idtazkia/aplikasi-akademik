@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Tugas</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Score</h5>
+                                        <span class="h2 font-weight-bold mb-0">Tugas </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <form method="post" th:action="@{/studiesActivity/assesment/tugas}" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="card shadow">
+                        <div class="card-header border-0">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h3 class="mb-0">Form</h3>
+                                </div>
+                                <div class="col text-right">
+                                    <a th:href="@{/studiesActivity/assesment/weight(jadwal=${jadwal.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                                    <div class="form-group">
+                                        <label>Pertemuan :</label>
+                                        <select class="form-control"
+                                                style="width: 100%!important;" name="pertemuanKe">
+                                            <option th:value="${sesi}" th:text="${sesi}" selected></option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Bobot :</label>
+                                        <input type="number" name="bobot" th:placeholder="${'Maks : ' + bobotMaks}" th:max="${bobotMaks}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Nama Tugas :</label>
+                                        <input type="text" name="namaTugas" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Deskripsi :</label>
+                                        <textarea name="deskripsi" id="deskripsi" cols="30" rows="3" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Petunjuk aktivitas :</label>
+                                        <textarea name="petunjukAktivitas" id="petunjuk" cols="30" rows="3" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Upload File :</label>
+                                        <input type="file" name="fileTugas" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tenggat waktu pengumpulan : </label>
+                                        <input type="date" name="tenggatWaktu" th:min="${now}" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jenis Pengiriman : </label>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="checkbox" id="online" name="online" class="js-switch" value="Online teks">
+                                                <label for="online">Online Teks</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="checkbox" id="uploadfile" name="upload" class="js-switch" value="Upload File">
+                                                <label for="uploadfile" >Upload file</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="upFile" class="form-group">
+                                        <label>Maksimal file yang bisa di upload : </label>
+                                        <input type="number" min="2" name="maksFileUpload" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12" id="question">
+                    <div class="card shadow">
+                        <div class="card-header border-0">
+                            <h3 class="mb-0">List Pertanyaan</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Masukkan Pertanyaan : </label>
+                                <textarea name="pertanyaan" id="pertanyaan" cols="30" rows="10" class="form-control"></textarea><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(function (){
+        $("#upFile").hide();
+        $("#question").hide();
+        $("#online").click(function (){
+            if ($(this).is(":checked")){
+                $("#question").show();
+            }else{
+                $("#question").hide();
+            }
+        });
+        $("#uploadfile").click(function (){
+            if ($(this).is(":checked")){
+                $("#upFile").show();
+            }else{
+                $("#upFile").hide();
+            }
+        });
+    })
+
+    // tinymce
+    tinymce.init({
+        selector: 'textarea#pertanyaan',
+        promotion: false,
+        statusbar: false,
+        toolbar: 'styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist| link image | print preview media fullscreen | ' +
+            'forecolor backcolor emoticons | help',
+        plugins: [
+            'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+            'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+            'media', 'table', 'emoticons', 'help'
+        ],
+    });
+
+</script>

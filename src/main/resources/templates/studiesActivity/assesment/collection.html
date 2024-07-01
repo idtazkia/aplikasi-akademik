@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Penilaian</title>
+    <style >
+        .center{
+            transform: translateX(0%) !important;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Tugas </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Tugas matakuliah <span th:text="${jadwaltugas.sesiKuliah.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span> Pertemuan <span th:text="${jadwaltugas.pertemuanKe}"></span></h3>
+                                <h3 class="mb-0" th:text="${jadwaltugas.namaTugas}"></h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studiesActivity/assesment/weight(jadwal=${jadwaltugas.sesiKuliah.jadwal.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card shadow">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div th:text="${jadwaltugas.deskripsi}"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div th:text="${jadwaltugas.petunjukAktivitas}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" th:action="@{/studiesActivity/assesment/collection}">
+                        <input type="hidden" name="jadwalTugas" th:value="${jadwaltugas.id}">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush table-striped">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">NIM</th>
+                                    <th scope="col">Mahasiswa</th>
+                                    <th scope="col">Jawaban Teks</th>
+                                    <th scope="col">File</th>
+                                    <th scope="col">Nilai</th>
+                                    <th scope="col">Waktu pengumpulan</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${tugasmahasiswa}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.mahasiswa.nim}">Basic Econometrics   </td>
+                                    <td th:text="${data.mahasiswa.nama}">Aam Slamet Rusydiana  </td>
+                                    <td ><span th:utext="${#strings.substring(data.jawabanTeks, 0, 40)}"></span>  </td>
+                                    <td ><a th:text="${data.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${data.id})}"></a></td>
+                                    <td >
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="text" th:name="${'jawab-'+data.id}" max="100" th:value="${data.nilai}" class="form-control">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h3>/ 100</h3>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${#temporals.format(data.waktuPengumpulan, 'dd - MMM - yyyy')}"></td>
+                                    <td><a class="btn btn-info btn-sm" th:href="@{/studiesActivity/assesment/detail(jawaban=${data.id})}"><i class="fa fa-eye"></i> Detail</a></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(tugasmahasiswa)}">
+                                    <td class="text-center" colspan="7">Belum ada yang mengumpulkan tugas.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mt-3 mb-3">
+                                <button type="submit" class="btn btn-success center">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

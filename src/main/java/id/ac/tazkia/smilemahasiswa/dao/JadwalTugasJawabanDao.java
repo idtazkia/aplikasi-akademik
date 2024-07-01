@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface JadwalTugasJawabanDao extends PagingAndSortingRepository<JadwalTugasJawaban, String> {
@@ -18,7 +19,9 @@ public interface JadwalTugasJawabanDao extends PagingAndSortingRepository<Jadwal
 
     List<JadwalTugasJawaban> findByJadwalTugasAndMahasiswa(JadwalTugas jadwalTugas, Mahasiswa mahsiswa);
 
-//    @Query("select coalesce(count(tj.id), 0) as total from JadwalTugasJawaban tj where tj.jadwalTugas = :jadwalTugas and tj.mahasiswa = :mahasiswa")
-//    Object[] cariTotalTugas(@Param("jadwalTugas") JadwalTugas jadwalTugas, @Param("mahasiswa") Mahasiswa mahasiswa);
+    @Query(value = "select coalesce(jt.maks_file_upload - count(id_jadwal_tugas), 0) as totalUpload from jadwal_tugas_jawaban tj right join jadwal_tugas jt on jt.id=tj.id_jadwal_tugas where id_mahasiswa=?1 and jt.id=?2 group by id_jadwal_tugas;", nativeQuery = true)
+    Integer cariTotalTugas(String idMahasiswa, String idJadwalTugas);
+
+    JadwalTugasJawaban findTopByMahasiswaAndJadwalTugasAndStatus(Mahasiswa mhs, JadwalTugas jadwalTugas, StatusRecord status);
 
 }

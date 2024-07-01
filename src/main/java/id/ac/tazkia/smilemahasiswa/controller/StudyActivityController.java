@@ -816,7 +816,69 @@ public class StudyActivityController {
 
         model.addAttribute("detail", krsDetailDao.detailPresensi(mahasiswa,tahunAkademik,jadwal));
         model.addAttribute("jadwal", jadwal);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("materi", materiMengajarDao.findByStatusAndSesiKuliahJadwal(StatusRecord.AKTIF, jadwal));
+        model.addAttribute("tugas", jadwalTugasDao.findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(jadwal, StatusRecord.AKTIF));
+        model.addAttribute("now", LocalDate.now());
+    }
 
+    @GetMapping("/jadwal/{jadwal}/tugas")
+    public ResponseEntity<byte[]> lihatMateri(@PathVariable JadwalTugas jadwal){
+        String folder = jadwal.getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + " - " + jadwal.getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal.getSesiKuliah().getPertemuanKe();
+        String lokasi = uploadTugas + File.separator + folder + File.separator + jadwal.getFile();
+        log.debug("lokasi file : {}" + lokasi);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (jadwal.getFile().toLowerCase().endsWith("jpeg") || jadwal.getFile().toLowerCase().endsWith("jpg")){
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (jadwal.getFile().toLowerCase().endsWith("png")){
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (jadwal.getFile().toLowerCase().endsWith("pdf")){
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else{
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasi));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        }catch (Exception err){
+            log.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/study/tugas")
+    public void detailTugas(Model model, @RequestParam JadwalTugas jadwalTugas, @RequestParam(required = false) Jadwal jadwal, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mhs = mahasiswaDao.findByUser(user);
+
+        model.addAttribute("tugas", jadwalTugas);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("mahasiswa", mhs);
+
+        model.addAttribute("kesempatanUpload", tugasJawabanDao.cariTotalTugas(mhs.getId(), jadwalTugas.getId()));
+        model.addAttribute("history", tugasJawabanDao.findTopByMahasiswaAndJadwalTugasAndStatus(mhs, jadwalTugas, StatusRecord.AKTIF));
+    }
+
+    @PostMapping("/study/tugas")
+    public String saveTugas(@ModelAttribute @Valid JadwalTugasJawaban tugasJawaban, @RequestParam JadwalTugas jadwalTugas, @RequestParam Mahasiswa mahasiswa, MultipartFile fileJawaban) throws IOException {
+
+        List<JadwalTugasJawaban> cekSudahAda = tugasJawabanDao.findByJadwalTugasAndMahasiswa(jadwalTugas, mahasiswa);
+        if (cekSudahAda != null) {
+            for (JadwalTugasJawaban tugas : cekSudahAda){
+                tugas.setStatus(StatusRecord.NONAKTIF);
+                tugasJawabanDao.save(tugas);
+            }
+        }
+
+        if (fileJawaban != null) {
+            tugasJawaban.setFile(tugasMateriService.uploadJawaban(fileJawaban, tugasJawaban));
+            tugasJawaban.setNamaFile(fileJawaban.getOriginalFilename());
+        }
+
+        tugasJawabanDao.save(tugasJawaban);
+
+        return "redirect:detail?id="+jadwalTugas.getSesiKuliah().getJadwal().getId();
     }
 
 //    Daftar Ulang

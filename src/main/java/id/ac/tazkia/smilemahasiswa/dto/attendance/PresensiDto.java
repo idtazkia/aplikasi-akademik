@@ -6,17 +6,9 @@ import java.time.LocalTime;
 
 import javax.persistence.Column;
 
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import id.ac.tazkia.smilemahasiswa.entity.DetailPertemuan;
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
-import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
-import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import lombok.Data;
 
 @Data
@@ -48,4 +40,9 @@ public class PresensiDto {
     private LocalDateTime jamMasuk;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime jamKeluar;
+    private StatusRecord ceramah;
+    private StatusRecord diskusi;
+    private StatusRecord presentasi;
+    private StatusRecord tanyajawab;
+    private StatusRecord kuis;
 }
