@@ -3033,7 +3033,11 @@ public class GraduationController {
             seminar.setPublish("AKTIF");
             seminarDao.save(seminar);
 
-            note.setJenis(StatusRecord.SKRIPSI);
+            if (note.getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")){
+                note.setJenis(StatusRecord.SKRIPSI);
+            }else {
+                note.setJenis(StatusRecord.TESIS);
+            }
             noteDao.save(note);
         }
         return "sukses";
