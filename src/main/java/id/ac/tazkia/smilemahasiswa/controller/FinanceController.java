@@ -70,6 +70,8 @@ public class FinanceController {
     private JadwalDao jadwalDao;
     @Autowired
     private SesiDao sesiDao;
+    @Autowired
+    private PrediksiTestDao prediksiTestDao;
 
 
     @ModelAttribute("prodi")
@@ -344,7 +346,6 @@ public class FinanceController {
 
     @GetMapping("/activation/peringanan")
     public void aktifasiPeringanan(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String nim, @PageableDefault(size = 10) Pageable page){
-
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         if (mhs != null) {
             model.addAttribute("tagihanMahasiswa", tagihanDao.findByStatusNotInAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), mhs, tahunAkademik, page));
@@ -353,7 +354,6 @@ public class FinanceController {
         }
         model.addAttribute("selectTahun", tahunAkademik);
         model.addAttribute("selectNim", nim);
-
     }
 
     @PostMapping("/activation/peringanan")
@@ -374,9 +374,40 @@ public class FinanceController {
                 return "redirect:peringanan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
             }
         }
-
         return "redirect:peringanan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
+    }
 
+    @GetMapping("/activation/toefl")
+    public void aktivasiToefl(Model model, @RequestParam(required = false) String nim, @RequestParam(required = false) TahunAkademik tahunAkademik){
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        model.addAttribute("selectedNim", nim);
+        model.addAttribute("selectedTahun", tahunAkademik);
+        if (mhs != null) {
+            model.addAttribute("mhs", mhs);
+            model.addAttribute("prediksiTest", prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mhs, Arrays.asList(StatusRecord.HAPUS)));
+        }else{
+            model.addAttribute("message", "nim tidak ada");
+        }
+    }
+
+    @PostMapping("/activation/toefl")
+    public String toefl(@RequestParam String nim, @RequestParam TahunAkademik tahunAkademik){
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+
+        EnableFiture toefl = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(mhs, StatusRecord.PREDIKSI_TEST, tahunAkademik);
+        if (toefl != null) {
+            toefl.setEnable(true);
+            enableFitureDao.save(toefl);
+        }else{
+            EnableFiture enableFiture = new EnableFiture();
+            enableFiture.setFitur(StatusRecord.PREDIKSI_TEST);
+            enableFiture.setMahasiswa(mhs);
+            enableFiture.setEnable(true);
+            enableFiture.setTahunAkademik(tahunAkademik);
+            enableFitureDao.save(enableFiture);
+        }
+
+        return "redirect:toefl?nim="+nim+"&tahunAkademik="+tahunAkademik.getId();
     }
 
     // memo keuangan

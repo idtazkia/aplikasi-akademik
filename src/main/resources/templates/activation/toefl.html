@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Activation KRS</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">KRS</h5>
+                                        <span class="h2 font-weight-bold mb-0">Aktifasi</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" th:action="@{/activation/toefl}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>NIM</label>
+                                        <input type="text" th:value="${selectedNim}" class="form-control" name="nim">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required
+                                                class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahun})"
+                                                    th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info">Aktifasi</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="alert alert-danger" th:if="${message != null && selectedTahun != null}">
+                        <center>
+                            <strong>
+                                NIM tidak ditemukan
+                            </strong>
+                        </center>
+                    </div>
+
+                    <div class="card-body" th:if="${message == null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">Riwayat Tes Toefl <small th:text="${'  ' + mhs.nim + ' - ' + mhs.nama}">asd</small></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Ujian ke</th>
+                                            <th>Jenis Tes</th>
+                                            <th>Status Ujian</th>
+                                            <th>Tanggal</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="data, row : ${prediksiTest}">
+                                            <td th:text="${row.index + 1}"></td>
+                                            <td th:text="${data.ujianKe}"></td>
+                                            <td >
+                                                <a href="#!" class="btn btn-info btn-sm" th:if="${data.jenisTest.TOEFL == data.jenisTest}" th:text="${data.jenisTest}"></a>
+                                                <a href="#!" class="btn btn-primary btn-sm" th:if="${data.jenisTest.IELTS == data.jenisTest}" th:text="${data.jenisTest}"></a>
+                                            </td>
+                                            <td >
+                                                <a href="#!" class="btn btn-sm btn-success" th:if="${data.statusUjian.LULUS == data.statusUjian}" th:text="${data.statusUjian}"></a>
+                                                <a href="#!" class="btn btn-sm btn-warning" th:if="${data.statusUjian.DINILAI == data.statusUjian}" th:text="${data.statusUjian}"></a>
+                                                <a href="#!" class="btn btn-sm btn-danger" th:if="${data.statusUjian.REJECTED == data.statusUjian}" th:text="${data.statusUjian}"></a>
+                                                <a href="#!" class="btn btn-sm btn-info" th:if="${data.statusUjian.WAITING == data.statusUjian}" th:text="${data.statusUjian}"></a>
+                                                <a href="#!" class="btn btn-sm btn-danger" th:if="${data.statusUjian.TIDAK_LULUS == data.statusUjian}" th:text="${data.statusUjian}"></a>
+                                            </td>
+                                            <td th:text="${#temporals.format(data.tanggalUpload, 'dd - MMM - yyyy HH:ss')}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
