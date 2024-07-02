@@ -803,7 +803,7 @@ public class StudiesActivityController {
         model.addAttribute("sesi", jadwalDto);
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sesiKuliah.getJadwal()));
         model.addAttribute("detailPertemuans", detailPertemuanDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("sesiKuliah", sesiKuliah);
+        model.addAttribute("sesikuliah", sesiKuliah);
         model.addAttribute("materi", materiMengajarDao.findByStatusAndSesiKuliah(StatusRecord.AKTIF, sesiKuliah));
 
     }

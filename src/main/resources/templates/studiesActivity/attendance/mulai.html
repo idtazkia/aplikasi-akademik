@@ -41,28 +41,28 @@
 
         <div class="container-fluid mt--7">
             <!-- Table -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="col">
-                        <div class="card shadow">
-                            <div class="card-header border-0">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h3 class="mb-0">Form</h3>
-                                    </div>
-                                    <div class="col text-right">
+            <form th:action="@{/studiesActivity/attendance/mulai}" method="post" enctype="multipart/form-data"
+                  th:object="${sesi}">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col">
+                            <div class="card shadow">
+                                <div class="card-header border-0">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3 class="mb-0">Form</h3>
+                                        </div>
+                                        <div class="col text-right">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <form th:action="@{/studiesActivity/attendance/mulai}" method="post" enctype="multipart/form-data"
-                                    th:object="${sesi}">
+                                <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
                                                 <select name="pertemuan" class="form-control"
-                                                    th:if="${now == sesi.tanggal}">
+                                                        th:if="${now == sesi.tanggal}">
                                                     <option value="Online">Online</option>
                                                     <option value="Offline">Offline</option>
                                                     <option value="Pengganti Offline">Pengganti Offline</option>
@@ -70,39 +70,172 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Detail Pertemuan :</label>
                                                 <select name="detailPertemuan" th:field="*{detailPertemuan}" readonly
-                                                    class="form-control" th:if="${validPertemuan == null}">
+                                                        class="form-control" th:if="${validPertemuan == null}">
                                                     <option value="1">Attendance</option>
                                                 </select>
                                                 <select name="detailPertemuan" th:field="*{detailPertemuan}"
-                                                    class="form-control" th:if="${validPertemuan != null}">
+                                                        class="form-control" th:if="${validPertemuan != null}">
                                                     <option th:each="data : ${detailPertemuans}" th:text="${data.nama}"
-                                                        th:value="${data.id}">
+                                                            th:value="${data.id}">
                                                         Offline</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Dosen :</label>
+                                                <select name="dosen" th:field="*{dosen}" class="form-control">
+                                                    <option value=""></option>
+                                                    <option th:each="dosen : ${teamTeaching}"
+                                                            th:text="${dosen.dosen.karyawan.namaKaryawan}"
+                                                            th:value="${dosen.dosen.id}">sdasd</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Upload Materi :</label>
+                                                <input type="file" required multiple name="materiMengajar" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col">
+                            <div class="card shadow">
+                                <div class="card-header border-0">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3 class="mb-0">Rencana</h3>
+                                        </div>
+                                        <div class="col text-right">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Tanggal :</label>
+                                                <input type="date" disabled th:value="${sesi.tanggal}"
+                                                    class="form-control">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Dosen :</label>
-                                                <select name="dosen" th:field="*{dosen}" class="form-control">
-                                                    <option value=""></option>
-                                                    <option th:each="dosen : ${teamTeaching}"
-                                                        th:text="${dosen.dosen.karyawan.namaKaryawan}"
-                                                        th:value="${dosen.dosen.id}">sdasd</option>
-                                                </select>
+                                                <label>Jam Mulai :</label>
+                                                <input type="text" disabled th:value="${sesi.jamMulai}" required id="timePicker"
+                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"
+                                                       class="timePicker form-control">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <label>Jam Selesai :</label>
+                                                <input type="text" disabled th:value="${sesi.jamSelesai}" required id="timePicker1"
+                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
+                                                       class="timePicker form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+<!--                                    <div class="row" th:if="${now != sesi.tanggal}">-->
+<!--                                        <div class="col-md-6">-->
+<!--                                            <div class="form-group">-->
+<!--                                                <label>Jam Mulai :</label>-->
+<!--                                                <input type="text" th:field="*{jamMulai}" required id="timePicker"-->
+<!--                                                    autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"-->
+<!--                                                    class="timePicker form-control">-->
+<!--    -->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-6">-->
+<!--                                            <div class="form-group">-->
+<!--                                                <label>Jam Selesai :</label>-->
+<!--                                                <input type="text" th:field="*{jamSelesai}" required id="timePicker1"-->
+<!--                                                    autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"-->
+<!--                                                    class="timePicker form-control">-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>RPS :</label>
+                                                <textarea name="beritaAcara" disabled th:field="${sesiKuliah.rps}"
+                                                    class="form-control" id=""></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Kegiatan :</label><br>
+                                                <input type="checkbox" checked disabled>
+                                                <label for="ceramah">Ceramah</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" checked disabled>
+                                                <label for="diskusi">Duskusi</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" checked disabled>
+                                                <label for="presentasi">Presentasi</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" checked disabled>
+                                                <label for="tanyajawab">Tanya Jawab</label>&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" checked disabled>
+                                                <label for="kuis">Kuis</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col">
+                            <div class="card shadow">
+                                <div class="card-header border-0">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3 class="mb-0">Realisasi</h3>
+                                        </div>
+                                        <div class="col text-right">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
                                                 <label>Tanggal :</label>
                                                 <input type="date" th:field="*{tanggal}" id="tanggalSesi" name="tanggal"
-                                                    class="form-control">
+                                                       class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Jam Mulai :</label>
+                                                <input type="text" disabled th:field="*{jamMulai}" required id="timePicker"
+                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"
+                                                       class="timePicker form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Jam Selesai :</label>
+                                                <input type="text" disabled th:field="*{jamSelesai}" required id="timePicker1"
+                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
+                                                       class="timePicker form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -111,8 +244,8 @@
                                             <div class="form-group">
                                                 <label>Jam Mulai :</label>
                                                 <input type="text" th:field="*{jamMulai}" required id="timePicker"
-                                                    autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"
-                                                    class="timePicker form-control">
+                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"
+                                                       class="timePicker form-control">
 
                                             </div>
                                         </div>
@@ -120,8 +253,8 @@
                                             <div class="form-group">
                                                 <label>Jam Selesai :</label>
                                                 <input type="text" th:field="*{jamSelesai}" required id="timePicker1"
-                                                    autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
-                                                    class="timePicker form-control">
+                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
+                                                       class="timePicker form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -129,16 +262,8 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Berita Acara :</label>
-                                                <textarea name="beritaAcara" th:field="*{beritaAcara}"
-                                                    class="form-control" id=""></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Upload Materi :</label>
-                                                <input type="file" required multiple name="materiMengajar" class="form-control">
+                                                <textarea name="beritaAcara" th:field="${sesiKuliah.rps}"
+                                                          class="form-control" id=""></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -167,44 +292,14 @@
                                                 <!--                                        <a href="" class="btn btn-danger">Batal</a>-->
                                             </div>
                                         </div>
-
-                                    </div>
-                                </form>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="col">
-                        <div class="card shadow">
-                            <div class="card-header border-0">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h3 class="mb-0">Detail RPS</h3>
-                                    </div>
-                                    <div class="col text-right">
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <form th:object="${sesiKuliah}">
-                                            <label>RPS :</label>
-                                            <textarea style="height: 450px;" disabled class="form-control"
-                                                th:field="*{rps}"></textarea>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
+
                 </div>
-
-            </div>
-
+            </form>
         </div>
     </div>
 </body>
