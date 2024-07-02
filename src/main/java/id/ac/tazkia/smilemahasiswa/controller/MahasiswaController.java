@@ -323,14 +323,14 @@ public class MahasiswaController {
     }
 
     @PostMapping("/mahasiswa/form")
-    public String prosesForm(@RequestParam Mahasiswa mahasiswa, @ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult errors){
-
-
+    public String prosesForm(@RequestParam Mahasiswa mahasiswa, @ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult errors, Authentication authentication){
+        User userUpdate = currentUserService.currentUser(authentication);
 
         BeanUtils.copyProperties(mahasiswaDto,mahasiswa);
         mahasiswa.setNama(WordUtils.capitalizeFully(mahasiswaDto.getNama()));
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswa.setIdAgama(mahasiswaDto.getReligion());
+        mahasiswa.setStatusUpdateUser(userUpdate.getUsername());
         mahasiswaDao.save(mahasiswa);
 
         if (mahasiswa.getUser() != null) {
@@ -419,35 +419,45 @@ public class MahasiswaController {
     }
 
     @GetMapping("/mahasiswa/aktif")
-    public String statusAktif(@RequestParam Mahasiswa mahasiswa){
+    public String statusAktif(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("AKTIF");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
     @GetMapping("/mahasiswa/nonaktif")
-    public String statusNonaktif(@RequestParam Mahasiswa mahasiswa){
+    public String statusNonaktif(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("NONAKTIF");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
     @GetMapping("/mahasiswa/mengundurkandiri")
-    public String statusMengundurkanDiri(@RequestParam Mahasiswa mahasiswa){
+    public String statusMengundurkanDiri(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("MENGUNDURKAN_DIRI");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
     @GetMapping("/mahasiswa/lulus")
-    public String statusLulus(@RequestParam Mahasiswa mahasiswa){
+    public String statusLulus(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("LULUS");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
     @PostMapping("/mahasiswa/cuti")
-    public String statusCuti(@RequestParam Mahasiswa mahasiswa){
+    public String statusCuti(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("CUTI");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list?search="+ mahasiswa.getNama();
@@ -473,7 +483,9 @@ public class MahasiswaController {
     }
 
     @GetMapping("/mahasiswa/keluar")
-    public String statusKeluar(@RequestParam Mahasiswa mahasiswa){
+    public String statusKeluar(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("KELUAR");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list";

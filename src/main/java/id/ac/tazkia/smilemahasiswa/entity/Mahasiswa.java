@@ -117,6 +117,8 @@ public class Mahasiswa {
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    private String statusUpdateUser;
+
     @ManyToOne
     @JoinColumn(name = "id_user")
     private  User user;
