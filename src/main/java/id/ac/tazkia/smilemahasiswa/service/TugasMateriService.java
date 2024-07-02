@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.UUID;
 
@@ -46,6 +47,17 @@ public class TugasMateriService {
             bobotTugas.setNamaTugas(jadwalTugas.getNamaTugas());
             bobotTugas.setPertemuan(String.valueOf(jadwalTugas.getPertemuanKe()));
             bobotTugasDao.save(bobotTugas);
+
+            List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(), StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
+                NilaiTugas nilaiTugas = new NilaiTugas();
+                nilaiTugas.setNilai(BigDecimal.ZERO);
+                nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
+                nilaiTugas.setKrsDetail(kd);
+                nilaiTugas.setBobotTugas(bobotTugas);
+                nilaiTugas.setStatus(StatusRecord.AKTIF);
+                nilaiTugasDao.save(nilaiTugas);
+            }
         }else{
             bt.setJadwal(jadwal);
             bt.setBobot(jadwalTugas.getBobot());
