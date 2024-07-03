@@ -326,6 +326,26 @@ public class KuesionerController {
         }
     }
 
+    @GetMapping("/kuesioner/ielts/admin/list")
+    public void listAdminIelts(Model model, @RequestParam(required = false) String search, @RequestParam(required = false) String status,
+                               Authentication authentication, Pageable pageable){
+        model.addAttribute("status", status);
+        if (StringUtils.hasText(search)){
+            model.addAttribute("search", search);
+            if (status.equals("WAITING")){
+                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjian(search,status,pageable));
+            }else {
+                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjianNotIn(search,status,pageable));
+            }
+        }else {
+            if (status.equals("WAITING")){
+                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjian(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),pageable));
+            }else {
+                model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(pageable));
+            }
+        }
+    }
+
     @GetMapping("/kuesioner/toefl/download")
     public void downloadRekap(@RequestParam String angkatan, HttpServletResponse response) throws IOException {
         String[] columns = {"NO", "Timestamps", "NIM", "Full Name", "Place, Date of Birth", "Department"};
@@ -442,7 +462,7 @@ public class KuesionerController {
     }
 
     @PostMapping("/kuesioner/toefl/submit")
-    public String submitToefl(@Valid TestDto testDto, Authentication authentication, MultipartFile file) throws  Exception{
+    public String submitToefl(@Valid TestDto testDto, Authentication authentication) throws  Exception{
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         mahasiswa.setTeleponSeluler(testDto.getNo());
@@ -467,26 +487,36 @@ public class KuesionerController {
             prediksiTest.setStatus(StatusRecord.AKTIF);
         }
 
-        if (file.getSize() > 0) {
-            String namaAsliFile = file.getOriginalFilename();
+        prediksiTestDao.save(prediksiTest);
+        return "redirect:list";
+    }
 
-            String extension = "";
+    @PostMapping("/kuesioner/ielts/submit")
+    public String submitIelts(@Valid TestDto testDto, Authentication authentication) throws  Exception{
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        mahasiswa.setTeleponSeluler(testDto.getNo());
+        mahasiswa.setEmailTazkia(testDto.getEmail());
+        mahasiswaDao.save(mahasiswa);
 
-            int i = namaAsliFile.lastIndexOf('.');
-            int p = Math.max(namaAsliFile.lastIndexOf('/'), namaAsliFile.lastIndexOf('\\'));
+        Integer ujianKe = 0;
 
-            if (i > p) {
-                extension = namaAsliFile.substring(i + 1);
-            }
-
-            String idFile = UUID.randomUUID().toString();
-            String lokasiUpload = uploadPrediksiTest + File.separator + mahasiswa.getNim();
-            new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-            file.transferTo(tujuan);
-
-            prediksiTest.setFileBukti(idFile + "." + extension);
+        PrediksiTest prediksiTest = new PrediksiTest();
+        if (prediksiTestDao.countTotalUjian(mahasiswa) > 0){
+            ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
+            prediksiTest.setStatus(StatusRecord.AKTIF);
+        }else {
+            ujianKe = 1;
         }
+
+        prediksiTest.setMahasiswa(mahasiswa);
+        prediksiTest.setJenisTest(JenisTest.IELTS);
+        prediksiTest.setUjianKe(ujianKe);
+
+        if (Integer.valueOf(mahasiswa.getAngkatan()) >= 2020){
+            prediksiTest.setStatus(StatusRecord.AKTIF);
+        }
+
         prediksiTestDao.save(prediksiTest);
         return "redirect:list";
     }
