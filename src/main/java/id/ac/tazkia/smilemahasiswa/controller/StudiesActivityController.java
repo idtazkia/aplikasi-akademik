@@ -1470,8 +1470,7 @@ public class StudiesActivityController {
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("now", LocalDate.now());
         model.addAttribute("sesi", sesi);
-        // .subtract(jadwalTugasDao.totalBobot(jadwal)
-        BigDecimal bobotMaks = jadwal.getBobotTugas();
+        BigDecimal bobotMaks = jadwal.getBobotTugas().subtract(jadwalTugasDao.totalBobot(jadwal));
         model.addAttribute("bobotMaks", bobotMaks);
     }
 

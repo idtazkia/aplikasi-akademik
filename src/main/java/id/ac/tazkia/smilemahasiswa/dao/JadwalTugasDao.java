@@ -14,7 +14,7 @@ public interface JadwalTugasDao extends PagingAndSortingRepository<JadwalTugas, 
 
     List<JadwalTugas> findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(Jadwal jadwal, StatusRecord status);
 
-    @Query("select sum(jt.bobot) from JadwalTugas jt where jt.status = 'AKTIF' and jt.sesiKuliah.jadwal = :jadwal")
+    @Query("select coalesce(sum(jt.bobot), 0) from JadwalTugas jt where jt.status = 'AKTIF' and jt.sesiKuliah.jadwal = :jadwal")
     BigDecimal totalBobot(@Param("jadwal")Jadwal jadwal);
 
 }
