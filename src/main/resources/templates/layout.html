@@ -124,6 +124,7 @@
                             <li><a data-toggle="collapse" data-target="#democrou" href="#">TLC</a>
                                 <ul id="tlc" class="collapse dropdown-header-top">
                                     <li><a th:href="@{/kuesioner/toefl/view}">TOEFL</a></li>
+                                    <li><a th:href="@{/kuesioner/ielts/view}">IELTS</a></li>
                                 </ul>
                             </li>
                             <li><a data-toggle="collapse" data-target="#demodepart" th:href="@{/graduation/register}">Graduation</a>
@@ -170,6 +171,7 @@
                     <div id="menuTLC" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/toefl/view}">TOEFL</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/ielts/view}">IELTS</a></li>
                         </ul>
                     </div>
                     <div id="Tables" class="tab-pane notika-tab-menu-bg animated flipInX">

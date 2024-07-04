@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>List TOEFL/IELTS</title>
+    <title>List TOEFL</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -46,10 +46,33 @@
                             <div class="col">
                                 <h3 class="mb-0">Data TOEFL/IELTS</h3>
                             </div>
+                            <div class="col text-right">
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm text-white"><i class="fas fa-edit"></i> Tambah Periode Ujian</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="card shadow">
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ...
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="card-header border-0">
                                 <!--                                button download -->
                                 <a class="btn btn-success btn-sm text-white" data-toggle="modal"
@@ -158,6 +181,9 @@
                                         <th>Nama</th>
                                         <th>Jenis Test</th>
                                         <th>Ujian Ke</th>
+                                        <th>Listening</th>
+                                        <th>Structure</th>
+                                        <th>Reading</th>
                                         <th>Status</th>
                                         <th align="center">#</th>
                                     </tr>
@@ -173,6 +199,9 @@
                                         <td th:text="${data.mahasiswa.nama}">Gifar Haidar</td>
                                         <td th:text="${data.jenisTest}">MBS</td>
                                         <td th:text="${data.ujianKe}">1</td>
+                                        <td th:text="${data.nilaiListening}">1</td>
+                                        <td th:text="${data.nilaiStructure}">1</td>
+                                        <td th:text="${data.nilaiReading}">1</td>
                                         <td>
                                             <button class="btn btn-warning btn-sm"
                                                     th:if="${data.status == data.status.WAITING}">Menunggu
@@ -379,7 +408,7 @@
                                                       th:action="@{/kuesioner/toefl/admin/approve (id = ${data.id})}">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Persetujuan TOEFL/IELTS</h5>
+                                                            <h5 class="modal-title">Persetujuan TOEFL</h5>
                                                             <button type="button" class="close"
                                                                     data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>

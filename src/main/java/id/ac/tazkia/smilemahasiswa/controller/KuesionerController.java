@@ -69,6 +69,8 @@ public class KuesionerController {
     private  TahunAkademikDao tahunAkademikDao;
     @Autowired
     private KonversiNilaiToeflDao konversiNilaiToeflDao;
+    @Autowired
+    private  PeriodeTestDao periodeTestDao;
 
     @Value("${upload.prediksiTest}")
     private String uploadPrediksiTest;
@@ -262,12 +264,11 @@ public class KuesionerController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.PREDIKSI_TEST, true);
-
         Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
         if (totalTest < 1){
             return "kuesioner/toefl/view";
         }else {
-            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswa(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS,StatusUjian.DINILAI), mahasiswa);
+            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS,StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
             if (validate != null) {
                 return "redirect:list";
             }else {
@@ -287,7 +288,33 @@ public class KuesionerController {
         List<PrediksiTest> prediksiTest = prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS));
 
         model.addAttribute("mahasiswa", mahasiswa);
-        PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswa(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa);
+        PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.PREDIKSI_TEST, true);
+
+        if (enableFiture != null){
+            model.addAttribute("enableFitur", enableFiture);
+        }
+
+        if (validate != null) {
+            model.addAttribute("validate", validate);
+        }
+        model.addAttribute("listPrediksi", prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS)));
+
+        if (prediksiTest == null){
+            return "redirect:view";
+        }else {
+            return "kuesioner/toefl/list";
+        }
+    }
+
+    @GetMapping("/kuesioner/ielts/list")
+    public String listKuesionerIelts(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        List<PrediksiTest> prediksiTest = prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS));
+
+        model.addAttribute("mahasiswa", mahasiswa);
+        PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.IELTS);
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.PREDIKSI_TEST, true);
 
         if (enableFiture != null){
@@ -313,15 +340,15 @@ public class KuesionerController {
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
             if (status.equals("WAITING")){
-                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjian(search,status,pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjian(search,status,JenisTest.TOEFL,pageable));
             }else {
-                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjianNotIn(search,status,pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjianNotIn(search,status, String.valueOf(JenisTest.TOEFL),pageable));
             }
         }else {
             if (status.equals("WAITING")){
-                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjian(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjianAndJenisTest(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),JenisTest.TOEFL,pageable));
             }else {
-                model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(String.valueOf(JenisTest.TOEFL),pageable));
             }
         }
     }
@@ -333,15 +360,15 @@ public class KuesionerController {
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
             if (status.equals("WAITING")){
-                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjian(search,status,pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjian(search,status,JenisTest.IELTS,pageable));
             }else {
-                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjianNotIn(search,status,pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByNamaOrNimAndStatusUjianNotIn(search,status, String.valueOf(JenisTest.IELTS),pageable));
             }
         }else {
             if (status.equals("WAITING")){
-                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjian(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjianAndJenisTest(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),JenisTest.IELTS,pageable));
             }else {
-                model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(String.valueOf(JenisTest.IELTS),pageable));
             }
         }
     }
@@ -471,24 +498,37 @@ public class KuesionerController {
 
         Integer ujianKe = 0;
 
-        PrediksiTest prediksiTest = new PrediksiTest();
-        if (prediksiTestDao.countTotalUjian(mahasiswa) > 0){
-            ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
-            prediksiTest.setStatus(StatusRecord.AKTIF);
+        PeriodeTest periodeTest = periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF,JenisTest.TOEFL);
+        Integer totalKuota = 0;
+
+        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS)) != null){
+            totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL));
+        }
+
+        if (totalKuota > periodeTest.getKuota()){
+            return "redirect:../info";
+
         }else {
-            ujianKe = 1;
+
+            PrediksiTest prediksiTest = new PrediksiTest();
+            if (prediksiTestDao.countTotalUjian(mahasiswa) > 0) {
+                ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
+                prediksiTest.setStatus(StatusRecord.AKTIF);
+            } else {
+                ujianKe = 1;
+            }
+
+            prediksiTest.setMahasiswa(mahasiswa);
+            prediksiTest.setJenisTest(JenisTest.TOEFL);
+            prediksiTest.setUjianKe(ujianKe);
+
+            if (Integer.valueOf(mahasiswa.getAngkatan()) >= 2020) {
+                prediksiTest.setStatus(StatusRecord.AKTIF);
+            }
+
+            prediksiTestDao.save(prediksiTest);
+            return "redirect:list";
         }
-
-        prediksiTest.setMahasiswa(mahasiswa);
-        prediksiTest.setJenisTest(JenisTest.TOEFL);
-        prediksiTest.setUjianKe(ujianKe);
-
-        if (Integer.valueOf(mahasiswa.getAngkatan()) >= 2020){
-            prediksiTest.setStatus(StatusRecord.AKTIF);
-        }
-
-        prediksiTestDao.save(prediksiTest);
-        return "redirect:list";
     }
 
     @PostMapping("/kuesioner/ielts/submit")
@@ -500,26 +540,40 @@ public class KuesionerController {
         mahasiswaDao.save(mahasiswa);
 
         Integer ujianKe = 0;
+        PeriodeTest periodeTest = periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF,JenisTest.IELTS);
+        Integer totalKuota = 0;
 
-        PrediksiTest prediksiTest = new PrediksiTest();
-        if (prediksiTestDao.countTotalUjian(mahasiswa) > 0){
-            ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
-            prediksiTest.setStatus(StatusRecord.AKTIF);
+        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS)) != null){
+            totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS));
+        }
+
+        if (totalKuota > periodeTest.getKuota()){
+            return "redirect:../info";
         }else {
-            ujianKe = 1;
+            PrediksiTest prediksiTest = new PrediksiTest();
+            if (prediksiTestDao.countTotalUjian(mahasiswa) > 0){
+                ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
+                prediksiTest.setStatus(StatusRecord.AKTIF);
+            }else {
+                ujianKe = 1;
+            }
+
+            prediksiTest.setMahasiswa(mahasiswa);
+            prediksiTest.setJenisTest(JenisTest.IELTS);
+            prediksiTest.setUjianKe(ujianKe);
+
+            if (Integer.valueOf(mahasiswa.getAngkatan()) >= 2020){
+                prediksiTest.setStatus(StatusRecord.AKTIF);
+            }
+
+            prediksiTestDao.save(prediksiTest);
+            return "redirect:list";
         }
 
-        prediksiTest.setMahasiswa(mahasiswa);
-        prediksiTest.setJenisTest(JenisTest.IELTS);
-        prediksiTest.setUjianKe(ujianKe);
-
-        if (Integer.valueOf(mahasiswa.getAngkatan()) >= 2020){
-            prediksiTest.setStatus(StatusRecord.AKTIF);
-        }
-
-        prediksiTestDao.save(prediksiTest);
-        return "redirect:list";
     }
+
+    @GetMapping("/kuesioner/info")
+    public void info(){}
 
     @PostMapping("/kuesioner/toefl/admin/nilai")
     public String penilaianToefl(@Valid TestDto testDto){
@@ -567,9 +621,9 @@ public class KuesionerController {
         if (totalTest < 1) {
             return "kuesioner/ielts/view";
         } else {
-            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswa(
+            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(
                     Arrays.asList(StatusRecord.HAPUS),
-                    Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa);
+                    Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.IELTS);
             if (validate != null) {
                 return "redirect:list";
             } else {
@@ -582,6 +636,22 @@ public class KuesionerController {
         }
     }
 
+    @GetMapping("/kuesioner/periodeUjian/list")
+    public void listPeriode(Model model, @PageableDefault(size = 10) Pageable page, String search) {
 
+        model.addAttribute("listPeriode", periodeTestDao.findByStatusInOrderByStatusAsc(Arrays.asList(StatusRecord.AKTIF,StatusRecord.NONAKTIF),page));
+    }
+
+    @PostMapping("/kuesioner/periodeUjian/submit")
+    public String savePeriode(@Valid PeriodeTest periodeTest){
+        PeriodeTest periode = periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF,periodeTest.getJenisTest());
+        if (periode != null){
+            periode.setStatus(StatusRecord.NONAKTIF);
+            periodeTestDao.save(periode);
+        }
+        periodeTestDao.save(periodeTest);
+
+        return "redirect:list";
+    }
 
 }
