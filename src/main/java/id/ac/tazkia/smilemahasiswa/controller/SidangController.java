@@ -1943,6 +1943,7 @@ public class SidangController {
         krsDetailDao.save(cariThesis);
 
         mahasiswa.setTanggalLulus(LocalDate.now());
+        mahasiswa.setStatusAktif("LULUS");
         mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
         mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
         mahasiswaDao.save(mahasiswa);

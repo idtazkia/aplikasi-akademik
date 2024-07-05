@@ -263,7 +263,7 @@ public class KuesionerController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
 
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.PREDIKSI_TEST, true);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TOEFL, true);
         Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
         if (totalTest < 1){
             return "kuesioner/toefl/view";
@@ -289,7 +289,7 @@ public class KuesionerController {
 
         model.addAttribute("mahasiswa", mahasiswa);
         PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.PREDIKSI_TEST, true);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TOEFL, true);
 
         if (enableFiture != null){
             model.addAttribute("enableFitur", enableFiture);
@@ -315,7 +315,7 @@ public class KuesionerController {
 
         model.addAttribute("mahasiswa", mahasiswa);
         PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.IELTS);
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.PREDIKSI_TEST, true);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.IELTS, true);
 
         if (enableFiture != null){
             model.addAttribute("enableFitur", enableFiture);
@@ -477,6 +477,14 @@ public class KuesionerController {
         return "redirect:list?status=WAITING";
     }
 
+    @PostMapping("kuesioner/ielts/admin/approve")
+    public String approveTestIelts(@RequestParam String id){
+        PrediksiTest prediksiTest = prediksiTestDao.findById(id).get();
+        prediksiTest.setStatus(StatusRecord.AKTIF);
+        prediksiTestDao.save(prediksiTest);
+        return "redirect:list?status=WAITING";
+    }
+
     @PostMapping("/kuesioner/toefl/admin/reject")
     public String RejectTest(@Valid TestDto testDto){
         PrediksiTest prediksiTest = prediksiTestDao.findById(testDto.getId()).get();
@@ -518,6 +526,7 @@ public class KuesionerController {
                 ujianKe = 1;
             }
 
+            prediksiTest.setPeriodeTest(periodeTest);
             prediksiTest.setMahasiswa(mahasiswa);
             prediksiTest.setJenisTest(JenisTest.TOEFL);
             prediksiTest.setUjianKe(ujianKe);
@@ -558,6 +567,7 @@ public class KuesionerController {
                 ujianKe = 1;
             }
 
+            prediksiTest.setPeriodeTest(periodeTest);
             prediksiTest.setMahasiswa(mahasiswa);
             prediksiTest.setJenisTest(JenisTest.IELTS);
             prediksiTest.setUjianKe(ujianKe);
@@ -594,6 +604,26 @@ public class KuesionerController {
         return "redirect:list?status=WAITING";
     }
 
+    @PostMapping("/kuesioner/ielts/admin/nilai")
+    public String penilaianIelts(@Valid TestDto testDto){
+        PrediksiTest prediksiTest = prediksiTestDao.findById(testDto.getId()).get();
+        prediksiTest.setNilaiReading(testDto.getNilaiReading());
+        prediksiTest.setNilaiListening(testDto.getNilaiListening());
+        prediksiTest.setNilaiWriting(testDto.getNilaiWriting());
+        prediksiTest.setNilaiSpeaking(testDto.getNilaiSpeaking());
+
+        prediksiTest.setNilai(testDto.getNilai());
+        if (prediksiTest.getNilai() >= 500) {
+            prediksiTest.setStatusUjian(StatusUjian.LULUS);
+
+        }else{
+            prediksiTest.setStatusUjian(StatusUjian.TIDAK_LULUS);
+        }
+        prediksiTestDao.save(prediksiTest);
+
+        return "redirect:list?status=WAITING";
+    }
+
     @GetMapping("/get-detail-prediksi/{id}")
     @ResponseBody
     public PrediksiTest detailTahfidzAdmin(@PathVariable String id) {
@@ -615,7 +645,7 @@ public class KuesionerController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,
-                StatusRecord.PREDIKSI_TEST, true);
+                StatusRecord.IELTS, true);
 
         Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
         if (totalTest < 1) {

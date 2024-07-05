@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Toefl</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-edit"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>TOEFL</h2>
+                                        <p>PREDICTION TEST <span class="bread-ntd"> (OFFLINE)</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/kuesioner/toefl/view}" th:if="${validate == null && enableFitur != null}">
+                                        <button class="btn btn-warning btn-sm "><i class="fa fa-plus-square"></i> Daftar TOEFL</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="normal-table-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="normal-table-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>List Toefl</h2>
+                            </div>
+                            <div class="bsc-tbl-st">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>NIM</th>
+                                        <th>Nama</th>
+                                        <th>Ujian Ke</th>
+                                        <th>Status</th>
+                                        <th>Nilai</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, row : ${listPrediksi}">
+                                        <td th:text="${(row.index + 1)}">1</td>
+                                        <td th:text="${data.mahasiswa.nim}">Alexandra</td>
+                                        <td th:text="${data.mahasiswa.nama}">Christopher</td>
+                                        <td th:text="${data.ujianKe}">@makinton</td>
+                                        <td>
+                                            <button th:if="${data.status == data.status.WAITING}" class="btn btn-sm btn-warning">Menunggu Persetujuan TLC</button>
+                                            <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.WAITING}" class="btn btn-sm btn-warning">Menunggu</button>
+                                            <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.LULUS}" class="btn btn-sm btn-success">Lulus</button>
+                                            <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.TIDAK_LULUS}" class="btn btn-sm btn-danger">Tidak Lulus</button>
+                                            <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.DINILAI}" class="btn btn-sm btn-primary">Dinilai</button>
+                                            <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.REJECTED}" class="btn btn-sm btn-danger">Ditolak</button>
+                                        </td>
+                                        <td th:if="${data.nilai == null}">-</td>
+                                        <td th:if="${data.nilai != null}" th:text="${data.nilai}">-</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

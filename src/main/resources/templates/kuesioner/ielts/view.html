@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>IELTS</title>
+</head>
+
+<body>
+    <section layout:fragment="main" class="content">
+        <div class="breadcomb-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="breadcomb-list">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="breadcomb-wp">
+                                        <div class="breadcomb-icon">
+                                            <i class="notika-icon notika-edit"></i>
+                                        </div>
+                                        <div class="breadcomb-ctn">
+                                            <h2>IELTS</h2>
+                                            <p>PREDICTION TEST <span class="bread-ntd"> (OFFLINE)</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="wizard-area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="wizard-wrap-int">
+                                <div class="wizard-hd">
+                                    <h2>IELTS</h2>
+                                </div>
+                                <form th:action="@{/kuesioner/ielts/submit}" method="post"
+                                    enctype="multipart/form-data">
+                                    <div id="rootwizard">
+                                        <div class="navbar">
+                                            <div class="navbar-inner">
+                                                <div class="container-pro wizard-cts-st">
+                                                    <ul>
+                                                        <li><a href="#tab1" data-toggle="tab">Peraturan</a></li>
+                                                        <li><a href="#tab2" data-toggle="tab">Data Peserta Pernyataan
+                                                                Kesanggupan</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-content">
+                                            <div class="tab-pane wizard-ctn" id="tab1">
+                                                <p>
+
+                                                    1. Peserta wajib hadir 15 menit sebelum tes dimulai, bagi yang
+                                                    terlambat tidak diizinkan masuk ruangan ujian, kecuali atas izin
+                                                    pengawas atau panitia ujian.
+                                                    <br>
+                                                    2. Tidak ada toleransi waktu bagi peserta tes yang terlambat hadir.
+                                                    <br>
+                                                    3. Dilarang memasuki ruang ujian sebelum pengawas memasuki ruangan
+                                                    ujian. <br>
+                                                    4. Peserta membawa alat tulis masing-masing berupa ballpoint/pulpen,
+                                                    pensil, penghapus, serutan dan tidak diperkenankan saling meminjam
+                                                    ke sesama peserta ujian.
+                                                    <br>
+                                                    5. Peserta mengisi identitas diri Nama, NIM dan Kelas serta kode
+                                                    soal secara lengkap pada lembar jawaban.
+                                                    <br>
+                                                    6. Menandatangani daftar hadir ujian <br>
+                                                    7. Peserta menjawab soal sesuai dengan instruksi yang diberikan.
+                                                    <br>
+                                                    8. Dilarang membawa tas, tempat pensil, buku catatan, buku pelajaran
+                                                    dan alat komunikasi (HP) agar dinonaktifkan dan disimpan sementara
+                                                    ke pengawas ujian.
+                                                    <br>
+                                                    9. Dilarang mencontek dan bertanya kepada peserta lain. <br>
+                                                    10. Dilarang keluar ruangan ujian selama tes berlangsung tanpa
+                                                    seizin pengawas ujian.
+                                                    <br>
+                                                    11. Peserta melaksanakan tes sesuai dengan urutan dan ketentuan yang
+                                                    dberlakukan.
+                                                    <br>
+                                                    12. Tidak mencoret-coret dalam bentuk apapun di dalam lembar soal
+                                                    yang diberikan.
+                                                    <br>
+                                                    13. Peserta yang melanggar tata tertib, akan dikenakan sanksi sesuai
+                                                    aturan yang berlaku. Khusus bagi peserta yang kedapatan mencontek
+                                                    sendiri, mencontek ke peserta lain, ataupun memberikan contekan,
+                                                    maka yang bersangkutan dianggap gagal pada ujian tersebut dan
+                                                    pengawas berhak mengeluarkan peserta dari ruangan ujian.
+                                                    <br> <br>
+
+                                                    Ttd, <br>
+                                                    Tazkia Language Centre <br><br>
+
+                                                    Remedial Test: <br>
+                                                    Rp. 200.000 - <br>
+                                            </div>
+                                            <div class="tab-pane wizard-ctn " id="tab2">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>NIM</label>
+                                                            <input type="text" disabled th:value="${mahasiswa.nim}"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Nama</label>
+                                                            <input type="text" disabled th:value="${mahasiswa.nama}"
+                                                                class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Tempat, Tanggal Lahir</label>
+                                                            <input disabled type="text"
+                                                                th:value="${mahasiswa.tempatLahir + ', ' + mahasiswa.formatTanggalLahir}"
+                                                                class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Prodi</label>
+                                                            <input type="text" disabled
+                                                                th:value="${mahasiswa.idProdi.namaProdi}"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Nomor Whatsapp</label>
+                                                            <input type="text" required name="no"
+                                                                th:value="${mahasiswa.teleponSeluler}"
+                                                                class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Email Tazkia</label>
+                                                            <input type="text" name="email" required
+                                                                th:value="${mahasiswa.emailTazkia}"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Saya bersedia dan menyanggupi segala persyaratan yang
+                                                                telah ditentukan untuk dapat mengikuti IELTS Prediction
+                                                                Test yang diselenggarakan oleh TLC</label><br>
+                                                            <div class="fm-checkbox">
+                                                                <label><input type="checkbox" required class="i-checks">
+                                                                    <i></i> Ya</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="tab-pane wizard-ctn" id="tab3">
+
+                                            </div>
+                                            <div class="wizard-action-pro">
+                                                <ul class="wizard-nav-ac">
+                                                    <center>
+                                                        <button type="submit"
+                                                            class="btn btn-rounded btn-success">Kirim</button>
+                                                    </center>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

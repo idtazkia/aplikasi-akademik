@@ -23,6 +23,10 @@ public class PrediksiTest {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
+    @ManyToOne
+    @JoinColumn(name = "id_periode")
+    private PeriodeTest periodeTest;
+
     private Integer ujianKe;
     private String fileBukti;
     private String fileTest;
@@ -34,6 +38,8 @@ public class PrediksiTest {
     private Integer nilaiListening;
     private Integer nilaiReading;
     private Integer nilaiStructure;
+    private Integer nilaiWriting;
+    private Integer nilaiSpeaking;
     private Integer nilai;
 
     @Enumerated(EnumType.STRING)

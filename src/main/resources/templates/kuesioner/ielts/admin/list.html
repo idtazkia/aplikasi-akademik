@@ -81,7 +81,6 @@
                                 <h3 class="mb-0">Data TOEFL/IELTS</h3>
                             </div>
                             <div class="col text-right">
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm text-white"><i class="fas fa-edit"></i> Tambah Periode Ujian</button>
                             </div>
                         </div>
                     </div>
@@ -234,10 +233,10 @@
                                         <td class="fixed-column" th:text="${data.mahasiswa.nama}">Gifar Haidar</td>
                                         <td th:text="${data.jenisTest}">MBS</td>
                                         <td th:text="${data.ujianKe}">1</td>
-                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${'data.'}">23</td>
-                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${'data.'}">23</td>
-                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${'data.'}">23</td>
-                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${'data.'}">23</td>
+                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiWriting}">23</td>
+                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiSpeaking}">23</td>
+                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiReading}">23</td>
+                                        <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiListening}">23</td>
                                         <td>
                                             <button class="btn btn-warning btn-sm"
                                                     th:if="${data.status == data.status.WAITING}">Menunggu
@@ -333,7 +332,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label>LISTENING COMPREHENSION</label>
                                                                         <input type="number"
@@ -347,12 +346,12 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <div class="form-group">
-                                                                        <label>STRUCTURE</label>
+                                                                        <label>WRITING COMPREHENSION</label>
                                                                         <input type="number"
-                                                                               id="nilai-structure"
-                                                                               name="nilaiStructure" step="1"
+                                                                               id="nilaiWriting"
+                                                                               name="nilaiWriting" step="1"
                                                                                max="100" placeholder="0" required
                                                                                class="form-control nilai"/>
                                                                         <div class="error-message text-danger">
@@ -361,12 +360,35 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label>READING COMPREHENSION</label>
-                                                                        <input type="number" id="nilai-reading"
+                                                                        <input type="number" id="nilaiReading"
                                                                                name="nilaiReading" step="1"
                                                                                max="100" placeholder="0" required
+                                                                               class="form-control nilai"/>
+                                                                        <div class="error-message text-danger">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label>SPEAKING COMPREHENSION</label>
+                                                                        <input type="number" id="nilaiSpeaking"
+                                                                               name="nilaiSpeaking" step="1"
+                                                                               max="100" placeholder="0" required
+                                                                               class="form-control nilai"/>
+                                                                        <div class="error-message text-danger">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label>SPEAKING COMPREHENSION</label>
+                                                                        <input type="text" id="nilai"
+                                                                               name="nilai"  placeholder="0" required
                                                                                class="form-control nilai"/>
                                                                         <div class="error-message text-danger">
                                                                         </div>
@@ -515,33 +537,3 @@
 </body>
 
 </html>
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Function to validate input values
-        function validateInput(input) {
-            const name = input.name;
-            const value = parseFloat(input.value);
-            const errorDiv = input.nextElementSibling;
-
-            let maxValue = 50;
-            if (name === 'nilaiStructure') {
-                maxValue = 40;
-            }
-
-            if (isNaN(value) || value > maxValue || !Number.isInteger(value)) {
-                input.value = '';
-                errorDiv.textContent = `Nilai harus berupa angka bulat dan tidak boleh lebih dari ${maxValue}.`;
-            } else {
-                errorDiv.textContent = '';
-            }
-        }
-
-        // Select all input elements with class 'nilai'
-        const inputs = document.querySelectorAll('.nilai');
-
-        // Add event listener for input validation
-        inputs.forEach(input => {
-            input.addEventListener('input', () => validateInput(input));
-        });
-    });
-</script>

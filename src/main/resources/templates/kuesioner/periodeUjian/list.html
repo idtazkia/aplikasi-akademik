@@ -92,7 +92,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                        <button type="button" class="btn btn-secondary" onclick="batal()">Close
                                         </button>
                                         <button type="submit" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -156,5 +156,13 @@
         document.getElementById('jenis').value = jenis;
         console.log('id :' + id, 'tanggal : ' + tanggal,'kuota : ' + kuota)
 
+    }
+
+    function batal() {
+        document.getElementById('id').value = '';
+        document.getElementById('tanggal').value = '';
+        document.getElementById('kuota').value = '';
+        document.getElementById('jenis').value = '';
+        $('#exampleModal').modal('hide')
     }
 </script>

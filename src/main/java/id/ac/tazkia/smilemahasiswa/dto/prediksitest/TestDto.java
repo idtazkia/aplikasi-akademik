@@ -17,5 +17,7 @@ public class TestDto {
     private Integer nilaiListening;
     private Integer nilaiStructure;
     private Integer nilaiReading;
+    private Integer nilaiSpeaking;
+    private Integer nilaiWriting;
     private Integer nilai;
 }
