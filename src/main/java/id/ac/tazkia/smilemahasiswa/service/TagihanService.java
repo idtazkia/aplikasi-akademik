@@ -410,8 +410,17 @@ public class TagihanService {
             }
         }
 
-        if (TAGIHAN_TOEFL.equals(pt.getKodeJenisBiaya()) || TAGIHAN_IELTS.equals(pt.getKodeJenisBiaya())) {
-            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.PREDIKSI_TEST, false);
+        if (TAGIHAN_TOEFL.equals(pt.getKodeJenisBiaya())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.TOEFL, false);
+            if (ef != null) {
+                ef.setEnable(true);
+                ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(ef);
+            }
+        }
+
+        if (TAGIHAN_IELTS.equals(pt.getKodeJenisBiaya())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.IELTS, false);
             if (ef != null) {
                 ef.setEnable(true);
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
@@ -478,17 +487,20 @@ public class TagihanService {
 
         JenisTagihan jenisTagihan = null;
         BigDecimal nilai = null;
+        StatusRecord jenisTest = null;
 
         if ("toefl".equalsIgnoreCase(jenis)) {
             jenisTagihan = jenisTagihanDao.findByKodeAndStatus(TAGIHAN_TOEFL, StatusRecord.AKTIF);
             nilai = new BigDecimal(100000);
+            jenisTest = StatusRecord.TOEFL;
         } else if ("ielts".equalsIgnoreCase(jenis)) {
             jenisTagihan = jenisTagihanDao.findByKodeAndStatus(TAGIHAN_IELTS, StatusRecord.AKTIF);
             nilai = new BigDecimal(200000);
+            jenisTest = StatusRecord.IELTS;
         }
 
         EnableFiture enableFiture = new EnableFiture();
-        enableFiture.setFitur(StatusRecord.PREDIKSI_TEST);
+        enableFiture.setFitur(jenisTest);
         enableFiture.setMahasiswa(mahasiswa);
         enableFiture.setEnable(false);
         enableFiture.setTahunAkademik(tahunAkademik);
