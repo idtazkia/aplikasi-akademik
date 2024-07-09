@@ -439,20 +439,6 @@
                     </a>
                 </li>
 
-<!--                <li class="nav-item" sec:authorize="hasAuthority('VIEW_TLC')">-->
-<!--                    <a class="nav-link" href="#menuTlc" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">-->
-<!--                        <i class="ni ni-align-left-2 ni-book-bookmark text-blue"></i>-->
-<!--                        <span class="nav-link-text">Menu TLC</span>-->
-<!--                    </a>-->
-<!--                    <div class="collapse" id="menuTlc">-->
-<!--                        <ul class="nav nav-sm flex-column">-->
-<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_TLC')">-->
-<!--                                <a th:href="@{/tlc/sertifikat/list}" class="nav-link">Upload Sertifikat</a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </li>-->
-
                 <li class="nav-item"
                     sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or
                     hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or
@@ -517,7 +503,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_TLC')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_TLC')">
                     <a class="nav-link" href="#navbar-tlc" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-tie-bow text-orange"></i>
                         <span class="nav-link-text">TLC</span>
@@ -528,6 +514,7 @@
                                 <a th:href="@{/kuesioner/periodeUjian/list}" class="nav-link">Periode Ujian</a>
                                 <a th:href="@{/kuesioner/toefl/admin/list (status = 'WAITING')}" class="nav-link">TOEFL</a>
                                 <a th:href="@{/kuesioner/ielts/admin/list (status = 'WAITING')}" class="nav-link">IELTS</a>
+                                <a th:href="@{/studentBill/tlc/list}" class="nav-link">Tagihan Test</a>
                             </li>
                         </ul>
                     </div>

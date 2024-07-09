@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.payment.*;
+import id.ac.tazkia.smilemahasiswa.dto.prediksitest.RekapTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.kafka.common.metrics.Stat;
 import org.springframework.data.domain.Page;
@@ -398,5 +399,22 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     List<Tagihan> findByMahasiswaAndStatusOrderByStatusTagihanDesc(Mahasiswa mahasiswa, StatusRecord status);
 
     List<Tagihan> findByStatusAndMahasiswaIdProdiInAndMahasiswaAngkatanInAndTahunAkademikOrderByMahasiswaNim(StatusRecord status, List<Prodi> prodis, List<String> angkatan, TahunAkademik tahunAkademik);
+
+    // untuk list tagihan rekapan prediksi test TLC
+    @Query(value = "select idPrediksi, nim, mhs as nama, angkatan, ujian_ke as ujian, jenis_test as jenis, coalesce(nilai_tagihan, 0) as nilai, coalesce(status_tagihan, '-') as status from\n" +
+            "(select a.id as idPrediksi, c.id as idMhs, a.ujian_ke, a.jenis_test, a.tanggal_upload, c.nim, c.nama as mhs, c.angkatan from prediksi_test a inner join periode_test b on a.id_periode=b.id inner join mahasiswa c on a.id_mahasiswa=c.id where a.status_ujian not in('REJECTED') and b.id=?1)aa\n" +
+            "left join\n" +
+            "(select t.id_mahasiswa, t.nilai_tagihan, status_tagihan, jt.nama from tagihan t inner join nilai_jenis_tagihan njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan jt on njt.id_jenis_tagihan=jt.id and t.status not in('HAPUS') and jt.kode in('81','82'))bb on aa.idMhs=bb.id_mahasiswa order by nim", nativeQuery = true,
+    countQuery = "select count(idPrediksi) from\n" +
+            "(select a.id as idPrediksi, c.id as idMhs, a.ujian_ke, a.jenis_test, a.tanggal_upload, c.nim, c.nama as mhs, c.angkatan from prediksi_test a inner join periode_test b on a.id_periode=b.id inner join mahasiswa c on a.id_mahasiswa=c.id where a.status_ujian not in('REJECTED') and b.id=?1)aa\n" +
+            "left join\n" +
+            "(select t.id_mahasiswa, t.nilai_tagihan, status_tagihan, jt.nama from tagihan t inner join nilai_jenis_tagihan njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan jt on njt.id_jenis_tagihan=jt.id and t.status not in('HAPUS') and jt.kode in('81','82'))bb on aa.idMhs=bb.id_mahasiswa order by nim;")
+    Page<RekapTagihanDto> rekapTagihanPrediksiTest(String idPeriode, Pageable page);
+
+    @Query(value = "select idPrediksi, nim, mhs as nama, angkatan, ujian_ke as ujian, jenis_test as jenis, coalesce(nilai_tagihan, 0) as nilai, coalesce(status_tagihan, '-') as status from\n" +
+            "(select a.id as idPrediksi, c.id as idMhs, a.ujian_ke, a.jenis_test, a.tanggal_upload, c.nim, c.nama as mhs, c.angkatan from prediksi_test a inner join periode_test b on a.id_periode=b.id inner join mahasiswa c on a.id_mahasiswa=c.id where a.status_ujian not in('REJECTED') and b.id=?1)aa\n" +
+            "left join\n" +
+            "(select t.id_mahasiswa, t.nilai_tagihan, status_tagihan, jt.nama from tagihan t inner join nilai_jenis_tagihan njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan jt on njt.id_jenis_tagihan=jt.id and t.status not in('HAPUS') and jt.kode in('81','82'))bb on aa.idMhs=bb.id_mahasiswa order by nim", nativeQuery = true)
+    List<RekapTagihanDto> downloadRekapTagihanPrediksiTest(String idPeriode);
 
 }

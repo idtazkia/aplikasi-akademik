@@ -384,7 +384,7 @@ public class KuesionerController {
         List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianOrderByMahasiswaNim(periode, StatusRecord.AKTIF, StatusUjian.LULUS);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Prediksi Test Angkatan " + periode.getTanggalUjian());
+        XSSFSheet sheet = workbook.createSheet("Prediksi Test " + periode.getJenisTest() + " Periode " + periode.getTanggalUjian());
         sheet.addMergedRegion(CellRangeAddress.valueOf("A1:F1"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A2:F2"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A3:F3"));
@@ -421,7 +421,7 @@ public class KuesionerController {
 
         int rowTitle1 = 0;
         Row titleRow = sheet.createRow(rowTitle1);
-        titleRow.createCell(0).setCellValue("TOEFL PREDICTION TEST");
+        titleRow.createCell(0).setCellValue(periode.getJenisTest() + " PREDICTION TEST");
         titleRow.getCell(0).setCellStyle(titleStyle);
 
         int rowTitle2 = 1;

@@ -8,16 +8,20 @@ import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
+import id.ac.tazkia.smilemahasiswa.constant.StatusUjian;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
+import id.ac.tazkia.smilemahasiswa.dto.prediksitest.RekapTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -161,6 +165,9 @@ public class StudentBillController {
 
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private PeriodeTestDao periodeTestDao;
 
     @Value("classpath:kwitansi.odt")
     private Resource templateKwitansi;
@@ -1234,6 +1241,8 @@ public class StudentBillController {
             t.setNilaiTagihan(tagihan.getNilaiTagihan());
             if (tagihan.getNilaiTagihanAsli() == null){
                 t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
+            }else{
+                t.setNilaiTagihanAsli(tagihan.getNilaiTagihanAsli());
             }
             t.setAkumulasiPembayaran(BigDecimal.ZERO);
             t.setTanggalPembuatan(LocalDate.now());
@@ -1322,6 +1331,8 @@ public class StudentBillController {
             t.setNilaiTagihan(tagihan.getNilaiTagihan().add(new BigDecimal(sisaCicilan)));
             if (tagihan.getNilaiTagihanAsli() == null){
                 t.setNilaiTagihanAsli(tagihan.getNilaiTagihan());
+            }else{
+                t.setNilaiTagihanAsli(tagihan.getNilaiTagihanAsli());
             }
             t.setAkumulasiPembayaran(BigDecimal.ZERO);
             t.setTanggalPembuatan(LocalDate.now());
@@ -3448,4 +3459,114 @@ public class StudentBillController {
         workbook.close();
 
     }
+
+    @GetMapping("/studentBill/tlc/list")
+    public void rekapTagihanTest(Model model, @RequestParam(required = false) PeriodeTest periodeTest, @PageableDefault(size = 10) Pageable page){
+        model.addAttribute("listPeriode", periodeTestDao.findAllByOrderByTanggalUjianDesc());
+        if (periodeTest != null) {
+            model.addAttribute("selectPeriode", periodeTest);
+            model.addAttribute("listTagihan", tagihanDao.rekapTagihanPrediksiTest(periodeTest.getId(), page));
+        }
+    }
+
+    @GetMapping("/prediksiTest/rekapTagihan/download")
+    public void downloadRekap(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
+        String[] columns = {"NO", "NIM", "Name", "Generation", "Exam to", "Test Type", "Value", "Status"};
+
+        List<RekapTagihanDto> listMhs = tagihanDao.downloadRekapTagihanPrediksiTest(periode.getId());
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Prediksi Test " + periode.getJenisTest() + " Periode " + periode.getTanggalUjian());
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:F1"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A2:F2"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A3:F3"));
+
+        Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setUnderline(HSSFFont.U_SINGLE);
+        titleFont.setFontHeightInPoints((short) 12);
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+
+        CellStyle titleStyle = workbook.createCellStyle();
+        titleStyle.setFont(titleFont);
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setAlignment(HorizontalAlignment.CENTER);
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+
+        int rowTitle1 = 0;
+        Row titleRow = sheet.createRow(rowTitle1);
+        titleRow.createCell(0).setCellValue("TOEFL PREDICTION TEST");
+        titleRow.getCell(0).setCellStyle(titleStyle);
+
+        int rowTitle2 = 1;
+        Row titleRow2 = sheet.createRow(rowTitle2);
+        titleRow2.createCell(0).setCellValue("TAZKIA LANGUAGE CENTER");
+        titleRow2.getCell(0).setCellStyle(titleStyle);
+
+        int rowTitle3 = 2;
+        Row titleRow3 = sheet.createRow(rowTitle3);
+        titleRow3.createCell(0).setCellValue("Sentul, " + periode.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+        titleRow3.getCell(0).setCellStyle(titleStyle);
+
+        Row headerRow = sheet.createRow(4);
+
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        int rowNum = 5;
+        int baris = 1;
+
+        for (RekapTagihanDto list : listMhs){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list.getNim());
+            row.createCell(2).setCellValue(list.getNama());
+            row.createCell(3).setCellValue(list.getAngkatan());
+            row.createCell(4).setCellValue(list.getUjian());
+            row.createCell(5).setCellValue(list.getJenis());
+            row.createCell(6).setCellValue(list.getNilai().toString());
+            row.createCell(7).setCellValue(list.getStatus());
+
+            row.getCell(0).setCellStyle(dataStyle);
+            row.getCell(1).setCellStyle(dataStyle);
+            row.getCell(2).setCellStyle(dataStyle);
+            row.getCell(3).setCellStyle(dataStyle);
+            row.getCell(4).setCellStyle(dataStyle);
+            row.getCell(5).setCellStyle(dataStyle);
+            row.getCell(6).setCellStyle(dataStyle);
+            row.getCell(7).setCellStyle(dataStyle);
+        }
+
+        for (int i = 0; i < columns.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Tagihan Prediksi Test " + String.valueOf(periode.getJenisTest()) + " periode " + periode.getTanggalUjian() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
 }

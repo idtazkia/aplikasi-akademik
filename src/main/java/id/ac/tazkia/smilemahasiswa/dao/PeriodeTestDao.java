@@ -17,5 +17,5 @@ public interface PeriodeTestDao extends PagingAndSortingRepository<PeriodeTest, 
 
     List<PeriodeTest> findAllByJenisTestOrderByTanggalUjianDesc(JenisTest jenisTest);
 
-//    List<PeriodeTest> findAllByOrderByTanggalUjianDesc();
+    List<PeriodeTest> findAllByOrderByTanggalUjianDesc();
 }
