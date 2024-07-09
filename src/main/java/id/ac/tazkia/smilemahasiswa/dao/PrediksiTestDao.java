@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.constant.StatusUjian;
 import id.ac.tazkia.smilemahasiswa.dto.kusioner.PrediksiTestDto;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.PeriodeTest;
 import id.ac.tazkia.smilemahasiswa.entity.PrediksiTest;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import org.springframework.data.domain.Page;
@@ -112,7 +113,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
 
     List<PrediksiTest> findByMahasiswaAndStatusNotInOrderByUjianKeAsc(Mahasiswa mahasiswa, List<StatusRecord> statusRecord);
 
-    List<PrediksiTest> findByMahasiswaAngkatanAndStatusAndStatusUjian(String angkatan, StatusRecord status, StatusUjian sttusUjian);
+    List<PrediksiTest> findByPeriodeTestAndStatusAndStatusUjianOrderByMahasiswaNim(PeriodeTest periodeTest, StatusRecord status, StatusUjian sttusUjian);
 
     PrediksiTest findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(List<StatusRecord> status, List<StatusUjian> statusUjian, Mahasiswa mahasiswa, JenisTest jenisTest);
 

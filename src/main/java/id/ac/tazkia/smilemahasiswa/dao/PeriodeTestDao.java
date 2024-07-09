@@ -14,4 +14,8 @@ public interface PeriodeTestDao extends PagingAndSortingRepository<PeriodeTest, 
     Page<PeriodeTest> findByStatusInOrderByStatusAsc(List<StatusRecord> statusRecords, Pageable pageable);
 
     PeriodeTest findByStatusAndJenisTest(StatusRecord statusRecord, JenisTest jenisTest);
+
+    List<PeriodeTest> findAllByJenisTestOrderByTanggalUjianDesc(JenisTest jenisTest);
+
+//    List<PeriodeTest> findAllByOrderByTanggalUjianDesc();
 }

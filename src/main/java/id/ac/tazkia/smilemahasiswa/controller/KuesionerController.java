@@ -337,6 +337,8 @@ public class KuesionerController {
     public void listAdminToefl(Model model, @RequestParam(required = false) String search, @RequestParam(required = false) String status,
                                Authentication authentication, Pageable pageable){
         model.addAttribute("status", status);
+        model.addAttribute("listPeriode", periodeTestDao.findAllByJenisTestOrderByTanggalUjianDesc(JenisTest.TOEFL));
+        model.addAttribute("periode", periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF, JenisTest.TOEFL));
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
             if (status.equals("WAITING")){
@@ -357,6 +359,8 @@ public class KuesionerController {
     public void listAdminIelts(Model model, @RequestParam(required = false) String search, @RequestParam(required = false) String status,
                                Authentication authentication, Pageable pageable){
         model.addAttribute("status", status);
+        model.addAttribute("listPeriode", periodeTestDao.findAllByJenisTestOrderByTanggalUjianDesc(JenisTest.IELTS));
+        model.addAttribute("periode", periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF, JenisTest.IELTS));
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
             if (status.equals("WAITING")){
@@ -374,13 +378,13 @@ public class KuesionerController {
     }
 
     @GetMapping("/kuesioner/toefl/download")
-    public void downloadRekap(@RequestParam String angkatan, HttpServletResponse response) throws IOException {
+    public void downloadRekap(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
         String[] columns = {"NO", "Timestamps", "NIM", "Full Name", "Place, Date of Birth", "Department"};
 
-        List<PrediksiTest> listMhs = prediksiTestDao.findByMahasiswaAngkatanAndStatusAndStatusUjian(angkatan, StatusRecord.AKTIF, StatusUjian.LULUS);
+        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianOrderByMahasiswaNim(periode, StatusRecord.AKTIF, StatusUjian.LULUS);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Prediksi Test Angkatan " + angkatan);
+        XSSFSheet sheet = workbook.createSheet("Prediksi Test Angkatan " + periode.getTanggalUjian());
         sheet.addMergedRegion(CellRangeAddress.valueOf("A1:F1"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A2:F2"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A3:F3"));
@@ -427,7 +431,7 @@ public class KuesionerController {
 
         int rowTitle3 = 2;
         Row titleRow3 = sheet.createRow(rowTitle3);
-        titleRow3.createCell(0).setCellValue("Sentul, " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+        titleRow3.createCell(0).setCellValue("Sentul, " + periode.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
         titleRow3.getCell(0).setCellStyle(titleStyle);
 
         Row headerRow = sheet.createRow(4);
@@ -463,7 +467,7 @@ public class KuesionerController {
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Prediksi Test Angkatan " + angkatan + ".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Prediksi Test " + String.valueOf(periode.getJenisTest()) + " periode " + periode.getTanggalUjian() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 

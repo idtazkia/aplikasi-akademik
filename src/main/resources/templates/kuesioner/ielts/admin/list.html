@@ -122,14 +122,14 @@
                                                                 <div class="row">
                                                                     <div class="col-md-12">
                                                                         <div class="form-group">
-                                                                            <label>Angkatan</label>
-                                                                            <select name="angkatan" required
+                                                                            <label>Periode</label>
+                                                                            <select name="periode" required
                                                                                     class="form-control">
                                                                                 <option value=""></option>
-                                                                                <option th:each="data : ${angkatan}"
-                                                                                        th:selected="(${data} == *{selectAngkatan})"
-                                                                                        th:text="${data}"
-                                                                                        th:value="${data}">STEI TAZKIA
+                                                                                <option th:each="data : ${listPeriode}"
+                                                                                        th:selected="(${data} == *{periode})"
+                                                                                        th:text="${(data.tanggalUjian + ' - ' + data.jenisTest)}"
+                                                                                        th:value="${data.id}">STEI TAZKIA
                                                                                 </option>
                                                                             </select>
                                                                         </div>
