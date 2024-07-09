@@ -3017,7 +3017,7 @@ public class GraduationController {
             System.out.println(note.getMahasiswa().getNim() + "  --  " + note.getMahasiswa().getNama());
             Seminar seminar = new Seminar();
             seminar.setStatusSempro(StatusApprove.APPROVED);
-            seminar.setNilai(new BigDecimal(70));
+            seminar.setNilai(new BigDecimal(71));
             seminar.setStatus(StatusApprove.APPROVED);
             seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             seminar.setTanggalUjian(LocalDate.now());
