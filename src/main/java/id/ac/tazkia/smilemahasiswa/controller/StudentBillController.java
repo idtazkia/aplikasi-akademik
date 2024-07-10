@@ -3513,7 +3513,7 @@ public class StudentBillController {
 
         int rowTitle1 = 0;
         Row titleRow = sheet.createRow(rowTitle1);
-        titleRow.createCell(0).setCellValue("TOEFL PREDICTION TEST");
+        titleRow.createCell(0).setCellValue(periode.getJenisTest() + " PREDICTION TEST");
         titleRow.getCell(0).setCellStyle(titleStyle);
 
         int rowTitle2 = 1;
