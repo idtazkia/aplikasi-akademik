@@ -178,9 +178,11 @@ public class MBKMController {
                     dosen = dosenDao.findById("Putrisa").get();
                 } else if ("03".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
                     dosen = dosenDao.findById("wikus").get();
-                } else if ("06".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId()) || "09".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("unangf").get();
-                }else{
+                } else if ("06".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("misa").get();
+                } else if ("09".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
+                    dosen = dosenDao.findById("sutopo").get();
+                } else{
                     dosen = dosenDao.findById("YaserT").get();
                 }
                 Hari hari = hariDao.findById("0").get();
