@@ -1252,6 +1252,7 @@ public class StudentBillController {
             t.setStatusTagihan(StatusTagihan.AKTIF);
             t.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(t);
+            log.info("tagihan : {}", t);
 
             if (cicilan != null) {
                 for (int i = 1; i<=cicilan; i++) {
@@ -1341,7 +1342,7 @@ public class StudentBillController {
             t.setTahunAkademik(tagihan.getTahunAkademik());
             t.setStatusTagihan(StatusTagihan.AKTIF);
             t.setStatus(StatusRecord.AKTIF);
-            log.info("Tagihan : {}", t.toString());
+            log.info("tagihan : {}", t);
             tagihanDao.save(t);
 
             if (cicilan != null) {
