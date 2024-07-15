@@ -519,8 +519,8 @@ public class KuesionerController {
         PeriodeTest periodeTest = periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF,JenisTest.TOEFL);
         Integer totalKuota = 0;
 
-        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL)) != null){
-            totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL));
+        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL), periodeTest.getId()) != null){
+            totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL), periodeTest.getId());
         }
 
         if (totalKuota > periodeTest.getKuota()){
@@ -562,8 +562,8 @@ public class KuesionerController {
         PeriodeTest periodeTest = periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF,JenisTest.IELTS);
         Integer totalKuota = 0;
 
-        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS)) != null){
-            totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS));
+        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS), periodeTest.getId()) != null){
+            totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS), periodeTest.getId());
         }
 
         if (totalKuota > periodeTest.getKuota()){

@@ -18,8 +18,8 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
     @Query(value = "select count(*) from prediksi_test where id_mahasiswa = ?1 and status in ('AKTIF', 'WAITING')", nativeQuery = true)
     Integer countTotalUjian(Mahasiswa mahasiswa);
 
-    @Query(value = "select count(*) from prediksi_test where jenis_test = ?1 and status in ('AKTIF', 'WAITING') and status_ujian not in ('REJECTED')", nativeQuery = true)
-    Integer countAllTest(String jenisTest);
+    @Query(value = "select count(*) from prediksi_test where jenis_test = ?1 and status in ('AKTIF', 'WAITING') and status_ujian not in ('REJECTED') and id_periode  = ?2", nativeQuery = true)
+    Integer countAllTest(String jenisTest, String periode);
 
     @Query(value = "select max(ujian_ke) from prediksi_test where id_mahasiswa = ?1 and status in ('AKTIF', 'WAITING')", nativeQuery = true)
     Integer findMaxUjian(Mahasiswa mahasiswa);
