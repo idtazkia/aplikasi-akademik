@@ -113,7 +113,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
 
     List<PrediksiTest> findByMahasiswaAndStatusNotInOrderByUjianKeAsc(Mahasiswa mahasiswa, List<StatusRecord> statusRecord);
 
-    List<PrediksiTest> findByPeriodeTestAndStatusAndStatusUjianOrderByMahasiswaNim(PeriodeTest periodeTest, StatusRecord status, StatusUjian sttusUjian);
+    List<PrediksiTest> findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(PeriodeTest periodeTest, StatusRecord status, List<StatusUjian> sttusUjian);
 
     PrediksiTest findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(List<StatusRecord> status, List<StatusUjian> statusUjian, Mahasiswa mahasiswa, JenisTest jenisTest);
 

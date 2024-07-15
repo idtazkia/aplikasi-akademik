@@ -387,7 +387,7 @@ public class KuesionerController {
     public void downloadRekap(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
         String[] columns = {"NO", "Timestamps", "NIM", "Full Name", "Place, Date of Birth", "Department"};
 
-        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianOrderByMahasiswaNim(periode, StatusRecord.AKTIF, StatusUjian.LULUS);
+        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(periode, StatusRecord.AKTIF, Arrays.asList(StatusUjian.LULUS, StatusUjian.TIDAK_LULUS, StatusUjian.WAITING));
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Prediksi Test " + periode.getJenisTest() + " Periode " + periode.getTanggalUjian());
