@@ -28,6 +28,10 @@ public class PeriodeTest {
     @Enumerated(EnumType.STRING)
     private JenisTest jenisTest;
 
+    @ManyToOne
+    @JoinColumn(name = "id_ruangan")
+    private Ruangan ruangan;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;

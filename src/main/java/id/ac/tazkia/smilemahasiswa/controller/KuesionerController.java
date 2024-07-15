@@ -66,6 +66,9 @@ public class KuesionerController {
     private EnableFitureDao enableFitureDao;
 
     @Autowired
+    private RuanganDao ruanganDao;
+
+    @Autowired
     private  TahunAkademikDao tahunAkademikDao;
     @Autowired
     private KonversiNilaiToeflDao konversiNilaiToeflDao;
@@ -79,6 +82,9 @@ public class KuesionerController {
     public Iterable<Mahasiswa> angkatan() {
         return mahasiswaDao.cariAngkatan();
     }
+
+    @ModelAttribute("ruangan")
+    public Iterable<Ruangan> ruangan() {return ruanganDao.findByStatus(StatusRecord.AKTIF);}
 
     @GetMapping("/kuesioner")
     public String listKuesioner(Model model, @PageableDefault Pageable pageable){

@@ -67,19 +67,30 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Tanggal Mulai</label>
                                                     <input type="date" id="tanggal" name="tanggalUjian" class="form-control">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Kuota</label>
                                                     <input type="text" id="kuota" name="kuota" class="form-control">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Ruangan</label>
+                                                    <select name="ruangan" id="select2-ruang" class="form-control js-example-placeholder-single" style="width: 100%;">
+                                                        <option ></option>
+                                                        <option th:each="data, row:${ruangan}"
+                                                                th:text="${data.namaRuangan}"
+                                                                th:value="${data.id}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Jenis Test</label>
                                                     <select name="jenisTest" id="jenis" class="form-control">
@@ -108,6 +119,7 @@
                                 <th>No</th>
                                 <th>Tanggal Ujian</th>
                                 <th>Kuota</th>
+                                <th>Ruangan</th>
                                 <th>Jenis</th>
                                 <th>Status</th>
                                 <th></th>
@@ -118,11 +130,15 @@
                                 <td th:text="${(row.index + 1) + (listPeriode.number * listPeriode.size)}">01</td>
                                 <td th:text="${#temporals.format(data.tanggalUjian, 'dd - MMM - yyyy')}"></td>
                                 <td th:text="${data.kuota}">Campus Code</td>
+                                <td>
+                                    <div th:if="${data.ruangan == null}" th:text="${'-'}"></div>
+                                    <div th:if="${data.ruangan != null}" th:text="${data.ruangan.namaRuangan}"></div>
+                                </td>
                                 <td th:text="${data.jenisTest}">Campus Code</td>
                                 <td th:text="${data.status}">Campus Code</td>
                                 <td>
-                                    <button th:if="${data.status == data.status.AKTIF}" onclick="editPeriode(this.getAttribute('data-id'), this.getAttribute('data-tanggal'), this.getAttribute('data-kuota'), this.getAttribute('data-jenis'))"
-                                            th:attr="data-id=${data.id}, data-tanggal=${data.tanggalUjian}, data-kuota=${data.kuota}, data-jenis=${data.jenisTest}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button th:if="${data.status == data.status.AKTIF}" onclick="editPeriode(this.getAttribute('data-id'), this.getAttribute('data-tanggal'), this.getAttribute('data-kuota'), this.getAttribute('data-ruangan'), this.getAttribute('data-jenis'))"
+                                            th:attr="data-id=${data.id}, data-tanggal=${data.tanggalUjian}, data-kuota=${data.kuota}, data-ruangan=${data.ruangan.id}, data-jenis=${data.jenisTest}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
 
                                 </td>
                             </tr>
@@ -148,13 +164,16 @@
 </body>
 </html>
 <script>
-    function editPeriode(id,tanggal,kuota,jenis) {
+    function editPeriode(id,tanggal,kuota,ruangan,jenis) {
         $('#exampleModal').modal('show')
         document.getElementById('id').value = id;
         document.getElementById('tanggal').value = tanggal;
         document.getElementById('kuota').value = kuota;
         document.getElementById('jenis').value = jenis;
-        console.log('id :' + id, 'tanggal : ' + tanggal,'kuota : ' + kuota)
+        if ($('#select2-ruang').find("option[value='" + ruangan + "']").length){
+            $('#select2-ruang').val(ruangan).trigger('change');
+        }
+        console.log('id :' + id, 'tanggal : ' + tanggal,'kuota : ' + kuota, 'ruangan : ' + ruangan)
 
     }
 
@@ -162,7 +181,18 @@
         document.getElementById('id').value = '';
         document.getElementById('tanggal').value = '';
         document.getElementById('kuota').value = '';
+        $('#select2-ruang').val('').trigger('change');
         document.getElementById('jenis').value = '';
         $('#exampleModal').modal('hide')
     }
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        dropdownParent: $('#exampleModal'),
+        allowClear: true
+    });
+
+    // $("#select2-ruang").select2({
+    //     dropdownParent: $('#exampleModal')
+    // });
 </script>
