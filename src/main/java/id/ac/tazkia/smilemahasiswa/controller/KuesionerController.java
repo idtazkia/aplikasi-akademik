@@ -519,7 +519,7 @@ public class KuesionerController {
         PeriodeTest periodeTest = periodeTestDao.findByStatusAndJenisTest(StatusRecord.AKTIF,JenisTest.TOEFL);
         Integer totalKuota = 0;
 
-        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.IELTS)) != null){
+        if (prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL)) != null){
             totalKuota = prediksiTestDao.countAllTest(String.valueOf(JenisTest.TOEFL));
         }
 
