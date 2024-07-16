@@ -169,22 +169,7 @@ public class MBKMController {
                 listMatkur.setStatus(StatusRecord.FINISHED);
                 matakuliahMbkmDao.save(listMatkur);
 
-                Dosen dosen = null;
-                if ("08".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("9ea8dfe9-704d-4ed2-984e-e53611d6ecf5").get();
-                } else if ("01".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("dinad").get();
-                } else if ("02".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("Putrisa").get();
-                } else if ("03".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("wikus").get();
-                } else if ("06".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("misa").get();
-                } else if ("09".equalsIgnoreCase(mbkm.getMahasiswa().getIdProdi().getId())) {
-                    dosen = dosenDao.findById("sutopo").get();
-                } else{
-                    dosen = dosenDao.findById("YaserT").get();
-                }
+                Dosen dosen = mbkm.getMahasiswa().getIdProdi().getDosen();
                 Hari hari = hariDao.findById("0").get();
                 Kelas kelas = kelasDao.findById("-").get();
                 Ruangan ruangan = ruanganDao.findById("01").get();
