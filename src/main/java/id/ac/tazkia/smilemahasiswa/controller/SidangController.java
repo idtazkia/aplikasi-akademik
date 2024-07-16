@@ -1865,8 +1865,52 @@ public class SidangController {
                 sidangDao.save(sidang);
 
                 bebasKewajibanService.saveDaftarKewajiban(mahasiswa);
+                TahunAkademik ta = null;
+                TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+                TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
+                        mahasiswa.getIdProdi());
 
-                KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
+                if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK) {
+                    String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                            kode);
+                } else {
+                    if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))) {
+                        ta = tahunAkademik;
+                    } else {
+                        int last = tahunAkademik.getKodeTahunAkademik().length();
+                        String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                        if (lastKode.equals("1")) {
+                            Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                            String kode = String.valueOf(tahun) + "2";
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        } else {
+                            String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        }
+
+                    }
+                }
+
+                KrsDetail cariThesis = null;
+
+
+                if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
+                        && sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
+                    cariThesis = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
+
+                } else if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
+                        && sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId()
+                        .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                    cariThesis = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
+
+                } else {
+                    cariThesis =krsDetailDao.cariThesis(mahasiswa);
+                }
+
                 if (cariThesis != null) {
                     if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
                         BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(60))
@@ -1879,13 +1923,33 @@ public class SidangController {
 
                     }
                     if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
-                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(50))
-                                .divide(new BigDecimal(100));
-                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(50))
-                                .divide(new BigDecimal(100));
-                        BigDecimal nilaiAKhir = nilaiSidang.add(nilaiSempro).setScale(2, RoundingMode.HALF_UP);
-                        cariThesis.setNilaiAkhir(nilaiAKhir);
-                        scoreService.hitungNilaiAkhir(cariThesis);
+                        if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
+                                && sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
+                            KrsDetail proposal = krsDetailDao.cariUjianPrososal(sidang.getSeminar().getNote().getMahasiswa(), ta);
+                            KrsDetail thesis  = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
+                            thesis.setNilaiAkhir(sidang.getNilai());
+                            scoreService.hitungNilaiAkhir(thesis);
+                            proposal.setNilaiAkhir(sidang.getNilai());
+                            scoreService.hitungNilaiAkhir(proposal);
+
+                        } else if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
+                                && sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId()
+                                .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                            KrsDetail proposal = krsDetailDao.cariUjianPrososal(sidang.getSeminar().getNote().getMahasiswa(), ta);
+                            KrsDetail thesis  = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
+                            thesis.setNilaiAkhir(sidang.getNilai());
+                            scoreService.hitungNilaiAkhir(thesis);
+                            proposal.setNilaiAkhir(sidang.getNilai());
+                            scoreService.hitungNilaiAkhir(proposal);
+                        }else {
+                            BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(50))
+                                    .divide(new BigDecimal(100));
+                            BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(50))
+                                    .divide(new BigDecimal(100));
+                            BigDecimal nilaiAKhir = nilaiSidang.add(nilaiSempro).setScale(2, RoundingMode.HALF_UP);
+                            cariThesis.setNilaiAkhir(nilaiAKhir);
+                            scoreService.hitungNilaiAkhir(cariThesis);
+                        }
                     }
                 }
 
