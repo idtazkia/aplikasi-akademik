@@ -1929,7 +1929,7 @@ public class SidangController {
                             KrsDetail thesis  = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
                             thesis.setNilaiAkhir(sidang.getNilai());
                             scoreService.hitungNilaiAkhir(thesis);
-                            proposal.setNilaiAkhir(sidang.getNilai());
+                            proposal.setNilaiAkhir(sidang.getSeminar().getNilai());
                             scoreService.hitungNilaiAkhir(proposal);
 
                         } else if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
@@ -1939,7 +1939,7 @@ public class SidangController {
                             KrsDetail thesis  = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
                             thesis.setNilaiAkhir(sidang.getNilai());
                             scoreService.hitungNilaiAkhir(thesis);
-                            proposal.setNilaiAkhir(sidang.getNilai());
+                            proposal.setNilaiAkhir(sidang.getSeminar().getNilai());
                             scoreService.hitungNilaiAkhir(proposal);
                         }else {
                             BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(50))
