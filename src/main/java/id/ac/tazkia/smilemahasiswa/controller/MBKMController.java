@@ -105,14 +105,14 @@ public class MBKMController {
         return matakuliahMbkmDao.findByPendaftaranMbkmAndStatus(pendaftar, StatusRecord.AKTIF);
     }
 
-    @GetMapping("/get-matkul-mbkm-approved/{id}")
+    @GetMapping("/get-matkul-mbkm-approved/{id}/{tahun}")
     @ResponseBody
-    public List<KrsDetail> getRequestMatkulMBKMApproved(@PathVariable String id) {
-        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+    public List<Object[]> getRequestMatkulMBKMApproved(@PathVariable String id, @PathVariable String tahun) {
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
         Mahasiswa mhs = mahasiswaDao.findById(id).get();
-        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
 
-        return krsDetailDao.findByStatusAndTahunAkademikAndKrsAndStatusKonversi(StatusRecord.AKTIF, tahun, krs, StatusRecord.MBKM);
+        return krsDetailDao.cariMatkurDetailMBKMApprove(tahunAkademik.getId(), krs.getId());
     }
 
     @PostMapping("/mbkm/delete/{id}")

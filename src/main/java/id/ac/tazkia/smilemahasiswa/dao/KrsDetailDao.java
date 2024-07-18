@@ -1084,8 +1084,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         List<KrsDetail> findByStatusAndTahunAkademikAndKrs(StatusRecord statusRecord, TahunAkademik tahunAkademik,
                         Krs krs);
 
-        List<KrsDetail> findByStatusAndTahunAkademikAndKrsAndStatusKonversi(StatusRecord statusRecord,
-                        TahunAkademik tahunAkademik, Krs krs, StatusRecord mbkm);
+        @Query(value = "select kd.id, m.nama_matakuliah, mk.jumlah_sks, k.nama_karyawan from krs_detail kd inner join matakuliah_kurikulum mk on kd.id_matakuliah_kurikulum=mk.id inner join matakuliah m on mk.id_matakuliah=m.id inner join jadwal j on kd.id_jadwal=j.id inner join dosen d on j.id_dosen_pengampu=d.id inner join karyawan k on d.id_karyawan=k.id where kd.status='AKTIF' and kd.id_tahun_akademik=?1 and kd.id_krs=?2 and kd.status_konversi='MBKM'", nativeQuery = true)
+        List<Object[]> cariMatkurDetailMBKMApprove(String idTahun, String idKrs);
 
         List<KrsDetail> findByStatusAndKrsAndMahasiswa(StatusRecord status, Krs krs, Mahasiswa mahasiswa);
 
