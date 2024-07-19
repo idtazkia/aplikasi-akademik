@@ -75,6 +75,9 @@ public class MBKMController {
     @Value("${upload.mbkm}")
     private String mbkmFolder;
 
+    @Autowired
+    private MatakuliahKurikulumDao matakuliahKurikulumDao;
+
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik(){
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
@@ -289,6 +292,60 @@ public class MBKMController {
         fileMbkmDao.save(file);
 
         return "redirect:/study/krs";
+    }
+
+    // edit matakuliah mahasiswa
+
+    @GetMapping("/report/mbkm/edit")
+    public void editMatkulMhs(Model model, @RequestParam(required = false) KrsDetail krsDetail, @RequestParam(required = false) MatakuliahMbkm matakuliahMbkm, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Krs krs = null;
+        if (krsDetail != null) {
+            model.addAttribute("matakuliahEdit", krsDetail);
+            model.addAttribute("krsDetail", krsDetail);
+            krs = krsDetail.getKrs();
+            model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(krsDetail.getMahasiswa().getId()));
+            model.addAttribute("listMatkulDiambil", krsDetailDao.findByKrsAndStatusAndStatusKonversi(krs, StatusRecord.AKTIF, StatusRecord.MBKM));
+            model.addAttribute("sksDiambil", matakuliahMbkmDao.jumlahSksApprove(krs));
+            model.addAttribute("tahun", krsDetail.getTahunAkademik());
+        }
+        if (matakuliahMbkm != null) {
+            model.addAttribute("matakuliahEdit", matakuliahMbkm);
+            model.addAttribute("matakuliahMbkm", matakuliahMbkm);
+            krs = matakuliahMbkm.getKrs();
+            model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(matakuliahMbkm.getPendaftaranMbkm().getMahasiswa().getId()));
+            model.addAttribute("listMatkulDiambil", matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF));
+            model.addAttribute("sksDiambil", matakuliahMbkmDao.jumlahSksMbkm(StatusRecord.AKTIF, krs));
+            model.addAttribute("tahun", matakuliahMbkm.getPendaftaranMbkm().getTahunAkademik());
+        }
+    }
+
+    @PostMapping("/report/mbkm/edit")
+    public String editMatkulMahasiswa(@RequestParam(required = false) KrsDetail krsDetail, @RequestParam(required = false) MatakuliahMbkm matakuliahMbkm, @RequestParam String matkul){
+
+        MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(matkul).get();
+        log.info("cek data checkbox : {}", matkur.getMatakuliah().getNamaMatakuliah());
+
+        TahunAkademik tahun = null;
+        if (krsDetail != null) {
+            tahun = krsDetail.getTahunAkademik();
+            log.info("Matakuliah krs detail di edit : {}", krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            krsDetail.setMatakuliahKurikulum(matkur);
+            krsDetailDao.save(krsDetail);
+
+            Jadwal jadwal = krsDetail.getJadwal();
+            jadwal.setMatakuliahKurikulum(matkur);
+            jadwalDao.save(jadwal);
+        }
+        if (matakuliahMbkm != null) {
+            tahun = matakuliahMbkm.getPendaftaranMbkm().getTahunAkademik();
+            log.info("Matakuliah mbkm di edit : {}", matakuliahMbkm.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            matakuliahMbkm.setMatakuliahKurikulum(matkur);
+            matakuliahMbkmDao.save(matakuliahMbkm);
+        }
+
+        return "redirect:/report/mbkm?tahunAkademik="+tahun.getId();
     }
 
     // penilaian MBKM

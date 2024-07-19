@@ -130,6 +130,7 @@
                                                                 <table id="table-mbkm" class="table align-items-center table-flush">
                                                                     <thead class="thead-light">
                                                                     <tr>
+                                                                        <th class="text-center"></th>
                                                                         <th class="text-center">Matakuliah</th>
                                                                         <th class="text-center">SKS</th>
                                                                     </tr>
@@ -178,9 +179,12 @@
                                                                 <table id="table-mbkm-approved" class="table align-items-center table-flush">
                                                                     <thead class="thead-light">
                                                                     <tr>
+                                                                        <th class="text-center"></th>
                                                                         <th class="text-center">Matakuliah</th>
                                                                         <th class="text-center">SKS</th>
                                                                         <th class="text-center">Dosen</th>
+                                                                        <th class="text-center">Nilai</th>
+                                                                        <th class="text-center">Grade</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -233,6 +237,7 @@
             $.each(data, function (key, entry){
                 console.log(entry);
                 let rowT1 = '<tr>' +
+                    '<td class="text-center"><a class="btn btn-warning btn-sm text-white" href="/report/mbkm/edit?matakuliahMbkm=' + entry.id +'">Edit Matkul</a>' + '</td>' +
                     '<td class="text-center">' + entry.matakuliahKurikulum.matakuliah.namaMatakuliah + '</td>' +
                     '<td class="text-center">' + entry.matakuliahKurikulum.jumlahSks + '</td>' +
                     // '<td class="text-center">' + entry.jadwal.dosen.karyawan.namaKaryawan + '</td>' +
@@ -255,14 +260,29 @@
             $('#table-mbkm-approved tbody').empty();
 
             $.each(data, function (key, entry){
-                let rowT1 = '<tr>' +
-                    '<td class="text-center">' + entry[1] + '</td>' +
-                    '<td class="text-center">' + entry[2] + '</td>' +
-                    '<td class="text-center">' + entry[3] + '</td>' +
-                    '</tr>';
+                let rowT1 = null;
+                if (entry[5] == '-'){
+                    rowT1 = '<tr>' +
+                        '<td class="text-center"><a class="btn btn-warning btn-sm text-white" href="/report/mbkm/edit?krsDetail=' + entry[0] +'">Edit Matkul</a>' + '</td>' +
+                        '<td class="text-center">' + entry[1] + '</td>' +
+                        '<td class="text-center">' + entry[2] + '</td>' +
+                        '<td class="text-center">' + entry[3] + '</td>' +
+                        '<td class="text-center">' + entry[4] + '</td>' +
+                        '<td class="text-center">' + entry[5] + '</td>' +
+                        '</tr>';
+                }else{
+                    rowT1 = '<tr>' +
+                        '<td class="text-center"></td>' +
+                        '<td class="text-center">' + entry[1] + '</td>' +
+                        '<td class="text-center">' + entry[2] + '</td>' +
+                        '<td class="text-center">' + entry[3] + '</td>' +
+                        '<td class="text-center">' + entry[4] + '</td>' +
+                        '<td class="text-center">' + entry[5] + '</td>' +
+                        '</tr>';
+                }
                 $('#table-mbkm-approved tbody').append(rowT1);
 
-                console.log("data request : " + entry.id);
+                console.log("data request : " + entry[0]);
             });
         })
     }

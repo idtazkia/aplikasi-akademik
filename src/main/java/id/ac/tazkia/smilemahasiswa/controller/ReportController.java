@@ -1492,6 +1492,7 @@ public class ReportController {
         if (tahunAkademik == null) {
             List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahun);
             model.addAttribute("listMbkm", mbkm);
+            model.addAttribute("selectedTahun", tahun);
         }else {
             List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahunAkademik);
             model.addAttribute("listMbkm", mbkm);
