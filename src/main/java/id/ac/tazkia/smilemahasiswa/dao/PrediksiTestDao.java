@@ -30,7 +30,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
             "WHERE pt.status not in ('HAPUS') AND pt.status_ujian = ?2  AND pt.jenis_test = ?3" +
             "AND (m.nama LIKE %?1% OR m.nim LIKE %?1%) " +
             "GROUP BY pt.id_mahasiswa " +
-            "ORDER BY m.angkatan DESC",
+            "ORDER BY pt.tanggal_upload DESC",
             countQuery = "SELECT COUNT(*) FROM (SELECT pt.id_mahasiswa FROM prediksi_test pt " +
                     "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id " +
                     "INNER JOIN prodi p ON m.id_prodi = p.id " +
@@ -54,7 +54,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
             "      AND sub_pt.status NOT IN ('HAPUS')\n" +
             "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
             "  )\n" +
-            "ORDER BY m.angkatan DESC",
+            "ORDER BY pt.tanggal_upload DESC",
             countQuery = "SELECT count(pt.*)\n" +
                     "FROM prediksi_test pt\n" +
                     "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id\n" +
@@ -69,7 +69,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
                     "      AND sub_pt.status NOT IN ('HAPUS')\n" +
                     "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
                     "  )\n" +
-                    "ORDER BY m.angkatan DESC;",
+                    "ORDER BY pt.tanggal_upload DESC;",
             nativeQuery = true)
     Page<PrediksiTest> findByNamaOrNimAndStatusUjianNotIn(String keyword, String statusUjian,String jenisTest, Pageable pageable);
 
@@ -86,7 +86,7 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
             "      AND sub_pt.status NOT IN ('HAPUS')\n" +
             "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
             "  )\n" +
-            "ORDER BY m.angkatan DESC",
+            "ORDER BY pt.tanggal_upload DESC",
             countQuery = "SELECT count(pt.*)\n" +
                     "FROM prediksi_test pt\n" +
                     "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id\n" +
@@ -100,14 +100,14 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
                     "      AND sub_pt.status NOT IN ('HAPUS')\n" +
                     "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
                     "  )\n" +
-                    "ORDER BY m.angkatan DESC;",
+                    "ORDER BY pt.tanggal_upload DESC;",
             nativeQuery = true)
     Page<PrediksiTest> findByDistincMahasiswa(String jenisTest, Pageable pageable);
 
     @Query(value = "SELECT pt.id as id,m.nim as nim,m.nama as nama,p.nama_prodi as prodi,pt.ujian_ke as ujian,pt.status_ujian as status,pt.file_bukti as file,pt.tanggal_upload as tanggal FROM prediksi_test as pt inner join mahasiswa as m on pt.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where pt.status = 'AKTIF' and pt.status_ujian = ?1", nativeQuery = true)
     Page<PrediksiTestDto> list(StatusUjian statusUjian, Pageable pageable);
 
-    Page<PrediksiTest> findByStatusNotInAndStatusUjianAndJenisTest(List<StatusRecord> statusRecord, StatusUjian statusUjian,JenisTest jenisTest , Pageable pageable);
+    Page<PrediksiTest> findByStatusNotInAndStatusUjianAndJenisTestOrderByTanggalUploadDesc(List<StatusRecord> statusRecord, StatusUjian statusUjian,JenisTest jenisTest , Pageable pageable);
 
     Page<PrediksiTest> findByStatusNotInAndStatusUjianNotIn(List<StatusRecord> statusRecord, List<StatusUjian> statusUjian, Pageable pageable);
 

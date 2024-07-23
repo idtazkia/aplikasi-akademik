@@ -354,7 +354,7 @@ public class KuesionerController {
             }
         }else {
             if (status.equals("WAITING")){
-                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjianAndJenisTest(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),JenisTest.TOEFL,pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjianAndJenisTestOrderByTanggalUploadDesc(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),JenisTest.TOEFL,pageable));
             }else {
                 model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(String.valueOf(JenisTest.TOEFL),pageable));
             }
@@ -376,7 +376,7 @@ public class KuesionerController {
             }
         }else {
             if (status.equals("WAITING")){
-                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjianAndJenisTest(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),JenisTest.IELTS,pageable));
+                model.addAttribute("listPrediksi", prediksiTestDao.findByStatusNotInAndStatusUjianAndJenisTestOrderByTanggalUploadDesc(Arrays.asList(StatusRecord.HAPUS),StatusUjian.valueOf(status),JenisTest.IELTS,pageable));
             }else {
                 model.addAttribute("listPrediksi", prediksiTestDao.findByDistincMahasiswa(String.valueOf(JenisTest.IELTS),pageable));
             }
