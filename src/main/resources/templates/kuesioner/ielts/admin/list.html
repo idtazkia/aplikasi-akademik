@@ -212,6 +212,7 @@
                                         <th class="fixed-column">Angkatan</th>
                                         <th class="fixed-column">Nim</th>
                                         <th class="fixed-column">Nama</th>
+                                        <th class="fixed-column">No Telepon</th>
                                         <th>Jenis Test</th>
                                         <th>Ujian Ke</th>
                                         <th th:if="${status != null && status == 'HISTORY'}">Writing</th>
@@ -231,6 +232,7 @@
                                         <td class="fixed-column" th:text="${data.mahasiswa.angkatan}">123456</td>
                                         <td class="fixed-column" th:text="${data.mahasiswa.nim}">123456</td>
                                         <td class="fixed-column" th:text="${data.mahasiswa.nama}">Gifar Haidar</td>
+                                        <td class="fixed-column" th:text="${data.mahasiswa.teleponSeluler}">Gifar Haidar</td>
                                         <td th:text="${data.jenisTest}">MBS</td>
                                         <td th:text="${data.ujianKe}">1</td>
                                         <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiWriting}">23</td>
