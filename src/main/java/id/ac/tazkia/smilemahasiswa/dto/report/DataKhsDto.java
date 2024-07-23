@@ -15,4 +15,5 @@ public interface DataKhsDto {
     String getGrade();
     Integer getSks();
     Double getTotal();
+    String getJadwal();
 }
