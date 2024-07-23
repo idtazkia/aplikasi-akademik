@@ -9,28 +9,41 @@ import id.ac.tazkia.smilemahasiswa.dto.study.Kartu;
 import id.ac.tazkia.smilemahasiswa.dto.user.PrasyaratDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.KhsService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
-@Controller
+@Controller @Slf4j
 public class ReportMahasiswaController {
 
     @Autowired
@@ -95,6 +108,29 @@ public class ReportMahasiswaController {
 
     @Autowired
     private TagihanService tagihanService;
+
+    @Autowired
+    private GradeDao gradeDao;
+
+    @Autowired
+    private RequestKonversiDao requestKonversiDao;
+
+    @Autowired
+    private KhsService khsService;
+
+    @Autowired
+    private ProdiDao prodiDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Value("${upload.request.konversi}")
+    private String uploadRequestKonversi;
+
+    @ModelAttribute("prodi")
+    public Iterable<Prodi> prodi() {
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
+    }
 
     @GetMapping("/api/prasyarat")
     @ResponseBody
@@ -572,6 +608,182 @@ public class ReportMahasiswaController {
 
         return "redirect:../transcript";
     }
+
+    @GetMapping("/studiesActivity/khs/konversi")
+    public String requestKonversi(Model model,@RequestParam KrsDetail krsDetail,@RequestParam Jadwal jadwal){
+//        model.addAttribute("report","active");
+        model.addAttribute("khs", krsDetail);
+        model.addAttribute("listRequest",khsService.getRequestList(krsDetail,jadwal));
+        model.addAttribute("reqId",khsService.validasiUploadFileKonversi(krsDetail));
+
+        return "studiesActivity/khs/konversi";
+    }
+
+    @GetMapping("/studiesActivity/khs/konversiApproval")
+    public String requestKonversiApproval(Model model,@PageableDefault Pageable pageable,@RequestParam(required = false) String search,@RequestParam(required = false) String nama, @RequestParam(required = false) Prodi prodi){
+//        model.addAttribute("report","active");
+        model.addAttribute("selectedProdi", prodi);
+
+        for (RequestKonversi requestKonversi1 : requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalization(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N, pageable)){
+
+            model.addAttribute("requestKonversi", khsService.getRequestKonversiById(requestKonversi1.getId()));
+
+        }
+
+
+        if (prodi != null) {
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("search", search);
+                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
+                model.addAttribute("listRequest", requestKonversiDao.findByApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,search, pageable));
+
+            } else {
+                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalization(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N, pageable));
+                model.addAttribute("listRequest", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatus(prodi,StatusRecord.WAITING, StatusRecord.AKTIF, pageable));
+
+            }
+        } else {
+            if (StringUtils.hasText(search)){
+                model.addAttribute("search", search);
+                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
+                model.addAttribute("listRequest", requestKonversiDao.findByApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,search, pageable));
+                model.addAttribute("selectedNama", nama);
+            }else{
+                model.addAttribute("listRequest",khsService.getRequestList2(pageable));
+            }
+        }
+
+        return "studiesActivity/khs/konversiApproval";
+    }
+
+    @PostMapping("/studiesActivity/khs/requestKonversi")
+    public String requestKonversi(@Valid @ModelAttribute RequestKonversi requestKonversi, @RequestParam KrsDetail krsDetail, @RequestParam("file") MultipartFile file,
+                                  Authentication authentication,RedirectAttributes redirectAttributes, BindingResult errors) throws IOException {
+
+
+        try{
+            if (errors.hasErrors()) {
+                log.debug("Error upload supported documents : {}", errors.toString());
+            }
+
+            String lokasiUpload = uploadRequestKonversi + File.separator ;
+            log.info("Lokasi Upload : {}", lokasiUpload);
+            new File(lokasiUpload).mkdirs();
+
+            System.out.println("Original Filename: " + file.getOriginalFilename());
+            System.out.println("Content Type: " + file.getContentType());
+            System.out.println("File Size: " + file.getSize());
+
+            khsService.uploadFileKonversi(requestKonversi,krsDetail,file,lokasiUpload,authentication);
+
+            redirectAttributes.addFlashAttribute("success", "Save data successfull..");
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+        }catch(Exception e){
+            log.error("Error : ", e.getMessage());
+            redirectAttributes.addFlashAttribute("gagal", e.getMessage());
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+        }
+
+    }
+
+    @PostMapping("/studiesActivity/khs/konversiApproval/save")
+    public String updateNilai(@RequestParam String grade , @RequestParam KrsDetail krsDetail,
+                              Authentication authentication,RedirectAttributes redirectAttributes) throws IOException {
+
+        try{
+            khsService.updateNilai(authentication,krsDetail,grade);
+            redirectAttributes.addFlashAttribute("success", "Save data successfull..");
+            return "redirect:../../khs/konversiApproval";
+        }catch(Exception e){
+            log.error("Error : ", e.getMessage());
+            redirectAttributes.addFlashAttribute("gagal", e.getMessage());
+            return "redirect:../../khs/konversiApproval";
+        }
+
+    }
+
+    @GetMapping("/khs/request/{requestKonversi}/")
+    public ResponseEntity<byte[]> tampilkanBukti(@PathVariable RequestKonversi requestKonversi) throws Exception {
+        String lokasiUpload = uploadRequestKonversi + File.separator + requestKonversi.getFilename() ;
+        log.debug("Lokasi file bukti : {}", lokasiUpload);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (requestKonversi.getFilename().toLowerCase().endsWith("jpeg") || requestKonversi.getFilename().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (requestKonversi.getFilename().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (requestKonversi.getFilename().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else if (requestKonversi.getFilename().toLowerCase().endsWith("xlsx") || requestKonversi.getFilename().toLowerCase().endsWith("xls") || requestKonversi.getFilename().toLowerCase().endsWith("csv")) {
+                headers.setContentType(new MediaType("application", "force-download"));
+                headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + requestKonversi.getNamaFile());
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiUpload));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            log.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/khs/request/delete")
+    public String evidenceDelete(@RequestParam String requestKonversi,Authentication authentication,@RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes){
+        try{
+            khsService.deleteRequestKonversi(requestKonversi, authentication, krsDetail);
+
+            System.out.println("ID KRS DETAIIL" + krsDetail.getId());
+            System.out.println("ID JADWAL" + krsDetail.getJadwal().getId());
+
+            redirectAttributes.addFlashAttribute("success", "Delete data successfull..");
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+        }catch(Exception e){
+
+            log.error("Error : ", e.getMessage());
+            redirectAttributes.addFlashAttribute("gagal", e.getMessage());
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+        }
+    }
+
+    @GetMapping("/khs/request/approved")
+    public String requestApproved(@RequestParam String requestKonversi,Authentication authentication,@RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes){
+        try{
+            khsService.approveRequestKonversi(authentication, requestKonversi, krsDetail);
+
+            System.out.println("ID KRS DETAIIL" + krsDetail.getId());
+            System.out.println("ID JADWAL" + krsDetail.getJadwal().getId());
+
+            redirectAttributes.addFlashAttribute("success", "Delete data successfull..");
+            return "redirect:../../studiesActivity/khs/konversiApproval";
+        }catch(Exception e){
+
+            log.error("Error : ", e.getMessage());
+            redirectAttributes.addFlashAttribute("gagal", e.getMessage());
+            return "redirect:../../studiesActivity/khs/konversiApproval";
+        }
+    }
+
+    @GetMapping("/khs/request/rejected")
+    public String requestRejected(@RequestParam String requestKonversi,Authentication authentication,@RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes){
+        try{
+            khsService.rejectRequestKonversi(authentication, requestKonversi, krsDetail);
+
+            System.out.println("ID KRS DETAIIL" + krsDetail.getId());
+            System.out.println("ID JADWAL" + krsDetail.getJadwal().getId());
+
+            redirectAttributes.addFlashAttribute("success", "Delete data successfull..");
+            return "redirect:../../studiesActivity/khs/konversiApproval";
+        }catch(Exception e){
+
+            log.error("Error : ", e.getMessage());
+            redirectAttributes.addFlashAttribute("gagal", e.getMessage());
+            return "redirect:../../studiesActivity/khs/konversiApproval";
+        }
+    }
+
+
 
 
 }
