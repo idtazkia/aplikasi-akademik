@@ -87,20 +87,24 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
             "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
             "  )\n" +
             "ORDER BY pt.tanggal_upload DESC",
-            countQuery = "SELECT count(pt.*)\n" +
-                    "FROM prediksi_test pt\n" +
-                    "INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id\n" +
-                    "INNER JOIN prodi p ON m.id_prodi = p.id\n" +
-                    "WHERE pt.status NOT IN ('HAPUS') and pt.jenis_test = ?1\n" +
-                    "  AND pt.status_ujian NOT IN ('WAITING')\n" +
-                    "  AND pt.ujian_ke = (\n" +
-                    "    SELECT MAX(sub_pt.ujian_ke)\n" +
-                    "    FROM prediksi_test sub_pt\n" +
-                    "    WHERE sub_pt.id_mahasiswa = pt.id_mahasiswa\n" +
-                    "      AND sub_pt.status NOT IN ('HAPUS')\n" +
-                    "      AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
-                    "  )\n" +
-                    "ORDER BY pt.tanggal_upload DESC;",
+            countQuery = "SELECT COUNT(*)\n" +
+                    "FROM (\n" +
+                    "    SELECT pt.*\n" +
+                    "    FROM prediksi_test pt\n" +
+                    "    INNER JOIN mahasiswa m ON pt.id_mahasiswa = m.id\n" +
+                    "    INNER JOIN prodi p ON m.id_prodi = p.id\n" +
+                    "    WHERE pt.status NOT IN ('HAPUS')\n" +
+                    "      AND pt.jenis_test = ?1 \n" +
+                    "      AND pt.status_ujian NOT IN ('WAITING')\n" +
+                    "      AND pt.ujian_ke = (\n" +
+                    "          SELECT MAX(sub_pt.ujian_ke)\n" +
+                    "          FROM prediksi_test sub_pt\n" +
+                    "          WHERE sub_pt.id_mahasiswa = pt.id_mahasiswa\n" +
+                    "            AND sub_pt.status NOT IN ('HAPUS')\n" +
+                    "            AND sub_pt.status_ujian NOT IN ('WAITING')\n" +
+                    "      )\n" +
+                    "    ORDER BY pt.tanggal_upload DESC\n" +
+                    ") AS subquery;\n",
             nativeQuery = true)
     Page<PrediksiTest> findByDistincMahasiswa(String jenisTest, Pageable pageable);
 
