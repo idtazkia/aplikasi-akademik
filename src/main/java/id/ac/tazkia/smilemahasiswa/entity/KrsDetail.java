@@ -126,6 +126,7 @@ public class KrsDetail extends Auditable {
     @OneToMany(mappedBy = "krsDetail")
     private List<NilaiTugas> nilaiTugasList = new ArrayList<>();
 
-
-
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private StatusRecord requestKonversi;
 }
