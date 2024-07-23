@@ -2050,6 +2050,7 @@ public class SidangController {
         krsDetailDao.save(cariThesis);
 
         mahasiswa.setTanggalLulus(LocalDate.now());
+        mahasiswa.setStatusAktif("LULUS");
         mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
         mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
         mahasiswaDao.save(mahasiswa);
@@ -2094,6 +2095,7 @@ public class SidangController {
         mahasiswa.setTanggalLulus(LocalDate.now());
         mahasiswa.setJudul(sidang.getSeminar().getNote().getJudul());
         mahasiswa.setTitle(sidang.getSeminar().getNote().getJudulInggris());
+        mahasiswa.setStatusAktif("LULUS");
         mahasiswaDao.save(mahasiswa);
 
         return "redirect:../sidang/admin/list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+mahasiswa.getIdProdi().getId();
