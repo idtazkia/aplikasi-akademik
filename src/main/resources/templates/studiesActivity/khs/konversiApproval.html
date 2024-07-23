@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Konversi</title>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-12 col-lg-12">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                    <span class="h2 font-weight-bold mb-0">KHS </span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                      <i class="fas fa-user-astronaut"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <h3 class="mb-0">Data List</h3>
+          </div>
+          <div class="card-body">
+            <form method="get">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" th:value="${selectedNama}" name="nama" class="form-control">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Program Study</label>
+                    <select name="prodi" class="form-control">
+                      <option value=""></option>
+                      <option value="" selected disabled>-- Select One --</option>
+                      <option th:each="prodi : ${prodi}"
+                              th:selected="(${prodi} == *{selectedProdi})"
+                              th:text="${prodi.namaProdi}" th:value="${prodi.id}"></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+
+
+          <div class="card shadow">
+            <div class="card-body">
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                  <div class="card"  style="margin-top: 5px;">
+                    <div class="card-header">
+                      <h4 ></h4>
+                      <h4 >Daftar Tunggu Request Konversi Nilai Mahasiswa</h4>
+                      <p><small class="text-primary"> Klik nama file untuk melihat berkas upload request konversi nilai mahasiswa</small></p>
+                    </div>
+
+
+
+                    <div class="card-body" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KHS_ADMIN')
+                                 or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                      <div class="table-responsive">
+                        <table class="table align-items-center table-flush sortable">
+                          <thead class="thead-light">
+                          <tr>
+                            <th>No</th>
+                            <th>NIM</th>
+                            <th>Mahasiswa</th>
+                            <th>Matakuliah</th>
+                            <th>Grade</th>
+                            <th>Description</th>
+                            <th>File</th>
+                            <th>Status</th>
+                            <th class="text-center">Option</th>
+                            <th>Waktu Pengajuan</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr th:each="data,row : ${listRequest}" >
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td th:text="${data.krsDetail.mahasiswa.nim}"></td>
+                            <td th:text="${data.krsDetail.mahasiswa.nama}"></td>
+                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                            <th th:text="${data.krsDetail.grade}"></th>
+                            <th th:text="${data.deskripsi}"></th>
+                            <td >
+                              <a th:href="@{/khs/request/{requestKonversi}/(requestKonversi = ${data.id})}" target="_blank"  class="text-primary fst-italic small me-2" th:text="${data.namaFile}" >
+                              </a>
+                            </td>
+                            <td th:text="${data.approval}"></td>
+
+                            <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KHS_ADMIN')
+                                 or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                              <a th:href="@{/khs/request/approved(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id},jadwal = ${data.krsDetail.getJadwal().id})}" onclick="return confirm('Are you sure? ')"
+                                 class="fa-solid fa-circle-xmark" style="color: #0B792F">Approve</a>
+                              |
+                              <a th:href="@{/khs/request/rejected(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id},jadwal = ${data.krsDetail.getJadwal().id})}" onclick="return confirm('Are you sure? ')" class="fa-solid fa-circle-xmark" style="color: #bb2d3b">Reject</a>
+                            </td>
+
+                            <td th:text="${data.createdDate}"></td>
+
+                          </tr>
+                          </tbody>
+
+                        </table>
+                      </div>
+                    </div>
+
+
+                    <div class="card-body" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">
+                      <div class="table-responsive">
+                        <table class="table align-items-center table-flush sortable">
+                          <thead class="thead-light">
+                          <tr>
+                            <th>No</th>
+                            <th>NIM</th>
+                            <th>Mahasiswa</th>
+                            <th>Matakuliah</th>
+                            <th>Grade Lama</th>
+                            <th>Grade Baru</th>
+                            <th>Status</th>
+                            <th class="text-center">Option</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+
+
+                          <tr th:each="data,row : ${listRequestApproved}" >
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td th:text="${data.krsDetail.mahasiswa.nim}"></td>
+                            <td th:text="${data.krsDetail.mahasiswa.nama}"></td>
+                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                            <th th:text="${data.krsDetail.grade}"></th>
+                            <form th:action="@{/studiesActivity/khs/konversiApproval/save(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id})}" th:object="${requestKonversi}"  method="post">
+                              <input type="hidden" th:field="*{id}" name="id">
+                              <td width="5%">
+                                <center>
+                                  <select name="grade" class="form-control form-control-sm">
+                                    <option value="1">A</option>
+                                    <option value="2">A-</option>
+                                    <option value="3">B+</option>
+                                    <option value="4">B</option>
+                                    <option value="5">B-</option>
+                                    <option value="6">C+</option>
+                                    <option value="7">C</option>
+                                    <option value="8">D</option>
+                                    <option value="9">E</option>
+                                  </select>
+                                </center>
+                              </td>
+                              <td th:text="${data.approval}"></td>
+
+                              <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')" class="text-center">
+                                <button class="btn btn-primary" onclick="return confirm('Confirm your request.')">Nilai</button>
+                              </td>
+                            </form>
+                          </tr>
+
+
+                          </tbody>
+
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>

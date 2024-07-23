@@ -100,6 +100,7 @@
                                     <th>SKS</th>
                                     <th>Weight</th>
                                     <th>Grade</th>
+                                    <th>Option</th>
                                 </tr>
                                 <tr th:each="data,row : ${khs}" >
                                     <td th:text="${(row.index + 1)}"></td>
@@ -140,6 +141,10 @@
                                     <td th:text="${data.sks}"></td>
                                     <td th:text="${data.bobot}"></td>
                                     <td th:text="${data.grade}"></td>
+                                    <td >
+                                        <a class="link-primary " th:href="@{/studiesActivity/khs/konversi(krsDetail = ${data.id},jadwal = ${data.jadwal})}">Conversion Request</a>
+                                    </td>
+
                                 </tr>
                                 <tr>
                                     <th colspan="3"><center><h5><b>IP Semester</b></h5></center></th>
@@ -149,6 +154,9 @@
                                     <th><h5><b>:</b></h5></th>
                                     <th colspan="1"><h5><b th:text="${ipk.ipk}">21</b></h5></th>
                                 </tr>
+
+
+
                             </table>
                         </div>
                     </div>
@@ -158,4 +166,9 @@
     </div>
 </section>
 </body>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </html>
