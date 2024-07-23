@@ -57,6 +57,8 @@
                                         <th>NIM</th>
                                         <th>Nama</th>
                                         <th>Ujian Ke</th>
+                                        <th>Tanggal Ujian</th>
+                                        <th>Ruangan</th>
                                         <th>Status</th>
                                         <th>Nilai</th>
                                     </tr>
@@ -67,6 +69,10 @@
                                         <td th:text="${data.mahasiswa.nim}">Alexandra</td>
                                         <td th:text="${data.mahasiswa.nama}">Christopher</td>
                                         <td th:text="${data.ujianKe}">@makinton</td>
+                                        <td th:if="${data.status != data.status.WAITING}" th:text="${#temporals.format(data.periodeTest.tanggalUjian, 'dd MMMM yyyy HH:mm')}">@makinton</td>
+                                        <td th:if="${data.status == data.status.WAITING}">-</td>
+                                        <td th:if="${data.status != data.status.WAITING}" th:text="${data.periodeTest.ruangan.namaRuangan}">@makinton</td>
+                                        <td th:if="${data.status == data.status.WAITING}">-</td>
                                         <td>
                                             <button th:if="${data.status == data.status.WAITING}" class="btn btn-sm btn-warning">Menunggu Persetujuan TLC</button>
                                             <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.WAITING}" class="btn btn-sm btn-warning">Menunggu</button>

@@ -15,8 +15,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest, String> {
-    @Query(value = "select count(*) from prediksi_test where id_mahasiswa = ?1 and status in ('AKTIF', 'WAITING')", nativeQuery = true)
-    Integer countTotalUjian(Mahasiswa mahasiswa);
+    @Query(value = "select count(*) from prediksi_test where id_mahasiswa = ?1 and status in ('AKTIF', 'WAITING') and jenis_test = ?2", nativeQuery = true)
+    Integer countTotalUjian(Mahasiswa mahasiswa, String jenisTest);
 
     @Query(value = "select count(*) from prediksi_test where jenis_test = ?1 and status in ('AKTIF', 'WAITING') and status_ujian not in ('REJECTED') and id_periode  = ?2", nativeQuery = true)
     Integer countAllTest(String jenisTest, String periode);
@@ -121,4 +121,5 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
 
     PrediksiTest findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(List<StatusRecord> status, List<StatusUjian> statusUjian, Mahasiswa mahasiswa, JenisTest jenisTest);
 
+    List<PrediksiTest> findByMahasiswaAndStatusNotInAndJenisTestOrderByUjianKeAsc(Mahasiswa mahasiswa, List<StatusRecord> list, JenisTest jenisTest);
 }

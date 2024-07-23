@@ -106,11 +106,21 @@
 <![endif]-->
 <!-- 404 Page area Start-->
 <div class="error-page-area" style="background-image: url('https://images.wallpaperscraft.com/image/single/books_library_reading_211249_1280x720.jpg')">
-  <div class="error-page-wrap bounceIn" style="border-radius: 10px; ">
+  <div class="error-page-wrap bounceIn" style="border-radius: 10px; " th:if="${terakhir == null}">
     <i class="notika-icon notika-close" style="color: #d9534f;"></i>
     <h2>Batas <span style="color: #d9534f;">Kuota</span></h2>
     <p>
-        Anda tidak bisa daftar test, karna kuota test telah habis
+      Anda tidak bisa daftar test, karna kuota test telah habis
+    </p>
+    <a  th:href="@{/dashboard}" class="btn" style="background-color: #d9534f;">Kembali</a>
+
+  </div>
+
+  <div class="error-page-wrap bounceIn" style="border-radius: 10px; " th:if="${terakhir != null}">
+    <i class="notika-icon notika-close" style="color: #d9534f;"></i>
+    <h2>Pendaftaran <span style="color: #d9534f;">Ditutup</span></h2>
+    <p>
+      Anda tidak bisa daftar test, karna pendaftaran sudah ditutup
     </p>
     <a  th:href="@{/dashboard}" class="btn" style="background-color: #d9534f;">Kembali</a>
 

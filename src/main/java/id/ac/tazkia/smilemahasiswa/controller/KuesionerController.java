@@ -23,12 +23,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,7 +34,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class KuesionerController {
@@ -270,7 +267,7 @@ public class KuesionerController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TOEFL, true);
-        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
+        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.TOEFL));
         if (totalTest < 1){
             return "kuesioner/toefl/view";
         }else {
@@ -304,7 +301,7 @@ public class KuesionerController {
         if (validate != null) {
             model.addAttribute("validate", validate);
         }
-        model.addAttribute("listPrediksi", prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listPrediksi", prediksiTestDao.findByMahasiswaAndStatusNotInAndJenisTestOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS), JenisTest.TOEFL));
 
         if (prediksiTest == null){
             return "redirect:view";
@@ -330,12 +327,12 @@ public class KuesionerController {
         if (validate != null) {
             model.addAttribute("validate", validate);
         }
-        model.addAttribute("listPrediksi", prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listPrediksi", prediksiTestDao.findByMahasiswaAndStatusNotInAndJenisTestOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS), JenisTest.IELTS));
 
         if (prediksiTest == null){
             return "redirect:view";
         }else {
-            return "kuesioner/toefl/list";
+            return "kuesioner/ielts/list";
         }
     }
 
@@ -506,6 +503,17 @@ public class KuesionerController {
         return "redirect:list?status=WAITING";
     }
 
+    @PostMapping("/kuesioner/ielts/admin/reject")
+    public String RejectTestIelts(@Valid TestDto testDto){
+        PrediksiTest prediksiTest = prediksiTestDao.findById(testDto.getId()).get();
+        prediksiTest.setStatus(StatusRecord.AKTIF);
+        prediksiTest.setStatusUjian(StatusUjian.REJECTED);
+        prediksiTest.setUjianKe(2);
+        prediksiTestDao.save(prediksiTest);
+        tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "ielts");
+        return "redirect:list?status=WAITING";
+    }
+
     @PostMapping("/kuesioner/toefl/submit")
     public String submitToefl(@Valid TestDto testDto, Authentication authentication) throws  Exception{
         User user = currentUserService.currentUser(authentication);
@@ -527,9 +535,12 @@ public class KuesionerController {
             return "redirect:../info";
 
         }else {
+            if (LocalDateTime.now().plusHours(7).isAfter(periodeTest.getTerakhirUpload())){
+                return "redirect:../info?terakhir=true";
+            }
 
             PrediksiTest prediksiTest = new PrediksiTest();
-            if (prediksiTestDao.countTotalUjian(mahasiswa) > 0) {
+            if (prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.TOEFL)) > 0) {
                 ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
                 prediksiTest.setStatus(StatusRecord.AKTIF);
             } else {
@@ -569,8 +580,11 @@ public class KuesionerController {
         if (totalKuota > periodeTest.getKuota()){
             return "redirect:../info";
         }else {
+            if (LocalDateTime.now().plusHours(7).isAfter(periodeTest.getTerakhirUpload())){
+                return "redirect:../info?terakhir=true";
+            }
             PrediksiTest prediksiTest = new PrediksiTest();
-            if (prediksiTestDao.countTotalUjian(mahasiswa) > 0){
+            if (prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.IELTS)) > 0){
                 ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
                 prediksiTest.setStatus(StatusRecord.AKTIF);
             }else {
@@ -593,7 +607,9 @@ public class KuesionerController {
     }
 
     @GetMapping("/kuesioner/info")
-    public void info(){}
+    public void info(@RequestParam(required = false) String terakhir, Model model){
+        model.addAttribute("terakhir", true);
+    }
 
     @PostMapping("/kuesioner/toefl/admin/nilai")
     public String penilaianToefl(@Valid TestDto testDto){
@@ -657,7 +673,7 @@ public class KuesionerController {
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,
                 StatusRecord.IELTS, true);
 
-        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
+        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.IELTS));
         if (totalTest < 1) {
             return "kuesioner/ielts/view";
         } else {

@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 <div layout:fragment="main">
@@ -54,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="exampleModal" data-backdrop="static" role="dialog"
                          aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -67,19 +68,27 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Tanggal Mulai</label>
-                                                    <input type="date" id="tanggal" name="tanggalUjian" class="form-control">
+                                                    <label>Tanggal & Jam Mulai</label>
+                                                    <input type="text" id="tanggal" name="tanggalUjian" class="form-control tanggal ">
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Terakhir Upload</label>
+                                                    <input type="text" id="terakhir" name="terakhirUpload" class="form-control tanggal">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Kuota</label>
                                                     <input type="text" id="kuota" name="kuota" class="form-control">
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Ruangan</label>
                                                     <select name="ruangan" id="select2-ruang" class="form-control js-example-placeholder-single" style="width: 100%;">
@@ -90,7 +99,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Jenis Test</label>
                                                     <select name="jenisTest" id="jenis" class="form-control">
@@ -118,6 +127,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal Ujian</th>
+                                <th>Terakhir Upload</th>
                                 <th>Kuota</th>
                                 <th>Ruangan</th>
                                 <th>Jenis</th>
@@ -128,7 +138,8 @@
                             <tbody>
                             <tr th:each="data, row :${listPeriode}">
                                 <td th:text="${(row.index + 1) + (listPeriode.number * listPeriode.size)}">01</td>
-                                <td th:text="${#temporals.format(data.tanggalUjian, 'dd - MMM - yyyy')}"></td>
+                                <td th:text="${#temporals.format(data.tanggalUjian, 'dd MMMM yyyy HH:mm')}"></td>
+                                <td th:text="${#temporals.format(data.terakhirUpload, 'dd MMMM yyyy HH:mm')}"></td>
                                 <td th:text="${data.kuota}">Campus Code</td>
                                 <td>
                                     <div th:if="${data.ruangan == null}" th:text="${'-'}"></div>
@@ -137,8 +148,8 @@
                                 <td th:text="${data.jenisTest}">Campus Code</td>
                                 <td th:text="${data.status}">Campus Code</td>
                                 <td>
-                                    <button th:if="${data.status == data.status.AKTIF}" onclick="editPeriode(this.getAttribute('data-id'), this.getAttribute('data-tanggal'), this.getAttribute('data-kuota'), this.getAttribute('data-ruangan'), this.getAttribute('data-jenis'))"
-                                            th:attr="data-id=${data.id}, data-tanggal=${data.tanggalUjian}, data-kuota=${data.kuota}, data-ruangan=${data.ruangan.id}, data-jenis=${data.jenisTest}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button th:if="${data.status == data.status.AKTIF}" onclick="editPeriode(this.getAttribute('data-id'), this.getAttribute('data-tanggal'), this.getAttribute('data-kuota'), this.getAttribute('data-ruangan'), this.getAttribute('data-jenis'), this.getAttribute('data-terakhir'))"
+                                            th:attr="data-id=${data.id}, data-tanggal=${data.tanggalUjian}, data-kuota=${data.kuota}, data-ruangan=${data.ruangan.id}, data-jenis=${data.jenisTest}, data-terakhir=${data.terakhirUpload}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
 
                                 </td>
                             </tr>
@@ -163,17 +174,42 @@
 </div>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    function editPeriode(id,tanggal,kuota,ruangan,jenis) {
+    flatpickr(".tanggal", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i:S",
+        time_24hr: true
+    });
+
+    function editPeriode(id,tanggal,kuota,ruangan,jenis,terakhir) {
         $('#exampleModal').modal('show')
         document.getElementById('id').value = id;
-        document.getElementById('tanggal').value = tanggal;
         document.getElementById('kuota').value = kuota;
         document.getElementById('jenis').value = jenis;
+        let tanggalUjian = new Date(tanggal);
+        let terakhirUpload = new Date(terakhir);
+        let formattedDateTanggal = tanggalUjian.getFullYear() + '-' +
+            String(tanggalUjian.getMonth() + 1).padStart(2, '0') + '-' +
+            String(tanggalUjian.getDate()).padStart(2, '0') + ' ' +
+            String(tanggalUjian.getHours()).padStart(2, '0') + ':' +
+            String(tanggalUjian.getMinutes()).padStart(2, '0') + ':' +
+            String(tanggalUjian.getSeconds()).padStart(2, '0');
+
+        let formattedDateTerakhir = terakhirUpload.getFullYear() + '-' +
+            String(terakhirUpload.getMonth() + 1).padStart(2, '0') + '-' +
+            String(terakhirUpload.getDate()).padStart(2, '0') + ' ' +
+            String(terakhirUpload.getHours()).padStart(2, '0') + ':' +
+            String(terakhirUpload.getMinutes()).padStart(2, '0') + ':' +
+            String(terakhirUpload.getSeconds()).padStart(2, '0');
+
+        document.getElementById('tanggal').value = formattedDateTanggal;
+        document.getElementById('terakhir').value = formattedDateTerakhir;
+
+
         if ($('#select2-ruang').find("option[value='" + ruangan + "']").length){
             $('#select2-ruang').val(ruangan).trigger('change');
         }
-        console.log('id :' + id, 'tanggal : ' + tanggal,'kuota : ' + kuota, 'ruangan : ' + ruangan)
 
     }
 
