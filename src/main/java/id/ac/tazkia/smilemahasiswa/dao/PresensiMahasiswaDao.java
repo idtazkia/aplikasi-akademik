@@ -25,7 +25,7 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
         @Query(value = "CALL getabsensi(?1)", nativeQuery = true)
         List<Object[]> bkdAttendance(Jadwal jadwal);
 
-        @Query(value = "select mahasiswa.nim, mahasiswa.nama, krs_detail.nilai_akhir, coalesce(krs_detail.grade, '-') as grade, coalesce( krs_detail.bobot, '0.00') as bobot from krs_detail inner join mahasiswa on mahasiswa.id = krs_detail.id_mahasiswa where krs_detail.id_jadwal =?1 and krs_detail.status = 'AKTIF' order by mahasiswa.nim", nativeQuery = true)
+        @Query(value = "select mahasiswa.nim, mahasiswa.nama, coalesce(krs_detail.nilai_akhir, 0) as nilai, coalesce(krs_detail.grade, '-') as grade, coalesce( krs_detail.bobot, '0.00') as bobot from krs_detail inner join mahasiswa on mahasiswa.id = krs_detail.id_mahasiswa where krs_detail.id_jadwal =?1 and krs_detail.status = 'AKTIF' order by mahasiswa.nim", nativeQuery = true)
         List<Object[]> bkdNilai(Jadwal jadwal);
 
         @Query(value = "SELECT COUNT(a.id) AS presensiMahasiswa FROM presensi_mahasiswa AS a \n" +
