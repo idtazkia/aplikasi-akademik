@@ -1097,6 +1097,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         List<KrsDetail> findByKrsAndStatusAndStatusKonversi(Krs krs, StatusRecord status, StatusRecord mbkm);
 
+        List<KrsDetail> findByKrsAndStatusAndStatusKonversiAndGradeIsNull(Krs krs, StatusRecord status, StatusRecord mbkm);
+
         List<KrsDetail> findByKrsAndStatusAndStatusKonversiAndGradeIsNotNull(Krs krs, StatusRecord status, StatusRecord mbkm);
 
         @Query(value = "select a.id as id, a.nim as nim, a.nama as nama,a.nama_prodi as namaProdi, coalesce(totalSks,0) as totalSKS,\n"
@@ -1282,5 +1284,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 +
                 "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and m.nama_matakuliah = 'Ujian Tesis' order by t.kode_tahun_akademik desc limit 1", nativeQuery = true)
         KrsDetail cariUjianThesis(Mahasiswa mahasiswa);
+
+        KrsDetail findByKrsAndStatusKonversiAndStatusAndMatakuliahKurikulum(Krs krs, StatusRecord konversi, StatusRecord status, MatakuliahKurikulum matkur);
 
 }

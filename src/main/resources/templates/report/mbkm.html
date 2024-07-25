@@ -237,7 +237,7 @@
             $.each(data, function (key, entry){
                 console.log(entry);
                 let rowT1 = '<tr>' +
-                    '<td class="text-center"><a class="btn btn-warning btn-sm text-white" href="/report/mbkm/edit?matakuliahMbkm=' + entry.id +'">Edit Matkul</a>' + '</td>' +
+                    '<td class="text-center"><a class="btn btn-warning btn-sm text-white" href="/report/mbkm/editwaiting?matakuliahMbkm=' + entry.id +'">Edit Matkul</a>' + '</td>' +
                     '<td class="text-center">' + entry.matakuliahKurikulum.matakuliah.namaMatakuliah + '</td>' +
                     '<td class="text-center">' + entry.matakuliahKurikulum.jumlahSks + '</td>' +
                     // '<td class="text-center">' + entry.jadwal.dosen.karyawan.namaKaryawan + '</td>' +
@@ -261,9 +261,10 @@
 
             $.each(data, function (key, entry){
                 let rowT1 = null;
+                console.log(entry)
                 if (entry[5] == '-'){
                     rowT1 = '<tr>' +
-                        '<td class="text-center"><a class="btn btn-warning btn-sm text-white" href="/report/mbkm/edit?krsDetail=' + entry[0] +'">Edit Matkul</a>' + '</td>' +
+                        '<td class="text-center"><a class="btn btn-warning btn-sm text-white" href="/report/mbkm/editapprove?krsDetail=' + entry[0] +'">Edit Matkul</a>' + '</td>' +
                         '<td class="text-center">' + entry[1] + '</td>' +
                         '<td class="text-center">' + entry[2] + '</td>' +
                         '<td class="text-center">' + entry[3] + '</td>' +

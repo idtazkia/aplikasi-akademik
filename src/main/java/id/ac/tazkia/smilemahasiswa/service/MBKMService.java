@@ -1,8 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
-import id.ac.tazkia.smilemahasiswa.dao.FileMbkmDao;
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,10 +25,35 @@ public class MBKMService {
 
     @Autowired private FileMbkmDao fileMbkmDao;
 
+    @Autowired private PendaftaranMbkmDao pendaftaranMbkmDao;
+
+    @Autowired private MatakuliahMbkmDao matakuliahMbkmDao;
+
     @Value("${upload.mbkm}")
     private String mbkmFolder;
 
-    public void buatJadwalKrsMbkm(MatakuliahMbkm matkul, Dosen dosen, TahunAkademik tahun, TahunAkademikProdi tahunProdi, Hari hari, Kelas kelas, Ruangan ruangan){
+    public void buatMatakuliahMbkm(Krs krs, MatakuliahKurikulum matakuliahKurikulum) {
+
+        PendaftaranMbkm daftarMbkm = pendaftaranMbkmDao.findByMahasiswaAndTahunAkademikAndStatus(krs.getMahasiswa(), krs.getTahunAkademik(), StatusRecord.AKTIF);
+
+        if (daftarMbkm != null) {
+            MatakuliahMbkm newMbkm = new MatakuliahMbkm();
+            newMbkm.setKrs(krs);
+            newMbkm.setMatakuliahKurikulum(matakuliahKurikulum);
+            newMbkm.setPendaftaranMbkm(daftarMbkm);
+            newMbkm.setStatus(StatusRecord.AKTIF);
+            matakuliahMbkmDao.save(newMbkm);
+        }
+    }
+
+    public void hapusMatakulMbkm(MatakuliahMbkm matakuliahMbkm){
+        if (matakuliahMbkm != null) {
+            matakuliahMbkm.setStatus(StatusRecord.HAPUS);
+            matakuliahMbkmDao.save(matakuliahMbkm);
+        }
+    }
+
+    public void buatJadwalKrsMbkm(MatakuliahKurikulum matkul, Krs krs, Dosen dosen, TahunAkademik tahun, TahunAkademikProdi tahunProdi, Hari hari, Kelas kelas, Ruangan ruangan){
 
         Jadwal jadwal = new Jadwal();
         jadwal.setFinalStatus("N");
@@ -40,12 +63,12 @@ public class MBKMService {
         jadwal.setBobotTugas(BigDecimal.ZERO);
         jadwal.setBobotPresensi(BigDecimal.ZERO);
         jadwal.setDosen(dosen);
-        jadwal.setProdi(matkul.getKrs().getMahasiswa().getIdProdi());
+        jadwal.setProdi(krs.getMahasiswa().getIdProdi());
         jadwal.setTahunAkademik(tahun);
         jadwal.setTahunAkademikProdi(tahunProdi);
-        jadwal.setMatakuliahKurikulum(matkul.getMatakuliahKurikulum());
+        jadwal.setMatakuliahKurikulum(matkul);
         jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
-        jadwal.setProgram(matkul.getKrs().getMahasiswa().getIdProgram());
+        jadwal.setProgram(krs.getMahasiswa().getIdProgram());
         jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
         jadwal.setHari(hari);
         jadwal.setKelas(kelas);
@@ -54,10 +77,10 @@ public class MBKMService {
         jadwalDao.save(jadwal);
 
         KrsDetail kd = new KrsDetail();
-        kd.setKrs(matkul.getKrs());
-        kd.setMahasiswa(matkul.getKrs().getMahasiswa());
+        kd.setKrs(krs);
+        kd.setMahasiswa(krs.getMahasiswa());
         kd.setJadwal(jadwal);
-        kd.setMatakuliahKurikulum(matkul.getMatakuliahKurikulum());
+        kd.setMatakuliahKurikulum(matkul);
         kd.setNilaiPresensi(BigDecimal.ZERO);
         kd.setNilaiUts(BigDecimal.ZERO);
         kd.setNilaiTugas(BigDecimal.ZERO);
@@ -76,6 +99,15 @@ public class MBKMService {
         kd.setTahunAkademik(tahun);
         krsDetailDao.save(kd);
 
+    }
+
+    public void hapusJadwal(KrsDetail kd){
+        kd.setStatus(StatusRecord.HAPUS);
+        krsDetailDao.save(kd);
+
+        Jadwal jadwal = kd.getJadwal();
+        jadwal.setStatus(StatusRecord.HAPUS);
+        jadwalDao.save(jadwal);
     }
 
     public void uploadLaporan(MultipartFile file, FileMbkm fileMbkm) throws IOException {

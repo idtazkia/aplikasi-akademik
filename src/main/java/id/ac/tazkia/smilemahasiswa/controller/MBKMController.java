@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -163,7 +164,7 @@ public class MBKMController {
         mbkm.setStatusApproval(StatusApprove.APPROVED);
         pendaftaranMbkmDao.save(mbkm);
 
-        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademik tahun = mbkm.getTahunAkademik();
         TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mbkm.getMahasiswa().getIdProdi());
 
         List<MatakuliahMbkm> listMatakuliah = matakuliahMbkmDao.findByPendaftaranMbkmAndStatus(mbkm,  StatusRecord.AKTIF);
@@ -177,7 +178,7 @@ public class MBKMController {
                 Kelas kelas = kelasDao.findById("-").get();
                 Ruangan ruangan = ruanganDao.findById("01").get();
 
-                mbkmService.buatJadwalKrsMbkm(listMatkur, dosen, tahun, tahunProdi, hari, kelas, ruangan);
+                mbkmService.buatJadwalKrsMbkm(listMatkur.getMatakuliahKurikulum(), listMatkur.getKrs(), dosen, tahun, tahunProdi, hari, kelas, ruangan);
             }
         }
 
@@ -296,53 +297,110 @@ public class MBKMController {
 
     // edit matakuliah mahasiswa
 
-    @GetMapping("/report/mbkm/edit")
-    public void editMatkulMhs(Model model, @RequestParam(required = false) KrsDetail krsDetail, @RequestParam(required = false) MatakuliahMbkm matakuliahMbkm, Authentication authentication){
+    @GetMapping("/report/mbkm/editwaiting")
+    public void editMatkulMhsWaiting(Model model, @RequestParam(required = false) MatakuliahMbkm matakuliahMbkm, Authentication authentication){
 
         User user = currentUserService.currentUser(authentication);
         Krs krs = null;
-        if (krsDetail != null) {
-            model.addAttribute("matakuliahEdit", krsDetail);
-            model.addAttribute("krsDetail", krsDetail);
-            krs = krsDetail.getKrs();
-            model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(krsDetail.getMahasiswa().getId()));
-            model.addAttribute("listMatkulDiambil", krsDetailDao.findByKrsAndStatusAndStatusKonversi(krs, StatusRecord.AKTIF, StatusRecord.MBKM));
-            model.addAttribute("sksDiambil", matakuliahMbkmDao.jumlahSksApprove(krs));
-            model.addAttribute("tahun", krsDetail.getTahunAkademik());
-        }
         if (matakuliahMbkm != null) {
-            model.addAttribute("matakuliahEdit", matakuliahMbkm);
-            model.addAttribute("matakuliahMbkm", matakuliahMbkm);
             krs = matakuliahMbkm.getKrs();
+            model.addAttribute("krsWaiting", krs);
             model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(matakuliahMbkm.getPendaftaranMbkm().getMahasiswa().getId()));
-            model.addAttribute("listMatkulDiambil", matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF));
+            List<MatakuliahMbkm> listDiambil = matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF);
+            List<String> listMatkulDiambil = new ArrayList<>();
+            for (MatakuliahMbkm mb : listDiambil){
+                listMatkulDiambil.add(mb.getMatakuliahKurikulum().getId());
+            }
+            model.addAttribute("listMatkulDiambil", listMatkulDiambil);
             model.addAttribute("sksDiambil", matakuliahMbkmDao.jumlahSksMbkm(StatusRecord.AKTIF, krs));
             model.addAttribute("tahun", matakuliahMbkm.getPendaftaranMbkm().getTahunAkademik());
         }
     }
 
-    @PostMapping("/report/mbkm/edit")
-    public String editMatkulMahasiswa(@RequestParam(required = false) KrsDetail krsDetail, @RequestParam(required = false) MatakuliahMbkm matakuliahMbkm, @RequestParam String matkul){
+    @GetMapping("/report/mbkm/editapprove")
+    public void editMatkulMhsApprove(Model model, @RequestParam(required = false) KrsDetail krsDetail, Authentication authentication){
 
-        MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(matkul).get();
-        log.info("cek data checkbox : {}", matkur.getMatakuliah().getNamaMatakuliah());
+        User user = currentUserService.currentUser(authentication);
+        Krs krs = null;
+        if (krsDetail != null) {
+            krs = krsDetail.getKrs();
+            model.addAttribute("krsApprove", krs);
+            model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(krsDetail.getMahasiswa().getId()));
+            List<KrsDetail> listDiambil = krsDetailDao.findByKrsAndStatusAndStatusKonversiAndGradeIsNull(krs, StatusRecord.AKTIF, StatusRecord.MBKM);
+
+            List<String> listMatkulDiambil = new ArrayList<>();
+            for (KrsDetail kDetail : listDiambil){
+                listMatkulDiambil.add(kDetail.getMatakuliahKurikulum().getId());
+            }
+            model.addAttribute("listMatkulDiambil", listMatkulDiambil);
+            model.addAttribute("sksDiambil", matakuliahMbkmDao.jumlahSksApprove(krs));
+            model.addAttribute("tahun", krsDetail.getTahunAkademik());
+        }
+    }
+
+    @PostMapping("/report/mbkm/edit")
+    public String editMatkulMahasiswa(@RequestParam(required = false) Krs krsKrsDetail, @RequestParam(required = false) Krs krsMatakuliahMbkm, @RequestParam String[] matkul){
 
         TahunAkademik tahun = null;
-        if (krsDetail != null) {
-            tahun = krsDetail.getTahunAkademik();
-            log.info("Matakuliah krs detail di edit : {}", krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-            krsDetail.setMatakuliahKurikulum(matkur);
-            krsDetailDao.save(krsDetail);
+        List<MatakuliahKurikulum> mkNew = new ArrayList<>();
 
-            Jadwal jadwal = krsDetail.getJadwal();
-            jadwal.setMatakuliahKurikulum(matkur);
-            jadwalDao.save(jadwal);
+
+        for (String mk : matkul) {
+            MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(mk).get();
+            mkNew.add(matkur);
         }
-        if (matakuliahMbkm != null) {
-            tahun = matakuliahMbkm.getPendaftaranMbkm().getTahunAkademik();
-            log.info("Matakuliah mbkm di edit : {}", matakuliahMbkm.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-            matakuliahMbkm.setMatakuliahKurikulum(matkur);
-            matakuliahMbkmDao.save(matakuliahMbkm);
+
+        if (krsKrsDetail != null) {
+            List<KrsDetail> krsNow = krsDetailDao.findByKrsAndStatusAndStatusKonversiAndGradeIsNull(krsKrsDetail, StatusRecord.AKTIF, StatusRecord.MBKM);
+            tahun = krsKrsDetail.getTahunAkademik();
+
+            for (KrsDetail krs : krsNow){
+                if (!mkNew.contains(krs.getMatakuliahKurikulum())){
+                    log.info("matakuliah lama yang dihapus : {}", krs.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    mbkmService.hapusJadwal(krs);
+                }
+            }
+
+            for (MatakuliahKurikulum mk : mkNew) {
+                if (!krsNow.contains(mk)) {
+                    KrsDetail cek = krsDetailDao.findByKrsAndStatusKonversiAndStatusAndMatakuliahKurikulum(krsKrsDetail, StatusRecord.MBKM, StatusRecord.AKTIF, mk);
+                    if (cek == null) {
+
+                        TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, krsKrsDetail.getMahasiswa().getIdProdi());
+
+                        log.info("Tambah matakuliah baru : {}", mk.getMatakuliah().getNamaMatakuliah());
+                        Dosen dosen = krsKrsDetail.getMahasiswa().getIdProdi().getDosen();
+                        Hari hari = hariDao.findById("0").get();
+                        Kelas kelas = kelasDao.findById("-").get();
+                        Ruangan ruangan = ruanganDao.findById("01").get();
+
+                        mbkmService.buatJadwalKrsMbkm(mk, krsKrsDetail, dosen, tahun, tahunProdi, hari, kelas, ruangan);
+                    }
+                }
+            }
+
+        }
+        if (krsMatakuliahMbkm != null) {
+            tahun = krsMatakuliahMbkm.getTahunAkademik();
+            List<MatakuliahMbkm> matakuliahExist = matakuliahMbkmDao.findByKrsAndStatus(krsMatakuliahMbkm, StatusRecord.AKTIF);
+
+            for (MatakuliahMbkm krs : matakuliahExist){
+                if (!mkNew.contains(krs.getMatakuliahKurikulum())){
+                    log.info("matakuliah lama yang dihapus : {}", krs.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    mbkmService.hapusMatakulMbkm(krs);
+                }
+            }
+
+            for (MatakuliahKurikulum mk : mkNew) {
+                if (!matakuliahExist.contains(mk)) {
+                    MatakuliahMbkm cek = matakuliahMbkmDao.findByKrsAndMatakuliahKurikulumAndStatus(krsMatakuliahMbkm, mk, StatusRecord.AKTIF);
+                    if (cek == null) {
+                        log.info("Tambah matakuliah baru : {}", mk.getMatakuliah().getNamaMatakuliah());
+                        mbkmService.buatMatakuliahMbkm(krsMatakuliahMbkm, mk);
+                    }
+                }
+            }
+
         }
 
         return "redirect:/report/mbkm?tahunAkademik="+tahun.getId();
