@@ -684,7 +684,7 @@ public class KuesionerController {
                 return "redirect:list";
             } else {
                 if (enableFiture != null) {
-                    return "kuesioner/ielts /view";
+                    return "kuesioner/ielts/view";
                 } else {
                     return "redirect:list";
                 }
