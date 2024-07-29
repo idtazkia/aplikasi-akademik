@@ -92,8 +92,7 @@
 
 
 
-                    <div class="card-body" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KHS_ADMIN')
-                                 or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                    <div class="card-body" sec:authorize="hasAuthority('VIEW_KHS_ADMIN')">
                       <div class="table-responsive">
                         <table class="table align-items-center table-flush sortable">
                           <thead class="thead-light">
@@ -124,8 +123,7 @@
                             </td>
                             <td th:text="${data.approval}"></td>
 
-                            <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KHS_ADMIN')
-                                 or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                            <td sec:authorize="hasAuthority('VIEW_KHS_ADMIN')">
                               <a th:href="@{/khs/request/approved(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id},jadwal = ${data.krsDetail.getJadwal().id})}" onclick="return confirm('Are you sure? ')"
                                  class="fa-solid fa-circle-xmark" style="color: #0B792F">Approve</a>
                               |
@@ -142,7 +140,7 @@
                     </div>
 
 
-                    <div class="card-body" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">
+                    <div class="card-body" sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">
                       <div class="table-responsive">
                         <table class="table align-items-center table-flush sortable">
                           <thead class="thead-light">
@@ -185,7 +183,7 @@
                               </td>
                               <td th:text="${data.approval}"></td>
 
-                              <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')" class="text-center">
+                              <td sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')" class="text-center">
                                 <button class="btn btn-primary" onclick="return confirm('Confirm your request.')">Nilai</button>
                               </td>
                             </form>
@@ -197,6 +195,45 @@
                         </table>
                       </div>
                     </div>
+
+                    <div class="card-body" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
+                      <div class="table-responsive">
+                        <table class="table align-items-center table-flush sortable">
+                          <thead class="thead-light">
+                          <tr>
+                            <th>No</th>
+                            <th>NIM</th>
+                            <th>Mahasiswa</th>
+                            <th>Matakuliah</th>
+                            <th>Kode</th>
+                            <th>Nama Kelas</th>
+                            <th>Grade Lama</th>
+                            <th>Grade Baru</th>
+                            <th>Tahun Akademik</th>
+                            <th>Status Konversi</th>
+                            <th>Waktu Konversi</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr th:each="data,row : ${listFinal}" >
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td th:text="${data.krsDetail.mahasiswa.nim}"></td>
+                            <td th:text="${data.krsDetail.mahasiswa.nama}"></td>
+                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
+                            <td th:text="${data.krsDetail.jadwal.kelas.namaKelas}"></td>
+                            <td th:text="${data.gradeLama}"></td>
+                            <td th:text="${data.krsDetail.grade}"></td>
+                            <td th:text="${data.krsDetail.tahunAkademik.namaTahunAkademik}"></td>
+                            <td th:text="${data.krsDetail.requestKonversi}"></td>
+                            <td th:text="${data.finalizationDate}"></td>
+                          </tr>
+                          </tbody>
+
+                        </table>
+                      </div>
+                    </div>
+
 
                   </div>
                 </div>

@@ -20,7 +20,19 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
     Page <RequestKonversi> findByApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2,String search, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable page);
+
     Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatus(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable page);
+    Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi,StatusRecord statusRecord1, StatusRecord statusRecord2, String search, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
+
+    Page <RequestKonversi> findByApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
+
+
+    Page <RequestKonversi> findByKrsDetailJadwalProdiAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord, StatusRecord finalization, Pageable page);
+
+    Page <RequestKonversi> findByStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord, StatusRecord finalization,String search, Pageable page);
+
+    Page <RequestKonversi> findByKrsDetailJadwalProdiAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord, StatusRecord finalization,String search, Pageable page);
+
 }
