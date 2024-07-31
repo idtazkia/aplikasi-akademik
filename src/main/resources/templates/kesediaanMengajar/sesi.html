@@ -61,9 +61,9 @@
                                 <b class="text-white">Data Pendukung</b>
                             </div>
                             <div class="card-body">
-                                <p>Permohonan Jadwal ini dibuat agar dapat memudahkan kami menyusun Jadwal Perkuliahan yang sesuai dengan Agenda Bapak dan Ibu, dengan ini kami mohon bersedia menceklis Alternatif Hari dan Sesi perkuliahan mata kuliah yang akan diampu pada Semester Ganjil Tahun Akademik 2021/2022. </p>
+                                <p>Permohonan Jadwal ini dibuat agar dapat memudahkan kami menyusun Jadwal Perkuliahan yang sesuai dengan Agenda Bapak dan Ibu, dengan ini kami mohon bersedia menceklis Alternatif Hari dan Sesi perkuliahan mata kuliah yang akan diampu pada Tahun Akademik <span th:text="${tahun.namaTahunAkademik}"></span> </p>
                                 <br>
-                                <span>Batas waktu pengisian Jadwal terakhir pada tanggal 11 Agustus 2021.</span>
+                                <span>Batas waktu pengisian Jadwal terakhir pada tanggal <span th:text="${#temporals.format(tahun.tanggalMulai, 'dd MMMM yyyy')}"></span></span>
                                 <br><br>
                                 <p>Waktu yang WAJIB dikosongkan untuk Perkuliahan dan diagendakan untuk kegiatan: <br>
                                     1. Senin pukul 09.30 - 12.00 WIB agenda rutin Monday Forum khususnya Dosen Tetap dan Dosen Tidak Tetap;

@@ -91,7 +91,7 @@
                                     <td th:text="${(row.index + 1)}">1</td>
                                     <td th:text="${data.mahasiswa.nim}">Basic Econometrics   </td>
                                     <td th:text="${data.mahasiswa.nama}">Aam Slamet Rusydiana  </td>
-                                    <td ><span th:utext="${#strings.substring(data.jawabanTeks, 0, 40)}"></span>  </td>
+                                    <td ><span th:utext="${#strings.substring(data.jawabanTeks, 0, 20)}"></span>  </td>
                                     <td ><a th:text="${data.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${data.id})}"></a></td>
                                     <td >
                                         <div class="row">

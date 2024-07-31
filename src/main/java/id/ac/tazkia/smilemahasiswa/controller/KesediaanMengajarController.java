@@ -182,7 +182,7 @@ public class KesediaanMengajarController {
             return "redirect:sesi?kmd="+kesediaanMengajarDosen.getId();
         }
 
-        return "redirect:dosen";
+        return "redirect:sesi?kmd="+kesediaanMengajarDosen.getId();
     }
 
     @GetMapping("/kesediaanMengajar/sesi")
@@ -190,6 +190,7 @@ public class KesediaanMengajarController {
 
         KesediaanMengajarDosen kesediaanDosen = kesediaanMengajarDosenDao.findById(kmd).get();
         model.addAttribute("kesediaanDosen", kesediaanDosen);
+        model.addAttribute("tahun", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("hari", hariDao.findByStatus(StatusRecord.AKTIF));
 
     }

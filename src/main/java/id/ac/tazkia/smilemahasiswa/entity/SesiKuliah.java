@@ -52,6 +52,8 @@ public class SesiKuliah {
     @ManyToOne
     private DetailPertemuan detailPertemuan;
 
+    private String linkVideo;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord ceramah;
 

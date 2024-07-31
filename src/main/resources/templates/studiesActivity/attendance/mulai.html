@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="col-md-2 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
                                                 <select name="pertemuan" class="form-control"
@@ -70,7 +70,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="col-md-2 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Detail Pertemuan :</label>
                                                 <select name="detailPertemuan" th:field="*{detailPertemuan}" readonly
@@ -96,10 +96,18 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label><b>*</b>Upload Materi :</label>
+                                                <input type="file" required multiple name="materiMengajar" class="form-control">
+                                            </div>
+                                        </div>
                                         <div class="col-md-3 col-sm-6 col-xs-12">
                                             <div class="form-group">
-                                                <label>Upload Materi :</label>
-                                                <input type="file" required multiple name="materiMengajar" class="form-control">
+                                                <label>Link video materi :</label>
+<!--                                                <input type="text" name="linkVideo" class="form-control">-->
+                                                <textarea cols="10" rows="3" name="linkVideo" class="form-control"></textarea>
+                                                <p style="font-size: 15px;"><b>*</b> Jika lebih dari 1 link, pisahkan dengan ',(koma)' dan (spasi)</p>
                                             </div>
                                         </div>
                                     </div>

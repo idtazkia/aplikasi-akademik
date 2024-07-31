@@ -741,6 +741,7 @@ public class PresensiService {
         }
 
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+        sesiKuliah.setLinkVideo(jadwalDto.getLinkVideo());
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
 

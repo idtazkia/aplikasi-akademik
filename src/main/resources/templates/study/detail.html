@@ -136,10 +136,17 @@
                                                             <a th:href="@{/materi/{id}/sesi(id=${materi.id})}" target="_blank" th:text="${materi.namaFile}"></a>
                                                         </li>
                                                     </ul>
+                                                    <br>
+                                                    <h4>Materi Video</h4>
+                                                    <ul class="tpdg-ul-circle" th:each="link, row:${#strings.arraySplit(data[6], ',')}">
+                                                        <li>
+                                                            <a th:href="${link}" target="_blank" th:text="${link}"></a>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                                 <hr>
+                                                <h4>Tugas</h4>
                                                 <div th:each="tugas, row : ${tugas}" th:if="${tugas.sesiKuliah.id == data[4]}" class="tpgp-al-cl">
-                                                    <h4>Tugas</h4>
                                                     <h5 th:text="${'Judul Tugas : ' + tugas.namaTugas}"></h5>
                                                     <div th:if="${tugas.file != null}"> <a th:href="@{/jadwal/{jadwal}/tugas(jadwal=${tugas.id})}" th:text="${tugas.namaFile}"></a></div>
                                                     <br>

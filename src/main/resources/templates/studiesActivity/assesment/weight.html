@@ -215,9 +215,10 @@
                                     <div class="col-md-12 col-xs-12">
                                         <div class="card shadow">
                                             <div class="card-header border-0">
-                                                <a th:href="@{/studiesActivity/assesment/tugas(jadwal=${jadwal.id})}" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-plus-circle"></i> Komponen Nilai
+                                                <a th:if="${jadwal.bobotTugas != 0}" th:href="@{/studiesActivity/assesment/tugas(jadwal=${jadwal.id})}" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-plus-circle"></i> Buat tugas
                                                 </a>
+                                                <p th:if="${jadwal.bobotTugas == 0}"><b>*</b>Input bobot penilaian terlebih dahulu sebelum membuat tugas</p>
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                                      aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -299,7 +299,15 @@
                           </div>
                         </div>
 
-                          <a th:href="@{/studiesActivity/assesment/tugas (jadwal = ${jadwal.id}, sesi = ${data.pertemuanke})}"
+                          <a th:if="${jadwal.bobotTugas != 0}" th:href="@{/studiesActivity/assesment/tugas (jadwal = ${jadwal.id}, sesi = ${data.pertemuanke})}"
+                             class="btn text-darker btn-warning btn-outline-warning btn-sm "
+                             aria-haspopup="true"
+                             aria-expanded="false">
+                              <i class="fas fa-edit"></i>
+                              Buat tugas
+                          </a>
+
+                          <a th:if="${jadwal.bobotTugas == 0}" th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}"
                              class="btn text-darker btn-warning btn-outline-warning btn-sm "
                              aria-haspopup="true"
                              aria-expanded="false">
