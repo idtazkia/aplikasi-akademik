@@ -624,6 +624,7 @@ public class KuesionerController {
 
         }else{
             prediksiTest.setStatusUjian(StatusUjian.TIDAK_LULUS);
+            tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "toefl");;
         }
         prediksiTestDao.save(prediksiTest);
 
@@ -644,6 +645,7 @@ public class KuesionerController {
 
         }else{
             prediksiTest.setStatusUjian(StatusUjian.TIDAK_LULUS);
+            tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "ielts");
         }
         prediksiTestDao.save(prediksiTest);
 
