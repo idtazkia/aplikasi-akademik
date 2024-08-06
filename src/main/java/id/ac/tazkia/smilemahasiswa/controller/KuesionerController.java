@@ -267,7 +267,7 @@ public class KuesionerController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TOEFL, true);
-        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.TOEFL));
+        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
         if (totalTest < 1){
             return "kuesioner/toefl/view";
         }else {
@@ -540,7 +540,7 @@ public class KuesionerController {
             }
 
             PrediksiTest prediksiTest = new PrediksiTest();
-            if (prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.TOEFL)) > 0) {
+            if (prediksiTestDao.countTotalUjian(mahasiswa) > 0) {
                 ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
                 prediksiTest.setStatus(StatusRecord.AKTIF);
             } else {
@@ -584,7 +584,7 @@ public class KuesionerController {
                 return "redirect:../info?terakhir=true";
             }
             PrediksiTest prediksiTest = new PrediksiTest();
-            if (prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.IELTS)) > 0){
+            if (prediksiTestDao.countTotalUjian(mahasiswa) > 0){
                 ujianKe = prediksiTestDao.findMaxUjian(mahasiswa) + 1;
                 prediksiTest.setStatus(StatusRecord.AKTIF);
             }else {
@@ -624,7 +624,11 @@ public class KuesionerController {
 
         }else{
             prediksiTest.setStatusUjian(StatusUjian.TIDAK_LULUS);
-            tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "toefl");;
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(prediksiTest.getMahasiswa(), StatusRecord.TOEFL, true);
+            if (enableFiture != null){
+                enableFiture.setEnable(false);
+                enableFitureDao.save(enableFiture);
+            }
         }
         prediksiTestDao.save(prediksiTest);
 
@@ -645,7 +649,11 @@ public class KuesionerController {
 
         }else{
             prediksiTest.setStatusUjian(StatusUjian.TIDAK_LULUS);
-            tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "ielts");
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(prediksiTest.getMahasiswa(), StatusRecord.IELTS, true);
+            if (enableFiture != null){
+                enableFiture.setEnable(false);
+                enableFitureDao.save(enableFiture);
+            }
         }
         prediksiTestDao.save(prediksiTest);
 
@@ -675,7 +683,7 @@ public class KuesionerController {
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,
                 StatusRecord.IELTS, true);
 
-        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa, String.valueOf(JenisTest.IELTS));
+        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
         if (totalTest < 1) {
             return "kuesioner/ielts/view";
         } else {
