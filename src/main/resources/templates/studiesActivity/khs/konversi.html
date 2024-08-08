@@ -65,6 +65,7 @@
                     <div class="card-body">
                       <div class="row">
                         <div class="col-md-12">
+
                           <input type="hidden" name="id" >
                           <p><small class="text-primary"> Please fill this form to procced grade conversion request</small></p>
                           <div class="mb-3">
@@ -75,6 +76,15 @@
                           <div class="mb-3">
                             <label for="file" class="form-label">Evidence</label>
                             <input class="form-control" type="file" id="file" name="file" required>
+                          </div>
+                          <br>
+                          <div class="mb-3">
+                            <label>Evidence Grade Type</label>
+                            <select id="jenisNilai" name="jenisNilai" class="form-control">
+                              <option value="" selected disabled>-- Select One --</option>
+                              <option value="PRESTASI">PRESTASI</option>
+                              <option value="TAHFIZH">TAHFIZH</option>
+                            </select>
                           </div>
                         </div>
                       </div>
@@ -110,6 +120,17 @@
                             <label for="file" class="form-label">Evidence</label>
                             <input class="form-control" type="file"  required disabled>
                           </div>
+                          <br>
+                          <div class="mb-3">
+                            <label>Evidence Grade Type</label>
+                            <select name="jenisNilai" class="form-control" disabled>
+                              <option value=""></option>
+                              <option value="" selected disabled>-- Select One --</option>
+                              <option value="PRESTASI">PRESTASI</option>
+                              <option value="TAHFIZH">TAHFIZH</option>
+                            </select>
+                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -155,6 +176,7 @@
                   <th>Status</th>
                   <th>Description</th>
                   <th>File</th>
+                  <th>Grade Type</th>
                   <th>Option</th>
                 </tr>
                 <tr th:each="data,row : ${listRequest}" >
@@ -164,8 +186,8 @@
                   <td >
                     <a th:href="@{/khs/request/{requestKonversi}/(requestKonversi = ${data.id})}" target="_blank"  class="text-primary fst-italic small me-2" th:text="${data.namaFile}" >
                     </a>
-
                   </td>
+                  <td th:text="${data.jenisNilai}"></td>
                   <td >
                     <a th:href="@{/khs/request/delete(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id},jadwal = ${data.krsDetail.getJadwal().id})}" onclick="return confirm('Are you sure? ')" class="fa-solid fa-circle-xmark" style="color: #bb2d3b">Remove</a>
                   </td>
