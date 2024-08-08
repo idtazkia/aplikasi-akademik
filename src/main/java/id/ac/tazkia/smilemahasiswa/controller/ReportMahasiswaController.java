@@ -636,12 +636,14 @@ public class ReportMahasiswaController {
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
                 model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
-                model.addAttribute("listRequest", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,search, pageable));
+                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI,search, pageable));
+                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH,search, pageable));
                 model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailJadwalProdiAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi, StatusRecord.AKTIF, StatusRecord.Y,search, pageable));
 
             } else {
                 model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalization(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N, pageable));
-                model.addAttribute("listRequest", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatus(prodi,StatusRecord.WAITING, StatusRecord.AKTIF, pageable));
+                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndJenisNilai(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI, pageable));
+                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailJadwalProdiAndApprovalAndStatusAndJenisNilai(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH, pageable));
                 model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailJadwalProdiAndStatusAndFinalization(prodi,StatusRecord.AKTIF,StatusRecord.Y, pageable));
 
 
@@ -650,11 +652,14 @@ public class ReportMahasiswaController {
             if (StringUtils.hasText(search)){
                 model.addAttribute("search", search);
                 model.addAttribute("listRequestApproved", requestKonversiDao.findByApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
-                model.addAttribute("listRequest", requestKonversiDao.findByApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,search, pageable));
+                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI,search, pageable));
+                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH,search, pageable));
                 model.addAttribute("listFinal", requestKonversiDao.findByStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.AKTIF,StatusRecord.Y, search, pageable));
 
             }else{
                 model.addAttribute("listRequest",khsService.getRequestList2(pageable));
+                model.addAttribute("listRequestPrestasi",requestKonversiDao.findByApprovalAndStatusAndJenisNilaiOrderByCreatedDateAsc(StatusRecord.WAITING,StatusRecord.AKTIF,StatusRecord.PRESTASI,pageable));
+                model.addAttribute("listRequestTahfizh",requestKonversiDao.findByApprovalAndStatusAndJenisNilaiOrderByCreatedDateAsc(StatusRecord.WAITING,StatusRecord.AKTIF,StatusRecord.TAHFIZH,pageable));
             }
         }
 

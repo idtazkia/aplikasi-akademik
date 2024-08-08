@@ -15,14 +15,17 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
 
     List <RequestKonversi> findByKrsDetailAndKrsDetailJadwalAndStatus(KrsDetail krsDetail, Jadwal jadwal, StatusRecord statusRecord);
 
+
     Page <RequestKonversi> findByApprovalAndStatusOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable pageable);
 
-    Page <RequestKonversi> findByApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2,String search, Pageable page);
+    Page <RequestKonversi> findByApprovalAndStatusAndJenisNilaiOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable pageable);
+
+    Page <RequestKonversi> findByApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3,String search, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatus(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable page);
-    Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi,StatusRecord statusRecord1, StatusRecord statusRecord2, String search, Pageable page);
+    Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndJenisNilai(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2,StatusRecord statusRecord3, Pageable page);
+    Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi,StatusRecord statusRecord1, StatusRecord statusRecord2,StatusRecord statusRecord3, String search, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailJadwalProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
 
