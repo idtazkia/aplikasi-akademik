@@ -60,4 +60,7 @@ public class RequestKonversi {
 
     private String gradeBaru;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord jenisNilai;
+
 }
