@@ -48,18 +48,51 @@
             <div class="col">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <form method="get">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h3 class="mb-0">Data </h3>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col text-right">
-                                        <a th:href="@{/kewajiban/admin/tlc/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h3 class="mb-0">Data </h3>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col text-right">
+                                    <a class="btn btn-success btn-sm text-white" data-toggle="modal" data-target="#modal-import"><i class="fas fa-download"></i> Rekap per angkatan</a>
+                                    <div class="modal fade" id="modal-import" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <div class="card shadow border-0">
+                                                        <div class="card-body px-lg-5 py-lg-5">
+                                                            <div class="text-center">
+                                                                <form method="get" th:action="@{/kewajiban/admin/download}">
+                                                                    <input type="hidden" name="bagian" value="TLC">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="form-group">
+                                                                                <label>Angkatan</label>
+                                                                                <select name="angkatan" required class="form-control">
+                                                                                    <option value=""></option>
+                                                                                    <option th:each="data : ${angkatan}"
+                                                                                            th:selected="(${data} == *{selectAngkatan})"
+                                                                                            th:text="${data}"
+                                                                                            th:value="${data}">STEI TAZKIA</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <button class="btn btn-success" type="submit">Download</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <a th:href="@{/kewajiban/admin/tlc/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
 
                     <div class="card-body">

@@ -9,6 +9,9 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.ElearningWebClientService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -95,6 +98,11 @@ public class BebasKewajibanController {
     MailService mailService;
     @Autowired
     private ElearningWebClientService elearningWebClientService;
+
+    @ModelAttribute("angkatan")
+    public Iterable<Mahasiswa> angkatan() {
+        return mahasiswaDao.cariAngkatan();
+    }
 
     // halaman mahasiswa
 
@@ -551,7 +559,54 @@ public class BebasKewajibanController {
             log.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
 
+    @GetMapping("/kewajiban/admin/download")
+    public void reportTlcPerAngkatan(@RequestParam String bagian, @RequestParam String angkatan, HttpServletResponse response) throws IOException {
+        String[] columns = {"No", "NIM", "Nama", "Prodi", "Waktu Approval", "User Approval"};
+
+        List<Object[]> listApporval = bebasKewajibanDao.downloadApproval(bagian, angkatan);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("TLC Approve");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listApporval){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[1].toString());
+            row.createCell(2).setCellValue(list[2].toString());
+            row.createCell(3).setCellValue(list[3].toString());
+            row.createCell(4).setCellValue(list[5].toString());
+            row.createCell(5).setCellValue(list[7].toString());
+        }
+
+        for (int i = 0; i<columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename = Rekap mahasiswa approve SKL by " + bagian + " angkatan " + angkatan + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 
     @PostMapping("/kewajiban/admin/tlc/approve")

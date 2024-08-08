@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -54,6 +53,6 @@ public class RequestCicilan {
     private String keterangan;
 
     @Enumerated(EnumType.STRING)
-    private ZahirExport zahirExport = ZahirExport.NEW;
+    private AkuntansiExport zahirExport = AkuntansiExport.NEW;
 
 }

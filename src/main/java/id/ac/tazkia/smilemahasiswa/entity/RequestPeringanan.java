@@ -44,6 +44,6 @@ public class RequestPeringanan {
     private String keterangan;
 
     @Enumerated(EnumType.STRING)
-    private ZahirExport zahirExport = ZahirExport.NEW;
+    private AkuntansiExport zahirExport = AkuntansiExport.NEW;
 
 }

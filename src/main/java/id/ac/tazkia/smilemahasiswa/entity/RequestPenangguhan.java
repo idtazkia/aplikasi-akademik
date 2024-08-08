@@ -1,16 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
-import org.apache.tomcat.jni.Local;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
-import org.hibernate.annotations.NotFound;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -49,6 +45,6 @@ public class RequestPenangguhan {
     private String keteranganReject;
 
     @Enumerated(EnumType.STRING)
-    private ZahirExport zahirExport = ZahirExport.NEW;
+    private AkuntansiExport zahirExport = AkuntansiExport.NEW;
 
 }

@@ -1,5 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-public enum ZahirExport {
+public enum AkuntansiExport {
     NEW,SENT, DELETED
 }
