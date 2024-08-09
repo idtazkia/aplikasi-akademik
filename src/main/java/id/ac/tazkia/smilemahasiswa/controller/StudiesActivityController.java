@@ -780,6 +780,7 @@ public class StudiesActivityController {
         jadwalDto.setJadwal(sesiKuliah.getJadwal());
         jadwalDto.setDetailPertemuan(sesiKuliah.getDetailPertemuan());
         jadwalDto.setBeritaAcara(sesiKuliah.getBeritaAcara());
+        jadwalDto.setRps(sesiKuliah.getRps());
         jadwalDto.setDosen(sesiKuliah.getPresensiDosen().getDosen());
         jadwalDto.setPertemuan(sesiKuliah.getPertemuan());
         jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());

@@ -17,6 +17,9 @@ public class JadwalDto {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String beritaAcara;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String rps;
     private Jadwal jadwal;
     private PresensiDosen presensiDosen;
     private String waktuMulai;
