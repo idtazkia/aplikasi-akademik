@@ -77,6 +77,9 @@
                             <div th:if="${used == null}" class="form-group">
                                 <button class="btn btn-primary">Simpan</button>
                             </div>
+                            <div th:if="${user.username == 'wareksatu@tazkia.ac.id' || user.username == 'yasersyamlan@tazkia.ac.id'}" class="form-group">
+                                <button class="btn btn-primary">Simpan</button>
+                            </div>
                             <h3 th:if="${used != null}" th:text="${used}" class="alert alert-danger" role="alert"></h3>
                         </form>
                     </div>

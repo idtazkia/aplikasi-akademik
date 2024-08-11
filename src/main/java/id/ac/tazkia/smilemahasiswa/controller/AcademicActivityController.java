@@ -793,8 +793,9 @@ public class  AcademicActivityController {
     }
 
     @GetMapping("/academic/courses/form")
-    public void formCourses(Model model,@RequestParam(required = false, name = "id")
-            Matakuliah matakuliah){
+    public void formCourses(Model model,@RequestParam(required = false, name = "id")  Matakuliah matakuliah , Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        model.addAttribute("user", user);
         model.addAttribute("courses", new Matakuliah());
 
         if (matakuliah != null){
