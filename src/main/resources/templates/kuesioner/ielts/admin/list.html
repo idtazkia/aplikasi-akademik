@@ -293,6 +293,12 @@
                                                     th:data-target="${'#modalPenilaian'+data.id}">Penilaian
                                             </button>
                                             <button
+                                                    th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.LULUS || data.statusUjian == data.statusUjian.TIDAK_LULUS}"
+                                                    class="btn btn-sm btn-primary" data-toggle="modal"
+                                                    aria-haspopup="true"
+                                                    th:data-target="${'#modalPenilaian'+data.id}">Edit Penilaian
+                                            </button>
+                                            <button
                                                     th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.DINILAI}"
                                                     class="btn btn-sm btn-primary"
                                                     th:text="${'Nilai ' + data.nilai}">Detail
@@ -340,7 +346,7 @@
                                                                         <input type="number"
                                                                                name="nilaiListening"
                                                                                id="nilai-listening" step="1"
-                                                                               max="100" placeholder="0" required
+                                                                                placeholder="0" required
                                                                                class="form-control nilai"/>
                                                                         <div class="error-message text-danger">
                                                                         </div>
@@ -354,7 +360,7 @@
                                                                         <input type="number"
                                                                                id="nilaiWriting"
                                                                                name="nilaiWriting" step="1"
-                                                                               max="100" placeholder="0" required
+                                                                                placeholder="0" required
                                                                                class="form-control nilai"/>
                                                                         <div class="error-message text-danger">
                                                                         </div>
@@ -367,7 +373,7 @@
                                                                         <label>READING COMPREHENSION</label>
                                                                         <input type="number" id="nilaiReading"
                                                                                name="nilaiReading" step="1"
-                                                                               max="100" placeholder="0" required
+                                                                                placeholder="0" required
                                                                                class="form-control nilai"/>
                                                                         <div class="error-message text-danger">
                                                                         </div>
@@ -379,7 +385,7 @@
                                                                         <label>SPEAKING COMPREHENSION</label>
                                                                         <input type="number" id="nilaiSpeaking"
                                                                                name="nilaiSpeaking" step="1"
-                                                                               max="100" placeholder="0" required
+                                                                                placeholder="0" required
                                                                                class="form-control nilai"/>
                                                                         <div class="error-message text-danger">
                                                                         </div>
@@ -388,7 +394,7 @@
 
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
-                                                                        <label>SPEAKING COMPREHENSION</label>
+                                                                        <label>Total Nilai</label>
                                                                         <input type="text" id="nilai"
                                                                                name="nilai"  placeholder="0" required
                                                                                class="form-control nilai"/>
@@ -537,5 +543,4 @@
 
 </div>
 </body>
-
 </html>
