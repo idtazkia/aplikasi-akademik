@@ -563,7 +563,7 @@ public class BebasKewajibanController {
 
     @GetMapping("/kewajiban/admin/download")
     public void reportTlcPerAngkatan(@RequestParam String bagian, @RequestParam String angkatan, HttpServletResponse response) throws IOException {
-        String[] columns = {"No", "NIM", "Nama", "Prodi", "Waktu Approval", "User Approval"};
+        String[] columns = {"No", "NIM", "Nama", "Prodi", "Kategori Tes", "Tanggal Tes", "Nilai"};
 
         List<Object[]> listApporval = bebasKewajibanDao.downloadApproval(bagian, angkatan);
 
@@ -595,8 +595,9 @@ public class BebasKewajibanController {
             row.createCell(1).setCellValue(list[1].toString());
             row.createCell(2).setCellValue(list[2].toString());
             row.createCell(3).setCellValue(list[3].toString());
-            row.createCell(4).setCellValue(list[5].toString());
-            row.createCell(5).setCellValue(list[7].toString());
+            row.createCell(4).setCellValue(list[4].toString());
+            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(6).setCellValue(list[6].toString());
         }
 
         for (int i = 0; i<columns.length; i++){
