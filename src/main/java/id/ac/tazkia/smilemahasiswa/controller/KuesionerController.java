@@ -482,9 +482,9 @@ public class KuesionerController {
     public void downloadRekapDinilai(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
         String[] columns;
         if (periode.getJenisTest() == JenisTest.TOEFL) {
-            columns = new String[]{"NO", "NIM", "Full Name", "Department", "Listening", "Structure", "Reading", "Total"};
+            columns = new String[]{"NO", "NIM", "Full Name", "Department", "Listening", "Structure", "Reading", "Total", "Status"};
         }else{
-            columns = new String[]{"NO", "NIM", "Full Name", "Department", "Writing", "Speaking", "Reading", "Listening", "Total"};
+            columns = new String[]{"NO", "NIM", "Full Name", "Department", "Writing", "Speaking", "Reading", "Listening", "Total", "Status"};
         }
 
         List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(periode, StatusRecord.AKTIF, Arrays.asList(StatusUjian.LULUS, StatusUjian.TIDAK_LULUS));
@@ -578,6 +578,7 @@ public class KuesionerController {
                 }else{
                     row.createCell(7).setCellValue("-");
                 }
+                row.createCell(8).setCellValue(list.getStatusUjian().toString());
             }else {
                 if (list.getNilaiWriting() != null) {
                     row.createCell(4).setCellValue(list.getNilaiWriting().intValue());
@@ -604,6 +605,7 @@ public class KuesionerController {
                 }else{
                     row.createCell(8).setCellValue("-");
                 }
+                row.createCell(9).setCellValue(list.getStatusUjian().toString());
             }
 
             row.getCell(0).setCellStyle(dataStyle);
@@ -614,8 +616,9 @@ public class KuesionerController {
             row.getCell(5).setCellStyle(dataStyle);
             row.getCell(6).setCellStyle(dataStyle);
             row.getCell(7).setCellStyle(dataStyle);
+            row.getCell(8).setCellStyle(dataStyle);
             if (periode.getJenisTest() == JenisTest.IELTS) {
-                row.getCell(8).setCellStyle(dataStyle);
+                row.getCell(9).setCellStyle(dataStyle);
             }
         }
 

@@ -499,13 +499,16 @@ public class TagihanService {
             jenisTest = StatusRecord.IELTS;
         }
 
-        EnableFiture enableFiture = new EnableFiture();
-        enableFiture.setFitur(jenisTest);
-        enableFiture.setMahasiswa(mahasiswa);
-        enableFiture.setEnable(false);
-        enableFiture.setTahunAkademik(tahunAkademik);
-        enableFiture.setKeterangan("Enable Fiture " + jenis);
-        enableFitureDao.save(enableFiture);
+        EnableFiture cek = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, jenisTest, false, tahunAkademik);
+        if (cek == null){
+            EnableFiture enableFiture = new EnableFiture();
+            enableFiture.setFitur(jenisTest);
+            enableFiture.setMahasiswa(mahasiswa);
+            enableFiture.setEnable(false);
+            enableFiture.setTahunAkademik(tahunAkademik);
+            enableFiture.setKeterangan("Enable Fiture " + jenis);
+            enableFitureDao.save(enableFiture);
+        }
 
         NilaiJenisTagihan cekJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
                 mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jenisTagihan);
