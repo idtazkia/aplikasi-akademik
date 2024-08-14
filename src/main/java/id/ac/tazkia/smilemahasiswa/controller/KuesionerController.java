@@ -380,11 +380,11 @@ public class KuesionerController {
         }
     }
 
-    @GetMapping("/kuesioner/toefl/download")
+    @GetMapping("/kuesioner/diproses/download")
     public void downloadRekap(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
-        String[] columns = {"NO", "Timestamps", "NIM", "Full Name", "Place, Date of Birth", "Department"};
+        String[] columns = {"NO", "Timestamps", "NIM", "Full Name", "Place, Date of Birth", "Department", "Sign"};
 
-        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(periode, StatusRecord.AKTIF, Arrays.asList(StatusUjian.LULUS, StatusUjian.TIDAK_LULUS, StatusUjian.WAITING));
+        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(periode, StatusRecord.AKTIF, Arrays.asList(StatusUjian.WAITING));
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Prediksi Test " + periode.getJenisTest() + " Periode " + periode.getTanggalUjian());
@@ -451,11 +451,12 @@ public class KuesionerController {
         for (PrediksiTest list : listMhs){
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
-            row.createCell(1).setCellValue(list.getTanggalUpload().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:ss")));
+            row.createCell(1).setCellValue(list.getTanggalUpload().format(DateTimeFormatter.ofPattern("dd - MMM - yyyy HH:ss")));
             row.createCell(2).setCellValue(list.getMahasiswa().getNim());
             row.createCell(3).setCellValue(list.getMahasiswa().getNama());
             row.createCell(4).setCellValue(list.getMahasiswa().getTempatLahir() + ", " + list.getMahasiswa().getTanggalLahir().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
             row.createCell(5).setCellValue(list.getMahasiswa().getIdProdi().getKodeProdi());
+            row.createCell(6).setCellValue("         ");
 
             row.getCell(0).setCellStyle(dataStyle);
             row.getCell(1).setCellStyle(dataStyle);
@@ -470,7 +471,159 @@ public class KuesionerController {
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Prediksi Test " + String.valueOf(periode.getJenisTest()) + " periode " + periode.getTanggalUjian() + ".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Absen Prediksi Test " + periode.getJenisTest() + " periode " + periode.getTanggalUjian() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
+    @GetMapping("/kuesioner/dinilai/download")
+    public void downloadRekapDinilai(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
+        String[] columns;
+        if (periode.getJenisTest() == JenisTest.TOEFL) {
+            columns = new String[]{"NO", "NIM", "Full Name", "Department", "Listening", "Structure", "Reading", "Total"};
+        }else{
+            columns = new String[]{"NO", "NIM", "Full Name", "Department", "Writing", "Speaking", "Reading", "Listening", "Total"};
+        }
+
+        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(periode, StatusRecord.AKTIF, Arrays.asList(StatusUjian.LULUS, StatusUjian.TIDAK_LULUS));
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Prediksi Test " + periode.getJenisTest() + " Periode " + periode.getTanggalUjian());
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:F1"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A2:F2"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A3:F3"));
+
+        Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setUnderline(HSSFFont.U_SINGLE);
+        titleFont.setFontHeightInPoints((short) 12);
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+
+        CellStyle titleStyle = workbook.createCellStyle();
+        titleStyle.setFont(titleFont);
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setAlignment(HorizontalAlignment.CENTER);
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+
+        int rowTitle1 = 0;
+        Row titleRow = sheet.createRow(rowTitle1);
+        titleRow.createCell(0).setCellValue(periode.getJenisTest() + " PREDICTION TEST");
+        titleRow.getCell(0).setCellStyle(titleStyle);
+
+        int rowTitle2 = 1;
+        Row titleRow2 = sheet.createRow(rowTitle2);
+        titleRow2.createCell(0).setCellValue("TAZKIA LANGUAGE CENTER");
+        titleRow2.getCell(0).setCellStyle(titleStyle);
+
+        int rowTitle3 = 2;
+        Row titleRow3 = sheet.createRow(rowTitle3);
+        titleRow3.createCell(0).setCellValue("Sentul, " + periode.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+        titleRow3.getCell(0).setCellStyle(titleStyle);
+
+        Row headerRow = sheet.createRow(4);
+
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        int rowNum = 5;
+        int baris = 1;
+
+        for (PrediksiTest list : listMhs){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list.getMahasiswa().getNim());
+            row.createCell(2).setCellValue(list.getMahasiswa().getNama());
+            row.createCell(3).setCellValue(list.getMahasiswa().getIdProdi().getKodeProdi());
+            if (periode.getJenisTest() == JenisTest.TOEFL) {
+                if (list.getNilaiListening() != null) {
+                    row.createCell(4).setCellValue(list.getNilaiListening());
+                }else{
+                    row.createCell(4).setCellValue("-");
+                }
+                if (list.getNilaiStructure() != null) {
+                    row.createCell(5).setCellValue(list.getNilaiStructure());
+                }else {
+                    row.createCell(5).setCellValue("-");
+                }
+                if (list.getNilaiReading() != null) {
+                    row.createCell(6).setCellValue(list.getNilaiReading());
+                }else{
+                    row.createCell(6).setCellValue("-");
+                }
+                if (list.getNilai() != null) {
+                    row.createCell(7).setCellValue(list.getNilai());
+                }else{
+                    row.createCell(7).setCellValue("-");
+                }
+            }else {
+                if (list.getNilaiWriting() != null) {
+                    row.createCell(4).setCellValue(list.getNilaiWriting());
+                }else{
+                    row.createCell(4).setCellValue("-");
+                }
+                if (list.getNilaiSpeaking() != null) {
+                    row.createCell(5).setCellValue(list.getNilaiSpeaking());
+                }else {
+                    row.createCell(5).setCellValue("-");
+                }
+                if (list.getNilaiReading() != null) {
+                    row.createCell(6).setCellValue(list.getNilaiReading());
+                }else{
+                    row.createCell(6).setCellValue("-");
+                }
+                if (list.getNilaiListening() != null) {
+                    row.createCell(7).setCellValue(list.getNilaiListening());
+                }else{
+                    row.createCell(7).setCellValue("-");
+                }
+                if (list.getNilai() != null) {
+                    row.createCell(8).setCellValue(list.getNilai());
+                }else{
+                    row.createCell(8).setCellValue("-");
+                }
+            }
+
+            row.getCell(0).setCellStyle(dataStyle);
+            row.getCell(1).setCellStyle(dataStyle);
+            row.getCell(2).setCellStyle(dataStyle);
+            row.getCell(3).setCellStyle(dataStyle);
+            row.getCell(4).setCellStyle(dataStyle);
+            row.getCell(5).setCellStyle(dataStyle);
+            row.getCell(6).setCellStyle(dataStyle);
+            row.getCell(7).setCellStyle(dataStyle);
+            if (periode.getJenisTest() == JenisTest.IELTS) {
+                row.getCell(8).setCellStyle(dataStyle);
+            }
+        }
+
+        for (int i = 0; i < columns.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Prediksi Test " + periode.getJenisTest() + " periode " + periode.getTanggalUjian() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 

@@ -75,7 +75,7 @@
 
                             <div class="card-header border-0">
                                 <!--                                button download -->
-                                <a class="btn btn-success btn-sm text-white" data-toggle="modal"
+                                <a th:if="${status == 'WAITING'}" class="btn btn-success btn-sm text-white" data-toggle="modal"
                                    data-target="#modal-import"><i class="fas fa-download"></i> Download Rekap</a>
                                 <div class="modal fade" id="modal-import" tabindex="-1" role="dialog"
                                      aria-labelledby="modal-form" aria-hidden="true">
@@ -85,7 +85,48 @@
                                                 <div class="card shadow border-0">
                                                     <div class="card-body px-lg-5 py-lg-5">
                                                         <div class="text-center">
-                                                            <form method="get" th:action="@{/kuesioner/toefl/download}">
+                                                            <form method="get" th:action="@{/kuesioner/diproses/download}">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <label>Periode</label>
+                                                                            <select name="periode" required
+                                                                                    class="form-control">
+                                                                                <option value=""></option>
+                                                                                <option th:each="data : ${listPeriode}"
+                                                                                        th:selected="(${data} == *{periode})"
+                                                                                        th:text="${(data.tanggalUjian + ' - ' + data.jenisTest)}"
+                                                                                        th:value="${data.id}">STEI TAZKIA
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <button class="btn btn-success"
+                                                                                    type="submit">Download
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- button download dinilai -->
+                                <a th:if="${status == 'HISTORY'}" class="btn btn-success btn-sm text-white" data-toggle="modal"
+                                   data-target="#modal-import-dinilai"><i class="fas fa-download"></i> Download Rekap</a>
+                                <div class="modal fade" id="modal-import-dinilai" tabindex="-1" role="dialog"
+                                     aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div class="card shadow border-0">
+                                                    <div class="card-body px-lg-5 py-lg-5">
+                                                        <div class="text-center">
+                                                            <form method="get" th:action="@{/kuesioner/dinilai/download}">
                                                                 <div class="row">
                                                                     <div class="col-md-12">
                                                                         <div class="form-group">
