@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -558,48 +559,48 @@ public class KuesionerController {
             row.createCell(3).setCellValue(list.getMahasiswa().getIdProdi().getKodeProdi());
             if (periode.getJenisTest() == JenisTest.TOEFL) {
                 if (list.getNilaiListening() != null) {
-                    row.createCell(4).setCellValue(list.getNilaiListening());
+                    row.createCell(4).setCellValue(list.getNilaiListening().intValue());
                 }else{
                     row.createCell(4).setCellValue("-");
                 }
                 if (list.getNilaiStructure() != null) {
-                    row.createCell(5).setCellValue(list.getNilaiStructure());
+                    row.createCell(5).setCellValue(list.getNilaiStructure().intValue());
                 }else {
                     row.createCell(5).setCellValue("-");
                 }
                 if (list.getNilaiReading() != null) {
-                    row.createCell(6).setCellValue(list.getNilaiReading());
+                    row.createCell(6).setCellValue(list.getNilaiReading().intValue());
                 }else{
                     row.createCell(6).setCellValue("-");
                 }
                 if (list.getNilai() != null) {
-                    row.createCell(7).setCellValue(list.getNilai());
+                    row.createCell(7).setCellValue(list.getNilai().intValue());
                 }else{
                     row.createCell(7).setCellValue("-");
                 }
             }else {
                 if (list.getNilaiWriting() != null) {
-                    row.createCell(4).setCellValue(list.getNilaiWriting());
+                    row.createCell(4).setCellValue(list.getNilaiWriting().intValue());
                 }else{
                     row.createCell(4).setCellValue("-");
                 }
                 if (list.getNilaiSpeaking() != null) {
-                    row.createCell(5).setCellValue(list.getNilaiSpeaking());
+                    row.createCell(5).setCellValue(list.getNilaiSpeaking().intValue());
                 }else {
                     row.createCell(5).setCellValue("-");
                 }
                 if (list.getNilaiReading() != null) {
-                    row.createCell(6).setCellValue(list.getNilaiReading());
+                    row.createCell(6).setCellValue(list.getNilaiReading().intValue());
                 }else{
                     row.createCell(6).setCellValue("-");
                 }
                 if (list.getNilaiListening() != null) {
-                    row.createCell(7).setCellValue(list.getNilaiListening());
+                    row.createCell(7).setCellValue(list.getNilaiListening().intValue());
                 }else{
                     row.createCell(7).setCellValue("-");
                 }
                 if (list.getNilai() != null) {
-                    row.createCell(8).setCellValue(list.getNilai());
+                    row.createCell(8).setCellValue(list.getNilai().intValue());
                 }else{
                     row.createCell(8).setCellValue("-");
                 }
@@ -767,12 +768,12 @@ public class KuesionerController {
     @PostMapping("/kuesioner/toefl/admin/nilai")
     public String penilaianToefl(@Valid TestDto testDto){
         PrediksiTest prediksiTest = prediksiTestDao.findById(testDto.getId()).get();
-        prediksiTest.setNilaiReading(konversiNilaiToeflDao.findById(testDto.getNilaiReading()).get().getReading());
-        prediksiTest.setNilaiListening(konversiNilaiToeflDao.findById(testDto.getNilaiListening()).get().getListening());
-        prediksiTest.setNilaiStructure(konversiNilaiToeflDao.findById(testDto.getNilaiStructure()).get().getStructure());
-        Integer nilaiAkhir = (prediksiTest.getNilaiReading() +  prediksiTest.getNilaiListening() + prediksiTest.getNilaiStructure()) / 3;
-        prediksiTest.setNilai(nilaiAkhir * 10);
-        if (prediksiTest.getNilai() >= 500) {
+        prediksiTest.setNilaiReading(BigDecimal.valueOf(konversiNilaiToeflDao.findById(testDto.getNilaiReading().intValue()).get().getReading()));
+        prediksiTest.setNilaiListening(BigDecimal.valueOf(konversiNilaiToeflDao.findById(testDto.getNilaiListening().intValue()).get().getListening()));
+        prediksiTest.setNilaiStructure(BigDecimal.valueOf(konversiNilaiToeflDao.findById(testDto.getNilaiStructure().intValue()).get().getStructure()));
+        BigDecimal nilaiAkhir = (prediksiTest.getNilaiReading().add(prediksiTest.getNilaiListening()).add(prediksiTest.getNilaiStructure())).divide(new BigDecimal(3));
+        prediksiTest.setNilai(nilaiAkhir.multiply(BigDecimal.TEN));
+        if (prediksiTest.getNilai().compareTo(new BigDecimal(500)) >= 0) {
             prediksiTest.setStatusUjian(StatusUjian.LULUS);
 
         }else{
@@ -797,7 +798,7 @@ public class KuesionerController {
         prediksiTest.setNilaiSpeaking(testDto.getNilaiSpeaking());
 
         prediksiTest.setNilai(testDto.getNilai());
-        if (prediksiTest.getNilai() >= 500) {
+        if (prediksiTest.getNilai().compareTo(new BigDecimal(5)) >= 0) {
             prediksiTest.setStatusUjian(StatusUjian.LULUS);
 
         }else{

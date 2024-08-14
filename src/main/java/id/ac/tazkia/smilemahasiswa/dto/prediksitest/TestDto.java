@@ -4,6 +4,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class TestDto {
     private String id;
@@ -14,10 +16,10 @@ public class TestDto {
     private Integer ujianKe;
     private String keterangan;
     private MultipartFile file;
-    private Integer nilaiListening;
-    private Integer nilaiStructure;
-    private Integer nilaiReading;
-    private Integer nilaiSpeaking;
-    private Integer nilaiWriting;
-    private Integer nilai;
+    private BigDecimal nilaiListening;
+    private BigDecimal nilaiStructure;
+    private BigDecimal nilaiReading;
+    private BigDecimal nilaiSpeaking;
+    private BigDecimal nilaiWriting;
+    private BigDecimal nilai;
 }
