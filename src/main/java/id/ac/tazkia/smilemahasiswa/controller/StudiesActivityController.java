@@ -354,7 +354,7 @@ public class StudiesActivityController {
     public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
         List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal, Arrays.asList(StatusRecord.HAPUS));
         if (!cekRps.isEmpty()) {
-            model.addAttribute("gagal", "Submit RPS terlebih dahulu!");
+            model.addAttribute("gagal", "Submit Rencana Pembelajaran terlebih dahulu!");
         }
 
         List<SesiKuliah> cekSesi = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotIn(jadwal, Arrays.asList(StatusRecord.HAPUS));
@@ -12988,6 +12988,17 @@ public class StudiesActivityController {
         id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = mahasiswaService
                 .importIpkSks(krsAktif.stream().map(Krs::getMahasiswa)
                         .collect(Collectors.toList()));
+
+        return response;
+    }
+
+    @PostMapping("/import-ipk-sks/{angkatan}")
+    @ResponseBody
+    public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse importIpkSksAngkatan(@PathVariable String angkatan) {
+
+        List<Mahasiswa> mhs = mahasiswaDao.findByStatusAndStatusAktifAndAngkatan(StatusRecord.AKTIF, "AKTIF", angkatan);
+
+        id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = mahasiswaService.importIpkSks(mhs);
 
         return response;
     }
