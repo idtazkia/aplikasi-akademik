@@ -1476,7 +1476,7 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/assesment/tugas")
-    public String simpanTugas(@Valid @ModelAttribute JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload) throws IOException {
+    public String simpanTugas(@Valid JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload) throws IOException {
         SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal, jadwalTugas.getPertemuanKe()).get();
         if (online != null) {
             jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS);

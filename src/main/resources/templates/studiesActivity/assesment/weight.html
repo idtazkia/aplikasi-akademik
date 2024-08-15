@@ -314,7 +314,7 @@
                                                         <td th:text="${data.pertemuanKe}">Ruangan</td>
                                                         <td th:text="${data.namaTugas}">Jam</td>
                                                         <td th:text="${data.bobot}">Matakuliah</td>
-                                                        <td th:text="${#temporals.format(data.tenggatWaktu, 'dd - MMM - yyyy')}">Matakuliah</td>
+                                                        <td th:text="${#temporals.format(data.tenggatWaktu, 'dd - MMM - yyyy HH:mm:ss')}">Matakuliah</td>
                                                         <td>
                                                             <a th:href="@{/studiesActivity/assesment/collection (jadwalTugas = ${data.id})}" class="btn btn-info btn-sm"><i class="fas fa-list"></i></a>
                                                             <a th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-editfas fa-edit"></i></a>
