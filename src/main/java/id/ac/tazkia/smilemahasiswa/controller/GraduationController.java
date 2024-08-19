@@ -782,6 +782,10 @@ public class GraduationController {
     @GetMapping("/graduation/sempro")
     public String sempro(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
         if (note.getStatus() == StatusApprove.APPROVED) {
+            if(LocalDate.now().isAfter(LocalDate.parse("2024-08-17")) && LocalDate.now().isBefore(LocalDate.parse("2024-08-30"))){
+                return "redirect:seminar/info";
+            }
+
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
 
@@ -839,6 +843,11 @@ public class GraduationController {
 
     @GetMapping("/graduation/loa")
     public void alertLoa(Model model) {
+
+    }
+
+    @GetMapping("/graduation/seminar/info")
+    public void alertPenutanSeminar(Model model) {
 
     }
 
