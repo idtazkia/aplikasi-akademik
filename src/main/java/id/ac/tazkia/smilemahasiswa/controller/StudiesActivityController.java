@@ -12992,7 +12992,7 @@ public class StudiesActivityController {
         return response;
     }
 
-    @PostMapping("/import-ipk-sks/{angkatan}")
+    @PostMapping("/import-ipk-sks/angkatan/{angkatan}")
     @ResponseBody
     public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse importIpkSksAngkatan(@PathVariable String angkatan) {
 

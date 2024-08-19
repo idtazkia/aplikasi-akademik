@@ -54,6 +54,48 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="col text-right">
+                                    <a class="btn btn-success btn-sm text-white" data-toggle="modal" data-target="#modal-import-periode"><i class="fas fa-download"></i> Rekap per periode</a>
+                                    <div class="modal fade" id="modal-import-periode" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <div class="card shadow border-0">
+                                                        <div class="card-body px-lg-5 py-lg-5">
+                                                            <div class="text-center">
+                                                                <form method="get" th:action="@{/kewajiban/admin/download/periode}">
+                                                                    <input type="hidden" name="bagian" value="TLC">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">
+                                                                            <div class="form-group">
+                                                                                <label>Mulai dari</label>
+                                                                                <input type="date" name="tglMulai" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="mt-4 text-center"> - </div>
+                                                                        </div>
+                                                                        <div class="col-md-5">
+                                                                            <div class="form-group">
+                                                                                <label>Sampai </label>
+                                                                                <input type="date" name="tglSampai" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="form-group text-center">
+                                                                                <button class="btn btn-success" type="submit">Download</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <a class="btn btn-success btn-sm text-white" data-toggle="modal" data-target="#modal-import"><i class="fas fa-download"></i> Rekap per angkatan</a>
                                     <div class="modal fade" id="modal-import" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
