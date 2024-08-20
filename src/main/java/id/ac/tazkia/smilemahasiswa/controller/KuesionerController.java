@@ -861,8 +861,7 @@ public class KuesionerController {
 
     @GetMapping("/kuesioner/periodeUjian/list")
     public void listPeriode(Model model, @PageableDefault(size = 10) Pageable page, String search) {
-
-        model.addAttribute("listPeriode", periodeTestDao.findByStatusInOrderByStatusAsc(Arrays.asList(StatusRecord.AKTIF,StatusRecord.NONAKTIF),page));
+        model.addAttribute("listPeriode", periodeTestDao.listPEriode(page));
     }
 
     @PostMapping("/kuesioner/periodeUjian/submit")

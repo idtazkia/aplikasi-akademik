@@ -129,6 +129,7 @@
                                 <th>Tanggal Ujian</th>
                                 <th>Terakhir Upload</th>
                                 <th>Kuota</th>
+                                <th>Total Mahasiswa</th>
                                 <th>Ruangan</th>
                                 <th>Jenis</th>
                                 <th>Status</th>
@@ -138,20 +139,21 @@
                             <tbody>
                             <tr th:each="data, row :${listPeriode}">
                                 <td th:text="${(row.index + 1) + (listPeriode.number * listPeriode.size)}">01</td>
-                                <td th:text="${#temporals.format(data.tanggalUjian, 'dd MMMM yyyy HH:mm')}"></td>
-                                <td th:text="${#temporals.format(data.terakhirUpload, 'dd MMMM yyyy HH:mm')}"></td>
+                                <td th:text="${#temporals.format(data.tanggal, 'dd MMMM yyyy HH:mm')}"></td>
+                                <td th:text="${#temporals.format(data.terakhir, 'dd MMMM yyyy HH:mm')}"></td>
                                 <td th:text="${data.kuota}">Campus Code</td>
+                                <td th:text="${data.total}">Campus Code</td>
                                 <td>
-                                    <div th:if="${data.ruangan == null}" th:text="${'-'}"></div>
-                                    <div th:if="${data.ruangan != null}" th:text="${data.ruangan.namaRuangan}"></div>
+                                    <div th:if="${data.ruanganid == null}" th:text="${'-'}"></div>
+                                    <div th:if="${data.ruanganid != null}" th:text="${data.nama}"></div>
                                 </td>
-                                <td th:text="${data.jenisTest}">Campus Code</td>
-                                <td th:text="${data.status}">Campus Code</td>
+                                <td th:text="${data.jenis}">Campus Code</td>
+                                <td th:text="${data.statuspt}">Campus Code</td>
                                 <td>
-                                    <button th:if="${data.status == data.status.AKTIF}" onclick="editPeriode(this.getAttribute('data-id'), this.getAttribute('data-tanggal'), this.getAttribute('data-kuota'), this.getAttribute('data-ruangan'), this.getAttribute('data-jenis'), this.getAttribute('data-terakhir'))"
-                                            th:attr="data-id=${data.id}, data-tanggal=${data.tanggalUjian}, data-kuota=${data.kuota}, data-ruangan=${data.ruangan.id}, data-jenis=${data.jenisTest}, data-terakhir=${data.terakhirUpload}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button th:if="${data.statuspt == 'AKTIF'}" onclick="editPeriode(this.getAttribute('data-id'), this.getAttribute('data-tanggal'), this.getAttribute('data-kuota'), this.getAttribute('data-ruangan'), this.getAttribute('data-jenis'), this.getAttribute('data-terakhir'))"
+                                            th:attr="data-id=${data.id}, data-tanggal=${data.tanggal}, data-kuota=${data.kuota}, data-ruangan=${data.ruanganid}, data-jenis=${data.jenis}, data-terakhir=${data.terakhir}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
 
-                                </td>
+<!--                                </td>-->
                             </tr>
                             </tbody>
                         </table>
