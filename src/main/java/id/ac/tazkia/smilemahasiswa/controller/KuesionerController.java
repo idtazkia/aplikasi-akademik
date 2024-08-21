@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -774,7 +775,7 @@ public class KuesionerController {
         prediksiTest.setNilaiReading(BigDecimal.valueOf(konversiNilaiToeflDao.findById(testDto.getNilaiReading().intValue()).get().getReading()));
         prediksiTest.setNilaiListening(BigDecimal.valueOf(konversiNilaiToeflDao.findById(testDto.getNilaiListening().intValue()).get().getListening()));
         prediksiTest.setNilaiStructure(BigDecimal.valueOf(konversiNilaiToeflDao.findById(testDto.getNilaiStructure().intValue()).get().getStructure()));
-        BigDecimal nilaiAkhir = (prediksiTest.getNilaiReading().add(prediksiTest.getNilaiListening()).add(prediksiTest.getNilaiStructure())).divide(new BigDecimal(3));
+        BigDecimal nilaiAkhir = (prediksiTest.getNilaiReading().add(prediksiTest.getNilaiListening()).add(prediksiTest.getNilaiStructure())).divide(new BigDecimal(3), 2, RoundingMode.HALF_UP);
         prediksiTest.setNilai(nilaiAkhir.multiply(BigDecimal.TEN));
         if (prediksiTest.getNilai().compareTo(new BigDecimal(500)) >= 0) {
             prediksiTest.setStatusUjian(StatusUjian.LULUS);

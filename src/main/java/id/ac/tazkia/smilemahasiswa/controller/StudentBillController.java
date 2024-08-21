@@ -8,9 +8,9 @@ import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
-import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
-import id.ac.tazkia.smilemahasiswa.constant.StatusUjian;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.api.akunting.TemplateDto;
+import id.ac.tazkia.smilemahasiswa.dto.api.akunting.TemplateJurnalDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
@@ -20,13 +20,13 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import id.ac.tazkia.smilemahasiswa.service.api.akuntansi.ApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -41,13 +41,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.thymeleaf.model.IModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +63,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Controller @Slf4j
 public class StudentBillController {
@@ -187,6 +185,9 @@ public class StudentBillController {
 
     @Autowired
     public TagihanService tagihanService;
+
+//    @Autowired
+//    public ApiService apiService;
 
     @Autowired
     public KafkaSender kafkaSender;
@@ -385,6 +386,9 @@ public class StudentBillController {
 
     @GetMapping("/studentBill/valueType/form")
     public void formNilai(Model model, @RequestParam(required = false) String id){
+
+//        TemplateDto template = apiService.getTemplate();
+
         model.addAttribute("valueBill", new NilaiJenisTagihan());
         model.addAttribute("jenisTagihan", jenisTagihanDao.findByStatusOrderByKode(StatusRecord.AKTIF));
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
@@ -392,6 +396,7 @@ public class StudentBillController {
         model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("selectAngkatan", angkatan());
         model.addAttribute("kategori", StatusTagihan.values());
+//        model.addAttribute("template", template.getData());
 
         if (id != null && !id.isEmpty()){
             NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findById(id).get();
@@ -1342,6 +1347,7 @@ public class StudentBillController {
             t.setTahunAkademik(tagihan.getTahunAkademik());
             t.setStatusTagihan(StatusTagihan.AKTIF);
             t.setStatus(StatusRecord.AKTIF);
+            t.setIdTagihanSebelumnya(tgh.getId());
             log.info("tagihan : {}", t);
             tagihanDao.save(t);
 
@@ -1364,12 +1370,21 @@ public class StudentBillController {
                     requestCicilan.setUserApprove(karyawan);
                     requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
                     requestCicilanDao.save(requestCicilan);
-                    tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
+                    RequestCicilan cariSebelumnya = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(t, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+                    if (cariSebelumnya.getTanggalJatuhTempo().isAfter(LocalDate.now())) {
+                        tagihanService.ubahJadiCicilan(requestCicilan);
+                    }else{
+                        tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
+                    }
                 }
                 t.setStatusTagihan(StatusTagihan.DICICIL);
                 tagihanDao.save(t);
             }else {
-                tagihanService.requestCreateTagihan(t);
+                if (tgh.getTanggalJatuhTempo().isAfter(LocalDate.now())) {
+                    tagihanService.editTagihan(t);
+                }else{
+                    tagihanService.requestCreateTagihan(t);
+                }
             }
 
             tgh.setStatus(StatusRecord.NONAKTIF);
