@@ -104,7 +104,7 @@
                             <th>Description</th>
                             <th>File</th>
                             <th>Status</th>
-                            <td>Tipe Nilai</td>
+                            <th>Tipe Nilai</th>
                             <th class="text-center">Option</th>
                             <th>Waktu Pengajuan</th>
                           </tr>
@@ -136,6 +136,15 @@
                           </tbody>
 
                         </table>
+<!--                        <nav aria-label="...">-->
+<!--                          <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
+<!--                            <li class="disabled"><a href="#" aria-label="Previous"><span-->
+<!--                                    aria-hidden="true">&laquo;</span></a>-->
+<!--                            </li>-->
+<!--                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+<!--                            </li>-->
+<!--                          </ul>-->
+<!--                        </nav>-->
                       </div>
                     </div>
 
@@ -185,10 +194,86 @@
                           </tbody>
 
                         </table>
+<!--                        <nav aria-label="...">-->
+<!--                          <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
+<!--                            <li class="disabled"><a href="#" aria-label="Previous"><span-->
+<!--                                    aria-hidden="true">&laquo;</span></a>-->
+<!--                            </li>-->
+<!--                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+<!--                            </li>-->
+<!--                          </ul>-->
+<!--                        </nav>-->
                       </div>
                     </div>
 
-<!--                    KPS-->
+<!--&lt;!&ndash;                    KPS&ndash;&gt;-->
+<!--                    <div class="card-body" sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">-->
+<!--                      <div class="table-responsive">-->
+<!--                        <table class="table align-items-center table-flush sortable">-->
+<!--                          <thead class="thead-light">-->
+<!--                          <tr>-->
+<!--                            <th>No</th>-->
+<!--                            <th>NIM</th>-->
+<!--                            <th>Mahasiswa</th>-->
+<!--                            <th>Matakuliah</th>-->
+<!--                            <th>Grade Lama</th>-->
+<!--                            <th>Grade Baru</th>-->
+<!--                            <th>Status</th>-->
+<!--                            <th>Tipe Nilai</th>-->
+<!--                            <th class="text-center">Option</th>-->
+<!--                          </tr>-->
+<!--                          </thead>-->
+<!--                          <tbody>-->
+
+
+<!--                          <tr th:each="data,row : ${listRequestApproved}" >-->
+<!--                            <td th:text="${(row.index + 1)}"></td>-->
+<!--                            <td th:text="${data.krsDetail.mahasiswa.nim}"></td>-->
+<!--                            <td th:text="${data.krsDetail.mahasiswa.nama}"></td>-->
+<!--                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>-->
+<!--                            <th th:text="${data.krsDetail.grade}"></th>-->
+<!--                            <form th:action="@{/studiesActivity/khs/konversiApproval/save(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id})}" th:object="${requestKonversi}"  method="post">-->
+<!--                              <input type="hidden" th:field="*{id}" name="id">-->
+<!--                              <td width="5%">-->
+<!--                                <center>-->
+<!--                                  <select name="grade" class="form-control form-control-sm">-->
+<!--                                    <option value="1">A</option>-->
+<!--                                    <option value="2">A-</option>-->
+<!--                                    <option value="3">B+</option>-->
+<!--                                    <option value="4">B</option>-->
+<!--                                    <option value="5">B-</option>-->
+<!--                                    <option value="6">C+</option>-->
+<!--                                    <option value="7">C</option>-->
+<!--                                    <option value="8">D</option>-->
+<!--                                    <option value="9">E</option>-->
+<!--                                  </select>-->
+<!--                                </center>-->
+<!--                              </td>-->
+<!--                              <td th:text="${data.approval}"></td>-->
+<!--                              <td th:text="${data.jenisNilai}"></td>-->
+<!--                              <td sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')" class="text-center">-->
+<!--                                <button class="btn btn-primary" onclick="return confirm('Confirm your request.')">Nilai</button>-->
+<!--                              </td>-->
+<!--                            </form>-->
+<!--                          </tr>-->
+
+
+<!--                          </tbody>-->
+
+<!--                        </table>-->
+<!--                        <nav aria-label="...">-->
+<!--                          <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
+<!--                            <li class="disabled"><a href="#" aria-label="Previous"><span-->
+<!--                                    aria-hidden="true">&laquo;</span></a>-->
+<!--                            </li>-->
+<!--                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+<!--                            </li>-->
+<!--                          </ul>-->
+<!--                        </nav>-->
+<!--                      </div>-->
+<!--                    </div>-->
+
+                    <!--                    KPS-->
                     <div class="card-body" sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">
                       <div class="table-responsive">
                         <table class="table align-items-center table-flush sortable">
@@ -197,53 +282,117 @@
                             <th>No</th>
                             <th>NIM</th>
                             <th>Mahasiswa</th>
-                            <th>Matakuliah</th>
-                            <th>Grade Lama</th>
-                            <th>Grade Baru</th>
-                            <th>Status</th>
-                            <th>Tipe Nilai</th>
+                            <th>Prodi</th>
                             <th class="text-center">Option</th>
                           </tr>
                           </thead>
                           <tbody>
 
 
-                          <tr th:each="data,row : ${listRequestApproved}" >
+                          <tr th:each="data,row : ${listRequestApprovedGroup}" >
                             <td th:text="${(row.index + 1)}"></td>
-                            <td th:text="${data.krsDetail.mahasiswa.nim}"></td>
-                            <td th:text="${data.krsDetail.mahasiswa.nama}"></td>
-                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
-                            <th th:text="${data.krsDetail.grade}"></th>
-                            <form th:action="@{/studiesActivity/khs/konversiApproval/save(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id})}" th:object="${requestKonversi}"  method="post">
-                              <input type="hidden" th:field="*{id}" name="id">
-                              <td width="5%">
-                                <center>
-                                  <select name="grade" class="form-control form-control-sm">
-                                    <option value="1">A</option>
-                                    <option value="2">A-</option>
-                                    <option value="3">B+</option>
-                                    <option value="4">B</option>
-                                    <option value="5">B-</option>
-                                    <option value="6">C+</option>
-                                    <option value="7">C</option>
-                                    <option value="8">D</option>
-                                    <option value="9">E</option>
-                                  </select>
-                                </center>
-                              </td>
-                              <td th:text="${data.approval}"></td>
-                              <td th:text="${data.jenisNilai}"></td>
-                              <td sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')" class="text-center">
-                                <button class="btn btn-primary" onclick="return confirm('Confirm your request.')">Nilai</button>
-                              </td>
-                            </form>
+                            <td th:text="${data.nim}"></td>
+                            <td th:text="${data.nama}"></td>
+                            <td th:text="${data.namaProdi}"></td>
+                            <td class="text-center">
+                                <button class="btn btn-info" data-toggle="modal" th:data-target="${'#myModal' + data.idMahasiswa}">Detail</button>
+
+                              <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="myModal" th:id="${'myModal' + data.idMahasiswa}">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                  <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">List Matakuliah</h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <form th:action="@{/studiesActivity/khs/konversiApproval/save}"  method="post">
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
+                                      <div class="table-responsive">
+                                        <table class="table align-items-center table-flush sortable">
+                                          <thead class="thead-light">
+                                          <tr>
+                                            <th>No</th>
+                                            <th>NIM</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Matakuliah</th>
+                                            <th>Grade Lama</th>
+                                            <th>Grade Baru</th>
+                                            <th>Status</th>
+                                            <th>Tipe Nilai</th>
+                                          </tr>
+                                          </thead>
+                                          <tbody  th:each="data2,row : ${listApprovalGroupDetail}">
+                                          <input type="hidden" name="requestKonversi" th:value="${data2.getId()}">
+
+                                          <tr th:if="${data2.idMahasiswa == data.getIdMahasiswa()}">
+                                            <td th:text="${(row.index + 1)}"></td>
+                                            <td th:text="${data2.nim}"></td>
+                                            <td th:text="${data2.nama}"></td>
+                                            <td th:text="${data2.namaMatkul}"></td>
+                                            <th th:text="${data2.gradeLama}"></th>
+                                              <input type="hidden" th:value="${data2.id}" name="id">
+                                              <td width="5%">
+                                                <center>
+                                                  <select  name="grade" class="form-control form-control-sm" required>
+                                                    <option th:value="${null}"></option>
+                                                    <option th:value="${'1-'+ data2.getId()}">A</option>
+                                                    <option th:value="${'2-'+ data2.getId()}">A-</option>
+                                                    <option th:value="${'3-'+ data2.getId()}">B+</option>
+                                                    <option th:value="${'4-'+ data2.getId()}">B</option>
+                                                    <option th:value="${'5-'+ data2.getId()}">B-</option>
+                                                    <option th:value="${'6-'+ data2.getId()}">C+</option>
+                                                    <option th:value="${'7-'+ data2.getId()}">C</option>
+                                                    <option th:value="${'8-'+ data2.getId()}">D</option>
+                                                    <option th:value="${'9-'+ data2.getId()}">E</option>
+                                                  </select>
+                                                </center>
+                                              </td>
+                                              <td th:text="${data2.approval}"></td>
+                                              <td th:text="${data2.jenisNilai}"></td>
+                                          </tr>
+
+
+                                          </tbody>
+
+                                        </table>
+                                      </div>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+
+                                    <div class="modal-footer">
+                                      <button type="submit" class="btn btn-primary" id="submitBtn" onclick="return confirm('Confirm your request.')">Grade All </button>
+                                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+
+                                    </form>
+
+                                  </div>
+                                </div>
+                              </div>
+
+
+
+                            </td>
                           </tr>
 
 
                           </tbody>
-
                         </table>
+
+<!--                        <nav aria-label="...">-->
+<!--                          <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
+<!--                            <li class="disabled"><a href="#" aria-label="Previous"><span-->
+<!--                                    aria-hidden="true">&laquo;</span></a>-->
+<!--                            </li>-->
+<!--                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+<!--                            </li>-->
+<!--                          </ul>-->
+<!--                        </nav>-->
                       </div>
+
                     </div>
 
 <!--                    AKADEMIK-->
@@ -284,7 +433,20 @@
                           </tbody>
 
                         </table>
+<!--                        <nav aria-label="...">-->
+<!--                          <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
+<!--                            <li class="disabled"><a href="#" aria-label="Previous"><span-->
+<!--                                    aria-hidden="true">&laquo;</span></a>-->
+<!--                            </li>-->
+<!--                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+<!--                            </li>-->
+<!--                          </ul>-->
+<!--                        </nav>-->
+
                       </div>
+                    </div>
+                    <div class="card-footer">
+
                     </div>
 
 
@@ -303,4 +465,6 @@
 </div>
 </body>
 </html>
+
+
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
