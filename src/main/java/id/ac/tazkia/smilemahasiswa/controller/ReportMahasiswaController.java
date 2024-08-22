@@ -620,10 +620,10 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/studiesActivity/khs/konversiApproval")
-    public String requestKonversiApproval(Model model,@PageableDefault(size = 100) Pageable pageable,@RequestParam(required = false) String search,@RequestParam(required = false) String nama, @RequestParam(required = false) Prodi prodi,@RequestParam(required = false) Mahasiswa mahasiswa){
+    public String requestKonversiApproval(Model model,@PageableDefault(size = 100) Pageable pageable,String search, @RequestParam(required = false) Prodi prodi,@RequestParam(required = false) Mahasiswa mahasiswa){
 //        model.addAttribute("report","active");
         model.addAttribute("selectedProdi", prodi);
-        model.addAttribute("selectedNama", nama);
+        model.addAttribute("selectedNim", search);
 
         for (RequestKonversi requestKonversi1 : requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N, pageable)){
 
@@ -635,11 +635,11 @@ public class ReportMahasiswaController {
         if (prodi != null) {
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
-                model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,mahasiswa,search, pageable));
-                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI,search, pageable));
-                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH,search, pageable));
-                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(prodi, StatusRecord.AKTIF, StatusRecord.Y,search, pageable));
+                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
+                model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,mahasiswa,search, pageable));
+                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI,search, pageable));
+                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH,search, pageable));
+                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(prodi, StatusRecord.AKTIF, search, pageable));
 
             } else {
                 model.addAttribute("listRequestApprovedGroup", requestKonversiDao.listApprovalGroup(prodi, pageable));
@@ -648,7 +648,7 @@ public class ReportMahasiswaController {
                 model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaId(prodi,StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,mahasiswa, pageable));
                 model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI, pageable));
                 model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(prodi,StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH, pageable));
-                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatusAndFinalization(prodi,StatusRecord.AKTIF,StatusRecord.Y, pageable));
+                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatus(prodi,StatusRecord.AKTIF,pageable));
 
 
             }

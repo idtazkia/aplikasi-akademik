@@ -50,8 +50,8 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>Nama</label>
-                    <input type="text" th:value="${selectedNama}" name="nama" class="form-control">
+                    <label>Nim</label>
+                    <input type="text" th:value="${selectedNim}" name="search" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -410,6 +410,8 @@
                             <th>Grade Lama</th>
                             <th>Grade Baru</th>
                             <th>Tipe Nilai</th>
+                            <th>Approval</th>
+                            <th>Finalisasi</th>
                             <th>Tahun Akademik</th>
                             <th>Status Konversi</th>
                             <th>Waktu Konversi</th>
@@ -426,6 +428,8 @@
                             <td th:text="${data.gradeLama}"></td>
                             <td th:text="${data.krsDetail.grade}"></td>
                             <td th:text="${data.jenisNilai}"></td>
+                            <td th:text="${data.approval}"></td>
+                            <td th:text="${data.finalization}"></td>
                             <td th:text="${data.krsDetail.tahunAkademik.namaTahunAkademik}"></td>
                             <td th:text="${data.krsDetail.requestKonversi}"></td>
                             <td th:text="${data.finalizationDate}"></td>
