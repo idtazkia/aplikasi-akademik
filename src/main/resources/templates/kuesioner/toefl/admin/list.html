@@ -223,6 +223,7 @@
                                         <th>No Telepon</th>
                                         <th>Jenis Test</th>
                                         <th>Ujian Ke</th>
+                                        <th>Tgl Ujian</th>
                                         <th>Listening</th>
                                         <th>Structure</th>
                                         <th>Reading</th>
@@ -242,6 +243,7 @@
                                         <td th:text="${data.mahasiswa.teleponSeluler}">Gifar Haidar</td>
                                         <td th:text="${data.jenisTest}">MBS</td>
                                         <td th:text="${data.ujianKe}">1</td>
+                                        <td th:text="${#temporals.format(data.periodeTest.tanggalUjian, 'dd - MMM - yyyy')}">1</td>
                                         <td th:text="${data.nilaiListening}">1</td>
                                         <td th:text="${data.nilaiStructure}">1</td>
                                         <td th:text="${data.nilaiReading}">1</td>

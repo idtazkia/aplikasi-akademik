@@ -256,6 +256,7 @@
                                         <th class="fixed-column">No Telepon</th>
                                         <th>Jenis Test</th>
                                         <th>Ujian Ke</th>
+                                        <th>Tgl Ujian</th>
                                         <th th:if="${status != null && status == 'HISTORY'}">Writing</th>
                                         <th th:if="${status != null && status == 'HISTORY'}">Speaking</th>
                                         <th th:if="${status != null && status == 'HISTORY'}">Reading</th>
@@ -276,6 +277,7 @@
                                         <td class="fixed-column" th:text="${data.mahasiswa.teleponSeluler}">Gifar Haidar</td>
                                         <td th:text="${data.jenisTest}">MBS</td>
                                         <td th:text="${data.ujianKe}">1</td>
+                                        <td th:text="${#temporals.format(data.periodeTest.tanggalUjian, 'dd - MMM - yyyy')}">1</td>
                                         <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiWriting}">23</td>
                                         <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiSpeaking}">23</td>
                                         <td th:if="${status != null && status == 'HISTORY'}" th:text="${data.nilaiReading}">23</td>
