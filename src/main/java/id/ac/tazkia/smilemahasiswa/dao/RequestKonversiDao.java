@@ -52,7 +52,7 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
             "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
             "inner join prodi as pd on jd.id_prodi = pd.id\n" +
             "inner join mahasiswa as ma on kd.id_mahasiswa = ma.id\n" +
-            "where pd.id = ?1 and rk.status = 'AKTIF' and rk.approval = 'APPROVED' and rk.finalization = 'N'\n" +
+            "where ma.id_prodi = ?1 and rk.status = 'AKTIF' and rk.approval = 'APPROVED' and rk.finalization = 'N'\n" +
             "group by kd.id_mahasiswa\n" +
             "order by ma.nama ASC", countQuery = "select count(rk.id) as jml FROM request_konversi as rk\n" +
             "inner join krs_detail as kd on kd.id = rk.id_krs_detail\n" +
@@ -75,7 +75,7 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
             "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
             "inner join prodi as pd on jd.id_prodi = pd.id\n" +
             "inner join mahasiswa as ma on kd.id_mahasiswa = ma.id\n" +
-            "where pd.id = ?1 and rk.status = 'AKTIF' and rk.approval = 'APPROVED' and rk.finalization = 'N' \n" +
+            "where ma.id_prodi = ?1 and rk.status = 'AKTIF' and rk.approval = 'APPROVED' and rk.finalization = 'N' \n" +
             "order by ma.nama ASC", countQuery = "select count(id) as jml from\n" +
             "(SELECT rk.id as id, kd.id as idKrsDetail, pd.id as idProdi,pd.nama_prodi as namaProdi,kd.id_mahasiswa as idMahasiswa,\n" +
             "ma.nim as nim,ma.nama as nama, mk.nama_matakuliah as namaMatkul,kd.grade as gradeLama, rk.jenis_nilai as jenisNilai,\n" +
