@@ -173,7 +173,8 @@
               <table class="table table-striped sortable">
                 <tr>
                   <th>No</th>
-                  <th>Status</th>
+                  <th>Approval Status</th>
+                  <th>Grade Status</th>
                   <th>Description</th>
                   <th>File</th>
                   <th>Grade Type</th>
@@ -181,8 +182,15 @@
                 </tr>
                 <tr th:each="data,row : ${listRequest}" >
                   <td th:text="${(row.index + 1)}"></td>
-                  <th th:text="${data.approval}"></th>
-                  <th th:text="${data.deskripsi}"></th>
+                  <td th:text="${data.approval}"></td>
+
+                  <td>
+                    <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).N}">Waiting</span>
+                    <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).Y}">Graded</span>
+                  </td>
+
+
+                  <td th:text="${data.deskripsi}"></td>
                   <td >
                     <a th:href="@{/khs/request/{requestKonversi}/(requestKonversi = ${data.id})}" target="_blank"  class="text-primary fst-italic small me-2" th:text="${data.namaFile}" >
                     </a>

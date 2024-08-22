@@ -429,7 +429,10 @@
                             <td th:text="${data.krsDetail.grade}"></td>
                             <td th:text="${data.jenisNilai}"></td>
                             <td th:text="${data.approval}"></td>
-                            <td th:text="${data.finalization}"></td>
+                            <td>
+                              <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).N}">Waiting</span>
+                              <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).Y}">Graded</span>
+                            </td>
                             <td th:text="${data.krsDetail.tahunAkademik.namaTahunAkademik}"></td>
                             <td th:text="${data.krsDetail.requestKonversi}"></td>
                             <td th:text="${data.finalizationDate}"></td>
