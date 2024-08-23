@@ -206,72 +206,6 @@
                       </div>
                     </div>
 
-<!--&lt;!&ndash;                    KPS&ndash;&gt;-->
-<!--                    <div class="card-body" sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">-->
-<!--                      <div class="table-responsive">-->
-<!--                        <table class="table align-items-center table-flush sortable">-->
-<!--                          <thead class="thead-light">-->
-<!--                          <tr>-->
-<!--                            <th>No</th>-->
-<!--                            <th>NIM</th>-->
-<!--                            <th>Mahasiswa</th>-->
-<!--                            <th>Matakuliah</th>-->
-<!--                            <th>Grade Lama</th>-->
-<!--                            <th>Grade Baru</th>-->
-<!--                            <th>Status</th>-->
-<!--                            <th>Tipe Nilai</th>-->
-<!--                            <th class="text-center">Option</th>-->
-<!--                          </tr>-->
-<!--                          </thead>-->
-<!--                          <tbody>-->
-
-
-<!--                          <tr th:each="data,row : ${listRequestApproved}" >-->
-<!--                            <td th:text="${(row.index + 1)}"></td>-->
-<!--                            <td th:text="${data.krsDetail.mahasiswa.nim}"></td>-->
-<!--                            <td th:text="${data.krsDetail.mahasiswa.nama}"></td>-->
-<!--                            <td th:text="${data.krsDetail.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>-->
-<!--                            <th th:text="${data.krsDetail.grade}"></th>-->
-<!--                            <form th:action="@{/studiesActivity/khs/konversiApproval/save(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id})}" th:object="${requestKonversi}"  method="post">-->
-<!--                              <input type="hidden" th:field="*{id}" name="id">-->
-<!--                              <td width="5%">-->
-<!--                                <center>-->
-<!--                                  <select name="grade" class="form-control form-control-sm">-->
-<!--                                    <option value="1">A</option>-->
-<!--                                    <option value="2">A-</option>-->
-<!--                                    <option value="3">B+</option>-->
-<!--                                    <option value="4">B</option>-->
-<!--                                    <option value="5">B-</option>-->
-<!--                                    <option value="6">C+</option>-->
-<!--                                    <option value="7">C</option>-->
-<!--                                    <option value="8">D</option>-->
-<!--                                    <option value="9">E</option>-->
-<!--                                  </select>-->
-<!--                                </center>-->
-<!--                              </td>-->
-<!--                              <td th:text="${data.approval}"></td>-->
-<!--                              <td th:text="${data.jenisNilai}"></td>-->
-<!--                              <td sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')" class="text-center">-->
-<!--                                <button class="btn btn-primary" onclick="return confirm('Confirm your request.')">Nilai</button>-->
-<!--                              </td>-->
-<!--                            </form>-->
-<!--                          </tr>-->
-
-
-<!--                          </tbody>-->
-
-<!--                        </table>-->
-<!--                        <nav aria-label="...">-->
-<!--                          <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
-<!--                            <li class="disabled"><a href="#" aria-label="Previous"><span-->
-<!--                                    aria-hidden="true">&laquo;</span></a>-->
-<!--                            </li>-->
-<!--                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
-<!--                            </li>-->
-<!--                          </ul>-->
-<!--                        </nav>-->
-<!--                      </div>-->
-<!--                    </div>-->
 
                     <!--                    KPS-->
                     <div class="card-body" sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">
@@ -321,6 +255,7 @@
                                             <th>Grade Baru</th>
                                             <th>Status</th>
                                             <th>Tipe Nilai</th>
+                                            <th>Option</th>
                                           </tr>
                                           </thead>
                                           <tbody  th:each="data2,row : ${listApprovalGroupDetail}">
@@ -351,6 +286,9 @@
                                               </td>
                                               <td th:text="${data2.approval}"></td>
                                               <td th:text="${data2.jenisNilai}"></td>
+                                            <td >
+                                              <a th:href="@{/khs/request/rejected(requestKonversi = ${data2.id},krsDetail = ${data2.idKrsDetail},jadwal = ${data.idJadwal})}" onclick="return confirm('Are you sure? ')" class="fa-solid fa-circle-xmark" style="color: #bb2d3b">Reject</a>
+                                            </td>
                                           </tr>
 
 
