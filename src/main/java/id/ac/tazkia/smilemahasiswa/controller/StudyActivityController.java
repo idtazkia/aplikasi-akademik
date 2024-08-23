@@ -788,12 +788,16 @@ public class StudyActivityController {
         for (String mk : matkul){
 
             MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(mk).get();
-            MatakuliahMbkm newMbkm = new MatakuliahMbkm();
-            newMbkm.setKrs(krs);
-            newMbkm.setMatakuliahKurikulum(matkur);
-            newMbkm.setPendaftaranMbkm(daftarMbkm);
-            newMbkm.setStatus(StatusRecord.AKTIF);
-            matakuliahMbkmDao.save(newMbkm);
+
+            MatakuliahMbkm cekData = matakuliahMbkmDao.findByKrsAndMatakuliahKurikulumAndStatusIn(krs, matkur, Arrays.asList(StatusRecord.AKTIF, StatusRecord.FINISHED));
+            if (cekData == null) {
+                MatakuliahMbkm newMbkm = new MatakuliahMbkm();
+                newMbkm.setKrs(krs);
+                newMbkm.setMatakuliahKurikulum(matkur);
+                newMbkm.setPendaftaranMbkm(daftarMbkm);
+                newMbkm.setStatus(StatusRecord.AKTIF);
+                matakuliahMbkmDao.save(newMbkm);
+            }
 
         }
 

@@ -393,7 +393,7 @@ public class MBKMController {
 
             for (MatakuliahKurikulum mk : mkNew) {
                 if (!matakuliahExist.contains(mk)) {
-                    MatakuliahMbkm cek = matakuliahMbkmDao.findByKrsAndMatakuliahKurikulumAndStatus(krsMatakuliahMbkm, mk, StatusRecord.AKTIF);
+                    MatakuliahMbkm cek = matakuliahMbkmDao.findByKrsAndMatakuliahKurikulumAndStatusIn(krsMatakuliahMbkm, mk, Arrays.asList(StatusRecord.AKTIF));
                     if (cek == null) {
                         log.info("Tambah matakuliah baru : {}", mk.getMatakuliah().getNamaMatakuliah());
                         mbkmService.buatMatakuliahMbkm(krsMatakuliahMbkm, mk);

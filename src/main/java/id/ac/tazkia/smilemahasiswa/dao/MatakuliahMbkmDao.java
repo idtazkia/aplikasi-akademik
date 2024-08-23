@@ -19,6 +19,6 @@ public interface MatakuliahMbkmDao extends PagingAndSortingRepository<Matakuliah
 
     List<MatakuliahMbkm> findByKrsAndStatus(Krs krs, StatusRecord statusRecord);
 
-    MatakuliahMbkm findByKrsAndMatakuliahKurikulumAndStatus(Krs krs, MatakuliahKurikulum matakuliahKurikulum, StatusRecord status);
+    MatakuliahMbkm findByKrsAndMatakuliahKurikulumAndStatusIn(Krs krs, MatakuliahKurikulum matakuliahKurikulum, List<StatusRecord> status);
 
 }
