@@ -63,4 +63,14 @@ public class RequestKonversi {
     @Enumerated(EnumType.STRING)
     private StatusRecord jenisNilai;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord statusTenggat = StatusRecord.N;
+
+    @ManyToOne
+    @JoinColumn(name = "id_request_konversi_tenggat")
+    private RequestKonversiTenggat requestKonversiTenggat;
+
+    private String rejectReason;
+
+
 }
