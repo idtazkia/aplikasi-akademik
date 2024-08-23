@@ -724,8 +724,13 @@ public class StudyActivityController {
     }
 
     @GetMapping("/study/mbkm")
-    public void listMBKM(Model model, Authentication authentication){
+    public String listMBKM(Model model, int totalSks, RedirectAttributes attributes, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
+
+        if (totalSks < 100) {
+            attributes.addFlashAttribute("minSks", "Tidak memenuhin syarat total sks");
+            return "redirect:krs";
+        }
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -740,6 +745,8 @@ public class StudyActivityController {
         model.addAttribute("mhs", mahasiswa);
         model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(mahasiswa.getId()));
         model.addAttribute("listMatkulDiambil", matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF));
+
+        return "study/mbkm";
     }
 
     @PostMapping("/study/mbkm/input")
