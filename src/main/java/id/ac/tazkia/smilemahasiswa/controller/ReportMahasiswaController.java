@@ -20,8 +20,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -124,6 +126,9 @@ public class ReportMahasiswaController {
     @Autowired
     private KaryawanDao karyawanDao;
 
+    @Autowired
+    private RequestKonversiTenggatDao requestKonversiTenggatDao;
+
     @Value("${upload.request.konversi}")
     private String uploadRequestKonversi;
 
@@ -217,6 +222,18 @@ public class ReportMahasiswaController {
 
         return "report/khs";
 
+
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
+    public void setStatusTenggat(){
+
+        RequestKonversiTenggat requestKonversiTenggat = requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF);
+        if (LocalDate.now().isAfter(requestKonversiTenggat.getTanggalAkhir())){
+            requestKonversiDao.updateStatusTenggat();
+
+        }
 
     }
 
@@ -616,6 +633,16 @@ public class ReportMahasiswaController {
         model.addAttribute("listRequest",khsService.getRequestList(krsDetail,jadwal));
         model.addAttribute("reqId",khsService.validasiUploadFileKonversi(krsDetail));
 
+        List<RequestKonversi> listRequestKonversi = requestKonversiDao.findByStatus(StatusRecord.AKTIF);
+        for (RequestKonversi requestKonversi : listRequestKonversi){
+            model.addAttribute("statusTenggat",requestKonversi);
+        }
+
+        //untuk tenggat:
+        //buat input tanggal awal dan akhir request konversi tenggat di menu akademik
+        //update upload request konversi mahasiswa.. tambah id_request_konversi_tenggat
+        //akhir tanggal tenggat set field status_tenggat by id_request_konversi_tenggat
+
         return "studiesActivity/khs/konversi";
     }
 
@@ -651,19 +678,6 @@ public class ReportMahasiswaController {
                 model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatus(prodi,StatusRecord.AKTIF,pageable));
 
 
-            }
-        } else {
-            if (StringUtils.hasText(search)){
-                model.addAttribute("search", search);
-                model.addAttribute("listRequestApproved", requestKonversiDao.findByApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.APPROVED, StatusRecord.AKTIF,StatusRecord.N,search, pageable));
-                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.PRESTASI,search, pageable));
-                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,StatusRecord.TAHFIZH,search, pageable));
-                model.addAttribute("listFinal", requestKonversiDao.findByStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord.AKTIF,StatusRecord.Y, search, pageable));
-
-            }else{
-                model.addAttribute("listRequest",khsService.getRequestList2(pageable));
-                model.addAttribute("listRequestPrestasi",requestKonversiDao.findByApprovalAndStatusAndJenisNilaiOrderByCreatedDateAsc(StatusRecord.WAITING,StatusRecord.AKTIF,StatusRecord.PRESTASI,pageable));
-                model.addAttribute("listRequestTahfizh",requestKonversiDao.findByApprovalAndStatusAndJenisNilaiOrderByCreatedDateAsc(StatusRecord.WAITING,StatusRecord.AKTIF,StatusRecord.TAHFIZH,pageable));
             }
         }
 
@@ -805,6 +819,8 @@ public class ReportMahasiswaController {
             return "redirect:../../studiesActivity/khs/konversiApproval";
         }
     }
+
+
 
 
 

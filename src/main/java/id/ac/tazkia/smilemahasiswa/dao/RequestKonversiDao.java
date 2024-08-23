@@ -5,12 +5,15 @@ import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MahasiswaMangkirTigaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
 public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKonversi,String> {
+
+    List<RequestKonversi> findByStatus(StatusRecord statusRecord);
 
     RequestKonversi findByKrsDetailAndStatusAndApproval(KrsDetail krsDetail, StatusRecord statusRecord, StatusRecord approval);
 
@@ -50,8 +53,11 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
 
     Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord, String search, Pageable page);
 
+    @Modifying
+    @Query(value = "update request_konversi set status_tenggat='Y' where status='AKTIF'", nativeQuery = true)
+    void updateStatusTenggat();
 
-    @Query(value = "SELECT rk.id as id, kd.id as idKrsDetail, pd.id as idProdi,pd.nama_prodi as namaProdi,kd.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.nama as nama, rk.status as status,rk.approval as approval, rk.finalization as finalization\n" +
+    @Query(value = "SELECT rk.id as id, kd.id as idKrsDetail, pd.id as idProdi, jd.id as idJadwal, pd.nama_prodi as namaProdi,kd.id_mahasiswa as idMahasiswa,ma.nim as nim,ma.nama as nama, rk.status as status,rk.approval as approval, rk.finalization as finalization\n" +
             "FROM request_konversi as rk\n" +
             "inner join krs_detail as kd on kd.id = rk.id_krs_detail\n" +
             "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
@@ -70,7 +76,7 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
     Page<RequestKonversiDto> listApprovalGroup(Prodi Prodi,Pageable pageable);
 
 
-    @Query(value = "SELECT rk.id as id, kd.id as idKrsDetail, pd.id as idProdi,pd.nama_prodi as namaProdi,kd.id_mahasiswa as idMahasiswa,\n" +
+    @Query(value = "SELECT rk.id as id, kd.id as idKrsDetail, pd.id as idProdi, jd.id as idJadwal, pd.nama_prodi as namaProdi,kd.id_mahasiswa as idMahasiswa,\n" +
             "ma.nim as nim,ma.nama as nama, mk.nama_matakuliah as namaMatkul,kd.grade as gradeLama, rk.jenis_nilai as jenisNilai,\n" +
             "rk.status as status,rk.approval as approval, rk.finalization as finalization\n" +
             "FROM request_konversi as rk\n" +

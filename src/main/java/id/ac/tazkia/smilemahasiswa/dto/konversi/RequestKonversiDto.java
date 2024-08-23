@@ -8,6 +8,8 @@ public interface RequestKonversiDto {
 
     String getIdProdi();
 
+    String getIdJadwal();
+
     String getNamaProdi();
 
     String getIdMahasiswa();
