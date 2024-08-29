@@ -3,10 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.constant.StatusUjian;
 import id.ac.tazkia.smilemahasiswa.dto.kusioner.PrediksiTestDto;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.PeriodeTest;
-import id.ac.tazkia.smilemahasiswa.entity.PrediksiTest;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -100,11 +97,17 @@ public interface PrediksiTestDao extends PagingAndSortingRepository<PrediksiTest
 
     Page<PrediksiTest> findByStatusNotInAndStatusUjianNotIn(List<StatusRecord> statusRecord, List<StatusUjian> statusUjian, Pageable pageable);
 
+    Page<PrediksiTest> findByPeriodeTest(PeriodeTest periodeTest, Pageable pageable);
+
+    List<PrediksiTest> findByPeriodeTest(PeriodeTest periodeTest);
+
     List<PrediksiTest> findByMahasiswaAndStatusNotInOrderByUjianKeAsc(Mahasiswa mahasiswa, List<StatusRecord> statusRecord);
 
     List<PrediksiTest> findByPeriodeTestAndStatusAndStatusUjianInOrderByMahasiswaNim(PeriodeTest periodeTest, StatusRecord status, List<StatusUjian> sttusUjian);
 
     PrediksiTest findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(List<StatusRecord> status, List<StatusUjian> statusUjian, Mahasiswa mahasiswa, JenisTest jenisTest);
+
+    PrediksiTest findByStatusAndTagihan(StatusRecord status, Tagihan tagihan);
 
     List<PrediksiTest> findByMahasiswaAndStatusNotInAndJenisTestOrderByUjianKeAsc(Mahasiswa mahasiswa, List<StatusRecord> list, JenisTest jenisTest);
 }

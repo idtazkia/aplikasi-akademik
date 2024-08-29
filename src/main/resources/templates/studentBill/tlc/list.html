@@ -110,13 +110,15 @@
                             <tbody>
                             <tr th:each="data,row : ${listTagihan}">
                                 <td th:text="${(row.index + 1) + (listTagihan.number * listTagihan.size)}">1</td>
-                                <td th:text="${data.getNim}"></td>
-                                <td th:text="${data.getNama}">PATRICK STAR</td>
-                                <td th:text="${data.getAngkatan}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${data.getUjian}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${data.getJenis}"></td>
-                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getNilai, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${data.getStatus}"></td>
+                                <td th:text="${data.mahasiswa.nim}"></td>
+                                <td th:text="${data.mahasiswa.nama}">PATRICK STAR</td>
+                                <td th:text="${data.mahasiswa.angkatan}">BANGUN DAN SEMANGAT</td>
+                                <td th:text="${data.ujianKe}">BANGUN DAN SEMANGAT</td>
+                                <td th:text="${data.jenisTest}"></td>
+                                <td>
+                                    <div th:if="${data.tagihan != null}" th:text="${'Rp. ' + #numbers.formatDecimal(data.tagihan.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></div>
+                                </td>
+                                <td th:text="${data?.tagihan?.statusTagihan}"></td>
                             </tr>
                             </tbody>
                         </table>

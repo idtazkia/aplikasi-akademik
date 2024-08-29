@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-xs-12">
                                 <div class="breadcomb-report">
-                                    <a th:href="@{/kuesioner/toefl/view}" th:if="${validate == null && enableFitur != null}">
+                                    <a th:href="@{/kuesioner/toefl/view}" th:if="${validate == null}">
                                         <button class="btn btn-warning btn-sm "><i class="fa fa-plus-square"></i> Daftar TOEFL</button>
                                     </a>
                                 </div>
@@ -75,7 +75,8 @@
                                         <td th:if="${data.status == data.status.WAITING}">-</td>
                                         <td>
                                             <button th:if="${data.status == data.status.WAITING}" class="btn btn-sm btn-warning">Menunggu Persetujuan TLC</button>
-                                            <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.WAITING}" class="btn btn-sm btn-warning">Menunggu</button>
+                                            <button th:if="${data.status == data.status.BELUM_LUNAS}" class="btn btn-sm btn-warning">Belum bayar</button>
+                                            <button th:if="${data.status != data.status.WAITING && data.status != data.status.BELUM_LUNAS && data.statusUjian == data.statusUjian.WAITING}" class="btn btn-sm btn-warning">Menunggu</button>
                                             <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.LULUS}" class="btn btn-sm btn-success">Lulus</button>
                                             <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.TIDAK_LULUS}" class="btn btn-sm btn-danger">Tidak Lulus</button>
                                             <button th:if="${data.status != data.status.WAITING && data.statusUjian == data.statusUjian.DINILAI}" class="btn btn-sm btn-primary">Dinilai</button>

@@ -55,4 +55,8 @@ public class PrediksiTest {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tanggalUpload = LocalDateTime.now();
 
+    @ManyToOne
+    @JoinColumn(name = "id_tagihan")
+    private Tagihan tagihan;
+
 }

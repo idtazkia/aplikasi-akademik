@@ -90,6 +90,9 @@ public class TagihanService {
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
+    @Autowired
+    private PrediksiTestDao prediksiTestDao;
+
     public void generateTagihanBeasiswa(TahunAkademik tahunAkademik, Program program, List<Mahasiswa> mahasiswas){
         if (!mahasiswas.isEmpty()) {
             log.info("cek mahasiswa {} ", mahasiswas);
@@ -417,6 +420,11 @@ public class TagihanService {
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
                 enableFitureDao.save(ef);
             }
+            PrediksiTest prediksi = prediksiTestDao.findByStatusAndTagihan(StatusRecord.BELUM_LUNAS, tagihan);
+            if (prediksi != null) {
+                prediksi.setStatus(StatusRecord.AKTIF);
+                prediksiTestDao.save(prediksi);
+            }
         }
 
         if (TAGIHAN_IELTS.equals(pt.getKodeJenisBiaya())) {
@@ -425,6 +433,11 @@ public class TagihanService {
                 ef.setEnable(true);
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
                 enableFitureDao.save(ef);
+            }
+            PrediksiTest prediksi = prediksiTestDao.findByStatusAndTagihan(StatusRecord.BELUM_LUNAS, tagihan);
+            if (prediksi != null) {
+                prediksi.setStatus(StatusRecord.AKTIF);
+                prediksiTestDao.save(prediksi);
             }
         }
 
@@ -483,7 +496,7 @@ public class TagihanService {
         krsDao.save(krs);
     }
 
-    public void createTagihanTestInggris(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, LocalDate tanggalJatuhTempo, String jenis){
+    public void createTagihanTestInggris(PrediksiTest prediksiTest, Mahasiswa mahasiswa, TahunAkademik tahunAkademik, LocalDate tanggalJatuhTempo, String jenis){
 
         JenisTagihan jenisTagihan = null;
         BigDecimal nilai = null;
@@ -527,7 +540,7 @@ public class TagihanService {
             tagihan.setNilaiJenisTagihan(njt);
             tagihan.setNilaiTagihan(njt.getNilai());
             tagihan.setNilaiTagihanAsli(njt.getNilai());
-            tagihan.setKeterangan("Tagihan " + njt.getJenisTagihan().getNama() + "a.n" + mahasiswa.getNama());
+            tagihan.setKeterangan("Tagihan " + njt.getJenisTagihan().getNama() + " a.n " + mahasiswa.getNama());
             tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
             tagihan.setTanggalPembuatan(LocalDate.now());
             tagihan.setTanggalPenangguhan(tanggalJatuhTempo);
@@ -537,6 +550,9 @@ public class TagihanService {
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
             requestCreateTagihan(tagihan);
+
+            prediksiTest.setTagihan(tagihan);
+            prediksiTestDao.save(prediksiTest);
 
         }else{
             Tagihan tagihan = new Tagihan();
@@ -554,6 +570,9 @@ public class TagihanService {
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
             requestCreateTagihan(tagihan);
+
+            prediksiTest.setTagihan(tagihan);
+            prediksiTestDao.save(prediksiTest);
 
         }
 

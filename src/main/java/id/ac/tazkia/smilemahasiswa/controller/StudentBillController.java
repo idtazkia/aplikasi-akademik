@@ -67,6 +67,9 @@ public class StudentBillController {
 
     public static final List<String> programS2 = Arrays.asList("03", "8ec26f2c-a48a-4948-be90-e03e9374c675");
 
+    public static final String TAGIHAN_TOEFL = "81";
+    public static final String TAGIHAN_IELTS = "82";
+
     @Autowired
     private BankDao bankDao;
 
@@ -159,6 +162,9 @@ public class StudentBillController {
 
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private PrediksiTestDao prediksiTestDao;
 
     @Autowired
     private PeriodeTestDao periodeTestDao;
@@ -2769,6 +2775,34 @@ public class StudentBillController {
         tagihan.setLunas(true);
         tagihanDao.save(tagihan);
 
+        if (TAGIHAN_TOEFL.equals(tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.TOEFL, false);
+            if (ef != null) {
+                ef.setEnable(true);
+                ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(ef);
+            }
+            PrediksiTest prediksi = prediksiTestDao.findByStatusAndTagihan(StatusRecord.BELUM_LUNAS, tagihan);
+            if (prediksi != null) {
+                prediksi.setStatus(StatusRecord.AKTIF);
+                prediksiTestDao.save(prediksi);
+            }
+        }
+
+        if (TAGIHAN_IELTS.equals(tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.IELTS, false);
+            if (ef != null) {
+                ef.setEnable(true);
+                ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(ef);
+            }
+            PrediksiTest prediksi = prediksiTestDao.findByStatusAndTagihan(StatusRecord.BELUM_LUNAS, tagihan);
+            if (prediksi != null) {
+                prediksi.setStatus(StatusRecord.AKTIF);
+                prediksiTestDao.save(prediksi);
+            }
+        }
+
         return "redirect:../billAdmin/list?tahunAkademik="+tagihan.getTahunAkademik().getId()+"&nim="+tagihan.getMahasiswa().getNim();
     }
 
@@ -3477,7 +3511,7 @@ public class StudentBillController {
         model.addAttribute("listPeriode", periodeTestDao.findAllByOrderByTanggalUjianDesc());
         if (periodeTest != null) {
             model.addAttribute("selectPeriode", periodeTest);
-            model.addAttribute("listTagihan", tagihanDao.rekapTagihanPrediksiTest(periodeTest.getId(), page));
+            model.addAttribute("listTagihan", prediksiTestDao.findByPeriodeTest(periodeTest, page));
         }
     }
 
@@ -3485,7 +3519,7 @@ public class StudentBillController {
     public void downloadRekap(@RequestParam PeriodeTest periode, HttpServletResponse response) throws IOException {
         String[] columns = {"NO", "NIM", "Name", "Generation", "Exam to", "Test Type", "Value", "Status"};
 
-        List<RekapTagihanDto> listMhs = tagihanDao.downloadRekapTagihanPrediksiTest(periode.getId());
+        List<PrediksiTest> listMhs = prediksiTestDao.findByPeriodeTest(periode);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Prediksi Test " + periode.getJenisTest() + " Periode " + periode.getTanggalUjian());
@@ -3549,16 +3583,21 @@ public class StudentBillController {
         int rowNum = 5;
         int baris = 1;
 
-        for (RekapTagihanDto list : listMhs){
+        for (PrediksiTest list : listMhs){
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
-            row.createCell(1).setCellValue(list.getNim());
-            row.createCell(2).setCellValue(list.getNama());
-            row.createCell(3).setCellValue(list.getAngkatan());
-            row.createCell(4).setCellValue(list.getUjian());
-            row.createCell(5).setCellValue(list.getJenis());
-            row.createCell(6).setCellValue(list.getNilai().toString());
-            row.createCell(7).setCellValue(list.getStatus());
+            row.createCell(1).setCellValue(list.getMahasiswa().getNim());
+            row.createCell(2).setCellValue(list.getMahasiswa().getNama());
+            row.createCell(3).setCellValue(list.getMahasiswa().getAngkatan());
+            row.createCell(4).setCellValue(list.getUjianKe());
+            row.createCell(5).setCellValue(list.getJenisTest().toString());
+            if (list.getTagihan() != null) {
+                row.createCell(6).setCellValue(list.getTagihan().getNilaiTagihan().toString());
+                row.createCell(7).setCellValue(list.getTagihan().getStatusTagihan().toString());
+            }else{
+                row.createCell(6).setCellValue("-");
+                row.createCell(7).setCellValue("-");
+            }
 
             row.getCell(0).setCellStyle(dataStyle);
             row.getCell(1).setCellStyle(dataStyle);
@@ -3575,7 +3614,7 @@ public class StudentBillController {
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Tagihan Prediksi Test " + String.valueOf(periode.getJenisTest()) + " periode " + periode.getTanggalUjian() + ".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Rekap Tagihan Prediksi Test " + periode.getJenisTest().toString() + " periode " + periode.getTanggalUjian() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
