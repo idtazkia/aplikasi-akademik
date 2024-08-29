@@ -69,18 +69,19 @@
                             </div>
                             <div class="col-md-6 col-xs-12 text-right">
                                 <input type="hidden" th:value="${sksLulus}">
-                                <div class="dropdown-trig-an-list" th:if="${mbkm != null && existMbkm == null && existKrs == null}">
+                                <div class="dropdown-trig-an-list">
+<!--                                     th:if="${mbkm != null && existMbkm == null && existKrs == null}">-->
                                     <div class="dropdown-trig-sgn pull-right">
                                         <button class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-plus-square"></i> Tambah KRS</button>
                                         <ul class="dropdown-menu">
                                             <li th:if="${validasi == null && kelas != null}"><a th:href="@{/study/form}">Tambah Krs</a></li>
-                                            <li><a th:href="@{/study/mbkm}" class="text-white">MBKM </a></li>
+                                            <li><a th:href="@{/study/mbkm(totalSks=${sksLulus})}" class="text-white">MBKM </a></li>
                                         </ul>
                                     </div>
                                 </div>
-                                <a th:href="@{/study/form}" th:if="${validasi == null && kelas != null && mbkm == null}">
-                                    <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Tambah KRS</button>
-                                </a>
+<!--                                <a th:href="@{/study/form}" th:if="${validasi == null && kelas != null && mbkm == null}">-->
+<!--                                    <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Tambah KRS</button>-->
+<!--                                </a>-->
                                 <a th:href="@{/study/kartu/hputs}" th:id="mobile" style="display:none;" th:if="${kartuUts != null}">
                                     <button class="btn btn-primary"><i class="fa fa-cloud-download"></i> Download Midterm Exam Card</button>
                                 </a>
@@ -99,6 +100,13 @@
                     </div>
                     <div class="alert alert-info text-center" th:if="${mbkmWaiting != null}" th:text="${mbkmWaiting}"></div>
                     <div class="alert alert-danger text-center" th:if="${mbkmReject != null}" th:text="${mbkmReject}"></div>
+                    <div class="alert alert-danger" th:if="${minSks != null}">
+                        <center>
+                            <strong>
+                                Belum memenuhi syarat minimal sks (minimal 100 sks lulus, total sks Anda <span th:text="${sksLulus}"></span>)
+                            </strong>
+                        </center>
+                    </div>
                     <div class="alert alert-info" th:if="${validasi != null}">
                         <center>
                             <strong>

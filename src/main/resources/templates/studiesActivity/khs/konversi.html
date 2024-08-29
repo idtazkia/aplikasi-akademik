@@ -34,7 +34,8 @@
   </div>
 
 
-
+<!--belum masa tenggat-->
+<span th:if="${statusTenggat.statusTenggat == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).N}">
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-xs-12">
@@ -80,7 +81,7 @@
                           <br>
                           <div class="mb-3">
                             <label>Evidence Grade Type</label>
-                            <select id="jenisNilai" name="jenisNilai" class="form-control">
+                            <select id="jenisNilai" name="jenisNilai" class="form-control" required>
                               <option value="" selected disabled>-- Select One --</option>
                               <option value="PRESTASI">PRESTASI</option>
                               <option value="TAHFIZH">TAHFIZH</option>
@@ -153,7 +154,9 @@
       </div>
     </div>
   </div>
+
   <br>
+
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-xs-12">
@@ -173,7 +176,8 @@
               <table class="table table-striped sortable">
                 <tr>
                   <th>No</th>
-                  <th>Status</th>
+                  <th>Approval Status</th>
+                  <th>Grade Status</th>
                   <th>Description</th>
                   <th>File</th>
                   <th>Grade Type</th>
@@ -181,8 +185,15 @@
                 </tr>
                 <tr th:each="data,row : ${listRequest}" >
                   <td th:text="${(row.index + 1)}"></td>
-                  <th th:text="${data.approval}"></th>
-                  <th th:text="${data.deskripsi}"></th>
+                  <td th:text="${data.approval}"></td>
+
+                  <td>
+                    <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).N}">Waiting</span>
+                    <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).Y}">Graded</span>
+                  </td>
+
+
+                  <td th:text="${data.deskripsi}"></td>
                   <td >
                     <a th:href="@{/khs/request/{requestKonversi}/(requestKonversi = ${data.id})}" target="_blank"  class="text-primary fst-italic small me-2" th:text="${data.namaFile}" >
                     </a>
@@ -202,6 +213,84 @@
       </div>
     </div>
   </div>
+</span>
+
+<span th:if="${statusTenggat.statusTenggat == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).Y}">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-xs-12">
+        <div class="normal-table-list mg-t-30">
+          <div class="basic-tb-hd">
+            <h2>Data KHS</h2>
+          </div>
+            <div class="row">
+              <div class="col-md-12" th:each="data,row : ${khs}">
+                <div class="shadow-sm border ps-3 pt-3 pe-3 pb-1 mb-3" >
+                  <b><p th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></p></b>
+                  <b><p th:text="${data.jadwal.dosen.karyawan.namaKaryawan}"></p></b>
+                  <hr>
+                  <p>Your Grade Currently : <b><span th:text="${data.grade}"></span></b></p>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+
+                <!-- disabled-->
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <input type="hidden" name="id" >
+
+                          <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <input type="text" class="form-control"  placeholder="Temporary Disable" required disabled>
+                          </div>
+                          <br>
+                          <div class="mb-3">
+                            <label for="file" class="form-label">Evidence</label>
+                            <input class="form-control" type="file"  required disabled>
+                          </div>
+                          <br>
+                          <div class="mb-3">
+                            <label>Evidence Grade Type</label>
+                            <select name="jenisNilai" class="form-control" disabled>
+                              <option value=""></option>
+                              <option value="" selected disabled>-- Select One --</option>
+                              <option value="PRESTASI">PRESTASI</option>
+                              <option value="TAHFIZH">TAHFIZH</option>
+                            </select>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <br><br>
+                    <div class="card-footer">
+                      <div class="col-md-12 col-xs-12">
+                        <div class="alert alert-warning">
+                          <b>Convertion Request Deadline Has Been Reached, Contact Academic Staff For Further Information</b>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</span>
 
 
 

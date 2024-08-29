@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -40,8 +41,8 @@ public class JadwalTugas {
     private String namaFile;
 
     @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tenggatWaktu;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime tenggatWaktu;
 
     @Enumerated(EnumType.STRING)
     private JenisPengiriman jenisPengiriman;

@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import com.lowagie.text.pdf.codec.wmf.MetaDo;
+import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -378,10 +379,12 @@ public class FinanceController {
     }
 
     @GetMapping("/activation/toefl")
-    public void aktivasiToefl(Model model, @RequestParam(required = false) String nim, @RequestParam(required = false) TahunAkademik tahunAkademik){
+    public void aktivasiToefl(Model model, @RequestParam(required = false) String nim, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String jenis){
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         model.addAttribute("selectedNim", nim);
         model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("jenis", jenis);
+        model.addAttribute("jenisTest", JenisTest.values());
         if (mhs != null) {
             model.addAttribute("mhs", mhs);
             model.addAttribute("prediksiTest", prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mhs, Arrays.asList(StatusRecord.HAPUS)));
@@ -391,20 +394,37 @@ public class FinanceController {
     }
 
     @PostMapping("/activation/toefl")
-    public String toefl(@RequestParam String nim, @RequestParam TahunAkademik tahunAkademik){
+    public String toefl(@RequestParam String nim, @RequestParam TahunAkademik tahunAkademik, @RequestParam JenisTest jenis){
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
 
-        EnableFiture toefl = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(mhs, StatusRecord.PREDIKSI_TEST, tahunAkademik);
-        if (toefl != null) {
-            toefl.setEnable(true);
-            enableFitureDao.save(toefl);
-        }else{
-            EnableFiture enableFiture = new EnableFiture();
-            enableFiture.setFitur(StatusRecord.PREDIKSI_TEST);
-            enableFiture.setMahasiswa(mhs);
-            enableFiture.setEnable(true);
-            enableFiture.setTahunAkademik(tahunAkademik);
-            enableFitureDao.save(enableFiture);
+        if (JenisTest.TOEFL.equals(jenis)) {
+            EnableFiture toefl = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(mhs, StatusRecord.TOEFL, tahunAkademik);
+            if (toefl != null) {
+                toefl.setEnable(true);
+                enableFitureDao.save(toefl);
+            }else{
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.TOEFL);
+                enableFiture.setMahasiswa(mhs);
+                enableFiture.setEnable(true);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFiture.setKeterangan("-");
+                enableFitureDao.save(enableFiture);
+            }
+        } else if (JenisTest.IELTS.equals(jenis)) {
+            EnableFiture ielts = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(mhs, StatusRecord.IELTS, tahunAkademik);
+            if (ielts != null) {
+                ielts.setEnable(true);
+                enableFitureDao.save(ielts);
+            }else{
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.IELTS);
+                enableFiture.setMahasiswa(mhs);
+                enableFiture.setEnable(true);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFiture.setKeterangan("-");
+                enableFitureDao.save(enableFiture);
+            }
         }
 
         return "redirect:toefl?nim="+nim+"&tahunAkademik="+tahunAkademik.getId();

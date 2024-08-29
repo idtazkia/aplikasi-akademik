@@ -53,13 +53,13 @@
                     <div class="card-body">
                         <form method="post" th:action="@{/activation/toefl}">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>NIM</label>
                                         <input type="text" th:value="${selectedNim}" class="form-control" name="nim">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Tahun Akademik</label>
                                         <select name="tahunAkademik" required
@@ -67,6 +67,16 @@
                                             <option value=""></option>
                                             <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahun})"
                                                     th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Jenis Tes</label>
+                                        <select name="jenis" required class="form-control" style="width: 100%!important;">
+                                            <option selected disabled></option>
+                                            <option th:each="jenis : ${jenisTest}" th:selected="(${jenis} == *{jenis})"
+                                                    th:value="${jenis}" th:text="${jenis}"></option>
                                         </select>
                                     </div>
                                 </div>

@@ -1476,7 +1476,7 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/assesment/tugas")
-    public String simpanTugas(@Valid @ModelAttribute JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload) throws IOException {
+    public String simpanTugas(@Valid JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload) throws IOException {
         SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal, jadwalTugas.getPertemuanKe()).get();
         if (online != null) {
             jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS);
@@ -12992,7 +12992,7 @@ public class StudiesActivityController {
         return response;
     }
 
-    @PostMapping("/import-ipk-sks/{angkatan}")
+    @PostMapping("/import-ipk-sks/angkatan/{angkatan}")
     @ResponseBody
     public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse importIpkSksAngkatan(@PathVariable String angkatan) {
 

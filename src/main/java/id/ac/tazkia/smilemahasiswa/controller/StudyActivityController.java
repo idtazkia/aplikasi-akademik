@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -723,8 +724,13 @@ public class StudyActivityController {
     }
 
     @GetMapping("/study/mbkm")
-    public void listMBKM(Model model, Authentication authentication){
+    public String listMBKM(Model model, int totalSks, RedirectAttributes attributes, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
+
+        if (totalSks < 100) {
+            attributes.addFlashAttribute("minSks", "Tidak memenuhin syarat total sks");
+            return "redirect:krs";
+        }
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -739,6 +745,8 @@ public class StudyActivityController {
         model.addAttribute("mhs", mahasiswa);
         model.addAttribute("listMatkul", pendaftaranMbkmDao.listMatkulMbkm(mahasiswa.getId()));
         model.addAttribute("listMatkulDiambil", matakuliahMbkmDao.findByKrsAndStatus(krs, StatusRecord.AKTIF));
+
+        return "study/mbkm";
     }
 
     @PostMapping("/study/mbkm/input")
@@ -780,12 +788,16 @@ public class StudyActivityController {
         for (String mk : matkul){
 
             MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(mk).get();
-            MatakuliahMbkm newMbkm = new MatakuliahMbkm();
-            newMbkm.setKrs(krs);
-            newMbkm.setMatakuliahKurikulum(matkur);
-            newMbkm.setPendaftaranMbkm(daftarMbkm);
-            newMbkm.setStatus(StatusRecord.AKTIF);
-            matakuliahMbkmDao.save(newMbkm);
+
+            MatakuliahMbkm cekData = matakuliahMbkmDao.findByKrsAndMatakuliahKurikulumAndStatusIn(krs, matkur, Arrays.asList(StatusRecord.AKTIF, StatusRecord.FINISHED));
+            if (cekData == null) {
+                MatakuliahMbkm newMbkm = new MatakuliahMbkm();
+                newMbkm.setKrs(krs);
+                newMbkm.setMatakuliahKurikulum(matkur);
+                newMbkm.setPendaftaranMbkm(daftarMbkm);
+                newMbkm.setStatus(StatusRecord.AKTIF);
+                matakuliahMbkmDao.save(newMbkm);
+            }
 
         }
 
@@ -819,7 +831,7 @@ public class StudyActivityController {
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("materi", materiMengajarDao.findByStatusAndSesiKuliahJadwal(StatusRecord.AKTIF, jadwal));
         model.addAttribute("tugas", jadwalTugasDao.findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(jadwal, StatusRecord.AKTIF));
-        model.addAttribute("now", LocalDate.now());
+        model.addAttribute("now", LocalDateTime.now());
     }
 
     @GetMapping("/jadwal/{jadwal}/tugas")
