@@ -39,6 +39,14 @@ public class PeriodeWisuda {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate bukaSeminar;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tutupSeminar;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate bukaSidang;
 
     @Column(columnDefinition = "DATE")

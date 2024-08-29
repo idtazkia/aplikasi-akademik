@@ -782,7 +782,8 @@ public class GraduationController {
     @GetMapping("/graduation/sempro")
     public String sempro(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
         if (note.getStatus() == StatusApprove.APPROVED) {
-            if(LocalDate.now().isAfter(LocalDate.parse("2024-08-24")) && LocalDate.now().isBefore(LocalDate.parse("2024-08-30"))){
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+            if(LocalDate.now().isAfter(periodeWisuda.getTutupSeminar()) && LocalDate.now().isBefore(periodeWisuda.getBukaSeminar())){
                 return "redirect:seminar/info";
             }
 
@@ -815,7 +816,6 @@ public class GraduationController {
 
                 }
             }
-            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
 
             if (krsDetail != null) {
@@ -848,7 +848,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/info")
     public void alertPenutanSeminar(Model model) {
-
+        model.addAttribute("periode", periodeWisudaDao.findByStatus(StatusRecord.AKTIF));
     }
 
     @GetMapping("/graduation/sempropasca")
