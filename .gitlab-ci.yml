@@ -11,10 +11,26 @@ variables:
   SPRING_DATASOURCE_URL: "jdbc:mysql://mysql/db_simak?useSSL=false"
   SPRING_DATASOURCE_USERNAME: "root"
   SPRING_DATASOURCE_PASSWORD: "yes"
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
 stages:
  - build
  - deploy
+
+sonarcloud-check:
+  image: maven:3-openjdk-17
+  stage: build
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - mvn verify sonar:sonar -Dsonar.projectKey=tazkia.ac.id_aplikasi-akademik
+  only:
+    - merge_requests
+    - master
+    - develop
 
 maven-build:
  image: maven:3-jdk-11
