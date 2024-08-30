@@ -652,7 +652,6 @@ public class KuesionerController {
         prediksiTest.setStatusUjian(StatusUjian.REJECTED);
         prediksiTest.setUjianKe(2);
         prediksiTestDao.save(prediksiTest);
-//        tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "toefl");
         return "redirect:list?status=WAITING";
     }
 
@@ -663,7 +662,6 @@ public class KuesionerController {
         prediksiTest.setStatusUjian(StatusUjian.REJECTED);
         prediksiTest.setUjianKe(2);
         prediksiTestDao.save(prediksiTest);
-//        tagihanService.createTagihanTestInggris(prediksiTest.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF), LocalDate.now().plusYears(1) , "ielts");
         return "redirect:list?status=WAITING";
     }
 
