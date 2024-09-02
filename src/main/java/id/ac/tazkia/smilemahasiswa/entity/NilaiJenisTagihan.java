@@ -50,4 +50,8 @@ public class NilaiJenisTagihan {
     @NotNull @NotEmpty
     private String angkatan;
 
+    private String kodeTagihan;
+
+    private String kodePembayaran;
+
 }
