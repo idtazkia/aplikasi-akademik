@@ -88,7 +88,7 @@ public class ApiService {
         }
     }
 
-//    @Scheduled(cron = "${scheduled.sendPembayaranAkun}", zone = "Asia/Jakarta")
+    @Scheduled(cron = "${scheduled.sendPembayaranAkun}", zone = "Asia/Jakarta")
     public void kirimPembayaran() throws JsonProcessingException {
         List<Pembayaran> cekPembayaran = pembayaranDao.findByStatusAndZahirExport(StatusRecord.AKTIF, AkuntansiExport.NEW);
         if(!cekPembayaran.isEmpty()){
