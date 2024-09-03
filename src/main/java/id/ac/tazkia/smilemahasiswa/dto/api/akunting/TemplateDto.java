@@ -6,5 +6,7 @@ import java.util.List;
 
 @Data
 public class TemplateDto {
+    private String responseCode;
+    private String responseMessage;
     private List<TemplateJurnalDto> data;
 }
