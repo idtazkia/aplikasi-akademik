@@ -56,13 +56,17 @@ public class ApiService {
         String request = objectMapper.writeValueAsString(tagihan);
         log.debug("request: {}", request);
 
-        webClient.post()
-                .uri(baseAkuntansi + "journal")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(SendTagihanDto.class)
-                .block();
+        try {
+            webClient.post()
+                    .uri(baseAkuntansi + "journal")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(SendTagihanDto.class)
+                    .block();
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
 
     }
 
@@ -71,7 +75,7 @@ public class ApiService {
         List<Tagihan> cekTagihan = tagihanDao.findByStatusAndTahunAkademikAndZahirExport(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), AkuntansiExport.NEW);
         if(!cekTagihan.isEmpty()){
             for (Tagihan t : cekTagihan){
-                if (t.getNilaiJenisTagihan().getKodeTagihan() != null) {
+                if (t.getNilaiJenisTagihan().getKodeTagihan().trim() != null) {
                     SendTagihanDto tagihanDto = new SendTagihanDto();
                     tagihanDto.setCodeTemplate(t.getNilaiJenisTagihan().getKodeTagihan());
                     tagihanDto.setDateTransaction(String.valueOf(t.getTanggalPembuatan()));
@@ -93,18 +97,20 @@ public class ApiService {
         List<Pembayaran> cekPembayaran = pembayaranDao.findByStatusAndZahirExport(StatusRecord.AKTIF, AkuntansiExport.NEW);
         if(!cekPembayaran.isEmpty()){
             for (Pembayaran p : cekPembayaran){
-                if (p.getTagihan().getNilaiJenisTagihan().getKodeTagihan() != null) {
-                    SendTagihanDto tagihanDto = new SendTagihanDto();
-                    tagihanDto.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodeTagihan());
-                    tagihanDto.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
-                    tagihanDto.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
-                    tagihanDto.setAmounts(p.getAmount());
-                    sendTagihan(tagihanDto);
+                if (p.getTagihan().getZahirExport() == AkuntansiExport.SENT){
+                    if (p.getTagihan().getNilaiJenisTagihan().getKodeTagihan().trim() != null) {
+                        SendTagihanDto tagihanDto = new SendTagihanDto();
+                        tagihanDto.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodeTagihan());
+                        tagihanDto.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
+                        tagihanDto.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                        tagihanDto.setAmounts(p.getAmount());
+                        sendTagihan(tagihanDto);
 
-                    p.setZahirExport(AkuntansiExport.SENT);
-                    pembayaranDao.save(p);
-                }else{
-                    log.info("Kode pembayaran tidak di temukan! {} {} {} {}", p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama(), p.getTagihan().getNilaiJenisTagihan().getProdi().getNamaProdi(), p.getTagihan().getNilaiJenisTagihan().getProgram().getNamaProgram(), p.getTagihan().getNilaiJenisTagihan().getAngkatan());
+                        p.setZahirExport(AkuntansiExport.SENT);
+                        pembayaranDao.save(p);
+                    }else{
+                        log.info("Kode pembayaran tidak di temukan! {} {} {} {}", p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama(), p.getTagihan().getNilaiJenisTagihan().getProdi().getNamaProdi(), p.getTagihan().getNilaiJenisTagihan().getProgram().getNamaProgram(), p.getTagihan().getNilaiJenisTagihan().getAngkatan());
+                    }
                 }
             }
         }
