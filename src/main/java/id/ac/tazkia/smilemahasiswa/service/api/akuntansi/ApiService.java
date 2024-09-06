@@ -75,7 +75,7 @@ public class ApiService {
         List<Tagihan> cekTagihan = tagihanDao.findByStatusAndTahunAkademikAndZahirExport(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), AkuntansiExport.NEW);
         if(!cekTagihan.isEmpty()){
             for (Tagihan t : cekTagihan){
-                if (t.getNilaiJenisTagihan().getKodeTagihan().trim() != null) {
+                if (t.getNilaiJenisTagihan().getKodeTagihan() != null) {
                     SendTagihanDto tagihanDto = new SendTagihanDto();
                     tagihanDto.setCodeTemplate(t.getNilaiJenisTagihan().getKodeTagihan());
                     tagihanDto.setDateTransaction(String.valueOf(t.getTanggalPembuatan()));
@@ -98,7 +98,7 @@ public class ApiService {
         if(!cekPembayaran.isEmpty()){
             for (Pembayaran p : cekPembayaran){
                 if (p.getTagihan().getZahirExport() == AkuntansiExport.SENT){
-                    if (p.getTagihan().getNilaiJenisTagihan().getKodeTagihan().trim() != null) {
+                    if (p.getTagihan().getNilaiJenisTagihan().getKodeTagihan() != null) {
                         SendTagihanDto tagihanDto = new SendTagihanDto();
                         tagihanDto.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodeTagihan());
                         tagihanDto.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
