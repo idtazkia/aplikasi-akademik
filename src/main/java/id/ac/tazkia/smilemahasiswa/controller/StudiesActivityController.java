@@ -1324,9 +1324,9 @@ public class StudiesActivityController {
         model.addAttribute("listKrs", krs);
 
         // list MBKM
-        List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao
-                .findByDosenAndStatusOrderByStatusApprovalDesc(dosen, StatusRecord.AKTIF);
+        List<PendaftaranMbkm> listRequest = pendaftaranMbkmDao.findByDosenAndStatusOrderByStatusApprovalDesc(dosen, StatusRecord.AKTIF);
         model.addAttribute("list", listRequest);
+        model.addAttribute("tahun", tahun);
 
     }
 
@@ -1350,11 +1350,11 @@ public class StudiesActivityController {
 
     @GetMapping("/get-request-matkul/{id}")
     @ResponseBody
-    public List<KrsDetail> getRequestMatkulKrs(@PathVariable String id) {
+    public List<Object[]> getRequestMatkulKrs(@PathVariable String id) {
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs krs = krsDao.findById(id).get();
 
-        return krsDetailDao.findByStatusAndTahunAkademikAndKrs(StatusRecord.AKTIF, tahun, krs);
+        return krsDetailDao.cariMatkurKrs(krs.getId());
     }
 
     @PostMapping("/studiesActivity/krs/approval/approve")

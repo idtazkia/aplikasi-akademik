@@ -182,7 +182,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "ORDER BY d.nama_matakuliah_english, g.nama_kelas, f.nama_karyawan)AS a WHERE (nilai_pras_sudah_diambil >= nilai_prasyarat OR nilai_prasyarat IS NULL) AND sudah_diambil_semester_ini IS NULL", nativeQuery = true)
         List<Object[]> pilihKrsMahasiswa(TahunAkademik tahunAkademik, Prodi prodi, Mahasiswa mahasiswa);
 
-        @Query("select sum (kd.matakuliahKurikulum.jumlahSks) from KrsDetail kd where kd.status = :status and kd.krs= :krs")
+        @Query("select sum (kd.matakuliahKurikulum.jumlahSks) from KrsDetail kd where kd.status = :status and kd.krs= :krs and kd.statusKonversi is null")
         Long jumlahSks(@Param("status") StatusRecord statusRecord, @Param("krs") Krs krs);
 
         @Query(value = "select coalesce(sum(c.jumlah_sks),0) as sks from krs_detail as a\n" +
@@ -1083,6 +1083,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         List<KrsDetail> findByStatusAndTahunAkademikAndKrs(StatusRecord statusRecord, TahunAkademik tahunAkademik,
                         Krs krs);
+
+        @Query(value = "select kd.id, m.nama_matakuliah, mk.jumlah_sks, k.nama_kelas, kar.nama_karyawan from krs_detail kd inner join matakuliah_kurikulum mk on kd.id_matakuliah_kurikulum=mk.id inner join matakuliah m on mk.id_matakuliah=m.id inner join jadwal j on kd.id_jadwal=j.id inner join kelas k on j.id_kelas=k.id inner join dosen d on j.id_dosen_pengampu=d.id inner join karyawan kar on d.id_karyawan=kar.id where kd.status='AKTIF' and kd.id_krs=?1", nativeQuery = true)
+        List<Object[]> cariMatkurKrs(String idKrs);
 
         @Query(value = "select kd.id, m.nama_matakuliah, mk.jumlah_sks, k.nama_karyawan, coalesce(kd.nilai_akhir, 0) as nilai, coalesce(kd.grade, '-') as grade from krs_detail kd inner join matakuliah_kurikulum mk on kd.id_matakuliah_kurikulum=mk.id inner join matakuliah m on mk.id_matakuliah=m.id inner join jadwal j on kd.id_jadwal=j.id inner join dosen d on j.id_dosen_pengampu=d.id inner join karyawan k on d.id_karyawan=k.id where kd.status='AKTIF' and kd.id_tahun_akademik=?1 and kd.id_krs=?2 and kd.status_konversi='MBKM'", nativeQuery = true)
         List<Object[]> cariMatkurDetailMBKMApprove(String idTahun, String idKrs);

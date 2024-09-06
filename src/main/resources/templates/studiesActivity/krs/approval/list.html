@@ -259,6 +259,7 @@
 
                             <!-- list MBKM -->
 
+                            <input type="hidden" th:value="${tahun.id}" id="tahunAkademik">
                             <div class="tab-pane fade" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
                                 <div class="table-responsive">
                                     <table class="table align-items-center table-flush">
@@ -269,6 +270,7 @@
                                             <th scope="col">Nama</th>
                                             <th scope="col">Prodi</th>
                                             <th scope="col">Angkatan</th>
+                                            <th scope="col">Tahun Akademik</th>
                                             <th scope="col" width="30px;">Status</th>
                                             <th colspan="2" scope="col" class="text-center">Action</th>
 
@@ -281,6 +283,7 @@
                                             <td th:text="${data.mahasiswa.nama}">12</td>
                                             <td th:text="${data.mahasiswa.idProdi.namaProdi}">2020</td>
                                             <td th:text="${data.mahasiswa.angkatan}">2020</td>
+                                            <td th:text="${data.tahunAkademik.namaTahunAkademik}">2020</td>
                                             <td th:if="${data.statusApproval == data.statusApproval.WAITING}">
                                                 <button type="button" class="btn btn-warning btn-sm">WAITING</button>
                                             </td>
@@ -339,7 +342,7 @@
                                                 </div>
                                             </td>
                                             <td th:if="${data.statusApproval == data.statusApproval.APPROVED}" class="text-right">
-                                                <button type="button" class="btn btn-info btn-sm" th:id="${data.mahasiswa.id}" onclick="detailMbkmApproved(this.id)">
+                                                <button type="button" class="btn btn-info btn-sm" th:id="${data.mahasiswa.id}" th:attr="data-tahun=${data.tahunAkademik.id}" onclick="detailMbkmApproved(this.id, this.getAttribute('data-tahun'))">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </button>
 
@@ -457,19 +460,19 @@
         })
     }
 
-    function detailMbkmApproved(id){
+    function detailMbkmApproved(id, tahun){
 
         $('#modal-mbkm-approved'+id).modal('show');
 
-        const url = '/get-matkul-mbkm-approved/'+id;
+        const url = '/get-matkul-mbkm-approved/'+id+'/'+tahun;
         $.getJSON(url, function (data){
             $('#table-mbkm-approved tbody').empty();
 
             $.each(data, function (key, entry){
                 let rowT1 = '<tr>' +
-                    '<td class="text-center">' + entry.matakuliahKurikulum.matakuliah.namaMatakuliah + '</td>' +
-                    '<td class="text-center">' + entry.matakuliahKurikulum.jumlahSks + '</td>' +
-                    '<td class="text-center">' + entry.jadwal.dosen.karyawan.namaKaryawan + '</td>' +
+                    '<td class="text-center">' + entry[1] + '</td>' +
+                    '<td class="text-center">' + entry[2] + '</td>' +
+                    '<td class="text-center">' + entry[3] + '</td>' +
                     '</tr>';
                 $('#table-mbkm-approved tbody').append(rowT1);
 
@@ -489,10 +492,10 @@
 
             $.each(data, function (key, entry){
                 let rowT1 = '<tr>' +
-                    '<td>' + entry.matakuliahKurikulum.matakuliah.namaMatakuliah + '</td>' +
-                    '<td>' + entry.matakuliahKurikulum.jumlahSks + '</td>' +
-                    '<td>' + entry.jadwal.kelas.namaKelas + '</td>' +
-                    '<td>' + entry.jadwal.dosen.karyawan.namaKaryawan + '</td>' +
+                    '<td>' + entry[1] + '</td>' +
+                    '<td>' + entry[2] + '</td>' +
+                    '<td>' + entry[3] + '</td>' +
+                    '<td>' + entry[4] + '</td>' +
                     '</tr>';
                 $('#table-request tbody').append(rowT1);
 
