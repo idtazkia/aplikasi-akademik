@@ -66,4 +66,6 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
 
     List<Pembayaran> findByTagihanMahasiswaAndTagihanStatusNotOrderByTagihanTahunAkademikKodeTahunAkademik(Mahasiswa mahasiswa, StatusRecord statusRecord);
 
+    List<Pembayaran> findByStatusAndZahirExport(StatusRecord status, AkuntansiExport akuntansiExport);
+
 }

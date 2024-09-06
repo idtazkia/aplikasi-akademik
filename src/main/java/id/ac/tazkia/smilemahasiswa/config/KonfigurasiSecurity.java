@@ -80,7 +80,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2", "VIEW_STAFF_PRODI")
                 .antMatchers("/mahasiswa/list")
                 .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1", "VIEW_AKADEMIK2", "VIEW_STAFF", "VIEW_FINANCE",
-                        "VIEW_DOSEN_AKADEMIK", "VIEW_BEASISWA")
+                        "VIEW_DOSEN_AKADEMIK", "VIEW_BEASISWA", "VIEW_KPS", "VIEW_ADMIN_MATRIK")
                 .antMatchers("/studiesActivity/krs/list")
                 .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_KPS", "VIEW_WAREK2", "VIEW_FINANCE", "VIEW_AKADEMIK2",
                         "VIEW_AKADEMIK1", "VIEW_STAFF", "VIEW_TLC")
@@ -238,6 +238,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/enrollKrsMahasiswa")
                 .antMatchers("/api/akunting-mahasiswa/{nim}")
                 .antMatchers("/import-ipk-sks/{tahun}")
+                .antMatchers("/import-ipk-sks/angkatan/{angkatan}")
                 .antMatchers("/api/import-transkript/{angkatan}")
                 .antMatchers("/update-sesikuliah/{id}")
                 .antMatchers("/generate-sesikuliah")

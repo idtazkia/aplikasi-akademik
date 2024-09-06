@@ -9,6 +9,7 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.api.akunting.TemplateDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
@@ -18,6 +19,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import id.ac.tazkia.smilemahasiswa.service.api.akuntansi.ApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.*;
@@ -188,8 +190,8 @@ public class StudentBillController {
     @Autowired
     public TagihanService tagihanService;
 
-//    @Autowired
-//    public ApiService apiService;
+    @Autowired
+    public ApiService apiService;
 
     @Autowired
     public KafkaSender kafkaSender;
@@ -389,7 +391,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/valueType/form")
     public void formNilai(Model model, @RequestParam(required = false) String id){
 
-//        TemplateDto template = apiService.getTemplate();
+        TemplateDto template = apiService.getTemplate();
 
         model.addAttribute("valueBill", new NilaiJenisTagihan());
         model.addAttribute("jenisTagihan", jenisTagihanDao.findByStatusOrderByKode(StatusRecord.AKTIF));
@@ -398,7 +400,7 @@ public class StudentBillController {
         model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("selectAngkatan", angkatan());
         model.addAttribute("kategori", StatusTagihan.values());
-//        model.addAttribute("template", template.getData());
+        model.addAttribute("template", template.getData());
 
         if (id != null && !id.isEmpty()){
             NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findById(id).get();

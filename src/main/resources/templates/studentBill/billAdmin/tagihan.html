@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tagihan</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Nilai Jenis Tagihan </span>
+                                        <span class="h2 font-weight-bold mb-0">Tagihan </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -89,117 +89,117 @@
 
                             </div>
                         </form>
-                    </div>
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>NIM</th>
+                                    <th>Nama </th>
+                                    <th>Prodi</th>
+                                    <th>Nama Tagihan</th>
+                                    <th>Nomor Tagihan</th>
+                                    <th>Nilai Tagihan</th>
+                                    <th>Dibayar</th>
+                                    <th>Status</th>
+                                    <th>Tanggal</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${allTagihan}">
+                                    <td th:text="${(row.index + 1) + (allTagihan.number * allTagihan.size)}">1</td>
+                                    <td th:text="${data.mahasiswa.nim}"></td>
+                                    <td th:text="${data.mahasiswa.nama}">PATRICK STAR</td>
+                                    <td th:text="${data.mahasiswa.idProdi.namaProdi}">PATRICK STAR</td>
+                                    <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">BANGUN DAN SEMANGAT</td>
+                                    <td th:text="${data.nomor}"></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
+                                    <td>
+                                        <a  class="btn btn-info btn-sm" href="#!"
+                                            th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
+                                            th:text="${data.statusTagihan}">
+                                        </a>
 
-                    <div class="table-responsive">
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>#</th>
-                                <th>NIM</th>
-                                <th>Nama </th>
-                                <th>Prodi</th>
-                                <th>Nama Tagihan</th>
-                                <th>Nomor Tagihan</th>
-                                <th>Nilai Tagihan</th>
-                                <th>Dibayar</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="data,row : ${allTagihan}">
-                                <td th:text="${(row.index + 1) + (allTagihan.number * allTagihan.size)}">1</td>
-                                <td th:text="${data.mahasiswa.nim}"></td>
-                                <td th:text="${data.mahasiswa.nama}">PATRICK STAR</td>
-                                <td th:text="${data.mahasiswa.idProdi.namaProdi}">PATRICK STAR</td>
-                                <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${data.nomor}"></td>
-                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
-                                <td>
-                                    <a  class="btn btn-info btn-sm" href="#!"
-                                        th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
-                                        th:text="${data.statusTagihan}">
-                                    </a>
+                                        <a type="button" class="btn btn-success btn-sm" href="#!"
+                                           th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}"
+                                           th:text="${data.statusTagihan}">
+                                        </a>
 
-                                    <a type="button" class="btn btn-success btn-sm" href="#!"
-                                       th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}"
-                                       th:text="${data.statusTagihan}">
-                                    </a>
+                                        <a type="button" class="btn btn-warning ger btn-sm" href="#!"
+                                           th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
+                                           th:text="${data.statusTagihan}">
+                                        </a>
 
-                                    <a type="button" class="btn btn-warning ger btn-sm" href="#!"
-                                       th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
-                                       th:text="${data.statusTagihan}">
-                                    </a>
+                                        <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                           th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                           th:text="${data.statusTagihan}">
+                                        </a>
 
-                                    <a type="button" class="btn btn-warning btn-sm" href="#!"
-                                       th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
-                                       th:text="${data.statusTagihan}">
-                                    </a>
+                                        <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                           th:if="${data.statusTagihan.PERINGANAN} == ${data.statusTagihan}"
+                                           th:text="${data.statusTagihan}">
+                                        </a>
 
-                                    <a type="button" class="btn btn-warning btn-sm" href="#!"
-                                       th:if="${data.statusTagihan.PERINGANAN} == ${data.statusTagihan}"
-                                       th:text="${data.statusTagihan}">
-                                    </a>
+                                        <a type="button" class="btn btn-primary btn-sm" href="#!"
+                                           th:if="${data.statusTagihan.BEASISWA} == ${data.statusTagihan}"
+                                           th:text="${data.statusTagihan}">
+                                        </a>
+                                    </td>
+                                    <td th:text="${#temporals.format(data.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
+                                    <td th:if="${data.statusTagihan.LUNAS} != ${data.statusTagihan}">
 
-                                    <a type="button" class="btn btn-primary btn-sm" href="#!"
-                                       th:if="${data.statusTagihan.BEASISWA} == ${data.statusTagihan}"
-                                       th:text="${data.statusTagihan}">
-                                    </a>
-                                </td>
-                                <td th:text="${#temporals.format(data.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
-                                <td th:if="${data.statusTagihan.LUNAS} != ${data.statusTagihan}">
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#modal-send' + data.id}">
+                                            <i class="fas fa-file-import"></i>
+                                        </button>
 
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#modal-send' + data.id}">
-                                        <i class="fas fa-file-import"></i>
-                                    </button>
+                                        <div class="modal fade" th:id="${'modal-send'+data.id}" tabindex="-1"
+                                             role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-info modal-dialog-centered modal-"
+                                                 role="document">
+                                                <div class="modal-content bg-gradient-info">
 
-                                    <div class="modal fade" th:id="${'modal-send'+data.id}" tabindex="-1"
-                                         role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-info modal-dialog-centered modal-"
-                                             role="document">
-                                            <div class="modal-content bg-gradient-info">
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title" id="modal-title-notification">Your attention
+                                                            is required</h6>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
 
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention
-                                                        is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
+                                                    <div class="modal-body">
 
-                                                <div class="modal-body">
+                                                        <div class="py-3 text-center">
+                                                            <i class="ni ni-send ni-3x"></i>
+                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                            <!--                                                        <p>Once deleted, you will not be able to recover this imaginary-->
+                                                            <!--                                                            file!</p>-->
+                                                        </div>
 
-                                                    <div class="py-3 text-center">
-                                                        <i class="ni ni-send ni-3x"></i>
-                                                        <h4 class="heading mt-4">Are you sure ?</h4>
-<!--                                                        <p>Once deleted, you will not be able to recover this imaginary-->
-<!--                                                            file!</p>-->
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <form th:action="@{/studentBill/billAdmin/resendTagihan(tagihan = ${data.id})}"
+                                                              method="post">
+                                                            <button type="submit" class="btn btn-white">Send</button>
+                                                        </form>
+                                                        <button type="button" class="btn btn-link text-white ml-auto"
+                                                                data-dismiss="modal">Tutup
+                                                        </button>
                                                     </div>
 
                                                 </div>
-
-                                                <div class="modal-footer">
-                                                    <form th:action="@{/studentBill/billAdmin/resendTagihan(tagihan = ${data.id})}"
-                                                          method="post">
-                                                        <button type="submit" class="btn btn-white">Send</button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto"
-                                                            data-dismiss="modal">Tutup
-                                                    </button>
-                                                </div>
-
                                             </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                     <div class="card-footer py-4">
                         <nav aria-label="...">
                             <ul class="pagination justify-content-end mb-0" sd:pagination="full">

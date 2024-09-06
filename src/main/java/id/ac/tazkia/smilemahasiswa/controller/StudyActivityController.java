@@ -320,12 +320,12 @@ public class StudyActivityController {
                 jumlahSks = Long.valueOf(0);
             }
 
-            if (LocalDate.now().compareTo(tahunAkademikProdi.getSelesaiKrs()) >= 0) {
+            if (LocalDate.now().isAfter(tahunAkademikProdi.getSelesaiKrs())) {
                 EnableKrs cek = enableKrsDao.findByTahunAkademikAndMahasiswaAndStatus(k.getTahunAkademik(), k.getMahasiswa(), StatusRecord.AKTIF);
                 if (cek == null) {
                     model.addAttribute("validasi", ta);
                 }else{
-                    if (LocalDate.now().compareTo(cek.getTanggalKadaluarsa()) >= 0) {
+                    if (LocalDate.now().isAfter(cek.getTanggalKadaluarsa())) {
                         model.addAttribute("validasi", ta);
                     }
                 }
