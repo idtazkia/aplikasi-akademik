@@ -698,6 +698,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
+                    <a th:class="${'nav-link ' + statusmenu}" th:href="@{/dokumen}">
+                        <i class="ni ni-collection text-green"></i>
+                        Dokumen
+                    </a>
+                </li>
+
 <!--                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')">-->
 <!--                    <a class="nav-link " th:href="@{/ujianTahfidKompre(status = 'All')}">-->
 <!--                        <i class="ni ni-bullet-list-67 text-danger"></i>-->

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>List Dokumen</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Arsip</h5>
+                                        <span class="h2 font-weight-bold mb-0">Dokumen </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row" th:if="${success != null}">
+            <div class="col">
+                <div class="alert alert-success">
+                    <span th:text="${success}"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">List Dokumen</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/dokumen/baru}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
+                            </div>
+                        </div>
+                    </div>
+<!--                    <div class="card-body border-0">-->
+                        <div class="table-responsive">
+                        <table class="table table-striped table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>No</th>
+                                <th>Description</th>
+                                <th>Period</th>
+                                <th>FileName</th>
+                                <th width="50px"></th>
+                                <th width="50px">Option</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data,row : ${listDokumen}">
+                                <td th:text="${(row.index + 1) + (listDokumen.number * listDokumen.size)}">1</td>
+                                <td th:text="${data.getDeskripsi()}">Panduan Akademik 2024-2025</td>
+                                <td th:text="${#temporals.format(data.getStartDate(),'dd-MMM-yyyy') + ' s/d ' + #temporals.format(data.getEndDate(),'dd-MMM-yyyy')}">01 September 2024 - 31 Agustus 2025</td>
+                                <td>
+                                    <a th:href="@{/dokumen/{dokumen}/download/(dokumen = ${data.getId()})}" th:text="${data.getNamaFile()}" target="_blank" th:download="${data.getNamaFile()}" ></a>
+                                </td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm small">Akses</button>
+                                </td>
+                                <td>
+                                    <a th:href="@{/dokuman/edit}" class="btn btn-primary btn-sm small">Edit</a>
+                                    <button class="btn btn-danger btn-sm small">Delete</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+<!--                    </div>-->
+                    <div class="card-footer">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

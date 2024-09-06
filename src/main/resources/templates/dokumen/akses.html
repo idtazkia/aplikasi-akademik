@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+  <meta charset="UTF-8">
+  <title>Akses Dokumen</title>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-12 col-lg-12">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Akses</h5>
+                    <span class="h2 font-weight-bold mb-0">Dokumen </span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                      <i class="fas fa-calendar"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt--7">
+    <div class="row">
+
+    </div>
+    <div class="row" th:if="${success != null}">
+      <div class="col">
+        <div class="alert alert-success">
+          <span th:text="${success}"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow small">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">Permission Dokumen</h3>
+              </div>
+              <div class="col text-right">
+                <a th:href="@{/dokumen}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Kembali</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+
+          </div>
+          <div class="card-footer">
+            <input type="submit" class="btn btn-primary pull-right btn-sm" value="Terapkan">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
