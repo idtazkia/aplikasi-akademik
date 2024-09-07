@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkademik, String> {
 
 
+    List<TahunAkademik> findAllByOrderByStatusAscKodeTahunAkademikDesc();
     TahunAkademik findByStatus(StatusRecord aktif);
 
     TahunAkademik findByStatusNotInAndKodeTahunAkademik(List<StatusRecord> status, String kode);

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <style>
+        #myModal {
+            z-index: 9999999;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Absensi</h2>
+                                        <p>Event</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mg-b-30">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list ">
+                    <form method="post" th:action="@{/academic/event/presensi/save(event=${event.getId()},mode=${mode})}" th:object="${eventAbsensi}" enctype="multipart/form-data">
+                        <div class="row">
+                           <div class="col-md-12">
+                               <div class="alert alert-warning">
+                                   <span th:text="${'Pengisian Absensi '+event.getEventName()}"></span>
+                               </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Resume anda :</label>
+                                    <textarea class="form-control" name="deskripsi" th:field="*{deskripsi}" id="deskripsi"></textarea>
+                                    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+                                    <script>
+                                        CKEDITOR.replace('deskripsi');
+                                    </script>
+                                    <p th:if="${#fields.hasErrors('deskripsi')}" th:errors="*{deskripsi}" class="text-danger"> Mata Anggaran Error</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Evidence</label>
+                                    <input type="file" name="fileUpload" id="fileUpload" class="form-control bg-transparent te"
+                                           accept=".jpeg,.jpg,.png">
+                                    <p th:if="${error != null}" th:text="${error}" class="text-danger"> Mata Anggaran Error</p>
+                                </div>
+                                <input type="hidden" name="tahunAkademik" th:field="*{tahunAkademik}" th:value="${event.getTahunAkademik()}">
+                                <input type="hidden" name="id" th:field="*{id}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+<!--                                <a class="btn btn-secondary" th:href="@{/dashboard}"></a>-->
+                                <input type="submit" class="btn btn-primary" style="background-color: #0a5a8c;" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+
+    $(function () {
+        if ($('#terakhirUpdate').val() == '') {
+            $(window).on('load', function () {
+                $('#myModal').modal('show');
+            });
+        }
+    });
+
+    var delay = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+
+    function cekEmail(arg){
+        var id = arg.getAttribute('id');
+        var value = arg.value;
+
+        $(document).keyup(function (e){
+            delay(function (){
+                var url = '/cekEmail?email=' + value;
+                $.getJSON(url, function (data){
+                    if (data.id == "400"){
+                        document.getElementById("validEmail").style.display = 'block';
+                        $("#saveOrtu").hide();
+                    }else{
+                        document.getElementById("validEmail").style.display = 'none';
+                        $("#saveOrtu").show();
+                    }
+                })
+            })
+        })
+    }
+
+    function changeRole(arg) {
+        var id = arg.getAttribute('id');
+        console.log(id)
+        document.getElementById(id).className = "nav-link active";
+
+        $('.panel-body').css('display', 'none');
+        document.getElementById(id + '-embed').style.display = 'block';
+    }
+
+
+    const scanner = new Html5QrcodeScanner('reader', {
+        qrbox: {
+            width: 250,
+            height: 250,
+        },
+        pfs: 20,
+    });
+
+    scanner.render(success, error);
+
+    function success(result) {
+        location.href = result
+        scanner.clear()
+        document.getElementById('reader').remove();
+    }
+
+    function error(err) {
+        console.error(err);
+    }
+</script>

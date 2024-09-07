@@ -36,6 +36,8 @@
     <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}">
     <link rel="stylesheet" th:href="@{/css/js/jquery-clockpicker.min.css}">
     <link rel="stylesheet" href="css/timePicker.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-theme/dist/select2-bootstrap.min.css" rel="stylesheet" />
+
 
 </head>
 
@@ -250,6 +252,9 @@
                             </li>
                             <li class="nav-item">
                                 <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_TLC')" th:href="@{/academic/schedule/list}" class="nav-link">Jadwal Kuliah</a>
+                            </li>
+                            <li class="nav-item">
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_TLC')" th:href="@{/academic/event}" class="nav-link">Acara/Event</a>
                             </li>
                             <li class="nav-item">
                                 <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_STAFF_PRODI')" th:href="@{/academic/schedule/ujian}" class="nav-link">Jadwal Ujian</a>
@@ -845,7 +850,8 @@
 <script th:src="@{/tinymce/tinymce.min.js}"></script>
 
 
-<script>
+
+    <script>
     window.TrackJS &&
     TrackJS.install({
         token: "ee6fab19c5a04ac1a32a645abde4613a",
@@ -867,6 +873,28 @@
         $(".time-picker").hunterTimePicker();
     });
 </script>
+    <script>
+        $( '#selectsatu' ).select2( {
+            theme: "bootstrap4",
+            width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+            placeholder: $( this ).data( 'placeholder' ),
+        } );
+        $( '#selectdua' ).select2( {
+            theme: "bootstrap4",
+            width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+            placeholder: $( this ).data( 'placeholder' ),
+        } );
+        $( '#selecttiga' ).select2( {
+            theme: "bootstrap4",
+            width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+            placeholder: $( this ).data( 'placeholder' ),
+        } );
+        $( '#selectempat' ).select2( {
+            theme: "bootstrap4",
+            width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+            placeholder: $( this ).data( 'placeholder' ),
+        } );
+    </script>
 <th:block layout:fragment="script"></th:block>
 </body>
 

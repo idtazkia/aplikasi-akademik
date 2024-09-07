@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, String> {
@@ -107,4 +108,13 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
             "on a.id=c.id_mahasiswa \n" +
             "order by angkatan,id_prodi, nim", nativeQuery = true)
     List<Object[]> listStatusMahasiswa(List<String> angkatan, String idTahunAkademik);
+
+
+
+
+    @Query(value = "select if(coalesce(sum(jumlah_sks),0)=0,'NONAKTIF','AKTIF') as ada from krs as a\n" +
+            "inner join krs_detail as b on a.id = b.id_krs and b.status = 'AKTIF'\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "where a.id_tahun_akademik = ?1 and a.id_mahasiswa = ?2", nativeQuery = true)
+    StatusRecord stausAktifMahasiswa(String tahunAkademik, String idMahasiswa);
 }

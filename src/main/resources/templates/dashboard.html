@@ -39,6 +39,107 @@
         </div>
     </div>
 
+
+
+    <div class="container mg-b-30">
+        <div class="row" th:if="${listEvent != null}">
+            <div class="alert alert-success" th:if="${sukses != null}">
+                <span th:text="${sukses}"></span>
+            </div>
+            <div class="col-md-12 col-xs-12" th:each="data,row : ${listEvent}">
+                <div class="normal-table-list ">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4><i class="fa fa-calendar" style="color: orange"></i> <span th:text="${data.getEventName()}"></span></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img th:src="@{/event/{event}/download/(event = ${data.getId()})}">
+                        </div>
+                        <div class="col-md-9">
+                            <p th:utext="${data.getEventDescription()}"></p>
+                        </div>
+                        <input type="hidden" class="mulai" th:value="${data.getScheduleStart()}">
+                        <input type="hidden" class="selesai" th:value="${data.getScheduleEnd()}">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger statusMessage"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <a th:href="@{/academic/event/presensi(event=${data.getId()})}" class="btn btn-primary attendanceButton" style="display: none;">
+                                <span class="countdownEnd"></span>
+                            </a>
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Fungsi untuk menghitung selisih waktu dan mengubahnya menjadi format HH:MM:SS
+                                function getTimeRemaining(targetDate) {
+                                    var now = new Date();
+                                    var timeDiff = targetDate - now;
+                                    if (timeDiff <= 0) return "00:00:00"; // Jika waktu sudah lewat
+
+                                    var hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+                                    var minutes = Math.floor((timeDiff / 1000 / 60) % 60);
+                                    var seconds = Math.floor((timeDiff / 1000) % 60);
+
+                                    // Format angka agar selalu 2 digit
+                                    return ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+                                }
+
+                                // Loop melalui semua event
+                                document.querySelectorAll('.normal-table-list').forEach(function(eventElement) {
+                                    var scheduleStart = new Date(eventElement.querySelector('.mulai').value);
+                                    var scheduleEnd = new Date(eventElement.querySelector('.selesai').value);
+                                    var statusMessage = eventElement.querySelector('.statusMessage');
+                                    var attendanceButton = eventElement.querySelector('.attendanceButton');
+                                    var countdownEnd = eventElement.querySelector('.countdownEnd');
+
+                                    function updateStatus() {
+                                        var now = new Date();
+
+                                        if (now < scheduleStart) {
+                                            // Acara belum dimulai - Tampilkan hitung mundur menuju acara
+                                            statusMessage.textContent = "Acara Belum Dimulai, Absensi Belum dibuka... Waktu menuju acara: " + getTimeRemaining(scheduleStart);
+                                            statusMessage.style.display = 'block';
+                                            attendanceButton.style.display = 'none';
+                                        } else if (now >= scheduleStart && now <= scheduleEnd) {
+                                            // Acara sedang berlangsung - Tampilkan tombol dan hitung mundur menuju akhir acara
+                                            statusMessage.textContent = '';
+                                            statusMessage.style.display = 'none';
+                                            attendanceButton.style.display = 'block';
+                                            countdownEnd.textContent = "Isi absensi disini... sisa waktu " + getTimeRemaining(scheduleEnd);
+                                        } else {
+                                            // Acara sudah selesai
+                                            statusMessage.textContent = "Acara Telah Selesai, Absensi sudah ditutup ...";
+                                            statusMessage.style.display = 'block';
+                                            attendanceButton.style.display = 'none';
+                                        }
+                                    }
+
+                                    // Fungsi update hitung mundur setiap detik
+                                    function startCountdown() {
+                                        updateStatus(); // Panggil pertama kali untuk menampilkan status saat halaman dimuat
+                                        setInterval(function() {
+                                            updateStatus(); // Perbarui status setiap detik
+                                        }, 1000); // 1 detik
+                                    }
+
+                                    // Mulai hitung mundur untuk event ini
+                                    startCountdown();
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
     <div class="container">
         <div class="row">
             <input type="hidden" id="terakhirUpdate" th:value="${mhs.terakhirUpdate}">

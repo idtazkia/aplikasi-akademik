@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>New Event</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Scheduling Event </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow small">
+                    <form th:action="@{/academic/event/save}" method="post" th:object="${event}" enctype="multipart/form-data">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h3 class="mb-0">Form Event</h3>
+                                </div>
+                                <div class="col text-right">
+                                    <a th:href="@{/academic/event}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Kembali</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body border-0">
+
+
+                            <div class="form-group">
+                                <label>Period Academic</label>
+                                <select class="form-control" name="tahunAkademik" th:field="*{tahunAkademik}" data-placeholder="Choose one thing" required>
+                                    <option th:each="data : ${listTahunAkademik}"
+                                            th:text="${'('+ data.kodeTahunAkademik +')'  + '       -       ' +  data.namaTahunAkademik}"
+                                            th:value="${data.
+                                            id}">sdasd</option>
+                                </select>
+                                <p th:if="${#fields.hasErrors('tahunAkademik')}" th:errors="*{tahunAkademik}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Event Name</label>
+                                <input type="text" class="form-control" name="eventName" th:field="*{eventName}">
+                                <p th:if="${#fields.hasErrors('eventName')}" th:errors="*{eventName}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+<!--                            <div class="form-group">-->
+<!--                                <label>Description</label>-->
+<!--                                <textarea class="form-control" name="deskripsi" th:field="*{eventDescription}"></textarea>-->
+<!--                                <p th:if="${#fields.hasErrors('eventDescription')}" th:errors="*{eventDescription}" class="text-danger"> Mata Anggaran Error</p>-->
+<!--                            </div>-->
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" name="eventDescription" th:field="*{eventDescription}" id="eventDescription"></textarea>
+                                <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+                                <script>
+                                    CKEDITOR.replace('eventDescription');
+                                </script>
+                                <p th:if="${#fields.hasErrors('eventDescription')}" th:errors="*{eventDescription}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select class="form-control" name="eventType" th:field="*{eventType}" data-placeholder="Choose one thing" required>
+                                    <option th:each="data : ${statusEvent}"
+                                            th:text="${data}"
+                                            th:value="${data}">sdasd</option>
+                                </select>
+                                <p th:if="${#fields.hasErrors('eventType')}" th:errors="*{eventType}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+<!--                            <div class="form-group">-->
+<!--                                <label>Event Link <span class="text-red">(Jika Online)</span> </label>-->
+<!--                                <input type="text" class="form-control" name="eventLink" th:field="*{eventLink}">-->
+<!--                                <p th:if="${#fields.hasErrors('eventLink')}" th:errors="*{eventLink}" class="text-danger"> Mata Anggaran Error</p>-->
+<!--                            </div>-->
+
+                            <div class="form-group">
+                                <label>Event Start</label>
+                                <input type="datetime-local" name="scheduleStart" th:field="*{scheduleStart}" class="form-control">
+                                <p th:if="${#fields.hasErrors('scheduleStart')}" th:errors="*{scheduleStart}" class="text-danger"> Mata Anggaran Error</p>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Event Finish</label>
+                                <input type="datetime-local" name="scheduleEnd" th:field="*{scheduleEnd}" class="form-control">
+                                <p th:if="${#fields.hasErrors('scheduleEnd')}" th:errors="*{scheduleEnd}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date Publish</label>
+                                <input type="datetime-local" name="schedulePublish" th:field="*{schedulePublish}" class="form-control" >
+                                <p th:if="${#fields.hasErrors('schedulePublish')}" th:errors="*{schedulePublish}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Flyer</label>
+                                <input type="file" name="fileUpload" id="fileUpload" class="form-control bg-transparent te"
+                                       accept=".jpeg,.jpg,.png">
+                            </div>
+
+                        </div>
+
+                        <input type="hidden" name="id" th:field="*{id}">
+                        <div class="card-footer">
+                            <input type="submit" class="btn btn-primary pull-right btn-sm" value="Simpan">
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -198,6 +198,9 @@ public class DashboardController {
     @Autowired
     private TagihanService tagihanService;
 
+    @Autowired
+    private EventDao eventDao;
+
 //    @Autowired
 //    private AsuransiMahasiswaDao asuransiMahasiswaDao;
 
@@ -423,6 +426,11 @@ public class DashboardController {
             model.addAttribute("mobile", "mobile device");
         } else {
             model.addAttribute("normal", "normal devide");
+        }
+
+        StatusRecord statusRecord = mahasiswaDao.stausAktifMahasiswa(ta.getId(),mahasiswa.getId());
+        if(statusRecord.equals(StatusRecord.AKTIF)){
+            model.addAttribute("listEvent", eventDao.findByStatusAndSchedulePublishBeforeAndScheduleEndAfterOrderByScheduleStart(StatusRecord.AKTIF, LocalDateTime.now(), LocalDateTime.now()));
         }
 
         return "dashboard";

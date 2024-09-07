@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>List Event</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Event </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row" th:if="${success != null}">
+            <div class="col">
+                <div class="alert alert-success">
+                    <span th:text="${success}"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">List Event</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/academic/event/baru}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    <div class="card-body border-0">-->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-flush table-hover">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>No</th>
+                                <th>Event</th>
+<!--                                <th>Description</th>-->
+                                <th>Period Academic</th>
+                                <th>Schedule</th>
+                                <th width="10px">Flyer</th>
+                                <th width="10px">Detail</th>
+                                <th>Publish Date</th>
+<!--                                <th width="50px"></th>-->
+                                <th width="50px">Option</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data,row : ${listEvent}">
+                                <td th:text="${(row.index + 1) + (listEvent.number * listEvent.size)}">1</td>
+                                <td th:text="${data.getEventName()}">Panduan Akademik 2024-2025</td>
+<!--                                <td th:utext="${data.getEventDescription()}"></td>-->
+                                <td th:text="${data.getTahunAkademik().getNamaTahunAkademik()}">Panduan Akademik 2024-2025</td>
+                                <td th:text="${#temporals.format(data.getScheduleStart(),'dd-MMM-yyyy') + ' s/d ' + #temporals.format(data.getScheduleEnd(),'dd-MMM-yyyy')}">01 September 2024 - 31 Agustus 2025</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success" th:href="@{/event/{event}/download/(event = ${data.getId()})}" target="_blank" th:download="${data.getEventName()}" >
+                                        <i class="fa fa-download"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" th:href="@{/academic/event/detail(event = ${data.getId()})}" target="_blank" >
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                                <td th:text="${#temporals.format(data.getSchedulePublish(),'dd-MMM-yyyy')}"></td>
+<!--                                <td>-->
+<!--                                    <button class="btn btn-warning btn-sm small">Akses</button>-->
+<!--                                </td>-->
+                                <td>
+
+                                    <form
+                                            method="post"
+                                            th:action="@{/academic/event/hapus}"
+                                    >
+                                    <a th:href="@{/academic/event/edit(event=${data.getId()})}" class="btn btn-primary btn-sm small">Edit</a>
+                                        <input type="hidden" name="event" th:value="${data.getId()}" >
+                                        <button
+                                                title="Delete"
+                                                type="submit"
+                                                class="btn btn-danger btn-sm small"
+                                                onclick="return confirm('Are you sure want to delete this?')"
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--                    </div>-->
+                    <div class="card-footer">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
