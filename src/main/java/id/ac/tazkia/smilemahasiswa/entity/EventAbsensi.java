@@ -33,6 +33,7 @@ public class EventAbsensi {
 
     @NotEmpty(message = "Resume tidak boleh kosong")
     @Size(min = 50, message = "Resume minimal 50 karakter.")
+    @Column(columnDefinition = "LONGTEXT")
     private String deskripsi;
 
     private LocalDateTime waktuAbsen;

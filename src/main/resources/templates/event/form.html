@@ -132,6 +132,7 @@
                                 <label>Flyer</label>
                                 <input type="file" name="fileUpload" id="fileUpload" class="form-control bg-transparent te"
                                        accept=".jpeg,.jpg,.png">
+                                <p th:if="${error != null}" th:text="${error}" class="text-danger"> Mata Anggaran Error</p>
                             </div>
 
                         </div>

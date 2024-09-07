@@ -124,6 +124,16 @@ public class EventController {
             return "event/form";
         }
 
+        // Validasi untuk file upload
+        if (file.isEmpty()) {
+            model.addAttribute("error", "File upload tidak boleh kosong");
+            model.addAttribute("event", event);
+            model.addAttribute("statusEvent", StatusEvent.values());
+            model.addAttribute("listTahunAkademik", tahunAkademikDao.findAllByOrderByStatusAscKodeTahunAkademikDesc());
+            return "event/form";
+        }
+
+
 
         String namaFile =  file.getName();
         String jenisFile = file.getContentType();

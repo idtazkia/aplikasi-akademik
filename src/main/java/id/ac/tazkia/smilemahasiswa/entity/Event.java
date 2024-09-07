@@ -30,8 +30,10 @@ public class Event {
 
     @NotEmpty(message = "Deskripsi acara tidak boleh kosong.")
     @Size(min = 20, message = "Deskripsi acara harus minimal 20 karakter.")
+    @Column(columnDefinition = "LONGTEXT")
     private String eventDescription;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String file;
 
     @NotNull @Enumerated(EnumType.STRING)
