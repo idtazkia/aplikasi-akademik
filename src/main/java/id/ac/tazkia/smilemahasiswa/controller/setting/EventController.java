@@ -78,7 +78,7 @@ public class EventController {
                                 @PageableDefault(size = 10)Pageable pageable){
 
         model.addAttribute("event",event);
-        model.addAttribute("listEventAbsensi",eventAbsensiDao.findByStatusAndEventOrderByWaktuAbsenDesc(StatusRecord.AKTIF, event, pageable));
+        model.addAttribute("listEventAbsensi",eventAbsensiDao.findByStatusAndEventOrderByWaktuAbsenAsc(StatusRecord.AKTIF, event, pageable));
 
         return "event/detail";
     }

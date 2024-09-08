@@ -13,6 +13,6 @@ public interface EventAbsensiDao extends PagingAndSortingRepository<EventAbsensi
 
     EventAbsensi findByStatusAndEventAndMahasiswa(StatusRecord statusRecord, Event event, Mahasiswa mahasiswa);
 
-    Page<EventAbsensi> findByStatusAndEventOrderByWaktuAbsenDesc(StatusRecord statusRecord, Event event, Pageable pageable);
+    Page<EventAbsensi> findByStatusAndEventOrderByWaktuAbsenAsc(StatusRecord statusRecord, Event event, Pageable pageable);
 
 }
