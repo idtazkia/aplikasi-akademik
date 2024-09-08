@@ -96,7 +96,7 @@
                 <td th:text="${(row.index + 1) + (listEventAbsensi.number * listEventAbsensi.size)}">1</td>
                 <td th:text="${data.getMahasiswa().getNim()}">Panduan Akademik 2024-2025</td>
                 <td th:text="${data.getMahasiswa().getNama()}">Panduan Akademik 2024-2025</td>
-                <td th:text="${#temporals.format(data.getWaktuAbsen(),'dd-MMM-yyyy HH:mm:ss')}"></td>
+                <td th:text="${#temporals.format(data.getWaktuAbsen().plusHours(7), 'dd-MMM-yyyy HH:mm:ss')}"></td>
                 <td>
                   <a class="btn btn-sm btn-success" th:href="@{/attendance/{eventAbsensi}/download/(eventAbsensi = ${data.getId()})}" target="_blank" th:download="${'evidence_attd_event_'+data.getEvent().getEventName()+'_'+data.getMahasiswa().getNim()}" >
                     <i class="fa fa-download"></i>
