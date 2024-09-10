@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
                                                 <select name="pertemuan" class="form-control"
@@ -70,7 +70,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Detail Pertemuan :</label>
                                                 <select name="detailPertemuan" th:field="*{detailPertemuan}" readonly
@@ -85,7 +85,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Dosen :</label>
                                                 <select name="dosen" th:field="*{dosen}" class="form-control">
@@ -94,20 +94,6 @@
                                                             th:text="${dosen.dosen.karyawan.namaKaryawan}"
                                                             th:value="${dosen.dosen.id}">sdasd</option>
                                                 </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-sm-6 col-xs-12">
-                                            <div class="form-group">
-                                                <label><b>*</b>Upload Materi :</label>
-                                                <input type="file" required multiple name="materiMengajar" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 col-sm-6 col-xs-12">
-                                            <div class="form-group">
-                                                <label>Link video materi :</label>
-<!--                                                <input type="text" name="linkVideo" class="form-control">-->
-                                                <textarea cols="10" rows="3" name="linkVideo" class="form-control"></textarea>
-                                                <p style="font-size: 15px;"><b>*</b> Jika lebih dari 1 link, pisahkan dengan ',(koma)' dan (spasi)</p>
                                             </div>
                                         </div>
                                     </div>
@@ -242,25 +228,6 @@
                                             <div class="form-group">
                                                 <label>Jam Selesai :</label>
                                                 <input type="text" disabled th:field="*{jamSelesai}" required id="timePicker1"
-                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
-                                                       class="timePicker form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" th:if="${now != sesi.tanggal}">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Jam Mulai :</label>
-                                                <input type="text" th:field="*{jamMulai}" required id="timePicker"
-                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"
-                                                       class="timePicker form-control">
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Jam Selesai :</label>
-                                                <input type="text" th:field="*{jamSelesai}" required id="timePicker1"
                                                        autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
                                                        class="timePicker form-control">
                                             </div>

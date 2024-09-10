@@ -25,4 +25,6 @@ public interface PresensiDosenDto {
     String getPertemuanke();
 
     String getRps();
+
+    String getLink();
 }

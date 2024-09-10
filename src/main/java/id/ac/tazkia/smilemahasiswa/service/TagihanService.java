@@ -512,7 +512,7 @@ public class TagihanService {
             jenisTest = StatusRecord.IELTS;
         }
 
-        EnableFiture cek = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, jenisTest, false, tahunAkademik);
+        EnableFiture cek = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, jenisTest, false);
         if (cek == null){
             EnableFiture enableFiture = new EnableFiture();
             enableFiture.setFitur(jenisTest);
