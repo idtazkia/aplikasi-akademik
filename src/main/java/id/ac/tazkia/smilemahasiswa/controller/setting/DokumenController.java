@@ -1,13 +1,20 @@
 package id.ac.tazkia.smilemahasiswa.controller.setting;
 
+import id.ac.tazkia.smilemahasiswa.dao.AngkatanDao;
 import id.ac.tazkia.smilemahasiswa.dao.DokumenDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.entity.Angkatan;
 import id.ac.tazkia.smilemahasiswa.entity.Dokumen;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,15 +23,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -36,6 +46,15 @@ public class DokumenController {
 
     @Autowired
     private DokumenDao dokumenDao;
+
+    @Autowired
+    private ProdiDao prodiDao;
+
+    @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
+    private AngkatanDao angkatanDao;
 
     @Autowired
     @Value("${upload.dokumen}")
@@ -54,17 +73,56 @@ public class DokumenController {
     @GetMapping("/dokumen/baru")
     public String newDokumen(Model model) {
 
+
         model.addAttribute("dokumen", new Dokumen());
+        model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listAngkatan", angkatanDao.findAll());
         model.addAttribute("statusmenu","active");
         return "dokumen/form";
 
     }
 
+    @GetMapping("/dokumen/edit")
+    public String editDokumen(Model model,@RequestParam(required = false) Dokumen dokumen) {
+
+
+        model.addAttribute("dokumen", dokumen);
+        model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listAngkatan", angkatanDao.findAll());
+        model.addAttribute("statusmenu","active");
+        return "dokumen/form";
+
+    }
+
+
+
     @PostMapping("/dokumen/save")
-    public String saveDokumen(@ModelAttribute Dokumen dokumen,
+    public String saveDokumen(@ModelAttribute @Valid Dokumen dokumen,
+                              BindingResult error,
+                              Model model,
                               @RequestParam("fileUpload") MultipartFile file,
                               Authentication authentication,
                               RedirectAttributes redirectAttributes) throws IOException {
+
+        if (error.hasErrors()) {
+            model.addAttribute("dokumen", dokumen);
+            model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
+            model.addAttribute("listAngkatan", angkatanDao.findAll());
+            model.addAttribute("statusmenu", "active");
+            return "dokumen/form"; // Mengembalikan ke halaman form jika ada error
+        }
+
+        User user = currentUserService.currentUser(authentication);
+
+
+        if(file.isEmpty()){
+            model.addAttribute("dokumen", dokumen);
+            model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
+            model.addAttribute("listAngkatan", angkatanDao.findAll());
+            model.addAttribute("statusmenu","active");
+            model.addAttribute("erorfile", "File tidak boleh kosong");
+            return "dokumen/form";
+        }
 
         String namaFile =  file.getName();
         String jenisFile = file.getContentType();
@@ -94,21 +152,24 @@ public class DokumenController {
             File tujuan = new File(uploadFolder + File.separator + idFile + "." + extension);
             file.transferTo(tujuan);
         }
-        dokumen.setId(UUID.randomUUID().toString());
         dokumen.setStatus(StatusRecord.AKTIF);
+        dokumen.setUserUpdate(user.getUsername());
+        dokumen.setTanggalUpdate(LocalDateTime.now());
         dokumenDao.save(dokumen);
 
 
-        redirectAttributes.addFlashAttribute("success","Dokumen berhasil disimpan......Silahkan setting permission akses dokumen ini disini..");
-        return "redirect:../dokumen/akses?dokumen="+dokumen.getId();
+        redirectAttributes.addFlashAttribute("success","Dokumen berhasil disimpan......");
+        return "redirect:../dokumen";
     }
 
 
     @GetMapping("/dokumen/akses")
     public String aksesDokumen(Model model,@RequestParam Dokumen dokumen) {
 
-
         model.addAttribute("dokumen", dokumen);
+        model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listAngkatan", angkatanDao.findAll());
+
         return "dokumen/akses";
     }
 
