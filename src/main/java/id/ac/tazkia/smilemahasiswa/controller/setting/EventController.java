@@ -251,6 +251,7 @@ public class EventController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
+
         // Cek apakah ada error validasi
         if (error.hasErrors()) {
             model.addAttribute("event", event);
@@ -307,11 +308,14 @@ public class EventController {
         eventAbsensi.setMahasiswa(mahasiswa);
         eventAbsensi.setEvent(event);
         eventAbsensi.setStatus(StatusRecord.AKTIF);
-        eventAbsensi.setWaktuAbsen(LocalDateTime.now());
+//        eventAbsensi.setWaktuAbsen(LocalDateTime.now());
         if(mode.equals("save")){
+            eventAbsensi.setWaktuAbsen(LocalDateTime.now());
             eventAbsensi.setDateInsert(LocalDateTime.now());
-        }
-        if(mode.equals("update")){
+        }else{
+            EventAbsensi eventAbsensi1 = eventAbsensiDao.findByStatusAndEventAndMahasiswa(StatusRecord.AKTIF,event,mahasiswa);
+            eventAbsensi.setDateInsert(eventAbsensi1.getDateInsert());
+            eventAbsensi.setWaktuAbsen(eventAbsensi1.getWaktuAbsen());
             eventAbsensi.setDateUpdate(LocalDateTime.now());
         }
         eventAbsensiDao.save(eventAbsensi);

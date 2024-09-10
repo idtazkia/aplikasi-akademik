@@ -301,21 +301,19 @@ public class GraduationController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
-        Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
         model.addAttribute("note", new Note());
 
         if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
             model.addAttribute("valid", "dosen2");
 
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-                if (magang.length > 0 && metolit.length > 0) {
+                if (metolit.length > 0) {
                     model.addAttribute("note", new Note());
                     return "graduation/form";
                 } else {
-                    return "redirect:alert?matkul=Magang/Metolit";
+                    return "redirect:alert?matkul=Metolit";
 
                 }
-
             } else {
 
                 model.addAttribute("note", noteDao.findById(id).get());
