@@ -67,11 +67,9 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
                         "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1 and p.catatan = 'Barcode'", nativeQuery = true)
         List<PresensiMahasiswaDto> listPresensiMahasiswaBarcode(SesiKuliah sesiKuliah);
 
-        @Query(value = "select p.id as idPresensi,p.id_sesi_kuliah as idSesi, m.id as idMahasiswa,p.id_krs_detail as krs, m.nama as nama , m.nim as nim,\n"
-                        +
-                        " p.status_presensi as presensi, coalesce (cast(p.waktu_masuk as time(0)), '-') as time\n" +
-                        "from presensi_mahasiswa as p inner join mahasiswa as m on p.id_mahasiswa = m.id\n" +
-                        "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1", nativeQuery = true)
+        @Query(value = "SELECT m.id AS idMahasiswa,m.nama AS nama,m.nim AS nim,kd.id AS idKrs,COALESCE(pm.id, '-') AS idPresensi,COALESCE(sk.id, '-') AS idSesi, COALESCE(pm.status_presensi, 'UNKNOWN') AS presensi, COALESCE(CAST(pm.waktu_masuk AS TIME), '-') AS time" +
+                " FROM krs_detail AS kd INNER JOIN sesi_kuliah AS sk ON kd.id_jadwal = sk.id_jadwal INNER JOIN mahasiswa AS m ON kd.id_mahasiswa = m.id LEFT JOIN presensi_mahasiswa AS pm ON pm.id_sesi_kuliah = sk.id AND pm.id_mahasiswa = kd.id_mahasiswa AND pm.status = 'AKTIF' " +
+                "WHERE kd.status = 'AKTIF' AND sk.id = ?1 AND kd.status_konversi IS NULL", nativeQuery = true)
         List<PresensiMahasiswaDto> listDataPresensiMahasiswa(SesiKuliah sesiKuliah);
 
 //    @Query(value = "SELECT COUNT(*) as jumlahMahasiswaOntime, COUNT(*) * 100 / (SELECT COUNT(*) as semuaMahasiswa\n" +
