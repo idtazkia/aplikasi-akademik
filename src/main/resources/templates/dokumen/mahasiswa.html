@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+  <style>
+    #myModal {
+      z-index: 9999999;
+    }
+  </style>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+  <div class="breadcomb-area">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+          <div class="breadcomb-list">
+            <div class="row">
+              <div class="col-md-12 col-xs-12">
+                <div class="breadcomb-wp">
+                  <div class="breadcomb-icon">
+                    <i class="notika-icon notika-form"></i>
+                  </div>
+                  <div class="breadcomb-ctn">
+                    <h2>Document</h2>
+                    <p>Archieve :)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container mg-b-30">
+    <div class="normal-table-list ">
+      <div class="row" th:if="${listDokumen != null}">
+        <div class="col-md-12">
+          <table class="table table-responsive table-striped table-hover">
+            <tr th:each="data,row : ${listDokumen}">
+              <td>
+                <span><i class="fa fa-download fa-2x"></i>&nbsp;&nbsp;<a th:href="@{/dokumen/{dokumen}/download/(dokumen = ${data.getId()})}" th:title="${data.getDeskripsi()}" target="_blank"><span th:text="${data.getNamaFile()}"></span></a> </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="row" th:if="${listDokumen.isEmpty()}">
+        <div class="col-md-12">
+          <table class="table table-responsive table-striped table-hover">
+            <tr>
+              <td>
+                <span><i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;Tidak ada dokumen yang di share kepada anda..</a> </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+</section>
+</body>
+</html>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+
+  $(function () {
+    if ($('#terakhirUpdate').val() == '') {
+      $(window).on('load', function () {
+        $('#myModal').modal('show');
+      });
+    }
+  });
+
+  var delay = (function () {
+    var timer = 0;
+    return function (callback, ms) {
+      clearTimeout(timer);
+      timer = setTimeout(callback, ms);
+    };
+  })();
+
+  function cekEmail(arg){
+    var id = arg.getAttribute('id');
+    var value = arg.value;
+
+    $(document).keyup(function (e){
+      delay(function (){
+        var url = '/cekEmail?email=' + value;
+        $.getJSON(url, function (data){
+          if (data.id == "400"){
+            document.getElementById("validEmail").style.display = 'block';
+            $("#saveOrtu").hide();
+          }else{
+            document.getElementById("validEmail").style.display = 'none';
+            $("#saveOrtu").show();
+          }
+        })
+      })
+    })
+  }
+
+  function changeRole(arg) {
+    var id = arg.getAttribute('id');
+    console.log(id)
+    document.getElementById(id).className = "nav-link active";
+
+    $('.panel-body').css('display', 'none');
+    document.getElementById(id + '-embed').style.display = 'block';
+  }
+
+
+  const scanner = new Html5QrcodeScanner('reader', {
+    qrbox: {
+      width: 250,
+      height: 250,
+    },
+    pfs: 20,
+  });
+
+  scanner.render(success, error);
+
+  function success(result) {
+    location.href = result
+    scanner.clear()
+    document.getElementById('reader').remove();
+  }
+
+  function error(err) {
+    console.error(err);
+  }
+</script>

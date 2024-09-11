@@ -135,6 +135,24 @@
                                 <p th:if="${error != null}" th:text="${error}" class="text-danger"> Mata Anggaran Error</p>
                             </div>
 
+                            <div class="form-group">
+                                <label>Verifikasi</label>
+                                <select class="form-control" name="verifikasi" th:field="*{verifikasi}" data-placeholder="Choose one thing" required>
+                                    <option th:each="data : ${listVerifikasi}"
+                                            th:text="${data}"
+                                            th:value="${data}">sdasd</option>
+                                </select>
+                                <p th:if="${#fields.hasErrors('verifikasi')}" th:errors="*{verifikasi}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Point</label>
+<!--                                <input type="text" class="form-control" name="point" th:field="*{point}">-->
+                                <input type="number" name="point" class="form-control" id="point" step="0.1" min="0" th:field="*{point}" placeholder="0.0">
+                                <p th:if="${#fields.hasErrors('point')}" th:errors="*{point}" class="text-danger"> Mata Anggaran Error</p>
+                            </div>
+
+
                         </div>
 
                         <input type="hidden" name="id" th:field="*{id}">

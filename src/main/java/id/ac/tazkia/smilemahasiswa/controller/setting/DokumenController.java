@@ -4,10 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dao.AngkatanDao;
 import id.ac.tazkia.smilemahasiswa.dao.DokumenDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
-import id.ac.tazkia.smilemahasiswa.entity.Angkatan;
-import id.ac.tazkia.smilemahasiswa.entity.Dokumen;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +55,10 @@ public class DokumenController {
     private AngkatanDao angkatanDao;
 
     @Autowired
+    private MahasiswaDao mahasiswaDao;
+
+
+    @Autowired
     @Value("${upload.dokumen}")
     private String uploadFolder;
 
@@ -100,6 +101,18 @@ public class DokumenController {
         model.addAttribute("statusmenu","active");
         return "dokumen/form";
 
+    }
+
+    @GetMapping("/dokumen/mahasiswa")
+    public String dokumenMahasiswa(Model model,
+                                   Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        model.addAttribute("listDokumen",dokumenDao.findByStatusAndStartDateLessThanEqualAndAngkatansAndProdisAndEndDateGreaterThanEqualOrderByTanggalInsertDesc(StatusRecord.AKTIF,LocalDate.now(),angkatanDao.findByAngkatan(mahasiswa.getAngkatan()),mahasiswa.getIdProdi(),LocalDate.now()));
+
+        return "dokumen/mahasiswa";
     }
 
 
