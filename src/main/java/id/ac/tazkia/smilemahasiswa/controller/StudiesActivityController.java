@@ -943,13 +943,10 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/mulai")
-    public String prosesMulai(@ModelAttribute PresensiDto jadwalDto, MultipartFile[] materiMengajar) throws Exception {
+    public String prosesMulai(@ModelAttribute PresensiDto jadwalDto) throws Exception {
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         LocalDateTime waktuMasukSebelum = sesiKuliah.getWaktuMulai();
         presensiService.mulaiMengajar(jadwalDto, sesiKuliah, waktuMasukSebelum);
-        if (materiMengajar != null) {
-            tugasMateriService.uploadMateri(materiMengajar, sesiKuliah);
-        }
 
         return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 

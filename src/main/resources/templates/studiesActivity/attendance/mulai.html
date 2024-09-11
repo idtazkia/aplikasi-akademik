@@ -41,8 +41,7 @@
 
         <div class="container-fluid mt--7">
             <!-- Table -->
-            <form th:action="@{/studiesActivity/attendance/mulai}" method="post" enctype="multipart/form-data"
-                  th:object="${sesi}">
+            <form id="formSimpan" th:action="@{/studiesActivity/attendance/mulai}" method="post" th:object="${sesi}">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col">
@@ -263,7 +262,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                                <button type="submit" id="btnSimpan" onclick="saveSimpan()" class="btn btn-primary">Simpan</button>
                                                 <!--                                        <a href="" class="btn btn-danger">Batal</a>-->
                                             </div>
                                         </div>
@@ -296,4 +295,14 @@
     $('#input-a').datetimepicker({
         format: 'hh:mm'
     });
+
+    function saveSimpan(){
+        $("#btnSimpan").removeClass("btn-primary");
+        $("#btnSimpan").addClass("btn-warning");
+        $("#btnSimpan").prop("disabled", true);
+        $("#btnSimpan").html("Loading...");
+
+        $("#formSimpan").submit();
+    }
+
 </script>
