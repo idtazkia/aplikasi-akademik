@@ -89,6 +89,7 @@ public class EventController {
 
         model.addAttribute("event", new Event());
         model.addAttribute("statusEvent", StatusEvent.values());
+        model.addAttribute("listVerifikasi", StatusVerifikasi.values());
         model.addAttribute("listTahunAkademik", tahunAkademikDao.findAllByOrderByStatusAscKodeTahunAkademikDesc());
 
         return "event/form";
@@ -100,6 +101,7 @@ public class EventController {
 
         model.addAttribute("event", event);
         model.addAttribute("statusEvent", StatusEvent.values());
+        model.addAttribute("listVerifikasi", StatusVerifikasi.values());
         model.addAttribute("listTahunAkademik", tahunAkademikDao.findAllByOrderByStatusAscKodeTahunAkademikDesc());
 
         return "event/form";
@@ -120,6 +122,7 @@ public class EventController {
         if(error.hasErrors()){
             model.addAttribute("event", event);
             model.addAttribute("statusEvent", StatusEvent.values());
+            model.addAttribute("listVerifikasi", StatusVerifikasi.values());
             model.addAttribute("listTahunAkademik", tahunAkademikDao.findAllByOrderByStatusAscKodeTahunAkademikDesc());
             return "event/form";
         }
@@ -129,11 +132,10 @@ public class EventController {
             model.addAttribute("error", "File upload tidak boleh kosong");
             model.addAttribute("event", event);
             model.addAttribute("statusEvent", StatusEvent.values());
+            model.addAttribute("listVerifikasi", StatusVerifikasi.values());
             model.addAttribute("listTahunAkademik", tahunAkademikDao.findAllByOrderByStatusAscKodeTahunAkademikDesc());
             return "event/form";
         }
-
-
 
         String namaFile =  file.getName();
         String jenisFile = file.getContentType();
@@ -212,7 +214,6 @@ public class EventController {
         }
     }
 
-
     @GetMapping("/academic/event/presensi")
     public String absensiEvent(Model model,
                                @RequestParam(required = true) Event event,
@@ -233,8 +234,6 @@ public class EventController {
             model.addAttribute("eventAbsensi", eventAbsensi);
             return "event/absen";
         }
-
-
     }
 
     @PostMapping("/academic/event/presensi/save")
@@ -323,11 +322,6 @@ public class EventController {
         redirectAttributes.addFlashAttribute("sukses","Absensi event sukses..");
         return "redirect:/dashboard";
     }
-
-
-
-
-
 
     @GetMapping("/attendance/{eventAbsensi}/download")
     public ResponseEntity<byte[]> tampilkanEventAbsensi(@PathVariable EventAbsensi eventAbsensi) throws Exception {

@@ -6,9 +6,8 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -65,5 +64,12 @@ public class Event {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime schedulePublish;
 
+    @NotNull(message = "Point tidak boleh kosong")
+    @Digits(integer = 10, fraction = 2, message = "Point harus berupa angka dengan maksimal 10 digit sebelum koma dan 2 digit setelah koma")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Point harus lebih besar dari 0")
+    private BigDecimal point;
+
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusVerifikasi verifikasi;
 
 }
