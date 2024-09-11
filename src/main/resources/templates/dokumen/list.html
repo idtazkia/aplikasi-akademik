@@ -61,21 +61,29 @@
                                 <a th:href="@{/dokumen/baru}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
+                        <form th:action="@{/dokumen}" method="get">
                         <div class="row">
-                            <form class="form-inline" action="#" method="get">
                             <div class="col-md-6">
-
+                                Show entries <span sd:page-size-selector="javascript"></span>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 w-100">
+                                <div class="form-inline">
+                                    <style>
+                                        .custom-input,
+                                        .custom-btn {
+                                            height: 38px; /* Sesuaikan tinggi sesuai kebutuhan */
+                                        }
+                                    </style>
                                     <div class="form-group w-75">
-                                        <input type="text" name="search" th:value="${search}" class="form-control w-100" placeholder="Search">
+                                        <input type="text" name="search" th:value="${search}" class="form-control w-100 custom-input" placeholder="Search" autofocus>
                                     </div>
-                                    <button type="submit" class="btn btn-secondary w-25">
+                                    <button type="submit" class="btn btn-secondary w-25 custom-btn">
                                         <i class="fa fa-search"></i>
                                     </button>
+                                </div>
                             </div>
-                            </form>
                         </div>
+                        </form>
                     </div>
 <!--                    <div class="card-body border-0">-->
                         <div class="table-responsive">
@@ -86,7 +94,6 @@
                                 <th>Description</th>
                                 <th>Period</th>
                                 <th>FileName</th>
-<!--                                <th width="50px"></th>-->
                                 <th width="50px">Option</th>
                             </tr>
                             </thead>

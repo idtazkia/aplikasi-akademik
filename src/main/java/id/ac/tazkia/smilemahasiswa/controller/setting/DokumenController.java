@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,9 +62,16 @@ public class DokumenController {
     private String uploadFolder;
 
     @GetMapping("/dokumen")
-    public String listDokumen(Model model, @PageableDefault(size = 10) Pageable pageable) {
+    public String listDokumen(Model model,
+                              @RequestParam(required = false) String search,
+                              @PageableDefault(size = 10) Pageable pageable) {
 
-        model.addAttribute("listDokumen", dokumenDao.findByStatusOrderByStartDateAsc(StatusRecord.AKTIF,pageable));
+        if(StringUtils.hasText(search)){
+            model.addAttribute("search", search);
+            model.addAttribute("listDokumen", dokumenDao.findByStatusAndDeskripsiContainingIgnoreCaseOrStatusAndNamaFileContainingIgnoreCaseOrderByStartDateAsc(StatusRecord.AKTIF,search, StatusRecord.AKTIF, search, pageable));
+        }else {
+            model.addAttribute("listDokumen", dokumenDao.findByStatusOrderByStartDateAsc(StatusRecord.AKTIF, pageable));
+        }
         model.addAttribute("statusmenu","active");
         return "dokumen/list";
 

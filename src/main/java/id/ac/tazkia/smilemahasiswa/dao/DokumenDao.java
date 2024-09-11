@@ -11,4 +11,7 @@ public interface DokumenDao extends PagingAndSortingRepository<Dokumen, String>,
 
     Page<Dokumen> findByStatusOrderByStartDateAsc(StatusRecord status, Pageable pageable);
 
+    Page<Dokumen> findByStatusAndDeskripsiContainingIgnoreCaseAndNamaFileContainingIgnoreCaseOrderByStartDateAsc(StatusRecord status, String deskripsi, String namaFile, Pageable pageable);
+
+    Page<Dokumen> findByStatusAndDeskripsiContainingIgnoreCaseOrStatusAndNamaFileContainingIgnoreCaseOrderByStartDateAsc(StatusRecord status, String deskripsi, StatusRecord statusRecord2, String namaFile, Pageable pageable);
 }
