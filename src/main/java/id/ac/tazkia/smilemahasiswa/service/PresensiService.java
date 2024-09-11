@@ -790,6 +790,9 @@ public class PresensiService {
 
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
         sesiKuliah.setLinkVideo(jadwalDto.getLinkVideo());
+        if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
+            sesiKuliah.setLinkOnline(null);
+        }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
 
@@ -862,6 +865,12 @@ public class PresensiService {
         Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(), StatusRecord.AKTIF, StatusPresensi.HADIR);
         Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR, StatusPresensi.TERLAMBAT), StatusRecord.AKTIF, kd);
 
+        if (presensiDosen == null){
+            presensiDosen = 0;
+        }
+        if (presensiMhs == null) {
+            presensiMhs = 0;
+        }
         kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
         kd.setJumlahKehadiran(presensiMhs);
         krsDetailDao.save(kd);

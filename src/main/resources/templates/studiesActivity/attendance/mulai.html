@@ -60,8 +60,8 @@
                                         <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
-                                                <select name="pertemuan" class="form-control"
-                                                        th:if="${now == sesi.tanggal}">
+                                                <select name="pertemuan" class="form-control" id="pertemuan" th:if="${now == sesi.tanggal}">
+                                                    <option disabled selected value=""> - </option>
                                                     <option value="Online">Online</option>
                                                     <option value="Offline">Offline</option>
                                                     <option value="Pengganti Offline">Pengganti Offline</option>
@@ -93,6 +93,12 @@
                                                             th:text="${dosen.dosen.karyawan.namaKaryawan}"
                                                             th:value="${dosen.dosen.id}">sdasd</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div id="linkOnline" class="col-md-4 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Link pertemuan online :</label>
+                                                <textarea name="linkOnline" class="form-control" cols="30" rows="3"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -294,6 +300,18 @@
 <script>
     $('#input-a').datetimepicker({
         format: 'hh:mm'
+    });
+
+    $(document).ready(function (){
+        $("#linkOnline").hide();
+        $("#pertemuan").on("change", function (){
+            var cek = (this.value);
+            if (cek == 'Online' || cek == 'Pengganti Online'){
+                $("#linkOnline").show();
+            }else{
+                $("#linkOnline").hide();
+            }
+        })
     });
 
     function saveSimpan(){

@@ -380,6 +380,7 @@ public class StudiesActivityController {
         presensiDosenDao.save(presensiDosen);
 
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
+        sesiKuliah.setPertemuan(presensiDosenDto.getPertemuan());
         sesiKuliah.setWaktuMulai(masuk);
         sesiKuliah.setWaktuSelesai(keluar);
         sesiKuliahDao.save(sesiKuliah);
@@ -935,6 +936,9 @@ public class StudiesActivityController {
         presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
         presensiDosen.setTanggalInput(LocalDateTime.now());
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+        if (jadwalDto.getLinkOnline() != null) {
+            sesiKuliah.setLinkOnline(jadwalDto.getLinkOnline());
+        }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
 

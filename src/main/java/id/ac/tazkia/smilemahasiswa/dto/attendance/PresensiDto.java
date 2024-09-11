@@ -42,6 +42,7 @@ public class PresensiDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime jamKeluar;
     private String linkVideo;
+    private String linkOnline;
     private StatusRecord ceramah;
     private StatusRecord diskusi;
     private StatusRecord presentasi;
