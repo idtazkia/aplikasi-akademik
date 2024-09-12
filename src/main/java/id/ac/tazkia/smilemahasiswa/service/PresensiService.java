@@ -836,23 +836,4 @@ public class PresensiService {
             krsDetailDao.save(kd);
         }
     }
-
-    public void uploadMateri(SesiKuliah sesiKuliah){
-
-        PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
-
-        Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(presensiDosen.getJadwal(), StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail) {
-            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
-            if (pm == null) {
-                PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-                presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
-                presensiMahasiswa.setSesiKuliah(sesiKuliah);
-                presensiMahasiswa.setKrsDetail(kd);
-                presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-                presensiMahasiswaDao.save(presensiMahasiswa);
-            }
-        }
-    }
-
 }

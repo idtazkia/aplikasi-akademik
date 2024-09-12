@@ -879,7 +879,6 @@ public class StudiesActivityController {
         if (sesi != null) {
             sesi.setLinkVideo(materi);
             sesiKuliahDao.save(sesi);
-            presensiService.uploadMateri(sesi);
         }
         return "redirect:../detail?jadwal=" + sesi.getJadwal().getId();
 
