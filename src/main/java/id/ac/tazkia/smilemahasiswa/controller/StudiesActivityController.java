@@ -377,6 +377,9 @@ public class StudiesActivityController {
         LocalDateTime keluar = LocalDateTime.of(LocalDate.parse(presensiDosenDto.getTanggal()), presensiDosen.getWaktuSelesai().toLocalTime());
         presensiDosen.setWaktuMasuk(masuk);
         presensiDosen.setWaktuSelesai(keluar);
+        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+        presensiDosen.setStatus(StatusRecord.AKTIF);
+        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
         presensiDosenDao.save(presensiDosen);
 
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
@@ -958,10 +961,10 @@ public class StudiesActivityController {
         presensiDosen.setDosen(jadwalDto.getDosen());
         presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
         presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
-        presensiDosen.setTanggalInput(LocalDateTime.now());
+        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
-        if (jadwalDto.getLinkOnline() != null) {
-            sesiKuliah.setLinkOnline(jadwalDto.getLinkOnline());
+        if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
+            sesiKuliah.setLinkOnline(null);
         }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);

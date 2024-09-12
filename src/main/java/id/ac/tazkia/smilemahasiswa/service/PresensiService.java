@@ -732,7 +732,7 @@ public class PresensiService {
         presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
         presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
         presensiDosen.setStatus(StatusRecord.AKTIF);
-        presensiDosen.setTanggalInput(LocalDateTime.now());
+        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
 
         if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0) {
             if (presensiDosen.getWaktuMasuk().toLocalTime()
@@ -865,16 +865,11 @@ public class PresensiService {
         Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(), StatusRecord.AKTIF, StatusPresensi.HADIR);
         Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR, StatusPresensi.TERLAMBAT), StatusRecord.AKTIF, kd);
 
-        if (presensiDosen == null){
-            presensiDosen = 0;
+        if (presensiDosen != null){
+            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
+            kd.setJumlahKehadiran(presensiMhs);
+            krsDetailDao.save(kd);
         }
-        if (presensiMhs == null) {
-            presensiMhs = 0;
-        }
-        kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
-        kd.setJumlahKehadiran(presensiMhs);
-        krsDetailDao.save(kd);
-
     }
 
     public void uploadMateri(SesiKuliah sesiKuliah){
