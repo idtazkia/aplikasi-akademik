@@ -184,26 +184,18 @@
         $.getJSON(url, function (data) {
             $.each(data, function (key, entry) {
                 $('#absen-' + entry.idPresensi).val(entry.presensi);
-            })
-
+            });
         });
-    });
 
-    iziToast.settings({
-        timeout: 3000, // default timeout
-        resetOnHover: true,
-        // icon: '', // icon class
-        transitionIn: 'flipInX',
-        transitionOut: 'flipOutX',
-        position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+        iziToast.settings({
+            timeout: 3000, // default timeout
+            resetOnHover: true,
+            transitionIn: 'flipInX',
+            transitionOut: 'flipOutX',
+            position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+        });
 
-    });
-
-    var $tableMahasiswa = $('#tableMahasiswa')
-
-    var no = 1;
-    $(function () {
-        $tableMahasiswa.bootstrapTable({
+        $('#tableMahasiswa').bootstrapTable({
             pageSize: 40,
             columns: [{
                 field: 'nim',
@@ -228,77 +220,53 @@
                 height: '100',
                 formatter: absenFormatter
             }]
-        })
-    })
-
-    function nimFormatter(value, row, index) {
-        return [
-            row.nim + ' - ' + row.nama
-        ].join('')
-    }
-
-    function absenFormatter(value, row, index) {
-        if (row.presensi == 'MANGKIR') {
-            return [
-                '<select id=absen-' + row.idPresensi + ' onchange="editPresensi(this.id)"  class="form-control input-sm">',
-                '<option selected value="MANGKIR">Mangkir</option>',
-                '<option value="HADIR">Hadir</option>',
-                '<option value="IZIN">Izin</option>',
-                '<option value="SAKIT">Sakit</option>',
-                '</select>'
-            ].join('')
-        }
-        if (row.presensi == 'HADIR') {
-            return [
-                '<select id=absen-' + row.idPresensi + ' onchange="editPresensi(this.id)"  class="form-control input-sm">',
-                '<option value="MANGKIR">Mangkir</option>',
-                '<option selected value="HADIR">Hadir</option>',
-                '<option value="IZIN">Izin</option>',
-                '<option value="SAKIT">Sakit</option>',
-                '</select>'
-            ].join('')
-        }
-        if (row.presensi == 'IZIN') {
-            return [
-                '<select id=absen-' + row.idPresensi + ' onchange="editPresensi(this.id)"  class="form-control input-sm">',
-                '<option value="MANGKIR">Mangkir</option>',
-                '<option value="HADIR">Hadir</option>',
-                '<option selected value="IZIN">Izin</option>',
-                '<option value="SAKIT">Sakit</option>',
-                '</select>'
-            ].join('')
-        }
-        if (row.presensi == 'SAKIT') {
-            return [
-                '<select id=absen-' + row.idPresensi + ' onchange="editPresensi(this.id)"  class="form-control input-sm">',
-                '<option value="MANGKIR">Mangkir</option>',
-                '<option value="HADIR">Hadir</option>',
-                '<option value="IZIN">Izin</option>',
-                '<option selected value="SAKIT">Sakit</option>',
-                '</select>'
-            ].join('')
-        }
-
-    }
-
-    function editPresensi(id) {
-        var token = $("input[name='_csrf']").val();
-
-        $.ajax({
-            type: "PUT",
-            contentType: "application/json",
-            headers: {"X-CSRF-TOKEN": token},
-            url: "/update-presensi-mahasiswa/" + id.slice(6) + "?status=" + $('#' + id).val(),
-            dataType: 'json',
-            cache: false,
-            timeout: 600000,
-            success: function (result) {
-                iziToast.success({title: 'Data Terupdate', message: result.message});
-            },
-            error: function (result) {
-                alert('error');
-
-            }
         });
-    }
+
+        function nimFormatter(value, row) {
+            return row.nim + ' - ' + row.nama;
+        }
+
+        function absenFormatter(value, row) {
+            // Daftar opsi untuk select
+            const options = [
+                { value: 'UNKNOWN', text: '----' },
+                { value: 'MANGKIR', text: 'Mangkir' },
+                { value: 'HADIR', text: 'Hadir' },
+                { value: 'IZIN', text: 'Izin' },
+                { value: 'SAKIT', text: 'Sakit' }
+            ];
+
+            // Membangun HTML untuk opsi
+            let optionsHtml = options.map(option => {
+                // Tambahkan atribut 'selected' pada opsi yang cocok
+                const selected = option.value === row.presensi ? ' selected' : '';
+                return `<option value="${option.value}"${selected}>${option.text}</option>`;
+            }).join('');
+
+            // Membangun HTML untuk elemen select
+            return `<select id="absen-${row.idMahasiswa}" onchange="editPresensi(this.id, '${row.idSesi}')" class="form-control input-sm">
+                ${optionsHtml}
+            </select>`;
+        }
+
+        window.editPresensi = function (id, sesi) {
+            console.log(sesi)
+            var token = $("input[name='_csrf']").val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                headers: {"X-CSRF-TOKEN": token},
+                url: "/update-presensi-mahasiswa/" + id.slice(6) + "?status=" + $('#' + id).val() + "&sesi="+ sesi,
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (result) {
+                    iziToast.success({title: 'Data Terupdate', message: result.message});
+                },
+                error: function (xhr, status, error) {
+                    iziToast.error({title: 'Error', message: 'Terjadi kesalahan. Silakan coba lagi.'});
+                }
+            });
+        };
+    });
 </script>

@@ -732,7 +732,7 @@ public class PresensiService {
         presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
         presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
         presensiDosen.setStatus(StatusRecord.AKTIF);
-        presensiDosen.setTanggalInput(LocalDateTime.now());
+        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
 
         if (waktuMasukSebelum.compareTo(sesiKuliah.getWaktuMulai()) == 0) {
             if (presensiDosen.getWaktuMasuk().toLocalTime()
@@ -795,41 +795,6 @@ public class PresensiService {
         }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
-
-        StatusPresensi statusMahasiswa = null;
-        if (presensiDosen.getStatusPresensi() == StatusPresensi.HADIR) {
-            statusMahasiswa = StatusPresensi.MANGKIR;
-        } else {
-            statusMahasiswa = StatusPresensi.HADIR;
-        }
-
-        Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(
-                presensiDosen.getJadwal(),
-                StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail) {
-            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
-            if (pm == null) {
-                PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-                presensiMahasiswa.setStatusPresensi(statusMahasiswa);
-                presensiMahasiswa.setSesiKuliah(sesiKuliah);
-                presensiMahasiswa.setKrsDetail(kd);
-                presensiMahasiswa.setCatatan("Manual");
-                presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
-                presensiMahasiswa.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
-                presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-                presensiMahasiswa.setRating(0);
-                presensiMahasiswaDao.save(presensiMahasiswa);
-                updateNilaiPresensi(kd);
-            }else{
-                pm.setStatusPresensi(statusMahasiswa);
-                pm.setCatatan("Manual");
-                pm.setWaktuMasuk(LocalDateTime.now().plusHours(7));
-                pm.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
-                pm.setRating(0);
-                presensiMahasiswaDao.save(pm);
-                updateNilaiPresensi(kd);
-            }
-        }
     }
 
     public BaseResponse generatePresensiMahasiswa(SesiKuliah sesiKuliah) throws Exception {
@@ -865,34 +830,10 @@ public class PresensiService {
         Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(), StatusRecord.AKTIF, StatusPresensi.HADIR);
         Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR, StatusPresensi.TERLAMBAT), StatusRecord.AKTIF, kd);
 
-        if (presensiDosen == null){
-            presensiDosen = 0;
-        }
-        if (presensiMhs == null) {
-            presensiMhs = 0;
-        }
-        kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
-        kd.setJumlahKehadiran(presensiMhs);
-        krsDetailDao.save(kd);
-
-    }
-
-    public void uploadMateri(SesiKuliah sesiKuliah){
-
-        PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
-
-        Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(presensiDosen.getJadwal(), StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail) {
-            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
-            if (pm == null) {
-                PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-                presensiMahasiswa.setStatusPresensi(StatusPresensi.BELUM_MENGAJAR);
-                presensiMahasiswa.setSesiKuliah(sesiKuliah);
-                presensiMahasiswa.setKrsDetail(kd);
-                presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-                presensiMahasiswaDao.save(presensiMahasiswa);
-            }
+        if (presensiDosen != null){
+            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
+            kd.setJumlahKehadiran(presensiMhs);
+            krsDetailDao.save(kd);
         }
     }
-
 }
