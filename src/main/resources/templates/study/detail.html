@@ -112,6 +112,7 @@
                                                 <h4>Keterangan</h4>
                                                 <div class="row">
                                                     <div class="col-md-2">
+                                                        <div th:if="${data[0] == '-'}"><button class="bd-warning" th:text="${data[0]}" >Hadir</button></div>
                                                         <div th:if="${data[0] == 'HADIR'}"><button class="bd-primary" th:text="${data[0]}" >Hadir</button></div>
                                                         <div th:if="${data[0] == 'TERLAMBAT'}"><button class="bd-danger"  th:text="${data[0]}" >Hadir</button></div>
                                                         <div th:if="${data[0] == 'MANGKIR'}"><button class="bd-danger" th:text="${data[0]}" >Hadir</button></div>
@@ -130,15 +131,22 @@
                                                 </div>
                                                 <br>
                                                 <div class="tpgp-al-cl">
-                                                    <h4>Materi</h4>
+                                                    <h4 th:if="${data[7] != null}">Link Pertemuan Online</h4>
+                                                    <ul th:if="${data[7] != null}" class="tpdg-ul-circle">
+                                                        <li>
+                                                            <a th:href="${data[7]}" target="_blank" th:text="${data[7]}"></a>
+                                                        </li>
+                                                    </ul>
+                                                    <br>
+                                                    <h4>File Materi</h4>
                                                     <ul class="tpdg-ul-circle" th:each="materi, row : ${materi}">
                                                         <li th:if="${materi.sesiKuliah.id == data[4]}">
                                                             <a th:href="@{/materi/{id}/sesi(id=${materi.id})}" target="_blank" th:text="${materi.namaFile}"></a>
                                                         </li>
                                                     </ul>
                                                     <br>
-                                                    <h4>Materi Video</h4>
-                                                    <ul class="tpdg-ul-circle" th:each="link, row:${#strings.arraySplit(data[6], ',')}">
+                                                    <h4 th:if="${data[6] != null}">Link Materi</h4>
+                                                    <ul th:if="${data[6] != null}" class="tpdg-ul-circle" th:each="link, row:${#strings.arraySplit(data[6], ',')}">
                                                         <li>
                                                             <a th:href="${link}" target="_blank" th:text="${link}"></a>
                                                         </li>

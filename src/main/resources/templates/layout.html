@@ -160,6 +160,7 @@
                     </li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#gra"><i class="fa fa-graduation-cap"></i> Graduation</a>
                     </li>
+                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/dokumen/mahasiswa}"><i class="fa fa-archive"></i> Documents</a></li>
                 </ul>
                 <div class="tab-content custom-menu-content">
                     <div id="Charts" class="tab-pane notika-tab-menu-bg animated flipInX">

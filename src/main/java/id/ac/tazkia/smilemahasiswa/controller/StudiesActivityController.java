@@ -377,9 +377,13 @@ public class StudiesActivityController {
         LocalDateTime keluar = LocalDateTime.of(LocalDate.parse(presensiDosenDto.getTanggal()), presensiDosen.getWaktuSelesai().toLocalTime());
         presensiDosen.setWaktuMasuk(masuk);
         presensiDosen.setWaktuSelesai(keluar);
+        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+        presensiDosen.setStatus(StatusRecord.AKTIF);
+        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
         presensiDosenDao.save(presensiDosen);
 
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
+        sesiKuliah.setPertemuan(presensiDosenDto.getPertemuan());
         sesiKuliah.setWaktuMulai(masuk);
         sesiKuliah.setWaktuSelesai(keluar);
         sesiKuliahDao.save(sesiKuliah);
@@ -678,22 +682,46 @@ public class StudiesActivityController {
         return presensiMahasiswaDao.listPresensiMahasiswaBarcode(sesiKuliah);
     }
 
-    @PutMapping("/update-presensi-mahasiswa/{id}")
+    @PostMapping("/update-presensi-mahasiswa/{id}")
     @ResponseBody
-    public BaseResponse listPresensiMahasiswa(@PathVariable String id, @RequestParam String status) {
-        PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findById(id).get();
-        presensiMahasiswa.setStatusPresensi(StatusPresensi.valueOf(status));
-        presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
-        presensiMahasiswa.setCatatan("MANUAL");
-        presensiMahasiswaDao.save(presensiMahasiswa);
-        presensiService.updateNilaiPresensi(presensiMahasiswa.getKrsDetail());
+    public BaseResponse listPresensiMahasiswa(@PathVariable String id, @RequestParam String status,@RequestParam String sesi) {
+        Mahasiswa mahasiswa = mahasiswaDao.findById(id).get();
+        SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
+        PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(mahasiswa,sesiKuliah,StatusRecord.AKTIF);
+        if (presensiMahasiswa != null) {
+            presensiMahasiswa.setStatusPresensi(StatusPresensi.valueOf(status));
+            presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
+            presensiMahasiswa.setCatatan("MANUAL");
+            presensiMahasiswaDao.save(presensiMahasiswa);
+            presensiService.updateNilaiPresensi(presensiMahasiswa.getKrsDetail());
 
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setId(presensiMahasiswa.getId());
-        baseResponse.setNim(presensiMahasiswa.getMahasiswa().getNim());
-        baseResponse.setNama(presensiMahasiswa.getMahasiswa().getNama());
-        baseResponse.setMessage("Presensi Mahasiswa Telah Diperbarui");
-        return baseResponse;
+            BaseResponse baseResponse = new BaseResponse();
+            baseResponse.setId(presensiMahasiswa.getId());
+            baseResponse.setNim(presensiMahasiswa.getMahasiswa().getNim());
+            baseResponse.setNama(presensiMahasiswa.getMahasiswa().getNama());
+            baseResponse.setMessage("Presensi Mahasiswa Telah Diperbarui");
+            return baseResponse;
+        }else {
+            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswa,sesiKuliah.getJadwal(),StatusRecord.AKTIF);
+            PresensiMahasiswa newPresensi = new PresensiMahasiswa();
+            newPresensi.setStatusPresensi(StatusPresensi.valueOf(status));
+            newPresensi.setSesiKuliah(sesiKuliah);
+            newPresensi.setKrsDetail(krsDetail);
+            newPresensi.setCatatan("Manual");
+            newPresensi.setWaktuMasuk(LocalDateTime.now().plusHours(7));
+            newPresensi.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
+            newPresensi.setMahasiswa(mahasiswa);
+            newPresensi.setRating(0);
+            presensiMahasiswaDao.save(newPresensi);
+            presensiService.updateNilaiPresensi(newPresensi.getKrsDetail());
+
+            BaseResponse baseResponse = new BaseResponse();
+            baseResponse.setId(newPresensi.getId());
+            baseResponse.setNim(newPresensi.getMahasiswa().getNim());
+            baseResponse.setNama(newPresensi.getMahasiswa().getNama());
+            baseResponse.setMessage("Presensi Mahasiswa Telah Diperbarui");
+            return baseResponse;
+        }
     }
 
     @GetMapping("/detail-presensi-mahasiswa")
@@ -742,17 +770,28 @@ public class StudiesActivityController {
             if (pilihan == null || pilihan.isEmpty()) {
                 System.out.println("gaada");
             } else {
-                PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-                presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-                StatusPresensi statusPresensi = StatusPresensi.valueOf(pilihan);
-                presensiMahasiswa.setStatusPresensi(statusPresensi);
-                presensiMahasiswa.setCatatan("Manual");
-                presensiMahasiswa.setKrsDetail(kd);
-                presensiMahasiswa.setWaktuKeluar(sesi.getWaktuSelesai());
-                presensiMahasiswa.setWaktuMasuk(sesi.getWaktuMulai());
-                presensiMahasiswa.setSesiKuliah(sesi);
-                presensiMahasiswaDao.save(presensiMahasiswa);
-                presensiService.updateNilaiPresensi(presensiMahasiswa.getKrsDetail());
+                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesi, StatusRecord.AKTIF);
+                if (pm == null) {
+                    PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
+                    presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
+                    StatusPresensi statusPresensi = StatusPresensi.valueOf(pilihan);
+                    presensiMahasiswa.setStatusPresensi(statusPresensi);
+                    presensiMahasiswa.setCatatan("Manual");
+                    presensiMahasiswa.setKrsDetail(kd);
+                    presensiMahasiswa.setWaktuKeluar(sesi.getWaktuSelesai());
+                    presensiMahasiswa.setWaktuMasuk(sesi.getWaktuMulai());
+                    presensiMahasiswa.setSesiKuliah(sesi);
+                    presensiMahasiswaDao.save(presensiMahasiswa);
+                    presensiService.updateNilaiPresensi(presensiMahasiswa.getKrsDetail());
+                }else{
+                    StatusPresensi statusPresensi = StatusPresensi.valueOf(pilihan);
+                    pm.setStatusPresensi(statusPresensi);
+                    pm.setCatatan("Manual");
+                    pm.setWaktuKeluar(sesi.getWaktuSelesai());
+                    pm.setWaktuMasuk(sesi.getWaktuMulai());
+                    presensiMahasiswaDao.save(pm);
+                    presensiService.updateNilaiPresensi(pm.getKrsDetail());
+                }
             }
         }
         return "redirect:mahasiswa?id=" + sesi.getId();
@@ -833,6 +872,18 @@ public class StudiesActivityController {
         }
     }
 
+    @PostMapping("/studiesActivity/attendance/materi/upload")
+    public String tambahMateriDiawal(@RequestParam String idSesi, @RequestParam String materi){
+
+        SesiKuliah sesi = sesiKuliahDao.findById(idSesi).get();
+        if (sesi != null) {
+            sesi.setLinkVideo(materi);
+            sesiKuliahDao.save(sesi);
+        }
+        return "redirect:../detail?jadwal=" + sesi.getJadwal().getId();
+
+    }
+
     @GetMapping("/get-materi/{id}")
     @ResponseBody
     public List<MateriMengajar> getMateriMengajar(@PathVariable String id){
@@ -909,8 +960,11 @@ public class StudiesActivityController {
         presensiDosen.setDosen(jadwalDto.getDosen());
         presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
         presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
-        presensiDosen.setTanggalInput(LocalDateTime.now());
+        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
+        if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
+            sesiKuliah.setLinkOnline(null);
+        }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
 
@@ -919,13 +973,10 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/mulai")
-    public String prosesMulai(@ModelAttribute PresensiDto jadwalDto, MultipartFile[] materiMengajar) throws Exception {
+    public String prosesMulai(@ModelAttribute PresensiDto jadwalDto) throws Exception {
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         LocalDateTime waktuMasukSebelum = sesiKuliah.getWaktuMulai();
         presensiService.mulaiMengajar(jadwalDto, sesiKuliah, waktuMasukSebelum);
-        if (materiMengajar != null) {
-            tugasMateriService.uploadMateri(materiMengajar, sesiKuliah);
-        }
 
         return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
 
@@ -1209,7 +1260,7 @@ public class StudiesActivityController {
             } else {
                 Long jadwal = jadwalDao.totalSks(selected);
                 if (krsDetail == null) {
-                    if (jadwal > Integer.valueOf(jumlah)) {
+                    if (jadwal >= Integer.valueOf(jumlah)) {
                         return "redirect:form?lebih=true";
                     } else {
                         for (String idJadwal : selected) {

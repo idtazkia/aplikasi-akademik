@@ -148,7 +148,7 @@
                         </div>
                         <span
                             th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '01' && sidang.seminar.note.jenis != sidang.seminar.note.jenis.JURNAL}">
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.ketuaPenguji != null}">
                                 <div class="card-green">
                                     <b class="card-title">Komentar Ketua Penguji (<span
                                             th:text="${sidang.ketuaPenguji.karyawan.namaKaryawan}">Nama
@@ -160,7 +160,7 @@
                                         ullam voluptas?</p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.dosenPenguji != null}">
                                 <div class="card-blue">
                                     <b class="card-title">Komentar Penguji 1 (<span
                                             th:text="${sidang.dosenPenguji.karyawan.namaKaryawan}">Nama
@@ -173,7 +173,7 @@
                                         ullam voluptas?</p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.pembimbing != null}">
                                 <div class="card-red">
                                     <b class="card-title">Komentar Penguji 2 (<span
                                             th:text="${sidang.pembimbing.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
@@ -188,7 +188,7 @@
                         </span>
 
                         <span th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.ketuaPenguji != null}">
                                 <div class="card-green">
                                     <b class="card-title">Komentar Ketua Penguji (<span
                                             th:text="${sidang.ketuaPenguji.karyawan.namaKaryawan}">Nama
@@ -200,7 +200,7 @@
                                         ullam voluptas?</p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.dosenPenguji != null}">
                                 <div class="card-blue">
                                     <b class="card-title">Komentar Dosen Penguji (<span
                                             th:text="${sidang.dosenPenguji.karyawan.namaKaryawan}">Nama
@@ -213,7 +213,7 @@
                                         ullam voluptas?</p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.pembimbing != null}">
                                 <div class="card-red">
                                     <b class="card-title">Pembimbing 1 (<span
                                             th:text="${sidang.pembimbing.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
@@ -226,7 +226,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang.pembimbing2 != null}">
                                 <div class="card-red">
                                     <b class="card-title">Pembimbing 2 (<span
                                             th:text="${sidang.pembimbing2.karyawan.namaKaryawan}">Nama Dosen</span>)</b>

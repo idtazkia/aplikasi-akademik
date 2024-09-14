@@ -41,8 +41,7 @@
 
         <div class="container-fluid mt--7">
             <!-- Table -->
-            <form th:action="@{/studiesActivity/attendance/mulai}" method="post" enctype="multipart/form-data"
-                  th:object="${sesi}">
+            <form id="formSimpan" th:action="@{/studiesActivity/attendance/mulai}" method="post" th:object="${sesi}">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col">
@@ -58,11 +57,11 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
-                                                <select name="pertemuan" class="form-control"
-                                                        th:if="${now == sesi.tanggal}">
+                                                <select name="pertemuan" class="form-control" id="pertemuan" th:if="${now == sesi.tanggal}">
+                                                    <option disabled selected value=""> - </option>
                                                     <option value="Online">Online</option>
                                                     <option value="Offline">Offline</option>
                                                     <option value="Pengganti Offline">Pengganti Offline</option>
@@ -70,7 +69,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Detail Pertemuan :</label>
                                                 <select name="detailPertemuan" th:field="*{detailPertemuan}" readonly
@@ -85,7 +84,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Dosen :</label>
                                                 <select name="dosen" th:field="*{dosen}" class="form-control">
@@ -96,18 +95,10 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div id="linkOnline" class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
-                                                <label><b>*</b>Upload Materi :</label>
-                                                <input type="file" required multiple name="materiMengajar" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 col-sm-6 col-xs-12">
-                                            <div class="form-group">
-                                                <label>Link video materi :</label>
-<!--                                                <input type="text" name="linkVideo" class="form-control">-->
-                                                <textarea cols="10" rows="3" name="linkVideo" class="form-control"></textarea>
-                                                <p style="font-size: 15px;"><b>*</b> Jika lebih dari 1 link, pisahkan dengan ',(koma)' dan (spasi)</p>
+                                                <label>Link pertemuan online :</label>
+                                                <textarea name="linkOnline" class="form-control" cols="30" rows="3"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -247,25 +238,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row" th:if="${now != sesi.tanggal}">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Jam Mulai :</label>
-                                                <input type="text" th:field="*{jamMulai}" required id="timePicker"
-                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamMulai"
-                                                       class="timePicker form-control">
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Jam Selesai :</label>
-                                                <input type="text" th:field="*{jamSelesai}" required id="timePicker1"
-                                                       autocomplete="off" placeholder="07:00:00" max="8" name="jamSelesai"
-                                                       class="timePicker form-control">
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -296,7 +268,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                                <button type="submit" id="btnSimpan" onclick="saveSimpan()" class="btn btn-primary">Simpan</button>
                                                 <!--                                        <a href="" class="btn btn-danger">Batal</a>-->
                                             </div>
                                         </div>
@@ -329,4 +301,26 @@
     $('#input-a').datetimepicker({
         format: 'hh:mm'
     });
+
+    $(document).ready(function (){
+        $("#linkOnline").hide();
+        $("#pertemuan").on("change", function (){
+            var cek = (this.value);
+            if (cek == 'Online' || cek == 'Pengganti Online'){
+                $("#linkOnline").show();
+            }else{
+                $("#linkOnline").hide();
+            }
+        })
+    });
+
+    function saveSimpan(){
+        $("#btnSimpan").removeClass("btn-primary");
+        $("#btnSimpan").addClass("btn-warning");
+        $("#btnSimpan").prop("disabled", true);
+        $("#btnSimpan").html("Loading...");
+
+        $("#formSimpan").submit();
+    }
+
 </script>

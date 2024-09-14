@@ -162,7 +162,7 @@
                       <th scope="col">#</th>
                       <th scope="col">Tanggal</th>
                       <th>Berita Acara</th>
-                      <th scope="col">Action</th>
+                      <th scope="col" colspan="2">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -171,7 +171,7 @@
                       <td>
                           <span style="color: darkgoldenrod" th:text="${data.pertemuan + ' ( ' + data.pertemuanke + ' )'}"></span>
                           <div style="color: darkcyan;" th:text="${#temporals.format(data.tanggalDate, 'EEE, dd MMM yyyy')}"></div>
-                          <div th:text="${#temporals.format(data.masuk, 'HH:ss') + ' - ' + #temporals.format(data.selesai, 'HH:ss')}"></div>
+                          <div th:text="${#temporals.format(data.masuk, 'HH:mm') + ' - ' + #temporals.format(data.selesai, 'HH:mm')}"></div>
                       </td>
                       <td
                         style="white-space: pre-wrap; word-wrap: break-word"
@@ -294,23 +294,29 @@
                             </div>
                           </div>
                         </div>
-
-                          <a th:if="${jadwal.bobotTugas != 0}" th:href="@{/studiesActivity/assesment/tugas (jadwal = ${jadwal.id}, sesi = ${data.pertemuanke})}"
-                             class="btn text-darker btn-warning btn-outline-warning btn-sm "
-                             aria-haspopup="true"
-                             aria-expanded="false">
-                              <i class="fas fa-edit"></i>
-                              Buat tugas
-                          </a>
-
-                          <a th:if="${jadwal.bobotTugas == 0}" th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}"
-                             class="btn text-darker btn-warning btn-outline-warning btn-sm "
-                             aria-haspopup="true"
-                             aria-expanded="false">
-                              <i class="fas fa-edit"></i>
-                              Buat tugas
-                          </a>
                       </td>
+                        <td>
+                            <a th:if="${jadwal.bobotTugas != 0}" th:href="@{/studiesActivity/assesment/tugas (jadwal = ${jadwal.id}, sesi = ${data.pertemuanke})}"
+                               class="btn text-darker btn-warning btn-outline-warning btn-sm "
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                <i class="fas fa-edit"></i>
+                                Buat tugas
+                            </a>
+
+                            <a th:if="${jadwal.bobotTugas == 0}" th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}"
+                               class="btn text-darker btn-warning btn-outline-warning btn-sm "
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                <i class="fas fa-edit"></i>
+                                Buat tugas
+                            </a>
+
+                            <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn text-darker btn-info btn-outline-info btn-sm" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-file"></i>
+                                Materi
+                            </button>
+                        </td>
                     </tr>
                   </tbody>
                 </table>
@@ -320,32 +326,51 @@
         </div>
         <!-- Dark table -->
 
-        <div
-          class="modal fade"
-          id="exampleModal"
-          data-backdrop="false"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
+        <div class="modal fade" id="modal-materi" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <form id="add-materi" method="post" th:action="@{/studiesActivity/attendance/materi/upload}" >
+                    <input type="hidden" name="idSesi" id="idSesi">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                Upload materi
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Link materi :</label>
+                                        <!--                                                <input type="text" name="linkVideo" class="form-control">-->
+                                        <textarea cols="10" rows="3" name="materi" class="form-control" id="link"></textarea>
+                                        <p style="font-size: 15px; color: red;"><b>* Jika lebih dari 1 link, pisahkan dengan ',(koma)' dan pastikan link bisa di akses secara umum.</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Tutup
+                            </button>
+                            <button type="submit" id="btnMateri" onclick="saveMateri()" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal" data-backdrop="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
-            <form
-              id="edit-sesi"
-              th:action="@{/studiesActivity/attendance/edit-sesi}"
-              th:object="${jadwal}"
-              method="post"
-            >
+            <form id="edit-sesi" th:action="@{/studiesActivity/attendance/edit-sesi}" th:object="${jadwal}" method="post">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">
                     Edit Sesi Kuliah
                   </h5>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -354,11 +379,7 @@
                     <div class="col-md-6">
                       <div class="form-group">
                         <label>Pertemuan :</label>
-                        <select
-                          id="pertemuan"
-                          name="pertemuan"
-                          class="form-control"
-                        >
+                        <select id="pertemuan" name="pertemuan" class="form-control">
                           <option value="Pengganti Offline">
                             Kelas Pengganti Offline
                           </option>
@@ -371,31 +392,17 @@
                     <div class="col-md-6">
                       <div class="form-group">
                         <label>Tanggal :</label>
-                        <input
-                          type="date"
-                          id="inputdate"
-                          name="tanggal"
-                          required
-                          class="form-control"
-                        />
+                        <input type="date" id="inputdate" name="tanggal" required class="form-control"/>
                         <input type="hidden" name="idPresensi" id="idPresensi">
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button
-                    type="button"
-                    onclick="closeModalPresensi()"
-                    class="btn btn-secondary">
+                  <button type="button" onclick="closeModalPresensi()" class="btn btn-secondary">
                     Tutup
                   </button>
-                  <button
-                    type="submit"
-                    id="btnPresensi"
-                    onclick="savePresensi()"
-                    class="btn btn-primary"
-                  >
+                  <button type="submit" id="btnPresensi" onclick="savePresensi()" class="btn btn-primary">
                     Simpan
                   </button>
                 </div>
@@ -408,6 +415,15 @@
   </body>
 </html>
 <script>
+
+    function openModalMateri(id, link){
+        $('#idSesi').val(id);
+        $('#link').val(link);
+        $("#modal-materi").modal({
+            show: true,
+        });
+    }
+
     var dtToday = new Date();
 
     var month = dtToday.getMonth() + 1;
@@ -521,5 +537,14 @@
     $("#btnPresensi").html("Loading...");
 
     $("#edit-sesi").submit();
+  }
+
+  function saveMateri(){
+      $("#btnMateri").removeClass("btn-primary");
+      $("#btnMateri").addClass("btn-warning");
+      $("#btnMateri").prop("disabled", true);
+      $("#btnMateri").html("Loading...");
+
+      $("#add-materi").submit();
   }
 </script>

@@ -98,9 +98,9 @@ public class ApiService {
         if(!cekPembayaran.isEmpty()){
             for (Pembayaran p : cekPembayaran){
                 if (p.getTagihan().getZahirExport() == AkuntansiExport.SENT){
-                    if (p.getTagihan().getNilaiJenisTagihan().getKodeTagihan() != null) {
+                    if (p.getTagihan().getNilaiJenisTagihan().getKodePembayaran() != null) {
                         SendTagihanDto tagihanDto = new SendTagihanDto();
-                        tagihanDto.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodeTagihan());
+                        tagihanDto.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaran());
                         tagihanDto.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
                         tagihanDto.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
                         tagihanDto.setAmounts(p.getAmount());

@@ -52,7 +52,11 @@ public class SesiKuliah {
     @ManyToOne
     private DetailPertemuan detailPertemuan;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String linkVideo;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String linkOnline;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord ceramah;

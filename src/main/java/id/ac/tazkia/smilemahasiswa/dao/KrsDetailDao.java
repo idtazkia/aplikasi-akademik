@@ -216,8 +216,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         List<BigDecimal> nilaiMetolit(@Param("status") StatusRecord statusRecord,
                         @Param("mahasiswa") Mahasiswa mahasiswa, @Param("singkatan") String singkatan);
 
-        @Query(value = "select aa.status_presensi, coalesce(aa.waktu_masuk,bb.waktu_mulai) as masuk, coalesce(aa.waktu_keluar,bb.waktu_selesai)as keluar, bb.berita_acara, bb.id as idSesiKuliah, bb.pertemuan_ke as pertemuan, bb.link_video as materiVideo from (select a.* from presensi_mahasiswa as a inner join krs_detail as b on a.id_krs_detail=b.id inner join krs as c on b.id_krs=c.id where a.id_mahasiswa=?1 and c.id_tahun_akademik=?2 and a.status='AKTIF' and b.status='AKTIF' and c.status='AKTIF' and b.id_jadwal=?3)aa inner join sesi_kuliah as bb on aa.id_sesi_kuliah=bb.id inner join (select * from presensi_dosen where status='AKTIF' and id_jadwal=?3) cc on bb.id_presensi_dosen=cc.id order by bb.waktu_mulai", nativeQuery = true)
-        List<Object[]> detailPresensi(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, Jadwal jadwal);
+        @Query(value = "select coalesce(pm.status_presensi, '-') as presensi, coalesce(pm.waktu_masuk, sk.waktu_mulai) as masuk, coalesce(pm.waktu_keluar, sk.waktu_selesai) as keluar, sk.berita_acara, sk.id as idSesi, sk.pertemuan_ke, sk.link_video as materi, sk.link_online as pOnline from sesi_kuliah sk left join presensi_mahasiswa pm on sk.id=pm.id_sesi_kuliah where sk.id_jadwal=?2 and (pm.status='AKTIF' or pm.status is null) and (pm.id_mahasiswa=?1 or pm.id_mahasiswa is null) order by pertemuan_ke", nativeQuery = true)
+        List<Object[]> detailPresensi(Mahasiswa mahasiswa, Jadwal jadwal);
 
         @Query("select kd.id from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF'")
         String validasiKrs(@Param("jadwal") Jadwal jadwal);

@@ -20,6 +20,9 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
     @Query("select distinct m.angkatan from Mahasiswa m order by m.angkatan asc")
     Iterable<Mahasiswa> cariAngkatan();
 
+
+//    @Query(value = "select angkatan from mahasiswa ")
+
     Mahasiswa findByIbu(Ibu ibu);
 
     Mahasiswa findByAyah(Ayah ayah);
