@@ -75,18 +75,25 @@
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
-                                // Fungsi untuk menghitung selisih waktu dan mengubahnya menjadi format HH:MM:SS
+                                // Fungsi untuk menghitung selisih waktu dan mengubahnya menjadi format "X hari, Y jam, Z menit, dan W detik lagi"
                                 function getTimeRemaining(targetDate) {
                                     var now = new Date();
                                     var timeDiff = targetDate - now;
-                                    if (timeDiff <= 0) return "00:00:00"; // Jika waktu sudah lewat
+                                    if (timeDiff <= 0) return "0 hari, 0 jam, 0 menit, dan 0 detik lagi"; // Jika waktu sudah lewat
 
+                                    var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
                                     var hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
                                     var minutes = Math.floor((timeDiff / 1000 / 60) % 60);
                                     var seconds = Math.floor((timeDiff / 1000) % 60);
 
-                                    // Format angka agar selalu 2 digit
-                                    return ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+                                    // Format deskriptif: "X hari, Y jam, Z menit, dan W detik lagi"
+                                    var result = '';
+                                    if (days > 0) result += days + " hari, ";
+                                    if (hours > 0) result += hours + " jam, ";
+                                    if (minutes > 0) result += minutes + " menit, ";
+                                    result += seconds + " detik lagi";
+
+                                    return result;
                                 }
 
                                 // Loop melalui semua event
@@ -110,7 +117,7 @@
                                             statusMessage.textContent = '';
                                             statusMessage.style.display = 'none';
                                             attendanceButton.style.display = 'block';
-                                            countdownEnd.textContent = "Isi absensi disini... sisa waktu " + getTimeRemaining(scheduleEnd);
+                                            countdownEnd.textContent = "Isi absensi disini... sisa waktu: " + getTimeRemaining(scheduleEnd);
                                         } else {
                                             // Acara sudah selesai
                                             statusMessage.textContent = "Acara Telah Selesai, Absensi sudah ditutup ...";
@@ -132,6 +139,7 @@
                                 });
                             });
                         </script>
+
                     </div>
                 </div>
             </div>
