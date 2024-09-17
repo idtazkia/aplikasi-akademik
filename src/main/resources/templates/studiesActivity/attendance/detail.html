@@ -60,6 +60,7 @@
                                         data-toggle="modal" data-target="#modal-rps">
                                         <i class="fas fa-plus-circle"></i> Submit Renc. Pembelajaran
                                     </button>
+                                    <input type="text" th:value="${validasiMateri}">
 
                                     <div class="modal fade" id="modal-rps" tabindex="-1" role="dialog"
                                         aria-labelledby="modal-form" aria-hidden="true">
@@ -180,9 +181,18 @@
                         Dosen
                       </td>
                       <td>
+
+                          <b th:if="${data.link == null}">
+                              Upload link materi terlebih dahulu sebelum mulai mengajar
+                          </b><br>
+
+                          <b th:if="${date == data.tanggal && validasiMateri >= 1}">
+                              Upload link materi pada pertemuan sebelumnya terlebih dahulu
+                          </b>
+
                         <a
                           th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
-                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal}"
+                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal && data.link != null && validasiMateri < 1}"
                           class="btn text-darker btn-info btn-outline-info btn-sm "
                           aria-haspopup="true"
                           aria-expanded="false"
@@ -192,7 +202,7 @@
                         >
 
                         <button
-                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal}"
+                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal && data.link != null && validasiMateri < 1}"
                           th:id="${'edit-' + data.idPresensi}"
                           class="btn text-darker btn-info btn-outline-info btn-sm"
                           aria-haspopup="true" onclick="openModalPresensi(this.id)"
@@ -202,7 +212,7 @@
 
                         <button
                           type="button"
-                          th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null}"
+                          th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null && data.link != null}"
                           class="text-dark btn btn-info btn-outline-info btn-sm dropdown-toggle"
                           data-toggle="dropdown"
                           aria-haspopup="true"
@@ -335,7 +345,7 @@
                                     <div class="form-group">
                                         <label>Link materi :</label>
                                         <!--                                                <input type="text" name="linkVideo" class="form-control">-->
-                                        <textarea cols="10" rows="3" name="materi" class="form-control" id="link"></textarea>
+                                        <textarea cols="10" rows="3" name="materi" class="form-control" id="link" required minlength="10"></textarea>
                                         <p style="font-size: 15px; color: red;"><b>* Jika lebih dari 1 link, pisahkan dengan ',(koma)' dan pastikan link bisa di akses secara umum.</b></p>
                                     </div>
                                 </div>
@@ -345,7 +355,7 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                 Tutup
                             </button>
-                            <button type="submit" id="btnMateri" onclick="saveMateri()" class="btn btn-primary">Simpan</button>
+                            <button type="submit" id="btnMateri" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>
                 </form>

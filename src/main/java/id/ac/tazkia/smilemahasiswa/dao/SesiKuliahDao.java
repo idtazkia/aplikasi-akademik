@@ -100,4 +100,6 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
                         "where date(sk.waktu_mulai)= date(now()) and pd.status not in ('HAPUS') and pd.status_presensi = 'BELUM_MENGAJAR'", nativeQuery = true)
         List<Object[]> cariBelumMengajar();
 
+        Integer countByJadwalAndPertemuanNotAndLinkVideoIsNull(Jadwal jadwal, String notMulaiMengajar);
+
 }

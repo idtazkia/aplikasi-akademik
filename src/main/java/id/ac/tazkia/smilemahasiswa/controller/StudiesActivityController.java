@@ -363,6 +363,7 @@ public class StudiesActivityController {
         }
 
         model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
+        model.addAttribute("validasiMateri", sesiKuliahDao.countByJadwalAndPertemuanNotAndLinkVideoIsNull(jadwal, "Belum Mengajar"));
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("jadwal", jadwal);
