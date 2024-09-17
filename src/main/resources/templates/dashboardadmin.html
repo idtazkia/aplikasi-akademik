@@ -124,36 +124,37 @@
                                                             <thead class="thead-light">
                                                             <tr>
                                                                 <th>#</th>
-                                                                <th>Ruangan</th>
+                                                                <th>Hari</th>
                                                                 <th>Jam</th>
+                                                                <th>Ruangan</th>
                                                                 <th>Matakuliah</th>
                                                                 <th>Kelas</th>
-                                                                <th>Hari</th>
                                                                 <th>SKS</th>
-                                                                <th>Dosen</th>
                                                                 <th>Status</th>
                                                                 <th>Jumlah Presensi</th>
+                                                                <th>Presensi</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody class="list">
                                                             <tr th:each="jadwal,row : ${jadwal}">
                                                                 <td th:text="${row.index + 1}"></td>
-                                                                <td th:text="${jadwal[3]}">
-                                                                </td>
+                                                                <td><b th:text="${jadwal[7]}"></b>
                                                                 <td th:text="${jadwal[4]}"></td>
+                                                                <td th:text="${jadwal[3]}"></td>
                                                                 <td
-                                                                        th:text="${jadwal[5]}">
+                                                                    th:text="${jadwal[5]}">
                                                                 </td>
                                                                 <td th:text="${jadwal[6]}"></td>
-                                                                <td><b th:text="${jadwal[7]}"></b>
                                                                 </td>
                                                                 <td
                                                                         th:text="${jadwal[8]}">
                                                                 </td>
-                                                                <td th:text="${jadwal[9]}"></td>
                                                                 <td><b th:text="${jadwal[10]}"></b>
                                                                 </td>
                                                                 <td th:text="${jadwal[11]}"></td>
+                                                                <td>
+                                                                    <a class="btn btn-sm btn-primary" th:href="@{/studiesActivity/attendance/detail(jadwal=${jadwal[0]})}">Presensi</a>
+                                                                </td>
                                                             </tr>
 
                                                             </tbody>

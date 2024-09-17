@@ -4,6 +4,8 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -32,6 +34,7 @@ public class JadwalTugasJawaban {
 
     private String file;
 
+    @Max(100)
     private BigDecimal nilai;
 
     @Enumerated(EnumType.STRING)

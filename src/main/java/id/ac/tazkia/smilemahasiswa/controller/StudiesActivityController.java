@@ -1649,6 +1649,16 @@ public class StudiesActivityController {
         model.addAttribute("tugasjawaban", jawaban);
     }
 
+    @PostMapping("/studiesActivity/assesment/collection/detail")
+    public String nilaiTugasDetail(@RequestParam JadwalTugasJawaban jawaban, @RequestParam String nilai){
+        if (nilai != null && !nilai.trim().isEmpty()){
+            jawaban.setNilai(new BigDecimal(nilai));
+            tugasJawabanDao.save(jawaban);
+            tugasMateriService.saveNilaiJawaban(nilai, jawaban, jawaban.getJadwalTugas());
+        }
+        return "redirect:../collection?jadwalTugas=" + jawaban.getJadwalTugas().getId();
+    }
+
     @GetMapping("/studiesActivity/assesment/upload/soal")
     public void listUas(@RequestParam Jadwal jadwal, @RequestParam StatusRecord status,
                         Authentication authentication,

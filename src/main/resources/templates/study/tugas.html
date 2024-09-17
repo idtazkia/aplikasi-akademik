@@ -130,7 +130,8 @@
                                         <span th:utext="${tugas.pertanyaan}" readonly disabled ></span>
                                         <br>
                                         <h2>Jawaban</h2>
-                                        <textarea name="jawabanTeks" id="jawab" cols="30" rows="10" class="form-control"></textarea>
+                                        <textarea th:if="${history != null}" name="jawabanTeks" id="jawab" cols="30" rows="10" th:text="${history.jawabanTeks}" class="form-control"></textarea>
+                                        <textarea th:if="${history == null}" name="jawabanTeks" id="jawab" cols="30" rows="10" class="form-control"></textarea>
                                         <br>
                                     </div>
                                     <div th:if="${tugas.jenisPengiriman.UPLOAD_FILE == tugas.jenisPengiriman || tugas.jenisPengiriman.ONLINE_TEKS_UPLOAD_FILE == tugas.jenisPengiriman}">

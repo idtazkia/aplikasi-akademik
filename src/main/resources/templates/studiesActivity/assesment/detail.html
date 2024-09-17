@@ -68,6 +68,23 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card shadow mt-5">
+                                    <form method="post" th:action="@{/studiesActivity/assesment/collection/detail}">
+                                        <input type="hidden" name="jawaban" th:value="${tugasjawaban.id}">
+                                        <div class="card-body">
+                                            <label for="nilai">Nilai</label>
+                                            <div class="input-group">
+                                                <input type="number" name="nilai" id="nilai" max="100" style="min-width: 50px;" th:value="${tugasjawaban.nilai}" required class="form-control">
+                                                <span class="input-group-text mr-5">/100</span>
+                                                <button type="submit" class="btn btn-success btn-lg"> Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
