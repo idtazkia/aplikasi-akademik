@@ -236,37 +236,60 @@
                 { value: 'SAKIT', text: 'Sakit' }
             ];
 
-            // Membangun HTML untuk opsi
             let optionsHtml = options.map(option => {
-                // Tambahkan atribut 'selected' pada opsi yang cocok
                 const selected = option.value === row.presensi ? ' selected' : '';
                 return `<option value="${option.value}"${selected}>${option.text}</option>`;
             }).join('');
 
-            // Membangun HTML untuk elemen select
             return `<select id="absen-${row.idMahasiswa}" onchange="editPresensi(this.id, '${row.idSesi}')" class="form-control input-sm">
                 ${optionsHtml}
             </select>`;
         }
 
-        window.editPresensi = function (id, sesi) {
-            console.log(sesi)
-            var token = $("input[name='_csrf']").val();
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                headers: {"X-CSRF-TOKEN": token},
-                url: "/update-presensi-mahasiswa/" + id.slice(6) + "?status=" + $('#' + id).val() + "&sesi="+ sesi,
-                dataType: 'json',
-                cache: false,
-                timeout: 600000,
-                success: function (result) {
-                    iziToast.success({title: 'Data Terupdate', message: result.message});
-                },
-                error: function (xhr, status, error) {
-                    iziToast.error({title: 'Error', message: 'Terjadi kesalahan. Silakan coba lagi.'});
-                }
-            });
-        };
+        window.editPresensi = (function() {
+            let isProcessing = false;
+
+            return async function(id, sesi) {
+                if (isProcessing) return;
+                isProcessing = true;
+
+                const selectElement = $('#' + id);
+                const selectedValue = selectElement.val();
+                const originalHtml = selectElement.prop('outerHTML');
+
+                const loadingButton = $('<button class="btn btn-sm btn-warning" type="button" disabled><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sedang Proses</button>');
+
+                setTimeout(async () => {
+                    selectElement.hide();  // Sembunyikan elemen select
+                    selectElement.after(loadingButton);
+                    try {
+                        var token = $("input[name='_csrf']").val();
+                        var response = await fetch(`/update-presensi-mahasiswa/${id.slice(6)}?status=${selectedValue}&sesi=${sesi}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": token
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        var result = await response.json();
+                        iziToast.success({ title: 'Data Terupdate', message: result.message });
+                        loadingButton.remove();
+                        selectElement.show();
+                        isProcessing = false;
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        iziToast.error({ title: 'Error', message: 'Terjadi kesalahan. Silakan coba lagi.' });
+
+                    }
+                });
+            };
+        })();
+
     });
 </script>
