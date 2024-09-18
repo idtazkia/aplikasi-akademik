@@ -216,7 +216,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         List<BigDecimal> nilaiMetolit(@Param("status") StatusRecord statusRecord,
                         @Param("mahasiswa") Mahasiswa mahasiswa, @Param("singkatan") String singkatan);
 
-        @Query(value = "select coalesce(pm.status_presensi, '-') as presensi, coalesce(pm.waktu_masuk, sk.waktu_mulai) as masuk, coalesce(pm.waktu_keluar, sk.waktu_selesai) as keluar, sk.berita_acara, sk.id as idSesi, sk.pertemuan_ke, sk.link_video as materi, sk.link_online as pOnline from sesi_kuliah sk left join presensi_mahasiswa pm on sk.id=pm.id_sesi_kuliah where sk.id_jadwal=?2 and (pm.status='AKTIF' or pm.status is null) and (pm.id_mahasiswa=?1 or pm.id_mahasiswa is null) order by pertemuan_ke", nativeQuery = true)
+        @Query(value = "select coalesce(pm.status_presensi, '-') as presensi, coalesce(pm.waktu_masuk, sk.waktu_mulai) as masuk, coalesce(pm.waktu_keluar, sk.waktu_selesai) as keluar, sk.berita_acara, sk.id as idSesi, sk.pertemuan_ke, sk.link_video as materi, sk.link_online as pOnline from sesi_kuliah sk left join presensi_mahasiswa pm on sk.id=pm.id_sesi_kuliah and (pm.status='AKTIF' or pm.status is null) and (pm.id_mahasiswa=?1 or pm.id_mahasiswa is null) where sk.id_jadwal=?2 order by pertemuan_ke", nativeQuery = true)
         List<Object[]> detailPresensi(Mahasiswa mahasiswa, Jadwal jadwal);
 
         @Query("select kd.id from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF'")
