@@ -60,7 +60,7 @@
                                         data-toggle="modal" data-target="#modal-rps">
                                         <i class="fas fa-plus-circle"></i> Submit Renc. Pembelajaran
                                     </button>
-                                    <input type="text" th:value="${validasiMateri}">
+                                    <input type="hidden" th:value="${validasiMateri}">
 
                                     <div class="modal fade" id="modal-rps" tabindex="-1" role="dialog"
                                         aria-labelledby="modal-form" aria-hidden="true">
@@ -182,17 +182,17 @@
                       </td>
                       <td>
 
-                          <b th:if="${data.link == null}">
-                              Upload link materi terlebih dahulu sebelum mulai mengajar
-                          </b><br>
+<!--                          <b th:if="${data.link == null}">-->
+<!--                              Upload link materi terlebih dahulu sebelum mulai mengajar-->
+<!--                          </b><br>-->
 
-                          <b th:if="${date == data.tanggal && validasiMateri >= 1}">
-                              Upload link materi pada pertemuan sebelumnya terlebih dahulu
-                          </b>
+<!--                          <b th:if="${date == data.tanggal && validasiMateri >= 1}">-->
+<!--                              Upload link materi pada pertemuan sebelumnya terlebih dahulu-->
+<!--                          </b>-->
 
                         <a
                           th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
-                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal && data.link != null && validasiMateri < 1}"
+                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal}"
                           class="btn text-darker btn-info btn-outline-info btn-sm "
                           aria-haspopup="true"
                           aria-expanded="false"
@@ -202,7 +202,7 @@
                         >
 
                         <button
-                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal && data.link != null && validasiMateri < 1}"
+                          th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal}"
                           th:id="${'edit-' + data.idPresensi}"
                           class="btn text-darker btn-info btn-outline-info btn-sm"
                           aria-haspopup="true" onclick="openModalPresensi(this.id)"
@@ -212,7 +212,7 @@
 
                         <button
                           type="button"
-                          th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null && data.link != null}"
+                          th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null}"
                           class="text-dark btn btn-info btn-outline-info btn-sm dropdown-toggle"
                           data-toggle="dropdown"
                           aria-haspopup="true"
