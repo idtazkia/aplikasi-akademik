@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.AktivasiService;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.apache.commons.math3.geometry.enclosing.EnclosingBall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -73,6 +75,8 @@ public class FinanceController {
     private SesiDao sesiDao;
     @Autowired
     private PrediksiTestDao prediksiTestDao;
+    @Autowired
+    private AktivasiService aktivasiService;
 
 
     @ModelAttribute("prodi")
@@ -111,12 +115,9 @@ public class FinanceController {
 
     }
 
-
     @GetMapping("/activation/krs")
     public void aktifasiKrs(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
                             @RequestParam(required = false) String nim){
-
-
         Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
         if (mhsw != null){
             Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik,mhsw,StatusRecord.AKTIF);
@@ -126,8 +127,14 @@ public class FinanceController {
         }
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedNim", nim);
+    }
 
-
+    @GetMapping("/activation/histori/krs")
+    public void historiKrs(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
+        model.addAttribute("selectedTahun", tahunAkademik);
+        if (tahunAkademik != null) {
+            model.addAttribute("list", enableFitureDao.findByTahunAkademikAndFiturInAndWaktuInputIsNotNullOrTahunAkademikAndFiturInAndWaktuEditIsNotNull(tahunAkademik, Arrays.asList(StatusRecord.KRS),tahunAkademik, Arrays.asList(StatusRecord.KRS), page));
+        }
     }
 
     @PostMapping("/activation/process")
@@ -157,6 +164,8 @@ public class FinanceController {
                     }
                 }
 
+                aktivasiService.aktivasiEnableFiture(mahasiswa, StatusRecord.KRS, false, tahunAkademik, "MANUAL");
+
             }else {
                 cariKrs.setStatus(StatusRecord.AKTIF);
                 krsDao.save(cariKrs);
@@ -168,6 +177,8 @@ public class FinanceController {
                         krsDetailDao.save(krsDetail);
                     }
                 }
+
+                aktivasiService.aktivasiEnableFiture(mahasiswa, StatusRecord.KRS, false, tahunAkademik, "MANUAL");
             }
         }
         return "redirect:krs?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
@@ -193,33 +204,12 @@ public class FinanceController {
 
         if (status.equals("UTS")) {
             Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
-            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,
-                    StatusRecord.UTS,true,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-            if (validasiFiture == null) {
-                EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable(true);
-                enableFiture.setFitur(StatusRecord.UTS);
-                enableFiture.setKeterangan("-");
-                enableFiture.setMahasiswa(mhsw);
-                enableFiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-                enableFitureDao.save(enableFiture);
-            }
-
+            aktivasiService.buatEnableFiture(mhsw, StatusRecord.UTS, true, tahunAkademik, "MANUAL");
         }
 
         if (status.equals("UAS")){
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,
-                    StatusRecord.UAS, true, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-            if (validasiFiture == null) {
-                EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable(true);
-                enableFiture.setFitur(StatusRecord.UAS);
-                enableFiture.setMahasiswa(mahasiswa);
-                enableFiture.setKeterangan("-");
-                enableFiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-                enableFitureDao.save(enableFiture);
-            }
+            aktivasiService.buatEnableFiture(mahasiswa, StatusRecord.UAS, true, tahunAkademik, "MANUAL");
         }
 
         return "redirect:kartu?tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim+"&status="+status;
@@ -267,13 +257,7 @@ public class FinanceController {
         if (mhs != null) {
             EnableFiture cekEnableFitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.CICILAN, true, tahunAkademik);
             if (cekEnableFitur == null) {
-                EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setFitur(StatusRecord.CICILAN);
-                enableFiture.setEnable(true);
-                enableFiture.setKeterangan("-");
-                enableFiture.setMahasiswa(mhs);
-                enableFiture.setTahunAkademik(tahunAkademik);
-                enableFitureDao.save(enableFiture);
+                aktivasiService.buatEnableFiture(mhs, StatusRecord.CICILAN, true, tahunAkademik, "MANUAL");
             }else{
                 attributes.addFlashAttribute("gagal", "data sudah ada!");
                 return "redirect:cicilan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
@@ -287,13 +271,19 @@ public class FinanceController {
     @GetMapping("/activation/tugasAkhir")
     public void formTugasAkhir(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String nim,
                                @RequestParam(required = false) String status){
-
         model.addAttribute("selectTahun", tahunAkademik);
         model.addAttribute("selectNim", nim);
         Mahasiswa m = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhs", m);
         model.addAttribute("status", status);
+    }
 
+    @GetMapping("/activation/histori/tugasAkhir")
+    public void formHistoriTugas(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
+        model.addAttribute("selectedTahun", tahunAkademik);
+        if (tahunAkademik != null) {
+            model.addAttribute("list", enableFitureDao.findByTahunAkademikAndFiturInAndWaktuInputIsNotNullOrTahunAkademikAndFiturInAndWaktuEditIsNotNull(tahunAkademik, Arrays.asList(StatusRecord.SEMPRO, StatusRecord.SKRIPSI, StatusRecord.WISUDA),tahunAkademik, Arrays.asList(StatusRecord.SEMPRO, StatusRecord.SKRIPSI, StatusRecord.WISUDA), page));
+        }
     }
 
     @PostMapping("/activation/tugas")
@@ -307,9 +297,10 @@ public class FinanceController {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setEnable(true);
                 enableFiture.setFitur(StatusRecord.SEMPRO);
-                enableFiture.setKeterangan("-");
+                enableFiture.setKeterangan("MANUAL");
                 enableFiture.setMahasiswa(m);
                 enableFiture.setTahunAkademik(tahunAkademik);
+                enableFiture.setWaktuInput(LocalDateTime.now());
                 enableFitureDao.save(enableFiture);
             }
         }
@@ -322,7 +313,8 @@ public class FinanceController {
                 enableFiture.setFitur(StatusRecord.SKRIPSI);
                 enableFiture.setEnable(true);
                 enableFiture.setTahunAkademik(tahunAkademik);
-                enableFiture.setKeterangan("-");
+                enableFiture.setKeterangan("MANUAL");
+                enableFiture.setWaktuInput(LocalDateTime.now());
                 enableFitureDao.save(enableFiture);
             }
         }
@@ -336,7 +328,8 @@ public class FinanceController {
                 enableFiture.setFitur(StatusRecord.WISUDA);
                 enableFiture.setEnable(true);
                 enableFiture.setTahunAkademik(tahunAkademik);
-                enableFiture.setKeterangan("-");
+                enableFiture.setKeterangan("MANUAL");
+                enableFiture.setWaktuInput(LocalDateTime.now());
                 enableFitureDao.save(enableFiture);
             }
         }
@@ -363,13 +356,7 @@ public class FinanceController {
         if (mhs != null) {
             EnableFiture cekFitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.PERINGANAN, true, tahunAkademik);
             if (cekFitur == null) {
-                EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable(true);
-                enableFiture.setFitur(StatusRecord.PERINGANAN);
-                enableFiture.setKeterangan("-");
-                enableFiture.setMahasiswa(mhs);
-                enableFiture.setTahunAkademik(tahunAkademik);
-                enableFitureDao.save(enableFiture);
+                aktivasiService.buatEnableFiture(mhs, StatusRecord.PERINGANAN, true, tahunAkademik, "MANUAL");
             }else{
                 attributes.addFlashAttribute("gagal", "data sudah ada!");
                 return "redirect:peringanan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
@@ -393,6 +380,14 @@ public class FinanceController {
         }
     }
 
+    @GetMapping("/activation/histori/toefl")
+    public void historiAktivasiToefl(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
+        model.addAttribute("selectedTahun", tahunAkademik);
+        if (tahunAkademik != null) {
+            model.addAttribute("list", enableFitureDao.findByTahunAkademikAndFiturInAndWaktuInputIsNotNullOrTahunAkademikAndFiturInAndWaktuEditIsNotNull(tahunAkademik, Arrays.asList(StatusRecord.TOEFL, StatusRecord.IELTS),tahunAkademik, Arrays.asList(StatusRecord.TOEFL, StatusRecord.IELTS), page));
+        }
+    }
+
     @PostMapping("/activation/toefl")
     public String toefl(@RequestParam String nim, @RequestParam TahunAkademik tahunAkademik, @RequestParam JenisTest jenis){
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
@@ -408,7 +403,8 @@ public class FinanceController {
                 enableFiture.setMahasiswa(mhs);
                 enableFiture.setEnable(true);
                 enableFiture.setTahunAkademik(tahunAkademik);
-                enableFiture.setKeterangan("-");
+                enableFiture.setKeterangan("MANUAL");
+                enableFiture.setWaktuInput(LocalDateTime.now());
                 enableFitureDao.save(enableFiture);
             }
         } else if (JenisTest.IELTS.equals(jenis)) {
@@ -422,7 +418,8 @@ public class FinanceController {
                 enableFiture.setMahasiswa(mhs);
                 enableFiture.setEnable(true);
                 enableFiture.setTahunAkademik(tahunAkademik);
-                enableFiture.setKeterangan("-");
+                enableFiture.setKeterangan("MANUAL");
+                enableFiture.setWaktuInput(LocalDateTime.now());
                 enableFitureDao.save(enableFiture);
             }
         }

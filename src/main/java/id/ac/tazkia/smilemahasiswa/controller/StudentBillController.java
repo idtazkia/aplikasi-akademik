@@ -3172,7 +3172,8 @@ public class StudentBillController {
         enableFiture.setTahunAkademik(tahun);
         enableFiture.setFitur(status);
         enableFiture.setEnable(enabled);
-        enableFiture.setKeterangan("-");
+        enableFiture.setKeterangan("OTOMATIS");
+        enableFiture.setWaktuInput(LocalDateTime.now());
 
         enableFitureDao.save(enableFiture);
     }

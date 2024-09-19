@@ -93,6 +93,9 @@ public class TagihanService {
     @Autowired
     private PrediksiTestDao prediksiTestDao;
 
+    @Autowired
+    private AktivasiService aktivasiService;
+
     public void generateTagihanBeasiswa(TahunAkademik tahunAkademik, Program program, List<Mahasiswa> mahasiswas){
         if (!mahasiswas.isEmpty()) {
             log.info("cek mahasiswa {} ", mahasiswas);
@@ -308,6 +311,8 @@ public class TagihanService {
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
                     StatusRecord.UTS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
+                enableFiture.setKeterangan("OTOMATIS");
+                enableFiture.setWaktuEdit(LocalDateTime.now());
                 enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
             }
@@ -317,6 +322,8 @@ public class TagihanService {
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
                     StatusRecord.UAS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
+                enableFiture.setKeterangan("OTOMATIS");
+                enableFiture.setWaktuEdit(LocalDateTime.now());
                 enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
             }
@@ -331,7 +338,11 @@ public class TagihanService {
                 enableFiture.setMahasiswa(tagihan.getMahasiswa());
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
                 enableFiture.setKeterangan("-");
+                enableFiture.setWaktuInput(LocalDateTime.now());
+            }else{
+                enableFiture.setWaktuEdit(LocalDateTime.now());
             }
+            enableFiture.setKeterangan("OTOMATIS");
             enableFiture.setEnable(true);
             enableFitureDao.save(enableFiture);
 
@@ -398,6 +409,8 @@ public class TagihanService {
         if (TAGIHAN_TAHFIDZ.equals(pt.getKodeJenisBiaya())) {
             EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.TAHFIDZ, false);
             if (ef != null) {
+                ef.setKeterangan("OTOMATIS");
+                ef.setWaktuEdit(LocalDateTime.now());
                 ef.setEnable(true);
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
                 enableFitureDao.save(ef);
@@ -407,6 +420,8 @@ public class TagihanService {
         if (TAGIHAN_KOMPRE.equals(pt.getKodeJenisBiaya())) {
             EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.KOMPRE, false);
             if (ef != null) {
+                ef.setKeterangan("OTOMATIS");
+                ef.setWaktuEdit(LocalDateTime.now());
                 ef.setEnable(true);
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
                 enableFitureDao.save(ef);
@@ -416,6 +431,8 @@ public class TagihanService {
         if (TAGIHAN_TOEFL.equals(pt.getKodeJenisBiaya())) {
             EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.TOEFL, false);
             if (ef != null) {
+                ef.setKeterangan("OTOMATIS");
+                ef.setWaktuEdit(LocalDateTime.now());
                 ef.setEnable(true);
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
                 enableFitureDao.save(ef);
@@ -430,6 +447,8 @@ public class TagihanService {
         if (TAGIHAN_IELTS.equals(pt.getKodeJenisBiaya())) {
             EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.IELTS, false);
             if (ef != null) {
+                ef.setKeterangan("OTOMATIS");
+                ef.setWaktuEdit(LocalDateTime.now());
                 ef.setEnable(true);
                 ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
                 enableFitureDao.save(ef);
@@ -519,7 +538,8 @@ public class TagihanService {
             enableFiture.setMahasiswa(mahasiswa);
             enableFiture.setEnable(false);
             enableFiture.setTahunAkademik(tahunAkademik);
-            enableFiture.setKeterangan("Enable Fiture " + jenis);
+            enableFiture.setKeterangan("OTOMATIS");
+            enableFiture.setWaktuInput(LocalDateTime.now());
             enableFitureDao.save(enableFiture);
         }
 

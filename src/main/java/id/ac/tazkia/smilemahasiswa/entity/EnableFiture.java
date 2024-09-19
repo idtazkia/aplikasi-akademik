@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -31,5 +32,8 @@ public class EnableFiture {
 
     private String keterangan;
 
+    private LocalDateTime waktuInput;
+
+    private LocalDateTime waktuEdit;
 
 }
