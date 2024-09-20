@@ -1143,6 +1143,7 @@ public class  AcademicActivityController {
         jadwal.setSesi(sesi.getSesi());
         jadwal.setJamMulai(sesi.getJamMulai());
         jadwal.setFinalStatus("N");
+        jadwal.setFinalPloting("FINAL");
         jadwal.setKapasitas(ruanganDao.findById(request.getRuangan()).get().getKapasitas().intValue());
         jadwal.setJamSelesai(sesi.getJamSelesai());
         jadwalDao.save(jadwal);
@@ -1405,7 +1406,16 @@ public class  AcademicActivityController {
                                  @ModelAttribute @Valid RequestJadwal request,
                                  RedirectAttributes attributes)throws Exception{
 
+        Boolean cekEdit = Boolean.FALSE;
+
         Jadwal jadwal = jadwalDao.findById(request.getId()).get();
+
+        if (request.getSesii() != null) {
+            if (jadwal.getHari() != request.getHari() || jadwal.getSesi() != request.getSesii().getId()) {
+                cekEdit = Boolean.TRUE;
+            }
+        }
+
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
 
         jadwal.setHari(request.getHari());
@@ -1414,6 +1424,9 @@ public class  AcademicActivityController {
         jadwal.setDosen(request.getDosen());
         jadwal.setKapasitas(request.getKapasitas());
         jadwal.setFinalStatus("N");
+        if ( "WAITING".equals(jadwal.getFinalPloting()) || jadwal.getFinalPloting() == null) {
+            jadwal.setFinalPloting("FINAL");
+        }
         if (request.getSesii() != null) {
             jadwal.setSesi(request.getSesii().getSesi());
             jadwal.setJamMulai(request.getSesii().getJamMulai());
@@ -1435,7 +1448,9 @@ public class  AcademicActivityController {
             jadwalDosenDao.save(jd);
         }
         if (jadwal.getFinalPloting().equals("FINISHED")){
-            presensiService.updateSesi1(jadwal);
+            if (Boolean.TRUE.equals(cekEdit)) {
+                presensiService.reGenerate(jadwal, jadwal.getTahunAkademik().getTanggalMulaiKuliah().toString());
+            }
         }
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();

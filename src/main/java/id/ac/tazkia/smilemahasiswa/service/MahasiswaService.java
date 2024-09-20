@@ -199,6 +199,9 @@ public class MahasiswaService {
             if (importMahasiswaDto.getProgram().equalsIgnoreCase("Karyawan")){
                 mahasiswa.setIdProgram(programDao.findById("3abf660c-e801-4ca3-b6d6-e69f67b9f09c").get());
             }
+            if (importMahasiswaDto.getProgram().equalsIgnoreCase("Hafiz Nomist")){
+                mahasiswa.setIdProgram(programDao.findById("haf_si_prog").get());
+            }
         }
 
         if (importMahasiswaDto.getJenjang().equals("S2")){
