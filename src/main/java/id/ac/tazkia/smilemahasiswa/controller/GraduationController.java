@@ -240,9 +240,7 @@ public class GraduationController {
     public String register(Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
         KrsDetail krsDetail = krsDetailDao.cariNilaiThesis(mahasiswa);
-
         List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
 
         if (empty == null || empty.isEmpty()) {
@@ -287,6 +285,7 @@ public class GraduationController {
         }
     }
 
+
     @GetMapping("/graduation/alert")
     public void alert(@RequestParam(required = false) String matkul, @RequestParam(required = false) String title,
             Model model) {
@@ -302,6 +301,11 @@ public class GraduationController {
 
         Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
         model.addAttribute("note", new Note());
+
+        System.out.println();
+        if (krsDetailDao.validasiMetolitPublikasi(mahasiswa).length > 0){
+            model.addAttribute("publikasi", "publikasi");
+        }
 
         if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")) {
             model.addAttribute("valid", "dosen2");

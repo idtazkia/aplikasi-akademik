@@ -84,9 +84,8 @@
                                                 <option value="SKRIPSI">Skripsi Reguler</option>
                                                 <option value="STUDI_KELAYAKAN">Studi Kelayakan Bisnis</option>
                                                 <option value="TESIS">Tesis</option>
-                                                <option value="JURNAL">Publikasi Jurnal</option>
+                                                <option th:if="${publikasi != null}" value="JURNAL">Publikasi Jurnal</option>
                                                 <option value="MAGANG">Magang MBKM</option>
-                                                <option value="QOLLOQIUM">Qolloqium</option>
                                             </select>
                                         </div>
                                     </div>

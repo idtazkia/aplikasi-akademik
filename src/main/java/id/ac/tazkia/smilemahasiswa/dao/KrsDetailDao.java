@@ -701,6 +701,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and mk.konsep_note = 'METOLIT' and kd.nilai_akhir >= 55 limit 1", nativeQuery = true)
         Object[] validasiMetolit(Mahasiswa mahasiswa);
 
+        @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and mk.konsep_note = 'METOLIT' and kd.nilai_akhir >= 70 limit 1", nativeQuery = true)
+        Object[] validasiMetolitPublikasi(Mahasiswa mahasiswa);
+
         @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and mk.konsep_note = 'MAGANG' and kd.nilai_akhir >= 55 limit 1", nativeQuery = true)
         Object[] validasiMagang(Mahasiswa mahasiswa);
 
