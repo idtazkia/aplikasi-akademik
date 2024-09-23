@@ -45,6 +45,9 @@
                     <div class="card-header border-0">
                         <h3 class="mb-0">Form</h3>
                     </div>
+                    <div th:if="${error}" class="alert alert-danger">
+                        Kurikulum tidak boleh kosong!
+                    </div>
                     <div class="card-body">
                         <form method="post" th:action="@{/equipment/class/form}" th:object="${kelas}">
 
