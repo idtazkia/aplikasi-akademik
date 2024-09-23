@@ -46,30 +46,25 @@
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="mb-0">
-                                    <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">
-                                        <b> Set Semua Mahasiswa : </b>
-                                        <select name="statusPresensi">
-                                            <option value="MANGKIR">Mangkir</option>
-                                            <option value="HADIR">Hadir</option>
-                                            <option value="IZIN">Izin</option>
-                                            <option value="SAKIT">Sakit</option>
-                                        </select>
-                                        <button class="btn btn-success btn-sm" type="submit">Set Status</button>
-                                    </form>
-                                </h3>
-                            </div>
+<!--                            <div class="col">-->
+<!--                                <h3 class="mb-0">-->
+<!--                                    <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">-->
+<!--                                        <b> Set Semua Mahasiswa : </b>-->
+<!--                                        <select name="statusPresensi">-->
+<!--                                            <option value="MANGKIR">Mangkir</option>-->
+<!--                                            <option value="HADIR">Hadir</option>-->
+<!--                                            <option value="IZIN">Izin</option>-->
+<!--                                            <option value="SAKIT">Sakit</option>-->
+<!--                                        </select>-->
+<!--                                        <button class="btn btn-success btn-sm" type="submit">Set Status</button>-->
+<!--                                    </form>-->
+<!--                                </h3>-->
+<!--                            </div>-->
                             <div class="col text-right">
                                 <a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal})}" class="btn btn-sm btn-default">
                                     <i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-show"><i
-                                class="fas fa-eye"></i> Mahasiswa Telat KRS
-                        </button>
                     </div>
                     <div class="modal fade" id="modal-show" tabindex="-1" role="dialog" aria-labelledby="modal-form"
                          aria-hidden="true">
@@ -246,50 +241,33 @@
             </select>`;
         }
 
-        window.editPresensi = (function() {
-            let isProcessing = false;
+        window.editPresensi = function (id, sesi) {
+            const selectElement = $('#' + id);
+            const selectedValue = selectElement.val();
+            const originalHtml = selectElement.prop('outerHTML');
 
-            return async function(id, sesi) {
-                if (isProcessing) return;
-                isProcessing = true;
-
-                const selectElement = $('#' + id);
-                const selectedValue = selectElement.val();
-                const originalHtml = selectElement.prop('outerHTML');
-
-                const loadingButton = $('<button class="btn btn-sm btn-warning" type="button" disabled><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sedang Proses</button>');
-
-                setTimeout(async () => {
-                    selectElement.hide();  // Sembunyikan elemen select
-                    selectElement.after(loadingButton);
-                    try {
-                        var token = $("input[name='_csrf']").val();
-                        var response = await fetch(`/update-presensi-mahasiswa/${id.slice(6)}?status=${selectedValue}&sesi=${sesi}`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN": token
-                            }
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-
-                        var result = await response.json();
-                        iziToast.success({ title: 'Data Terupdate', message: result.message });
-                        loadingButton.remove();
-                        selectElement.show();
-                        isProcessing = false;
-
-                    } catch (error) {
-                        console.error('Error:', error);
-                        iziToast.error({ title: 'Error', message: 'Terjadi kesalahan. Silakan coba lagi.' });
-
-                    }
-                });
-            };
-        })();
+            const loadingButton = $('<button class="btn btn-sm btn-warning" type="button" disabled><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sedang Proses</button>');
+            selectElement.hide();
+            selectElement.after(loadingButton);
+            var token = $("input[name='_csrf']").val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                headers: {"X-CSRF-TOKEN": token},
+                url: "/update-presensi-mahasiswa/" + id.slice(6) + "?status=" + $('#' + id).val() + "&sesi="+ sesi,
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (result) {
+                    iziToast.success({title: 'Data Terupdate', message: result.message});
+                    loadingButton.remove();
+                    selectElement.show();
+                },
+                error: function (xhr, status, error) {
+                    iziToast.error({title: 'Error', message: 'Terjadi kesalahan. Silakan coba lagi.'});
+                }
+            });
+        };
 
     });
 </script>
