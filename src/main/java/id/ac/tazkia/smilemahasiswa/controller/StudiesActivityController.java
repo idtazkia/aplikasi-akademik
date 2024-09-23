@@ -650,27 +650,6 @@ public class StudiesActivityController {
 
     @GetMapping("/studiesActivity/attendance/mahasiswa")
     public void attendance(@RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah, Model model) {
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,
-                StatusRecord.AKTIF);
-        List<Mahasiswa> mahasiswas = new ArrayList<>();
-
-        Map<String, String> statusPresensi = new HashMap<>();
-        for (PresensiMahasiswa pm : presensiMahasiswa) {
-            mahasiswas.add(pm.getMahasiswa());
-            statusPresensi.put(pm.getId(), pm.getStatusPresensi().toString());
-        }
-        if (!mahasiswas.isEmpty()) {
-            List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas,
-                    sesiKuliah.getJadwal(), StatusRecord.AKTIF);
-            model.addAttribute("detail", krsDetails);
-        } else {
-            List<KrsDetail> krsDetails = krsDetailDao.findByJadwalAndStatus(sesiKuliah.getJadwal(),
-                    StatusRecord.AKTIF);
-            model.addAttribute("detail", krsDetails);
-
-        }
-        model.addAttribute("statusPresensi", StatusPresensi.values());
-        model.addAttribute("presensi", presensiMahasiswaDao.listPresensiMahasiswa(sesiKuliah));
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi", sesiKuliah.getId());
     }

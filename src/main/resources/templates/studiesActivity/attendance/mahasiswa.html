@@ -66,68 +66,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="modal-show" tabindex="-1" role="dialog" aria-labelledby="modal-form"
-                         aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                            <div class="modal-content">
-
-                                <div class="modal-body p-0">
-
-
-                                    <div class="card bg-secondary shadow border-0">
-                                        <form method="post"
-                                              th:action="@{/studiesActivity/attendance/sesi(jadwal = ${jadwal},sesi = ${sesi})}">
-                                            <div class="card-header bg-transparent pb-5">
-                                                <div class="text-muted text-center mt-2 mb-3"><small>Daftar
-                                                    Mahasiswa</small></div>
-                                                <div class="btn-wrapper text-center">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>No.</th>
-                                                            <th>NIM</th>
-                                                            <th>Nama</th>
-                                                            <th>Status</th>
-
-                                                        </tr>
-                                                        </thead>
-                                                        <tr class="even pointer" th:each="data,row : ${detail}">
-                                                            <td th:text="${(row.index + 1)}">#</td>
-                                                            <td th:text="${data.mahasiswa.nim}">NIM</td>
-                                                            <td th:text="${data.mahasiswa.nama}">Name</td>
-                                                            <td>
-                                                                <input type="hidden" name="mahasiswa"
-                                                                       th:value="${data.mahasiswa.id}">
-                                                                <select th:name="${data.mahasiswa.nim + 'nim'}">
-                                                                    <option th:each="sp : ${statusPresensi}"
-                                                                            th:text="${sp}" th:value="${sp}"></option>
-                                                                </select>
-                                                            </td>
-                                                            <input type="hidden" name="mahasiswa"
-                                                                   th:value="${data.mahasiswa.id}">
-                                                            <input type="hidden" name="krsDetail" th:value="${data.id}">
-                                                            <input type="hidden" name="status"
-                                                                   th:value="${data.status}">
-                                                            <input type="hidden" name="sesiKuliah" th:value="${sesi}">
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <br>
-                                                <div class="modal-footer bg-whitesmoke br">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-dismiss="modal">Tutup
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-body">
                         <form method="post" class="needs-validation" novalidate="">
                             <div class="card-header">
