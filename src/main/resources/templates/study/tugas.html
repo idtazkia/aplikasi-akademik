@@ -142,10 +142,12 @@
                                         </div>
                                         <div th:if="${kesempatanUpload != null && kesempatanUpload != 0}">
                                             <input type="file" name="fileJawaban" class="form-control">
+                                            <a class="text-warning" th:text="${history.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${history.id})}"></a>
                                             <p class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MM - yyyy HH:ss')}"></span></p>
                                             <p style="color: red;">Anda mempunyai <span th:text="${kesempatanUpload}"></span> kali kesempatan upload</p>
                                         </div>
                                         <div th:if="${kesempatanUpload != null && kesempatanUpload == 0}">
+                                            <a class="text-warning" th:text="${history.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${history.id})}"></a>
                                             <p class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MM - yyyy HH:ss')}"></span></p>
                                             <p style="color: red;">Anda sudah tidak punya kesempatan upload</p>
                                         </div><br>

@@ -1509,16 +1509,21 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/assesment/tugas")
-    public String simpanTugas(@Valid JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload) throws IOException {
+    public String simpanTugas(@Valid JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload, RedirectAttributes attributes) throws IOException {
         SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal, jadwalTugas.getPertemuanKe()).get();
-        if (online != null) {
-            jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS);
-        }
-        if (upload != null) {
-            jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.UPLOAD_FILE);
-        }
-        if (online != null && upload != null) {
-            jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE);
+        if (online == null && upload == null) {
+            attributes.addFlashAttribute("gagal", "Wajib pilih salah satu jenis pengiriman");
+            return "redirect:tugas?jadwal="+jadwal.getId();
+        }else{
+            if (online != null) {
+                jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS);
+            }
+            if (upload != null) {
+                jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.UPLOAD_FILE);
+            }
+            if (online != null && upload != null) {
+                jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE);
+            }
         }
         jadwalTugas.setSesiKuliah(sesiKuliah);
         if (!fileTugas.isEmpty()){

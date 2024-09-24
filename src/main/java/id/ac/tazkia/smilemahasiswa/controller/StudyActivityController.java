@@ -873,7 +873,7 @@ public class StudyActivityController {
     }
 
     @PostMapping("/study/tugas")
-    public String saveTugas(@ModelAttribute @Valid JadwalTugasJawaban tugasJawaban, @RequestParam JadwalTugas jadwalTugas, @RequestParam Mahasiswa mahasiswa, MultipartFile fileJawaban) throws IOException {
+    public String saveTugas(@ModelAttribute @Valid JadwalTugasJawaban tugasJawaban, @RequestParam JadwalTugas jadwalTugas, @RequestParam Mahasiswa mahasiswa, MultipartFile fileJawaban, RedirectAttributes attributes) throws IOException {
 
         List<JadwalTugasJawaban> cekSudahAda = tugasJawabanDao.findByJadwalTugasAndMahasiswa(jadwalTugas, mahasiswa);
         if (cekSudahAda != null) {
@@ -890,6 +890,7 @@ public class StudyActivityController {
 
         tugasJawabanDao.save(tugasJawaban);
 
+        attributes.addFlashAttribute("berhasil", "Alert berhasil save tugas");
         return "redirect:detail?id="+jadwalTugas.getSesiKuliah().getJadwal().getId();
     }
 
