@@ -146,6 +146,9 @@ public class StudiesActivityController {
     private ProgramDao programDao;
 
     @Autowired
+    private JadwalTugasDao jadwalTugasDao;
+
+    @Autowired
     private ScoreService scoreService;
 
     @Autowired
@@ -169,8 +172,8 @@ public class StudiesActivityController {
     @Autowired
     private MateriMengajarDao materiMengajarDao;
 
-    @Autowired
-    private JadwalTugasDao jadwalTugasDao;
+//    @Autowired
+//    private JadwalTugasDao jadwalTugasDao;
 
     @Autowired
     private JadwalTugasJawabanDao tugasJawabanDao;
@@ -366,6 +369,7 @@ public class StudiesActivityController {
         model.addAttribute("validasiMateri", sesiKuliahDao.countByJadwalAndPertemuanNotAndLinkVideoIsNull(jadwal, "Belum Mengajar"));
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
+        model.addAttribute("jadwalTugas", jadwalTugasDao.findByStatusAndSesiKuliahJadwalOrderBySesiKuliahPertemuanKe(StatusRecord.AKTIF,jadwal));
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 

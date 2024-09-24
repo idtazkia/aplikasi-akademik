@@ -57,7 +57,7 @@
                                 <div class="form-group">
                                     <label>Resume anda :</label>
                                     <textarea class="form-control" name="deskripsi" th:field="*{deskripsi}" id="deskripsi"></textarea>
-                                    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+                                    <script th:src="@{https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js}"></script>
                                     <script>
                                         CKEDITOR.replace('deskripsi');
                                     </script>

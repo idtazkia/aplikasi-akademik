@@ -84,8 +84,9 @@
 
                             <div class="form-group">
                                 <label>Description</label>
-                                <textarea class="form-control" name="eventDescription" th:field="*{eventDescription}" id="eventDescription"></textarea>
-                                <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+                                <textarea class="form-control" name="eventDescription" th:field="*{eventDescription}"></textarea>
+                                <script th:src="@{https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js}"></script>
+<!--                                <script th:src="@{/ckeditor/ckeditor.js}"></script>-->
                                 <script>
                                     CKEDITOR.replace('eventDescription');
                                 </script>

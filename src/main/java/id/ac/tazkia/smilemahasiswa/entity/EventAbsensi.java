@@ -38,6 +38,7 @@ public class EventAbsensi {
 
     private LocalDateTime waktuAbsen;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String file;
 
     @NotNull
