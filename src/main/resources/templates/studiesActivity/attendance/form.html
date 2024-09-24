@@ -60,11 +60,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Pertemuan :</label>
-                                            <select name="pertemuan" th:field="*{pertemuan}" id="pertemuan" class="form-control">
-                                                <option disabled selected value=""> - </option>
-                                                <option value="Pengganti Offline">Pengganti Offline</option>
-                                                <option value="Pengganti Online">Pengganti Online</option>
-                                            </select>
+                                            <input type="text" readonly class="form-control" th:field="*{pertemuan}">
                                         </div>
                                     </div>
 
@@ -112,17 +108,17 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Jam Mulai :</label>
-                                            <input type="text" th:field="*{jamMulaiString}" required id="timePicker"
+                                            <input type="text" th:field="*{jamMulaiString}" readonly required
                                                 placeholder="07:00:00" max="8" name="jamMulaiString"
-                                                class="time-picker form-control">
+                                                class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Jam Selesai :</label>
-                                            <input type="text" th:field="*{jamSelesaiString}" id='datetimepicker3' required
+                                            <input type="text" th:field="*{jamSelesaiString}" readonly required
                                                 placeholder="09:30:00" name="jamSelesaiString"
-                                                class="time-picker form-control">
+                                                class="form-control">
                                         </div>
                                     </div>
                                 </div>
