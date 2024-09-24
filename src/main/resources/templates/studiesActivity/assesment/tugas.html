@@ -45,6 +45,9 @@
                 <div class="col-md-6 col-sm-12 col-xs-12">
                     <div class="card shadow">
                         <div class="card-header border-0">
+                            <div th:if="${gagal}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <span class="alert-text"> Gagal! Pilih jenis pengiriman tugas terlebih dahulu! </span>
+                            </div>
                             <div class="row align-items-center">
                                 <div class="col">
                                     <h3 class="mb-0">Form</h3>
@@ -110,7 +113,7 @@
                                         <input type="text" name="tenggatWaktu" class="form-control tanggal" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Jenis Pengiriman : </label>
+                                        <label>Jenis Pengiriman Tugas : </label>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <input type="checkbox" id="online" name="online" class="js-switch" value="Online teks">
