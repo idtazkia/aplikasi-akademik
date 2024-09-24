@@ -376,23 +376,22 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/edit-sesi")
-    public String editSesi(PresensiDosenDto presensiDosenDto) {
-        PresensiDosen presensiDosen = presensiDosenDao.findById(presensiDosenDto.getIdPresensi()).get();
-        LocalDateTime masuk = LocalDateTime.of(LocalDate.parse(presensiDosenDto.getTanggal()), presensiDosen.getWaktuMasuk().toLocalTime());
-        LocalDateTime keluar = LocalDateTime.of(LocalDate.parse(presensiDosenDto.getTanggal()), presensiDosen.getWaktuSelesai().toLocalTime());
-        presensiDosen.setWaktuMasuk(masuk);
-        presensiDosen.setWaktuSelesai(keluar);
-        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-        presensiDosen.setStatus(StatusRecord.AKTIF);
-        presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
-        presensiDosenDao.save(presensiDosen);
+    public String editSesi(PresensiDto presensiDto) {
+        PresensiDosen presensiDosen = presensiDosenDao.findById(presensiDto.getId()).get();
+         LocalDateTime masuk = LocalDateTime.of(presensiDto.getTanggal(), LocalTime.parse(presensiDto.getWaktuMulai()));
+         LocalDateTime keluar = LocalDateTime.of(presensiDto.getTanggal(), LocalTime.parse(presensiDto.getWaktuSelesai()));
+         presensiDosen.setWaktuMasuk(masuk);
+         presensiDosen.setWaktuSelesai(keluar);
+         presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
+         presensiDosen.setStatus(StatusRecord.AKTIF);
+         presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
+         presensiDosenDao.save(presensiDosen);
 
-        SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
-        sesiKuliah.setPertemuan(presensiDosenDto.getPertemuan());
-        sesiKuliah.setWaktuMulai(masuk);
-        sesiKuliah.setWaktuSelesai(keluar);
-        sesiKuliahDao.save(sesiKuliah);
-
+         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
+         sesiKuliah.setPertemuan(presensiDto.getPertemuan());
+         sesiKuliah.setWaktuMulai(masuk);
+         sesiKuliah.setWaktuSelesai(keluar);
+         sesiKuliahDao.save(sesiKuliah);
         return "redirect:detail?jadwal=" + presensiDosen.getJadwal().getId();
     }
 
@@ -654,27 +653,6 @@ public class StudiesActivityController {
 
     @GetMapping("/studiesActivity/attendance/mahasiswa")
     public void attendance(@RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah, Model model) {
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,
-                StatusRecord.AKTIF);
-        List<Mahasiswa> mahasiswas = new ArrayList<>();
-
-        Map<String, String> statusPresensi = new HashMap<>();
-        for (PresensiMahasiswa pm : presensiMahasiswa) {
-            mahasiswas.add(pm.getMahasiswa());
-            statusPresensi.put(pm.getId(), pm.getStatusPresensi().toString());
-        }
-        if (!mahasiswas.isEmpty()) {
-            List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas,
-                    sesiKuliah.getJadwal(), StatusRecord.AKTIF);
-            model.addAttribute("detail", krsDetails);
-        } else {
-            List<KrsDetail> krsDetails = krsDetailDao.findByJadwalAndStatus(sesiKuliah.getJadwal(),
-                    StatusRecord.AKTIF);
-            model.addAttribute("detail", krsDetails);
-
-        }
-        model.addAttribute("statusPresensi", StatusPresensi.values());
-        model.addAttribute("presensi", presensiMahasiswaDao.listPresensiMahasiswa(sesiKuliah));
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi", sesiKuliah.getId());
     }
@@ -695,7 +673,6 @@ public class StudiesActivityController {
         PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(mahasiswa,sesiKuliah,StatusRecord.AKTIF);
         if (presensiMahasiswa != null) {
             presensiMahasiswa.setStatusPresensi(StatusPresensi.valueOf(status));
-            presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
             presensiMahasiswa.setCatatan("MANUAL");
             presensiMahasiswaDao.save(presensiMahasiswa);
             presensiService.updateNilaiPresensi(presensiMahasiswa.getKrsDetail());
@@ -704,7 +681,7 @@ public class StudiesActivityController {
             baseResponse.setId(presensiMahasiswa.getId());
             baseResponse.setNim(presensiMahasiswa.getMahasiswa().getNim());
             baseResponse.setNama(presensiMahasiswa.getMahasiswa().getNama());
-            baseResponse.setMessage("Presensi Mahasiswa Telah Diperbarui");
+            baseResponse.setMessage("Presensi " + mahasiswa.getNim() + " - " + mahasiswa.getNama() + " Telah Diperbarui");
             return baseResponse;
         }else {
             KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswa,sesiKuliah.getJadwal(),StatusRecord.AKTIF);
@@ -724,7 +701,7 @@ public class StudiesActivityController {
             baseResponse.setId(newPresensi.getId());
             baseResponse.setNim(newPresensi.getMahasiswa().getNim());
             baseResponse.setNama(newPresensi.getMahasiswa().getNama());
-            baseResponse.setMessage("Presensi Mahasiswa Telah Diperbarui");
+            baseResponse.setMessage("Presensi " + mahasiswa.getNim() + " - " + mahasiswa.getNama() + " Telah Diperbarui");
             return baseResponse;
         }
     }

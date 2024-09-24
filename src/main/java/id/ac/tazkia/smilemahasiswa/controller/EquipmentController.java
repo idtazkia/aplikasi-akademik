@@ -14,6 +14,8 @@ import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.DataPloting;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +50,7 @@ import java.util.List;
 @Controller
 public class EquipmentController {
 
+    private static final Logger log = LoggerFactory.getLogger(EquipmentController.class);
     @Autowired
     private LembagaDao lembagaDao;
 
@@ -353,7 +356,15 @@ public class EquipmentController {
     }
 
     @PostMapping("/equipment/class/form")
-    public String prosesClass(@ModelAttribute @Valid Kelas kelas) {
+    public String prosesClass(@ModelAttribute @Valid Kelas kelas, RedirectAttributes attributes) {
+
+        System.out.println(kelas);
+
+        if (kelas.getKurikulum() == null) {
+            attributes.addFlashAttribute("error", "Kurikulum kosong");
+            return "redirect:form";
+        }
+
         if (kelas.getStatus() == null) {
             kelas.setStatus(StatusRecord.NONAKTIF);
         }
