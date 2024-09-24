@@ -158,12 +158,15 @@
                                     <div class="card-body">
                                     <div class="row border mb-3 p-3 shadow-sm small rounded" th:each="data,row : ${detail}">
                                         <div class="col-md-12">
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
                                                 <div class="col-md-12">
                                                     <i class="fa fa-calendar-times text-warning"></i> <span class="text-blue font-weight-bold" th:text="${'Session '+ data.pertemuanke}"></span>
                                                     <span>, </span>
                                                     <span class="text-dark font-weight-bold"  th:text="${#temporals.format(data.tanggalDate, 'EEEE, dd MMMM yyyy', 'id')}"></span>
-                                                    <span>, </span>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-12">
                                                     <i class="fa fa-clock text-blue"></i>
                                                     <span class="text-dark"> Waktu terjadwal pukul :</span>
                                                     <span class="font-weight-bold text-green" th:text="${#temporals.format(data.masuk, 'HH:mm') + ' s/d ' + #temporals.format(data.selesai, 'HH:mm') + ' WIB,'}"></span>
