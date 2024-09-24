@@ -393,7 +393,23 @@
                       <div class="form-group">
                         <label>Tanggal :</label>
                         <input type="date" id="inputdate" name="tanggal" required class="form-control"/>
-                        <input type="hidden" name="idPresensi" id="idPresensi">
+                        <input type="hidden" name="id" id="idPresensi">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Waktu Masuk :</label>
+                        <input type="text" required 
+                          placeholder="09:30:00" name="waktuMulai" class="time-picker form-control">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Waktu Keluar :</label>
+                        <input type="text" required 
+                          placeholder="09:30:00" name="waktuSelesai" class="time-picker form-control">
                       </div>
                     </div>
                   </div>
@@ -530,16 +546,30 @@
     startDate: "-3d",
   });
 
-  function savePresensi() {
-    $("#btnPresensi").removeClass("btn-primary");
-    $("#btnPresensi").addClass("btn-warning");
-    $("#btnPresensi").prop("disabled", true);
-    $("#btnPresensi").html("Loading...");
+    function savePresensi(event) {
+        event.preventDefault();
 
-    $("#edit-sesi").submit();
-  }
+        var form = document.getElementById('edit-sesi');
 
-  function saveMateri(){
+        // Cek validitas form
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+
+            var inputDate = document.getElementById('inputdate');
+            if (!inputDate.value) {
+                inputDate.focus();
+                inputDate.click();
+            }
+            return;
+        } else {
+            $("#btnPresensi").removeClass("btn-primary").addClass("btn-warning").prop("disabled", true).html("Loading...");
+            form.submit();
+        }
+    }
+    document.getElementById('btnPresensi').addEventListener('click', savePresensi);
+
+
+    function saveMateri(){
       $("#btnMateri").removeClass("btn-primary");
       $("#btnMateri").addClass("btn-warning");
       $("#btnMateri").prop("disabled", true);
