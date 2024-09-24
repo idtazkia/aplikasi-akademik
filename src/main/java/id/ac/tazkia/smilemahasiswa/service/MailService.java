@@ -252,4 +252,30 @@ public class MailService {
 
     }
 
+    public void registerNote(Note note) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/note/register.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nim", note.getMahasiswa().getNim());
+        data.put("nama", note.getMahasiswa().getNama());
+        data.put("judulIndo", note.getJudul());
+        data.put("judulInggris", note.getJudulInggris());
+        data.put("dosen1", note.getDosen().getKaryawan().getNamaKaryawan());
+        if (note.getDosen2() != null){
+            data.put("dosen2", note.getDosen2().getKaryawan().getNamaKaryawan());
+
+        }else {
+            data.put("dosen2", "-");
+        }
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                note.getMahasiswa().getEmailTazkia(),
+                "Pendaftaran Konsep Note ",
+                output.toString());
+
+    }
+
+
 }
