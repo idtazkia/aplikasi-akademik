@@ -166,11 +166,17 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <i class="fa fa-clock text-blue"></i>
                                                     <span class="text-dark"> Waktu terjadwal pukul :</span>
                                                     <span class="font-weight-bold text-green" th:text="${#temporals.format(data.masuk, 'HH:mm') + ' s/d ' + #temporals.format(data.selesai, 'HH:mm') + ' WIB,'}"></span>
                                                     <span class="badge badge-warning" th:text="${data.pertemuan}">New</span></h6>
+                                                </div>
+                                                <div class="col-md-6 text-right" th:if="${data.pertemuan != 'Belum Mengajar'}">
+                                                    <i class="fa fa-stamp text-blue"></i>
+                                                    <span class="text-dark"> Pemateri :</span>
+                                                    <span class="font-weight-bold text-indigo" th:text="${data.dosen}">New</span></h6>
+                                                    <span class="badge badge-warning" th:text="${#temporals.format(data.masuk, 'dd MMMM yyyy HH:mm') + ' WIB,'}"></span>
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
@@ -230,16 +236,16 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-1 mb-2">
+                                                <div class="col-md-4 mb-2">
                                                     <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-secondary border-primary btn-sm" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fas fa-file text-green"></i>
                                                         Materi
                                                     </button>
                                                 </div>
-                                                <div class="col-md-9">
+<!--                                                <div class="col-md-9">-->
 
-                                                </div>
-                                                <div class="col-md-1 mb-2">
+<!--                                                </div>-->
+                                                <div class="col-md-4 mb-2">
 
 
 
@@ -358,7 +364,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-1">
+                                                <div class="col-md-4">
                                                     <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-secondary border-primary btn-sm" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fas fa-edit text-warning"></i>
                                                         Buat tugas
