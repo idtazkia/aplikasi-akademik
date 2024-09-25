@@ -1,8 +1,10 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -11,6 +13,8 @@ import id.ac.tazkia.smilemahasiswa.dto.api.PerformanceMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.DetailPresensiDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MahasiswaMangkirTigaDto;
+
+import javax.transaction.Transactional;
 
 public interface PresensiMahasiswaDao extends PagingAndSortingRepository<PresensiMahasiswa, String> {
         List<PresensiMahasiswa> findBySesiKuliahAndStatus(SesiKuliah sesiKuliah, StatusRecord aktif);
@@ -174,5 +178,23 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
         List<MahasiswaMangkirTigaDto> listMahasiswaMangkirTigaDto(String idTahunAkademik, String idJadwal);
 
         Integer countByStatusPresensiNotInAndStatusAndKrsDetail(List<StatusPresensi> presensi, StatusRecord status, KrsDetail krsDetail);
+
+        @Modifying
+        @Transactional
+        @Query(value = "INSERT INTO presensi_mahasiswa (id, id_krs_detail, id_sesi_kuliah, id_mahasiswa, waktu_masuk, waktu_keluar, status_presensi, catatan, rating, status, statusimport) " +
+                "SELECT uuid(), kd.id, sk.id, m.id, NOW(), sk.waktu_selesai, ?2, 'Manual', 0, 'AKTIF', null " +
+                "FROM krs_detail kd " +
+                "INNER JOIN sesi_kuliah sk ON kd.id_jadwal = sk.id_jadwal " +
+                "INNER JOIN mahasiswa m ON kd.id_mahasiswa = m.id " +
+                "LEFT JOIN presensi_mahasiswa pm ON pm.id_sesi_kuliah = sk.id AND pm.id_mahasiswa = kd.id_mahasiswa " +
+                "WHERE kd.status = 'AKTIF' AND sk.id = ?1 AND pm.id IS NULL AND kd.status_konversi IS NULL", nativeQuery = true)
+        void insertNewPresensiMahasiswa(String sesiKuliahId, String status);
+
+        @Modifying
+        @Transactional
+        @Query(value = "UPDATE presensi_mahasiswa pm " +
+                "SET pm.status_presensi = ?2, pm.catatan = 'Manual', pm.waktu_masuk = NOW(), pm.waktu_keluar = (SELECT sk.waktu_selesai FROM sesi_kuliah sk WHERE sk.id = ?1) " +
+                "WHERE pm.id_sesi_kuliah = ?1 AND pm.status = 'AKTIF'", nativeQuery = true)
+        void updatePresensiMahasiswa(String sesiKuliahId, String statusPresensi);
 
 }

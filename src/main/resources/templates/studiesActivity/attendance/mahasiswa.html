@@ -46,20 +46,20 @@
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
-<!--                            <div class="col">-->
-<!--                                <h3 class="mb-0">-->
-<!--                                    <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">-->
-<!--                                        <b> Set Semua Mahasiswa : </b>-->
-<!--                                        <select name="statusPresensi">-->
-<!--                                            <option value="MANGKIR">Mangkir</option>-->
-<!--                                            <option value="HADIR">Hadir</option>-->
-<!--                                            <option value="IZIN">Izin</option>-->
-<!--                                            <option value="SAKIT">Sakit</option>-->
-<!--                                        </select>-->
-<!--                                        <button class="btn btn-success btn-sm" type="submit">Set Status</button>-->
-<!--                                    </form>-->
-<!--                                </h3>-->
-<!--                            </div>-->
+                            <div class="col">
+                                <h3 class="mb-0">
+                                    <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">
+                                        <b> Set Semua Mahasiswa : </b>
+                                        <select name="statusPresensi">
+                                            <option value="MANGKIR">Mangkir</option>
+                                            <option value="HADIR">Hadir</option>
+                                            <option value="IZIN">Izin</option>
+                                            <option value="SAKIT">Sakit</option>
+                                        </select>
+                                        <button class="btn btn-success btn-sm" type="submit">Set Status</button>
+                                    </form>
+                                </h3>
+                            </div>
                             <div class="col text-right">
                                 <a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal})}" class="btn btn-sm btn-default">
                                     <i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>

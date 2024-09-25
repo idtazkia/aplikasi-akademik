@@ -783,13 +783,11 @@ public class StudiesActivityController {
     public String savePresensi(@RequestParam(required = false) String sesi,
                                @RequestParam(required = false) StatusPresensi statusPresensi) {
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,
-                StatusRecord.AKTIF);
-        for (PresensiMahasiswa pm : presensiMahasiswa) {
-            pm.setStatusPresensi(statusPresensi);
-            presensiMahasiswaDao.save(pm);
-            presensiService.updateNilaiPresensi(pm.getKrsDetail());
-        }
+        List<KrsDetail> mahasiswas = krsDetailDao.findByJadwalAndStatus(sesiKuliah.getJadwal(), StatusRecord.AKTIF);
+
+        presensiMahasiswaDao.insertNewPresensiMahasiswa(sesiKuliah.getId(), statusPresensi.name());
+        presensiMahasiswaDao.updatePresensiMahasiswa(sesiKuliah.getId(),statusPresensi.name());
+
         return "redirect:detail?jadwal=" + sesiKuliah.getJadwal().getId();
     }
 
