@@ -60,7 +60,7 @@
                                         <div class="col-md-4 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
-                                                <select name="pertemuan" class="form-control" id="pertemuan" th:if="${now == sesi.tanggal}">
+                                                <select name="pertemuan" class="form-control" id="pertemuan" th:if="${now == sesi.tanggal}" required>
                                                     <option disabled selected value=""> - </option>
                                                     <option value="Online">Online</option>
                                                     <option value="Offline">Offline</option>
@@ -318,13 +318,28 @@
         })
     });
 
-    function saveSimpan(){
-        $("#btnSimpan").removeClass("btn-primary");
-        $("#btnSimpan").addClass("btn-warning");
-        $("#btnSimpan").prop("disabled", true);
-        $("#btnSimpan").html("Loading...");
+    function saveSimpan(event){
+        event.preventDefault();
 
-        $("#formSimpan").submit();
+        var form = document.getElementById('formSimpan');
+        if (!form.checkValidity()){
+            form.classList.add('was-validated');
+
+            var pertemuanForm = document.getElementById('pertemuan');
+            if (!pertemuanForm.value){
+                pertemuanForm.focus();
+                pertemuanForm.click();
+            }
+            return;
+        }else{
+            $("#btnSimpan").removeClass("btn-primary");
+            $("#btnSimpan").addClass("btn-warning");
+            $("#btnSimpan").prop("disabled", true);
+            $("#btnSimpan").html("Loading...");
+
+            form.submit();
+        }
     }
+    document.getElementById('btnSimpan').addEventListener('click', saveSimpan);
 
 </script>

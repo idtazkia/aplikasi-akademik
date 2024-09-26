@@ -717,8 +717,6 @@ public class PresensiService {
         }
 
         sesiKuliah.setBeritaAcara(jadwalDto.getRps());
-        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai().plusHours(7)));
-        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), sesiKuliah.getJadwal().getJamSelesai()));
         sesiKuliah.setDetailPertemuan(jadwalDto.getDetailPertemuan());
         sesiKuliah.setTanggalInput(LocalDateTime.now());
         sesiKuliah.setCeramah(jadwalDto.getCeramah());
@@ -730,8 +728,8 @@ public class PresensiService {
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());
-        presensiDosen.setWaktuMasuk(sesiKuliah.getWaktuMulai());
-        presensiDosen.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
+        presensiDosen.setWaktuMasuk(LocalDateTime.of(jadwalDto.getTanggal(), jadwalDto.getJamMulai().plusHours(7)));
+        presensiDosen.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(), sesiKuliah.getJadwal().getJamSelesai()));
         presensiDosen.setStatus(StatusRecord.AKTIF);
         presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
 
