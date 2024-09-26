@@ -389,6 +389,7 @@ public class StudiesActivityController {
          SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
          sesiKuliah.setWaktuMulai(masuk);
          sesiKuliah.setWaktuSelesai(keluar);
+//         sesiKuliah.setSetEditSesi(Boolean.TRUE);
          sesiKuliahDao.save(sesiKuliah);
         return "redirect:detail?jadwal=" + presensiDosen.getJadwal().getId();
     }
@@ -926,6 +927,7 @@ public class StudiesActivityController {
         sesiKuliah.setPresentasi(jadwalDto.getPresentasi());
         sesiKuliah.setTanyajawab(jadwalDto.getTanyajawab());
         sesiKuliah.setKuis(jadwalDto.getKuis());
+        sesiKuliah.setPraktikum(jadwalDto.getPraktikum());
 
         LocalTime jamMulai = jadwalDto.getJamMulaiString().plusSeconds(30);
         LocalTime jamSelesai = jadwalDto.getJamSelesaiString().plusSeconds(30);

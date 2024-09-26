@@ -726,6 +726,7 @@ public class PresensiService {
         sesiKuliah.setPresentasi(jadwalDto.getPresentasi());
         sesiKuliah.setTanyajawab(jadwalDto.getTanyajawab());
         sesiKuliah.setKuis(jadwalDto.getKuis());
+        sesiKuliah.setPraktikum(jadwalDto.getPraktikum());
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());
@@ -789,7 +790,6 @@ public class PresensiService {
         }
 
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
-        sesiKuliah.setLinkVideo(jadwalDto.getLinkVideo());
         if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
             sesiKuliah.setLinkOnline(null);
         }

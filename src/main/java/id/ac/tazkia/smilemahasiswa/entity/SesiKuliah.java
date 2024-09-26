@@ -73,4 +73,9 @@ public class SesiKuliah {
     @Enumerated(EnumType.STRING)
     private StatusRecord kuis;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord praktikum;
+
+    private Boolean setEditSesi = Boolean.FALSE;
+
 }

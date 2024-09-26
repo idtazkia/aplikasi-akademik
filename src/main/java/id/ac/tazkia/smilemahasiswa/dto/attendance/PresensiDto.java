@@ -48,4 +48,5 @@ public class PresensiDto {
     private StatusRecord presentasi;
     private StatusRecord tanyajawab;
     private StatusRecord kuis;
+    private StatusRecord praktikum;
 }
