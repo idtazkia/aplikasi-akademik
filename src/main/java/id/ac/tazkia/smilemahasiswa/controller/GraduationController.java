@@ -581,6 +581,7 @@ public class GraduationController {
         note1.setTanggalApprove(LocalDate.now());
         note1.setUserApprove(user);
         noteDao.save(note1);
+        mailService.approvedNote(note1);
 
         return "redirect:list?tahun=" + note1.getTahunAkademik().getId() + "&prodi="
                 + note1.getMahasiswa().getIdProdi().getId();
