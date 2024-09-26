@@ -253,7 +253,7 @@ public class MailService {
     }
 
     public void registerNote(Note note) {
-        Mustache templateEmail = mustacheFactory.compile("templates/email/note/register.html");
+        Mustache templateEmail = mustacheFactory.compile("templates/email/note/mahasiswa/register.html");
         Map<String, String> data = new HashMap<>();
         data.put("nim", note.getMahasiswa().getNim());
         data.put("nama", note.getMahasiswa().getNama());
