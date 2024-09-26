@@ -44,25 +44,25 @@
             <div class="row">
                 <div class="col">
                     <div class="card shadow">
-
                         <div class="card-header border-0">
                             <div th:if="${gagal != null}" class="alert alert-danger">
                                 <span th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
                             </div>
 
                             <!-- Title dan Tombol -->
-                            <div class="row align-items-center mb-3">
-                                <div class="col">
-                                    <h3 class="mb-0">Daftar Pertemuan</h3>
+                            <div class="row align-items-center">
+                                <div class="col-md-6 mb-3">
+                                    <h3>Daftar Pertemuan</h3>
                                 </div>
-                                <div class="col text-right">
+                                <div class="col-md-3 mb-3 text-right">
                                     <!-- Tombol Unggah -->
-                                    <button th:if="${valid != null}" type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modal-rps">
+                                    <button th:if="${valid != null}" type="button" class="btn btn-secondary btn-sm w-100" data-toggle="modal" data-target="#modal-rps">
                                         <i class="fas fa-plus-circle"></i> Unggah Renc. Pembelajaran
                                     </button>
-
+                                </div>
+                                <div class="col-md-3 mb-3 text-right">
                                     <!-- Tombol Download -->
-                                    <a th:href="@{/studiesActivity/attendance/download(jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">
+                                    <a th:href="@{/studiesActivity/attendance/download(jadwal = ${jadwal.id})}" class="btn btn-info btn-sm w-100">
                                         <i class="fas fa-download"></i> Unduh Rekap Kehadiran
                                     </a>
                                 </div>
@@ -110,7 +110,7 @@
                             <!-- Detail Jadwal -->
                             <div class="row border-bottom border-top pt-3 pb-3 mt-2 bg-light">
                                 <!-- Info Matakuliah -->
-                                <div class="col-md-6 border-right">
+                                <div class="col-md-6 border-right mb-2">
                                     <div class="row mb-2">
                                         <div class="col-md-12">
                                             <i class="fa fa-archive text-warning"></i>
@@ -175,7 +175,7 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="row border mb-3 p-3 shadow-sm small rounded" th:each="data,row : ${detail}">
+                            <div class="row border mb-3 pt-3 pb-2 shadow-sm small rounded" th:each="data,row : ${detail}">
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -254,7 +254,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4 mb-2">
-                                            <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm" aria-haspopup="true" aria-expanded="false">
+                                            <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm col-md-4"  aria-haspopup="true" aria-expanded="false">
                                                 <i class="fas fa-file"></i>
                                                 Input Materi
                                             </button>
@@ -262,7 +262,7 @@
                                         <div class="col-md-4 mb-2">
                                             <a th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
                                                th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal}"
-                                               class="btn btn-outline-primary border-primary btn-sm "
+                                               class="btn btn-outline-primary border-primary btn-sm col-md-4"
                                                aria-haspopup="true"
                                                aria-expanded="false">
                                                 <i class="fas fa-play"></i>
@@ -270,7 +270,7 @@
                                             <button
                                                     th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal}"
                                                     th:id="${'edit-' + data.idPresensi}"
-                                                    class="btn btn-outline-primary border-primary btn-sm"
+                                                    class="btn btn-outline-primary border-primary btn-sm col-md-4"
                                                     aria-haspopup="true" onclick="openModalPresensi(this.id)"
                                                     aria-expanded="false">
                                                 <i class="fas fa-clock"></i>
@@ -278,7 +278,7 @@
                                             <button
                                                     type="button"
                                                     th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null}"
-                                                    class="btn btn-outline-primary border-primary btn-sm dropdown-toggle"
+                                                    class="btn btn-outline-primary border-primary btn-sm dropdown-toggle col-md-4"
                                                     data-toggle="dropdown"
                                                     aria-haspopup="true"
                                                     aria-expanded="false"
@@ -339,8 +339,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm" aria-haspopup="true" aria-expanded="false">
+                                        <div class="col-md-4 mb-2">
+                                            <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-4 mx-auto" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fas fa-edit"></i>
                                                 Buat tugas
                                             </a>
@@ -352,8 +352,8 @@
                     </div>
                 </div>
             </div>
-          </div>
-        </div>
+<!--          </div>-->
+<!--        </div>-->
         <!-- Dark table -->
 
         <div class="modal fade" id="modal-materi" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
