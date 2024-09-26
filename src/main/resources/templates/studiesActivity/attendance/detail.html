@@ -254,7 +254,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4 mb-2">
-                                            <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm col-md-4"  aria-haspopup="true" aria-expanded="false">
+                                            <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm col-md-5"  aria-haspopup="true" aria-expanded="false">
                                                 <i class="fas fa-file"></i>
                                                 Input Materi
                                             </button>
@@ -262,7 +262,7 @@
                                         <div class="col-md-4 mb-2">
                                             <a th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
                                                th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal}"
-                                               class="btn btn-outline-primary border-primary btn-sm col-md-4"
+                                               class="btn btn-outline-primary border-primary btn-sm col-md-5"
                                                aria-haspopup="true"
                                                aria-expanded="false">
                                                 <i class="fas fa-play"></i>
@@ -270,7 +270,7 @@
                                             <button
                                                     th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date != data.tanggal}"
                                                     th:id="${'edit-' + data.idPresensi}"
-                                                    class="btn btn-outline-primary border-primary btn-sm col-md-4"
+                                                    class="btn btn-outline-primary border-primary btn-sm col-md-5"
                                                     aria-haspopup="true" onclick="openModalPresensi(this.id)"
                                                     aria-expanded="false">
                                                 <i class="fas fa-clock"></i>
@@ -278,7 +278,7 @@
                                             <button
                                                     type="button"
                                                     th:if="${data.pertemuan != 'Belum Mengajar' && gagal == null}"
-                                                    class="btn btn-outline-primary border-primary btn-sm dropdown-toggle col-md-4"
+                                                    class="btn btn-outline-primary border-primary btn-sm dropdown-toggle col-md-5"
                                                     data-toggle="dropdown"
                                                     aria-haspopup="true"
                                                     aria-expanded="false"
@@ -340,7 +340,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4 mb-2">
-                                            <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-4 mx-auto" aria-haspopup="true" aria-expanded="false">
+                                            <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fas fa-edit"></i>
                                                 Buat tugas
                                             </a>
