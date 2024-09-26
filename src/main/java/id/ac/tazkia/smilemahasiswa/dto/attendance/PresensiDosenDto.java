@@ -27,4 +27,12 @@ public interface PresensiDosenDto {
     String getRps();
 
     String getLink();
+
+    LocalDateTime getSesiMulai();
+
+    LocalDateTime getSesiSelesai();
+
+
+
+
 }
