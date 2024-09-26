@@ -48,7 +48,7 @@
                         <div class="row align-items-center">
                             <div class="col">
                                 <h3 class="mb-0">
-                                    <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">
+                                    <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post" id="formAll">
                                         <b> Set Semua Mahasiswa : </b>
                                         <select name="statusPresensi">
                                             <option value="MANGKIR">Mangkir</option>
@@ -56,7 +56,7 @@
                                             <option value="IZIN">Izin</option>
                                             <option value="SAKIT">Sakit</option>
                                         </select>
-                                        <button class="btn btn-success btn-sm" type="submit">Set Status</button>
+                                        <button class="btn btn-success btn-sm" type="button" id="btnAll" onclick="saveALl()">Set Status</button>
                                     </form>
                                 </h3>
                             </div>
@@ -208,4 +208,13 @@
         };
 
     });
+
+    function saveALl(){
+        $("#btnAll").removeClass("btn-primary");
+        $("#btnAll").addClass("btn-warning");
+        $("#btnAll").prop("disabled", true);
+        $("#btnAll").html("Loading...");
+
+        $("#formAll").submit();
+    }
 </script>
