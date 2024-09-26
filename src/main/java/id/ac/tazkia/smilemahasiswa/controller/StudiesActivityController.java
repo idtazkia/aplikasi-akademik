@@ -382,13 +382,11 @@ public class StudiesActivityController {
          LocalDateTime keluar = LocalDateTime.of(presensiDto.getTanggal(), LocalTime.parse(presensiDto.getWaktuSelesai()));
          presensiDosen.setWaktuMasuk(masuk);
          presensiDosen.setWaktuSelesai(keluar);
-         presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-         presensiDosen.setStatus(StatusRecord.AKTIF);
+         presensiDosen.setStatusPresensi(StatusPresensi.BELUM_MENGAJAR);
          presensiDosen.setTanggalInput(LocalDateTime.now().plusHours(7));
          presensiDosenDao.save(presensiDosen);
 
          SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
-         sesiKuliah.setPertemuan(presensiDto.getPertemuan());
          sesiKuliah.setWaktuMulai(masuk);
          sesiKuliah.setWaktuSelesai(keluar);
          sesiKuliahDao.save(sesiKuliah);
