@@ -23,7 +23,7 @@ public class DosenDto {
     private String prodi;
     private User idUser;
     private String rfid;
-    private String jabatan;
+    private String jabatanDosen;
     private Integer absen;
     private BigDecimal honor;
     private String StatusDosen;

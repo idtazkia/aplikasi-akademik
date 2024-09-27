@@ -154,8 +154,10 @@
                                         <div class="form-group">
                                             <label>Jabatan Dosen</label>
                                             &nbsp&nbsp
-                                            <select name="jabatan" required class="form-control">
-                                                <option th:field="*{jabatan}" th:each="jabatan : ${listJabatan}" th:text="${jabatan.nama}" th:value="${jabatan.id}"></option>
+                                            <select name="jabatanDosen" required class="form-control" th:field="*{jabatanDosen}">
+                                                <option th:each="jabatan : ${listJabatan}"
+                                                        th:text="${jabatan.nama}"
+                                                        th:value="${jabatan.id}"></option>
                                                 <!--                                                <option value="warek2"></option>-->
                                             </select>
                                         </div>

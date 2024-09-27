@@ -312,7 +312,7 @@ public class HumanResourcesController {
                 dosenDto.setHonor(dosenDao.findByKaryawan(karyawan).getHonor());
                 dosenDto.setRfid(karyawan.getRfid());
                 dosenDto.setAbsen(karyawan.getIdAbsen());
-                dosenDto.setJabatan(dosenDao.findByKaryawan(karyawan).getJabatanDosen().getId());
+                dosenDto.setJabatanDosen(dosenDao.findByKaryawan(karyawan).getJabatanDosen().getId());
                 if (karyawan.getIdUser() != null) {
                     dosenDto.setIdUser(karyawan.getIdUser());
                 }
@@ -362,7 +362,7 @@ public class HumanResourcesController {
                 d.setStatusDosen(dosenDto.getStatusDosen());
                 d.setHonor(dosenDto.getHonor());
                 d.setStatus(StatusRecord.AKTIF);
-                d.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatan()).get());
+                d.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatanDosen()).get());
                 dosenDao.save(d);
             } else {
                 Karyawan cekKaryawan = karyawanDao.findByIdUser(user1);
@@ -389,7 +389,7 @@ public class HumanResourcesController {
                 d.setKaryawan(karyawan);
                 d.setStatusDosen(dosenDto.getStatusDosen());
                 d.setHonor(dosenDto.getHonor());
-                d.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatan()).get());
+                d.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatanDosen()).get());
                 d.setStatus(StatusRecord.AKTIF);
                 dosenDao.save(d);
             }
@@ -440,6 +440,7 @@ public class HumanResourcesController {
             dosen.setStatusDosen(dosenDto.getStatusDosen());
             dosen.setHonor(dosenDto.getHonor());
             dosen.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
+            dosen.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatanDosen()).get());
             dosenDao.save(dosen);
         }
 
