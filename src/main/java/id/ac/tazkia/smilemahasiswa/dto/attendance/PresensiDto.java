@@ -49,4 +49,5 @@ public class PresensiDto {
     private StatusRecord tanyajawab;
     private StatusRecord kuis;
     private StatusRecord praktikum;
+    private Boolean isEdit;
 }

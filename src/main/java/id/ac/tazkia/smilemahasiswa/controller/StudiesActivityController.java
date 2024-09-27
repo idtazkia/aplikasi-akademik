@@ -389,7 +389,7 @@ public class StudiesActivityController {
          SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
          sesiKuliah.setWaktuMulai(masuk);
          sesiKuliah.setWaktuSelesai(keluar);
-//         sesiKuliah.setSetEditSesi(Boolean.TRUE);
+         sesiKuliah.setIsEdit(Boolean.TRUE);
          sesiKuliahDao.save(sesiKuliah);
         return "redirect:detail?jadwal=" + presensiDosen.getJadwal().getId();
     }
@@ -903,6 +903,7 @@ public class StudiesActivityController {
         jadwalDto.setDetailPertemuan(sesiKuliah.getDetailPertemuan());
         jadwalDto.setJamMulai(sesiKuliah.getWaktuMulai().toLocalTime());
         jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
+        jadwalDto.setIsEdit(sesiKuliah.getIsEdit());
         if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
             model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
 

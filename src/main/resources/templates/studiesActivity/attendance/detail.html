@@ -404,46 +404,33 @@
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Pertemuan :</label>
-                        <select id="pertemuan" name="pertemuan" class="form-control">
-                          <option value="Pengganti Offline">
-                            Kelas Pengganti Offline
-                          </option>
-                          <option value="Pengganti Online">
-                            Kelas Pengganti Online
-                          </option>
-                        </select>
+                  <div class="modal-body">
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="form-group">
+                                  <label>Tanggal :</label>
+                                  <input type="date" id="inputdate" name="tanggal" required class="form-control"/>
+                                  <input type="hidden" name="id" id="idPresensi">
+                              </div>
+                          </div>
                       </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Tanggal :</label>
-                        <input type="date" id="inputdate" name="tanggal" required class="form-control"/>
-                        <input type="hidden" name="id" id="idPresensi">
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Waktu Masuk :</label>
+                                  <input type="text" required autocomplete="off"
+                                         placeholder="09:30:00" name="waktuMulai" class="time-picker form-control">
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Waktu Keluar :</label>
+                                  <input type="text" required autocomplete="off"
+                                         placeholder="09:30:00" name="waktuSelesai" class="time-picker form-control">
+                              </div>
+                          </div>
                       </div>
-                    </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Waktu Masuk :</label>
-                        <input type="text" required 
-                          placeholder="09:30:00" name="waktuMulai" class="time-picker form-control">
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Waktu Keluar :</label>
-                        <input type="text" required 
-                          placeholder="09:30:00" name="waktuSelesai" class="time-picker form-control">
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div class="modal-footer">
                   <button type="button" onclick="closeModalPresensi()" class="btn btn-secondary">
                     Tutup

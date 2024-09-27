@@ -40,17 +40,15 @@ public class JadwalService {
         List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF,
                 tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "FINAL");
         for (Jadwal j : cekJadwal) {
-            System.out.println(j.getId() + " : id jadwal");
             presensiService.generateSesi2(j);
 
         }
     }
 
-    // @Scheduled(cron = "0 25 11 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
     public void regenerateJadwal() throws Exception {
 
-        List<Jadwal> cekJadwal = jadwalDao.jadwalMatrik();
-        System.out.println("jadwal matrik");
+        List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "REGENERATE");
         for (Jadwal j : cekJadwal) {
             System.out.println(j.getId() + " : id jadwal");
             presensiService.reGenerate1(j);

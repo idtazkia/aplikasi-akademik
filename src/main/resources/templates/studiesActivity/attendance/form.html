@@ -80,7 +80,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="linkOnline" class="row">
+                                <div th:if="${sesi.pertemuan == 'Online' || sesi.pertemuan == 'Pengganti Online'}" class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label>Link pertemuan online :</label>
@@ -187,18 +187,4 @@
     // $('#timePicker').datetimepicker({
     //     format: 'hh:mm:ss a'
     // });
-
-    console.log("tes")
-
-    $(document).ready(function (){
-        $("#linkOnline").hide();
-        $("#pertemuan").on("change", function (){
-            var cek = (this.value);
-            if (cek == 'Pengganti Online'){
-                $("#linkOnline").show();
-            }else{
-                $("#linkOnline").hide();
-            }
-        })
-    });
 </script>

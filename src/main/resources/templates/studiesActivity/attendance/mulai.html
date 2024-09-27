@@ -62,10 +62,10 @@
                                                 <label>Pertemuan :</label>
                                                 <select name="pertemuan" class="form-control" id="pertemuan" th:if="${now == sesi.tanggal}" required>
                                                     <option disabled selected value=""> - </option>
-                                                    <option value="Online">Online</option>
-                                                    <option value="Offline">Offline</option>
-                                                    <option value="Pengganti Offline">Pengganti Offline</option>
-                                                    <option value="Pengganti Online">Pengganti Online</option>
+                                                    <option th:if="${!sesi.isEdit}" value="Online">Online</option>
+                                                    <option th:if="${!sesi.isEdit}" value="Offline">Offline</option>
+                                                    <option th:if="${sesi.isEdit}" value="Pengganti Offline">Pengganti Offline</option>
+                                                    <option th:if="${sesi.isEdit}" value="Pengganti Online">Pengganti Online</option>
                                                 </select>
                                             </div>
                                         </div>
