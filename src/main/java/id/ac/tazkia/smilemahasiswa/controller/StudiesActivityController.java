@@ -813,6 +813,8 @@ public class StudiesActivityController {
         jadwalDto.setPresentasi(sesiKuliah.getPresentasi());
         jadwalDto.setTanyajawab(sesiKuliah.getTanyajawab());
         jadwalDto.setKuis(sesiKuliah.getKuis());
+        jadwalDto.setPraktikum(sesiKuliah.getPraktikum());
+        jadwalDto.setLinkOnline(sesiKuliah.getLinkOnline());
 
         if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
             model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
@@ -945,6 +947,8 @@ public class StudiesActivityController {
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
         if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
             sesiKuliah.setLinkOnline(null);
+        }else{
+            sesiKuliah.setLinkOnline(jadwalDto.getLinkOnline());
         }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
