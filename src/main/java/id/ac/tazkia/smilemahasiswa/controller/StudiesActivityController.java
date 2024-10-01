@@ -893,12 +893,16 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/attendance/mulai")
-    public void mulaiAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah) {
+    public void mulaiAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah, Authentication authentication) {
+
+        User user = currentUserService.currentUser(authentication);
+        Dosen dosen = dosenDao.findByKaryawanIdUser(user);
+
         PresensiDto jadwalDto = new PresensiDto();
         jadwalDto.setId(sesiKuliah.getId());
         jadwalDto.setJadwal(sesiKuliah.getJadwal());
         jadwalDto.setBeritaAcara(sesiKuliah.getBeritaAcara());
-        jadwalDto.setDosen(sesiKuliah.getPresensiDosen().getDosen());
+        jadwalDto.setDosen(dosen);
         jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());
         jadwalDto.setTanggal(sesiKuliah.getWaktuMulai().toLocalDate());
         jadwalDto.setId(sesiKuliah.getId());
@@ -1595,6 +1599,11 @@ public class StudiesActivityController {
         model.addAttribute("jadwaltugas", jadwalTugas);
         model.addAttribute("tugasmahasiswa", tugasJawabanDao.findByJadwalTugasAndStatusOrderByWaktuPengumpulan(jadwalTugas, StatusRecord.AKTIF));
     }
+
+//    @GetMapping("/studiesActivity/assesment/collection/download")
+//    public void downloadAllSubmission(@RequestParam JadwalTugas jadwalTugas, HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        tugasMateriService.downloadAllSubmission(jadwalTugas, request, response);
+//    }
 
     @PostMapping("/studiesActivity/assesment/collection")
     public String nilaiTugas(@RequestParam JadwalTugas jadwalTugas, HttpServletRequest request){
