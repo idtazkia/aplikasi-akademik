@@ -1555,7 +1555,12 @@ public class StudiesActivityController {
         }
         Jadwal jadwal = jadwalTugas.getSesiKuliah().getJadwal();
         BigDecimal bobotMaks = jadwal.getBobotTugas().subtract(jadwalTugasDao.totalBobot(jadwal));
-        BigDecimal akumulasiBobot = bobotMaks.add(jadwalTugas.getBobot());
+        BigDecimal akumulasiBobot = BigDecimal.ZERO;
+        if (jadwalTugas.getBobot() != null) {
+            akumulasiBobot = bobotMaks.add(jadwalTugas.getBobot());
+        }else{
+            akumulasiBobot = bobotMaks;
+        }
 
         model.addAttribute("now", LocalDate.now());
         model.addAttribute("akumulasiBobot", akumulasiBobot);
