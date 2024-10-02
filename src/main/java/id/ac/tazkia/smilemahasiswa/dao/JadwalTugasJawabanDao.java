@@ -24,4 +24,6 @@ public interface JadwalTugasJawabanDao extends PagingAndSortingRepository<Jadwal
 
     JadwalTugasJawaban findTopByMahasiswaAndJadwalTugasAndStatus(Mahasiswa mhs, JadwalTugas jadwalTugas, StatusRecord status);
 
+    JadwalTugasJawaban findByFile(String file);
+
 }

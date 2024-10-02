@@ -790,6 +790,8 @@ public class PresensiService {
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
         if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
             sesiKuliah.setLinkOnline(null);
+        }else{
+            sesiKuliah.setLinkOnline(jadwalDto.getLinkOnline());
         }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);

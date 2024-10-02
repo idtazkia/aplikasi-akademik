@@ -90,6 +90,7 @@
                                                 <select name="dosen" th:field="*{dosen}" class="form-control">
                                                     <option value=""></option>
                                                     <option th:each="dosen : ${teamTeaching}"
+                                                            th:selected="(${dosen.dosen.karyawan} == *{dosen})"
                                                             th:text="${dosen.dosen.karyawan.namaKaryawan}"
                                                             th:value="${dosen.dosen.id}">sdasd</option>
                                                 </select>

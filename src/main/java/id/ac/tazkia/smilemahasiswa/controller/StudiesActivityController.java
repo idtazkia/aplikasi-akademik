@@ -826,6 +826,8 @@ public class StudiesActivityController {
         jadwalDto.setPresentasi(sesiKuliah.getPresentasi());
         jadwalDto.setTanyajawab(sesiKuliah.getTanyajawab());
         jadwalDto.setKuis(sesiKuliah.getKuis());
+        jadwalDto.setPraktikum(sesiKuliah.getPraktikum());
+        jadwalDto.setLinkOnline(sesiKuliah.getLinkOnline());
 
         if (sesiKuliah.getPertemuanKe().equals(8) || sesiKuliah.getPertemuanKe().equals(16)) {
             model.addAttribute("validPertemuan", sesiKuliah.getPertemuanKe());
@@ -904,12 +906,16 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/attendance/mulai")
-    public void mulaiAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah) {
+    public void mulaiAttendance(Model model, @RequestParam(name = "id", value = "id") SesiKuliah sesiKuliah, Authentication authentication) {
+
+        User user = currentUserService.currentUser(authentication);
+        Dosen dosen = dosenDao.findByKaryawanIdUser(user);
+
         PresensiDto jadwalDto = new PresensiDto();
         jadwalDto.setId(sesiKuliah.getId());
         jadwalDto.setJadwal(sesiKuliah.getJadwal());
         jadwalDto.setBeritaAcara(sesiKuliah.getBeritaAcara());
-        jadwalDto.setDosen(sesiKuliah.getPresensiDosen().getDosen());
+        jadwalDto.setDosen(dosen);
         jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());
         jadwalDto.setTanggal(sesiKuliah.getWaktuMulai().toLocalDate());
         jadwalDto.setId(sesiKuliah.getId());
@@ -958,6 +964,8 @@ public class StudiesActivityController {
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
         if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
             sesiKuliah.setLinkOnline(null);
+        }else{
+            sesiKuliah.setLinkOnline(jadwalDto.getLinkOnline());
         }
         sesiKuliahDao.save(sesiKuliah);
         presensiDosenDao.save(presensiDosen);
@@ -1560,7 +1568,12 @@ public class StudiesActivityController {
         }
         Jadwal jadwal = jadwalTugas.getSesiKuliah().getJadwal();
         BigDecimal bobotMaks = jadwal.getBobotTugas().subtract(jadwalTugasDao.totalBobot(jadwal));
-        BigDecimal akumulasiBobot = bobotMaks.add(jadwalTugas.getBobot());
+        BigDecimal akumulasiBobot = BigDecimal.ZERO;
+        if (jadwalTugas.getBobot() != null) {
+            akumulasiBobot = bobotMaks.add(jadwalTugas.getBobot());
+        }else{
+            akumulasiBobot = bobotMaks;
+        }
 
         model.addAttribute("now", LocalDate.now());
         model.addAttribute("akumulasiBobot", akumulasiBobot);
@@ -1604,6 +1617,11 @@ public class StudiesActivityController {
         model.addAttribute("jadwaltugas", jadwalTugas);
         model.addAttribute("tugasmahasiswa", tugasJawabanDao.findByJadwalTugasAndStatusOrderByWaktuPengumpulan(jadwalTugas, StatusRecord.AKTIF));
     }
+
+//    @GetMapping("/studiesActivity/assesment/collection/download")
+//    public void downloadAllSubmission(@RequestParam JadwalTugas jadwalTugas, HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        tugasMateriService.downloadAllSubmission(jadwalTugas, request, response);
+//    }
 
     @PostMapping("/studiesActivity/assesment/collection")
     public String nilaiTugas(@RequestParam JadwalTugas jadwalTugas, HttpServletRequest request){

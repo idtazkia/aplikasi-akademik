@@ -5,16 +5,26 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.LongSummaryStatistics;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 @Transactional
@@ -28,6 +38,8 @@ public class TugasMateriService {
     @Autowired private KrsDetailDao krsDetailDao;
 
     @Autowired private NilaiTugasDao nilaiTugasDao;
+
+    @Autowired private JadwalTugasJawabanDao tugasJawabanDao;
 
     @Value("${upload.tugas.dosen}")
     private String uploadTugas;
@@ -171,6 +183,42 @@ public class TugasMateriService {
 
             }catch (Exception err){
                 log.error(err.getMessage(), err);
+            }
+        }
+    }
+
+    public void downloadAllSubmission(JadwalTugas tugas, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        List<Path> files = new ArrayList<>();
+
+        List<JadwalTugasJawaban> list = tugasJawabanDao.findByJadwalTugasAndStatusOrderByWaktuPengumpulan(tugas, StatusRecord.AKTIF);
+        for (JadwalTugasJawaban jadwalTugas : list){
+            if (jadwalTugas.getFile() != null && !jadwalTugas.getFile().isEmpty()){
+                files.add(Paths.get(uploadJawaban + File.separator + jadwalTugas.getMahasiswa().getNim() + " - " +
+                        jadwalTugas.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + File.separator + jadwalTugas.getFile()));
+            }
+        }
+
+        response.setContentType("application/zip");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                                                                                    .filename( "Tugas matakuliah " + tugas.getSesiKuliah().getJadwal()
+                                                                                    .getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " pertemuan " +
+                                                                                    tugas.getPertemuanKe() + " - " + tugas.getNamaTugas() + ".zip", StandardCharsets.UTF_8)
+                                                                                    .build()
+                                                                                    .toString());
+
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream())){
+            for (Path file : files){
+                try(InputStream inputStream = Files.newInputStream(file)){
+                    JadwalTugasJawaban namaFile = tugasJawabanDao.findByFile(file.getFileName().toString());
+                    if (namaFile != null) {
+                        zipOutputStream.putNextEntry(new ZipEntry(namaFile.getNamaFile()));
+                    }else{
+                        zipOutputStream.putNextEntry(new ZipEntry(file.getFileName().toString()));
+                    }
+                    StreamUtils.copy(inputStream, zipOutputStream);
+                    zipOutputStream.flush();
+                }
             }
         }
     }
