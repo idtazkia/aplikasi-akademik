@@ -626,6 +626,8 @@ public class StudentBillController {
         RequestCicilan cekCicilan = requestCicilanDao.cariCicilan(tagihan);
         if (info == StatusTagihan.DICICIL){
             model.addAttribute("message", "message");
+            model.addAttribute("cekJumlahCicilan", requestCicilanDao.jumlahCicilan(tagihan1));
+            model.addAttribute("sisaCicilan", requestCicilanDao.pengajuanPelunasan(tagihan1.getId()));
         }
 
         model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan1));
@@ -2184,12 +2186,12 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/cicilan/pelunasan")
-    public String pelunasan(@Valid RequestCicilan requestCicilan,
-                          @RequestParam(required = false) Tagihan tagihan,
-                          @RequestParam(required = false) BigDecimal nilaiCicilan){
+    public String pelunasan(@RequestParam(required = false) Tagihan tagihan, @RequestParam(required = false) BigDecimal nilaiCicilan){
 
-        log.info("jumlah cicilan : {}" + nilaiCicilan);
-        List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+        RequestCicilan requestCicilan = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+
+        log.info("jumlah cicilan : {}", nilaiCicilan);
+        List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS, StatusCicilan.SEDANG_DITAGIHKAN));
         for (RequestCicilan sisaCicilan : cekSisaCicilan){
             sisaCicilan.setStatus(StatusRecord.HAPUS);
             sisaCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
@@ -2197,17 +2199,13 @@ public class StudentBillController {
             requestCicilanDao.save(sisaCicilan);
         }
 
-        requestCicilan.setTagihan(tagihan);
-        requestCicilan.setTanggalPengajuan(LocalDate.now());
         requestCicilan.setNilaiCicilan(nilaiCicilan);
-        requestCicilan.setTanggalJatuhTempo(LocalDate.now().plusMonths(1).withDayOfMonth(10));
-        requestCicilan.setStatusApprove(StatusApprove.APPROVED);
-        requestCicilan.setStatus(StatusRecord.AKTIF);
-        requestCicilan.setStatusCicilan(StatusCicilan.PENGAJUAN_PELUNASAN);
+        requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+        requestCicilan.setKeterangan("PENGAJUAN PELUNASAN");
         requestCicilanDao.save(requestCicilan);
         tagihanService.ubahJadiCicilan(requestCicilan);
 
-        return "redirect:../bill/list";
+        return "redirect:../billAdmin/detail?tagihan="+tagihan.getId();
     }
 
 

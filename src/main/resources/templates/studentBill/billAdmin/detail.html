@@ -110,7 +110,50 @@
                                   </address>
                                 </div>
                                 <div class="col-md-6" th:if="${message != null}">
-                                    <h2>Keterangan Cicilan</h2>
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h2 class="mb-0">Keterangan Cicilan</h2>
+                                        </div>
+                                        <div class="col text-right">
+                                            <button th:if="${cekJumlahCicilan > 1}" type="button" class="btn btn-primary btn-sm" data-toggle="modal" title="Hapus" data-target="#modal-pelunasan">
+                                                <i class="fa fa-money-bill-wave"></i> Pelunasan
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal fade" id="modal-pelunasan" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                        <div class="modal-dialog modal-primary modal-dialog-centered modal-" role="document">
+                                            <div class="modal-content bg-gradient-primary">
+
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="py-3 text-center">
+                                                        <i class="fa fa-money-bill-wave fa-3x"></i>
+                                                        <h4 class="heading mt-4">Yakin ?</h4>
+                                                        <p>Total tagihan yang akan dikirim adalah <b th:text="${'Rp. ' + #numbers.formatDecimal(sisaCicilan, 0, 'POINT', 2, 'COMMA')}"></b></p>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <form method="post" th:action="@{/studentBill/cicilan/pelunasan}">
+                                                        <input type="hidden" name="tagihan" th:value="${tagihan.id}">
+                                                        <input type="hidden" name="nilaiCicilan" th:value="${sisaCicilan}">
+                                                        <button type="submit" class="btn btn-secondary">Submit</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-flush table-hovered">
                                             <thead class="thead-light">
@@ -188,7 +231,7 @@
                                                 <td th:text="${data.bank.nama}"></td>
                                                 <td th:text="${data.nomorRekening}"></td>
                                                 <td th:text="${data.referensi}"></td>
-                                                <td th:text="${data.amount}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.amount, 0, 'POINT', 2, 'COMMA')}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
