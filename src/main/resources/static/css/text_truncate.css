@@ -1,0 +1,14 @@
+.text-truncate-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2; /* Limits to 3 lines */
+    max-height: 4.5em; /* Approximate height for 3 lines */
+    transition: max-height 0.3s ease;
+    white-space: normal;
+}
+
+.text-full {
+    max-height: none; /* Expand fully when the 'text-full' class is applied */
+}

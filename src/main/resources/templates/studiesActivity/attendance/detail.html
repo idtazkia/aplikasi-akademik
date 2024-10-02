@@ -212,16 +212,19 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4 mb-3 border-right">
+                                        <div class="col-md-3 mb-3 border-right">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <i class="fa fa-link text-yellow"></i>
+                                                    <i class="fa fa-star text-yellow"></i>
                                                     <span class="text-dark font-weight-bold">Link Materi : </span>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div th:if="${data.link != null}" class="col-md-12" th:each="link, row:${#strings.arraySplit(data.link, ',')}">
-                                                    <a th:href="${link}" target="_blank" th:text="${link}"></a>
+
+                                                    <a th:href="${link}" class="d-inline-block text-truncate w-100" target="_blank">
+                                                        <i class="fa fa-link fa-sm"></i> <span th:text="${link}"></span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -229,15 +232,20 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <i class="fa fa-sticky-note text-yellow"></i>
-                                                    <span class="text-dark font-weight-bold">Berita Acara Pembelajaran : </span>
+                                                    <span class="text-dark font-weight-bold">Berita Acara Perkuliahan : </span>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-12" th:utext="${data.berita}">
+                                                <div class="col-md-12" >
+                                                    <div id="berita-content" class="text-truncate-clamp" th:utext="${data.berita}" >
+                                                        <!-- This is where your dynamic content will be placed -->
+                                                    </div>
+<!--                                                    <a href="javascript:void(0);" id="toggle-button" onclick="toggleText()">See More</a>-->
+
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3 border-right">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <i class="fa fa-archive text-yellow"></i>
@@ -246,14 +254,41 @@
                                             </div>
                                             <div class="row" th:each="dataTugas,row : ${jadwalTugas}">
                                                 <div class="col-md-12" th:if="${data.sesi == dataTugas.sesiKuliah.id}">
-                                                    <i class="fa fa-arrow-right" th:if="${data.sesi == dataTugas.sesiKuliah.id}"></i>
-                                                    <a th:if="${data.sesi == dataTugas.sesiKuliah.id}" th:text="${dataTugas.namaTugas}" th:href="@{/studiesActivity/assesment/collection(jadwalTugas=${dataTugas.id})}" title="Klik untuk penilaian tugas"></a>
+                                                    <a class="d-inline-block text-truncate w-100" th:if="${data.sesi == dataTugas.sesiKuliah.id}" th:href="@{/studiesActivity/assesment/collection(jadwalTugas=${dataTugas.id})}" title="Klik untuk penilaian tugas">
+                                                        <i class="fa fa-arrow-right" th:if="${data.sesi == dataTugas.sesiKuliah.id}"></i> <span th:text="${dataTugas.namaTugas}"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <i class="fa fa-camera text-yellow"></i>
+                                                    <span class="text-dark font-weight-bold">Dokumentasi : </span>
+                                                </div>
+                                            </div>
+                                            <div class="row" th:each="dataFoto,row : ${sesiKuliahFoto}">
+                                                <div class="col-md-12" th:if="${data.sesi == dataFoto.sesiKuliah.id}">
+                                                        <a class="d-inline-block text-truncate w-75" th:if="${data.sesi == dataFoto.sesiKuliah.id}" th:href="@{/studiesActivity/{sesiKuliahFoto}/fotoKuliah/(sesiKuliahFoto=${dataFoto.id})}" title="Lihat" target="_blank">
+                                                            <i class="fa fa-image" th:if="${data.sesi == dataFoto.sesiKuliah.id}"></i>
+                                                            <span th:text="${dataFoto.getNamaFile()}"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a
+                                                                onclick="return confirm('Apakah anda yakin untuk dokumen ini? ')"
+                                                                th:href="@{/studiesActivity/attendance/hapusfoto(sesiKuliahFoto=${dataFoto.getId()})}"
+                                                                th:if="${data.sesi == dataFoto.sesiKuliah.id}"
+                                                                class="fa fa-trash mt-0"
+                                                                title="Hapus"
+                                                                style="color: #bb2d3b"
+                                                        ></a>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4 mb-2">
+                                        <div class="col-md-3 mb-2">
                                             <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm col-md-5"  aria-haspopup="true" aria-expanded="false">
                                                 <i class="fas fa-file"></i>
                                                 Input Materi
@@ -348,11 +383,38 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 mb-2">
+                                        <div class="col-md-3 mb-2">
                                             <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fas fa-edit"></i>
                                                 Buat tugas
                                             </a>
+                                        </div>
+                                        <div class="col-md-2 mb-2">
+<!--                                            <a th:href="@{/studiesActivity/attendance/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">-->
+<!--                                                <i class="fas fa-camera"></i>-->
+<!--                                                Foto-->
+<!--                                            </a>-->
+
+                                            <form
+                                                    id="form4"
+                                                    th:action="@{/studiesActivity/attendance/tambahfoto(id=${data.getSesi()})}"
+                                                    method="post"
+                                                    enctype="multipart/form-data"
+                                            >
+                                                <label class="btn btn-outline-primary border-primary btn-sm col-md-9 mx-auto">
+                                                    <i class="fas fa-camera"></i>
+                                                    Tambah Foto
+                                                    <input
+                                                            type="file"
+                                                            name="fotoKuliah"
+                                                            accept="application/pdf,image/jpeg,image/png"
+                                                            onchange="validateSize(this, 4)"
+                                                            hidden
+                                                    />
+                                                </label>
+                                            </form>
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -365,7 +427,37 @@
 <!--        </div>-->
         <!-- Dark table -->
 
-        <div class="modal fade" id="modal-materi" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!-- Modal "Tunggu Sebentar" -->
+            <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <h5 class="mt-3">Tunggu sebentar, file sedang diunggah...</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal "File Berhasil Diunggah" -->
+            <div class="modal fade bg-success" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <div class="text-success">
+                                <i class="fas fa-check-circle fa-3x"></i>
+                            </div>
+                            <h5 class="mt-3">File telah berhasil diunggah!</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="modal fade" id="modal-materi" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <form id="add-materi" method="post" th:action="@{/studiesActivity/attendance/materi/upload}" >
                     <input type="hidden" name="idSesi" id="idSesi">
@@ -456,6 +548,61 @@
     </div>
   </body>
 </html>
+
+<script>
+    function validateSize(input, n) {
+        const fileSize = input.files[0].size / 1024; // in KB
+        let form;
+        if (n == 1) {
+            form = document.getElementById("form1");
+        } else if (n == 2) {
+            form = document.getElementById("form2");
+        } else if (n == 3) {
+            form = document.getElementById("form3");
+        } else {
+            form = document.getElementById("form4");
+        }
+
+        if (fileSize > 1000) {
+            event.target.value = ""; // Reset file input
+            alert("Ukuran file melebihi 100 Kb");
+        } else {
+            // Tampilkan modal "Tunggu Sebentar"
+            $('#loadingModal').modal('show');
+
+            // Submit form setelah sedikit penundaan
+            setTimeout(() => {
+                form.submit();
+            }, 500); // Penundaan 0.5 detik
+        }
+    }
+
+    // Menampilkan modal keberhasilan setelah form disubmit
+    $(document).ready(function () {
+        // Ketika form berhasil disubmit
+        $('#form4').on('submit', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Simulate file upload with timeout (replace this with actual form submission if necessary)
+            setTimeout(function () {
+                // Sembunyikan modal "Tunggu Sebentar"
+                $('#loadingModal').modal('hide');
+
+                // Tampilkan modal "Berhasil"
+                $('#successModal').modal('show');
+
+                // Sembunyikan modal "Berhasil" setelah 1 detik
+                setTimeout(function () {
+                    $('#successModal').modal('hide');
+                }, 1000);
+
+            }, 2000); // Simulasi penundaan upload selama 2 detik
+        });
+    });
+</script>
+
+
+
 <script>
 
     function openModalMateri(id, link){
@@ -491,7 +638,9 @@
 
   }
 
-  function formatTanggal(date) {
+
+
+    function formatTanggal(date) {
     var date = new Date(date);
     var tahun = date.getFullYear();
     var bulan = date.getMonth();

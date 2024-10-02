@@ -16,8 +16,10 @@ import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.entity.SesiKuliahFoto;
 import id.ac.tazkia.smilemahasiswa.service.*;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -77,6 +79,11 @@ public class StudiesActivityController {
     private ProdiDao prodiDao;
 
     @Autowired
+    private SesiKuliahDao sesiKuliahDao;
+
+
+
+    @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
@@ -92,7 +99,7 @@ public class StudiesActivityController {
     private MustacheFactory mustacheFactory;
 
     @Autowired
-    private SesiKuliahDao sesiKuliahDao;
+    private SesiKuliahFotoDao sesiKuliahFotoDao;
 
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
@@ -201,6 +208,11 @@ public class StudiesActivityController {
 
     @Autowired
     private KrsService krsService;
+
+    @Autowired
+    @Value("${upload.fotokuliah}")
+    private String uploadFotoKuliah;
+
 
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
@@ -371,6 +383,7 @@ public class StudiesActivityController {
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("jadwalTugas", jadwalTugasDao.findByStatusAndSesiKuliahJadwalOrderBySesiKuliahPertemuanKe(StatusRecord.AKTIF,jadwal));
         model.addAttribute("jadwal", jadwal);
+        model.addAttribute("sesiKuliahFoto", sesiKuliahFotoDao.findByStatusAndJadwalOrderBySesiKuliahPertemuan(StatusRecord.AKTIF,jadwal));
         model.addAttribute("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
     }
@@ -13074,4 +13087,113 @@ public class StudiesActivityController {
 
     }
 
+
+    @PostMapping("/studiesActivity/attendance/tambahfoto")
+    public String tambahFilePerkuliahan(@RequestParam String id,
+                                        @RequestParam("fotoKuliah") MultipartFile file,
+                                        Authentication authentication,
+                                        RedirectAttributes redirectAttributes) throws Exception {
+
+        User user = currentUserService.currentUser(authentication);
+//        Karyawan karyawan = karyawanDao.findByUser(user);
+//        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        // Validasi ekstensi file (hanya gambar)
+        String namaAsli = file.getOriginalFilename();
+        if (namaAsli == null || !isImageFile(namaAsli)) {
+            redirectAttributes.addFlashAttribute("error", "File yang diunggah bukan gambar");
+            return "redirect:../detail";
+        }
+
+        SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
+
+        SesiKuliahFoto sesiKuliahFoto = new SesiKuliahFoto();
+        sesiKuliahFoto.setJadwal(sesiKuliah.getJadwal());
+        sesiKuliahFoto.setSesiKuliah(sesiKuliah);
+        sesiKuliahFoto.setNamaFile(namaAsli);
+
+        // Ekstrak ekstensi file
+        String extension = namaAsli.substring(namaAsli.lastIndexOf('.') + 1);
+        String idFile1 = UUID.randomUUID().toString();
+        String namaFileSimpan = idFile1 + "." + extension;
+        sesiKuliahFoto.setFile(namaFileSimpan);
+
+        // Buat direktori jika belum ada
+        new File(uploadFotoKuliah).mkdirs();
+        File tujuan2 = new File(uploadFotoKuliah + File.separator + namaFileSimpan);
+
+        // Konversi dan kompres gambar agar di bawah 100KB
+        Thumbnails.of(file.getInputStream())
+                .size(1024, 1024) // Mengatur ukuran maksimal (bisa disesuaikan)
+                .outputFormat(extension)
+                .outputQuality(0.8) // Menurunkan kualitas untuk kompresi
+                .toFile(tujuan2);
+
+        // Validasi ukuran file agar kurang dari 100KB
+        if (tujuan2.length() > 100 * 1024) {
+            Thumbnails.of(tujuan2)
+                    .scale(1.0) // tidak mengubah ukuran
+                    .outputQuality(0.5) // Kompres lebih lanjut
+                    .toFile(tujuan2);
+        }
+
+        sesiKuliahFoto.setUserUpload(user.getUsername());
+        sesiKuliahFoto.setStatus(StatusRecord.AKTIF);
+        sesiKuliahFoto.setTanggalUpload(LocalDateTime.now());
+        sesiKuliahFotoDao.save(sesiKuliahFoto);
+
+        redirectAttributes.addFlashAttribute("success", "Foto perkuliahan berhasil ditambahkan");
+        return "redirect:../attendance/detail?jadwal="+ sesiKuliah.getJadwal().getId();
+    }
+
+
+    @GetMapping("/studiesActivity/attendance/hapusfoto")
+    public String lappranBkdPendidikanHapusFile(@RequestParam(required = true)SesiKuliahFoto sesiKuliahFoto,
+                                                Authentication authentication,
+                                                RedirectAttributes redirectAttributes){
+
+        User user = currentUserService.currentUser(authentication);
+
+        sesiKuliahFoto.setStatus(StatusRecord.HAPUS);
+        sesiKuliahFoto.setUserDelete(user.getUsername());
+        sesiKuliahFoto.setTanggalDelete(LocalDateTime.now());
+        sesiKuliahFotoDao.save(sesiKuliahFoto);
+
+
+        redirectAttributes.addFlashAttribute("success", "File berhasil dihapus");
+        return "redirect:../attendance/detail?jadwal="+ sesiKuliahFoto.getSesiKuliah().getJadwal().getId();
+    }
+
+    // Fungsi untuk validasi ekstensi gambar
+    private boolean isImageFile(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+        return extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg");
+    }
+
+
+    @GetMapping("/studiesActivity/{sesiKuliahFoto}/fotoKuliah/")
+    public ResponseEntity<byte[]> tampilkanSesiKuliahFoto(@PathVariable SesiKuliahFoto sesiKuliahFoto) throws Exception {
+        String lokasiFile = uploadFotoKuliah + File.separator + sesiKuliahFoto.getFile();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (sesiKuliahFoto.getNamaFile().toLowerCase().endsWith("jpeg") || sesiKuliahFoto.getNamaFile().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (sesiKuliahFoto.getNamaFile().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (sesiKuliahFoto.getNamaFile().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
+

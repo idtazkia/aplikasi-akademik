@@ -3,12 +3,13 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, String> {
+public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, String>, CrudRepository<SesiKuliah, String> {
         List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord aktif);
 
         SesiKuliah findByPresensiDosen(PresensiDosen pd);
