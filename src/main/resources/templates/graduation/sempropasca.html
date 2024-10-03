@@ -62,7 +62,7 @@
                                         alt="">
                                 </div>
                                 <div class="col-md-6 col-xs-12">
-                                    <form th:action="@{/graduation/sempropasca}" th:object="${seminar}" method="post"
+                                    <form th:action="@{/graduation/sempropasca}" th:object="${seminar}" method="post" id="add-sempro"
                                         enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label>NIM</label>
@@ -116,7 +116,7 @@
                                                 class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="submit" onclick="saveSempro()" id="btnSimpan" class="btn btn-primary">Save</button>
                                         </div>
                                         <input type="hidden" name="id" th:field="*{id}">
                                     </form>
@@ -140,7 +140,7 @@
                                         alt="">
                                 </div>
                                 <div class="col-md-6 col-xs-12">
-                                    <form th:action="@{/graduation/sempro-publikasi}" th:object="${seminar}"
+                                    <form th:action="@{/graduation/sempro-publikasi}" th:object="${seminar}" id="add-sempro"
                                         method="post" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label>NIM</label>
@@ -189,7 +189,7 @@
                                                 class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="submit" onclick="saveSempro()" id="btnSimpan" class="btn btn-primary">Save</button>
                                         </div>
                                         <input type="hidden" name="id" th:field="*{id}">
                                     </form>
@@ -204,3 +204,16 @@
 </body>
 
 </html>
+<script>
+    function saveSempro(){
+        var form = document.getElementById('add-sempro');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+
+            return;
+        } else {
+            $("#btnSimpan").removeClass("btn-primary").addClass("btn-warning").prop("disabled", true).html("Loading...");
+            form.submit();
+        }
+    }
+</script>

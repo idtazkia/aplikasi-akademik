@@ -9,7 +9,9 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
+import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.PenjadwalanSeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
@@ -52,6 +54,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -96,6 +99,9 @@ public class GraduationController {
 
     @Autowired
     private KrsDetailDao krsDetailDao;
+
+    @Autowired
+    private KrsDao krsDao;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -788,8 +794,9 @@ public class GraduationController {
                 }
             }
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
-
-            if (krsDetail != null) {
+            Integer semester = krsDao.countSemester(note.getMahasiswa().getNim());
+            System.out.println(semester);
+            if (semester == 7){
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
                 } else {
@@ -801,14 +808,29 @@ public class GraduationController {
                 }else {
                     return "graduation/sempro";
                 }
-            } else {
-                return "redirect:info";
+            }else {
+                if (krsDetail != null) {
+                    if (waiting != null) {
+                        model.addAttribute("seminar", waiting);
+                    } else {
+                        model.addAttribute("seminar", new Seminar());
+                    }
+
+                    if (periodeWisuda.getTutupLoa().compareTo(LocalDate.now()) >= 0 && note.getJenis() == StatusRecord.JURNAL){
+                        return "redirect:loa";
+                    }else {
+                        return "graduation/sempro";
+                    }
+
+                } else {
+                    return "redirect:info";
+                }
             }
 
-        } else {
 
-            return "redirect:register";
-        }
+            } else {
+                return "redirect:register";
+            }
 
     }
 
@@ -1108,9 +1130,9 @@ public class GraduationController {
             seminar.setFileSkripsi(seminar.getFileSkripsi());
         }
 
-        seminar.setTanggalInput(LocalDate.now());
+        seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
         seminar.setStatus(StatusApprove.WAITING);
-        seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setStatusSempro(StatusTugasAkhir.WAITING);
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -1298,9 +1320,9 @@ public class GraduationController {
 
         }
 
-        seminar.setTanggalInput(LocalDate.now());
+        seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
         seminar.setStatus(StatusApprove.WAITING);
-        seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setStatusSempro(StatusTugasAkhir.WAITING);
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -1474,9 +1496,9 @@ public class GraduationController {
             seminar.setFileCoverNote(seminar.getFileSkripsi());
         }
 
-        seminar.setTanggalInput(LocalDate.now());
+        seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
         seminar.setStatus(StatusApprove.WAITING);
-        seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setStatusSempro(StatusTugasAkhir.WAITING);
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
         TahunAkademik ta = null;
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -1514,13 +1536,31 @@ public class GraduationController {
         }
     }
 
+    @GetMapping("/graduation/seminar/admin/list")
+    public void seminarAdminList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) Prodi prodi, Pageable pageable) {
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedProdi", prodi);
+            model.addAttribute("listSempro", seminarDao.listSeminarAdmin(tahunAkademik, prodi, pageable));
+
+    }
+
+    @GetMapping("/graduation/seminar/prodi/list")
+    public void seminarProdiList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) Prodi prodi, Pageable pageable) {
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedProdi", prodi);
+            model.addAttribute("listSempro", seminarDao.listSeminarAdmin(tahunAkademik, prodi, pageable));
+
+    }
+
     @PostMapping("/graduation/seminar/approvedakademik")
     public String approvedAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
         seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.APPROVED_AKADEMIK);
         seminarDao.save(seminar);
 
-        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+        return "redirect:admin/list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
@@ -1528,7 +1568,7 @@ public class GraduationController {
     public String approvedJurnal(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan) {
         seminar.setKomentar(keterangan);
         seminar.setStatus(StatusApprove.APPROVED);
-        seminar.setStatusSempro(StatusApprove.APPROVED);
+        seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
         seminar.setPublish("AKTIF");
         seminar.setNilai(new BigDecimal(71));
         seminarDao.save(seminar);
@@ -1555,7 +1595,7 @@ public class GraduationController {
 
     }
 
-    @GetMapping("/graduation/seminar/approved")
+    @GetMapping("/graduation/seminar/prodi/approved")
     public void approvedSeminar(@RequestParam(name = "id", value = "id") Seminar seminar, Model model) {
         model.addAttribute("seminar", seminar);
         List<String> dosenList = new ArrayList<>();
@@ -1575,11 +1615,19 @@ public class GraduationController {
 
     }
 
-    @PostMapping("/graduation/seminar/approved")
-    public String prosesApprove(@Valid Seminar seminar, Authentication authentication) {
+    @PostMapping("/graduation/seminar/prodi/approved")
+    public String prosesApprove(@Valid PenjadwalanSeminarDto request, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
+        Seminar seminar = seminarDao.findById(request.getId()).get();
+        seminar.setKetuaPenguji(request.getKetuaPenguji());
+        seminar.setDosenPenguji(request.getDosenPenguji());
+        seminar.setRuangan(request.getRuangan());
+        seminar.setTanggalUjian(request.getTanggalUjian());
+        seminar.setJamMulai(request.getJamMulai());
+        seminar.setJamSelesai(request.getJamSelesai());
         seminar.setUserApprove(user);
         seminar.setStatus(StatusApprove.APPROVED);
+        seminar.setStatusSempro(StatusTugasAkhir.SCHEDULED);
         seminarDao.save(seminar);
 
         return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
@@ -2047,9 +2095,9 @@ public class GraduationController {
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
             if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusApprove.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
             }
             seminarDao.save(seminar);
         }
@@ -2079,9 +2127,9 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
             if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusApprove.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
             }
             seminarDao.save(seminar);
         }
@@ -2123,9 +2171,9 @@ public class GraduationController {
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
             if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusApprove.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
             }
             seminarDao.save(seminar);
         }
@@ -2153,9 +2201,9 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
             if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusApprove.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
             }
             seminarDao.save(seminar);
         }
@@ -2197,9 +2245,9 @@ public class GraduationController {
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
             if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusApprove.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
             }
             seminarDao.save(seminar);
         }
@@ -2227,9 +2275,9 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
             if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusApprove.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
             }
             seminarDao.save(seminar);
         }
@@ -2263,7 +2311,7 @@ public class GraduationController {
                 if (seminar.getKetuaPenguji() == dosen) {
                     seminar.setPublish(StatusRecord.AKTIF.toString());
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                        seminar.setStatusSempro(StatusApprove.FAILED);
+                        seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
                         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                                 seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -2272,7 +2320,7 @@ public class GraduationController {
                             enableFitureDao.save(enableFiture);
                         }
                     } else {
-                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                     }
                     seminarDao.save(seminar);
                 }
@@ -2289,7 +2337,7 @@ public class GraduationController {
                 if (seminar.getKetuaPenguji() == dosen) {
                     seminar.setPublish(StatusRecord.AKTIF.toString());
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                        seminar.setStatusSempro(StatusApprove.FAILED);
+                        seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
                         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                                 seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -2298,7 +2346,7 @@ public class GraduationController {
                             enableFitureDao.save(enableFiture);
                         }
                     } else {
-                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                     }
                     seminarDao.save(seminar);
                 }
@@ -2327,7 +2375,7 @@ public class GraduationController {
             seminar.setPublish(StatusRecord.AKTIF.toString());
 
             if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                seminar.setStatusSempro(StatusApprove.FAILED);
+                seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                 seminar.setStatus(StatusApprove.FAILED);
                 EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                         seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -2650,7 +2698,7 @@ public class GraduationController {
             Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
@@ -2663,7 +2711,7 @@ public class GraduationController {
             Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
@@ -2686,7 +2734,7 @@ public class GraduationController {
                 if (nilaiKosong == null) {
                     if (krsDetail != null) {
                         seminar.setPublish("AKTIF");
-                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                         seminarDao.save(seminar);
                         krsDetail.setNilaiAkhir(seminar.getNilai());
                         krsDetailDao.save(krsDetail);
@@ -2707,7 +2755,7 @@ public class GraduationController {
                 if (nilaiKosong == null) {
                     if (krsDetail != null) {
                         seminar.setPublish("AKTIF");
-                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                         seminarDao.save(seminar);
                         krsDetail.setNilaiAkhir(seminar.getNilai());
                         krsDetailDao.save(krsDetail);
@@ -2728,7 +2776,7 @@ public class GraduationController {
                         BigDecimal.ZERO);
                 if (nilaiKosong == null) {
                     seminar.setPublish("AKTIF");
-                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                    seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                     seminarDao.save(seminar);
 
                     return "berhasil";
@@ -2996,7 +3044,7 @@ public class GraduationController {
         for (Note note : noteList){
             System.out.println(note.getMahasiswa().getNim() + "  --  " + note.getMahasiswa().getNama());
             Seminar seminar = new Seminar();
-            seminar.setStatusSempro(StatusApprove.APPROVED);
+            seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             seminar.setNilai(new BigDecimal(71));
             seminar.setStatus(StatusApprove.APPROVED);
             seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
@@ -3006,7 +3054,7 @@ public class GraduationController {
             seminar.setDosenPenguji(note.getDosen());
             seminar.setKetuaPenguji(note.getDosen());
             seminar.setJenis(StatusRecord.KONVERSI_JURNAL);
-            seminar.setTanggalInput(LocalDate.now());
+            seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
             seminar.setNote(note);
             seminar.setJamMulai(LocalTime.now());
             seminar.setJamSelesai(LocalTime.now());
