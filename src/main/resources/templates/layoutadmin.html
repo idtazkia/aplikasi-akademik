@@ -476,8 +476,11 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1')">
                                 <a th:href="@{/graduation/admin/list}" class="nav-link">Konsep Note</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/graduation/seminar/list}" class="nav-link">Seminar Proposal</a>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/graduation/seminar/prodi/list}" class="nav-link">Seminar Proposal</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1')">
+                                <a th:href="@{/graduation/seminar/admin/list}" class="nav-link">Seminar Proposal</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/ujianTahfidz}" class="nav-link">Tahfidz</a>
