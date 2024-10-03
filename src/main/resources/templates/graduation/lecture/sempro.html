@@ -266,12 +266,14 @@
                                                                 <thead class="thead-light">
                                                                 <tr class="table-primary"  th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
                                                                     <th><center><b>#</b></center></th>
+                                                                    <th><center><b>Komponen</b></center></th>
                                                                     <th><center><b>Ketua Penguji</b></center></th>
                                                                     <th><center><b>Penguji</b></center></th>
                                                                     <th><center><b>Pembimbing</b></center></th>
                                                                 </tr>
                                                                 <tr class="table-primary"  th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                                     <th><center><b>#</b></center></th>
+                                                                    <th><center><b>Komponen</b></center></th>
                                                                     <th><center><b>Ketua Penguji</b></center></th>
                                                                     <th><center><b>Penguji</b></center></th>
                                                                     <th><center><b>Pembimbing 1</b></center></th>
@@ -328,7 +330,7 @@
                                                                     <td align="center" th:text="${data.pf}">90.00</td>
                                                                 </tr>
                                                                 <tr class="table-primary">
-                                                                    <td align="center"><b>Total</b></td>
+                                                                    <td align="center" colspan="2"><b>Total</b></td>
                                                                     <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
                                                                     <td align="center">
                                                                         <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
@@ -379,7 +381,7 @@
                                                                     <td align="center" th:text="${data.pe2}">90.00</td>
                                                                 </tr>
                                                                 <tr class="table-primary">
-                                                                    <td align="center"><b>Total</b></td>
+                                                                    <td align="center" colspan="2"><b>Total</b></td>
                                                                     <td align="center" colspan="3"><b th:text="${data.nilai}">90.00</b></td>
                                                                     <td align="center">
                                                                         <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>

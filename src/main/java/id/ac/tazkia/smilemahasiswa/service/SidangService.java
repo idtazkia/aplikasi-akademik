@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
+import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -112,7 +114,7 @@ public class SidangService {
             Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                    seminar.setStatusSempro(StatusApprove.FAILED);
+                    seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                     seminar.setStatus(StatusApprove.FAILED);
                     EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                             seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -121,7 +123,7 @@ public class SidangService {
                         enableFitureDao.save(enableFiture);
                     }
                 } else {
-                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                    seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                 }
             }
 
@@ -147,7 +149,7 @@ public class SidangService {
             Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                    seminar.setStatusSempro(StatusApprove.FAILED);
+                    seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                     seminar.setStatus(StatusApprove.FAILED);
                     EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                             seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -156,7 +158,7 @@ public class SidangService {
                         enableFitureDao.save(enableFiture);
                     }
                 } else {
-                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                    seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                 }
             }
         }
@@ -198,7 +200,7 @@ public class SidangService {
                 Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar, BigDecimal.ZERO);
                 if (nilaiKosong == null) {
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                        seminar.setStatusSempro(StatusApprove.FAILED);
+                        seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
                         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                                 seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -207,7 +209,7 @@ public class SidangService {
                             enableFitureDao.save(enableFiture);
                         }
                     } else {
-                        seminar.setStatusSempro(StatusApprove.APPROVED);
+                        seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                     }
                 }
             }
@@ -239,7 +241,7 @@ public class SidangService {
         System.out.println(nilaiKosong + " : hskajd");
         if (nilaiKosong == null) {
             if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                seminar.setStatusSempro(StatusApprove.FAILED);
+                seminar.setStatusSempro(StatusTugasAkhir.FAILED);
                 seminar.setStatus(StatusApprove.FAILED);
                 EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(
                         seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
@@ -248,7 +250,7 @@ public class SidangService {
                     enableFitureDao.save(enableFiture);
                 }
             } else {
-                seminar.setStatusSempro(StatusApprove.APPROVED);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             }
         }
         seminarDao.save(seminar);
@@ -437,7 +439,6 @@ public class SidangService {
         sidangDao.save(sidang);
         akumulasiNilai(sidang);
 
-        System.out.println("berhasil");
 
     }
 
@@ -452,7 +453,6 @@ public class SidangService {
         sidangDao.save(sidang);
         akumulasiNilaiPasca(sidang);
 
-        System.out.println("berhasil");
 
     }
 
@@ -466,8 +466,7 @@ public class SidangService {
         seminar.setKd(semproDto.getNilaiD());
         seminar.setKe(semproDto.getNilaiE());
         seminarDao.save(seminar);
-        akumulasiNilaiSempro(seminar);
-        System.out.println("berhasil");
+        cekAngkatanPasca(seminar);
 
     }
 
@@ -502,7 +501,7 @@ public class SidangService {
         seminar.setUd(semproDto.getNilaiD());
         seminar.setUe(semproDto.getNilaiE());
         seminarDao.save(seminar);
-        akumulasiNilaiSempro(seminar);
+        cekAngkatanPasca(seminar);
 
     }
 
@@ -515,7 +514,7 @@ public class SidangService {
         seminar.setPd(semproDto.getNilaiD());
         seminar.setPe(semproDto.getNilaiE());
         seminarDao.save(seminar);
-        akumulasiNilaiSempro(seminar);
+        cekAngkatanPasca(seminar);
 
     }
 
@@ -528,7 +527,7 @@ public class SidangService {
         seminar.setPd2(semproDto.getNilaiD());
         seminar.setPe2(semproDto.getNilaiE());
         seminarDao.save(seminar);
-        akumulasiNilaiSempro(seminar);
+        cekAngkatanPasca(seminar);
 
     }
 
@@ -602,7 +601,7 @@ public class SidangService {
         sidangDao.save(sidang);
     }
 
-    private void akumulasiNilaiSempro(Seminar seminar) {
+    private void akumulasiNilaiSemproLama(Seminar seminar) {
         BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2())
                 .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
         BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2())
@@ -613,6 +612,39 @@ public class SidangService {
                 .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
         BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2())
                 .divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        seminar.setNilaiA(nilaiA);
+        seminar.setNilaiB(nilaiB);
+        seminar.setNilaiC(nilaiC);
+        seminar.setNilaiD(nilaiD);
+        seminar.setNilaiE(nilaiE);
+        seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+        seminarDao.save(seminar);
+    }
+
+
+    private void cekAngkatanPasca(Seminar seminar) {
+        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 23
+                && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
+            akumulasiNilaiSemproBaru(seminar);
+        }else if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
+                && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+            akumulasiNilaiSemproBaru(seminar);
+        }else {
+            akumulasiNilaiSemproLama(seminar);
+        }
+    }
+
+    private void akumulasiNilaiSemproBaru(Seminar seminar) {
+        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe())
+                .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
         seminar.setNilaiA(nilaiA);
         seminar.setNilaiB(nilaiB);
         seminar.setNilaiC(nilaiC);
@@ -790,7 +822,7 @@ public class SidangService {
         String nidnDosen = null;
         String jabatan = null;
         String kdProdi = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
+        if (seminar.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 nama = karyawan.getNamaKaryawan();
@@ -1160,7 +1192,7 @@ public class SidangService {
         String namaKps = null;
         String nidnKps = null;
         String prd = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
+        if (seminar.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 namaKps = karyawan.getNamaKaryawan();
