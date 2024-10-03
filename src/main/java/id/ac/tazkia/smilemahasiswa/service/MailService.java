@@ -294,15 +294,9 @@ public class MailService {
         StringWriter output = new StringWriter();
         templateEmail.execute(output, data);
 
-//        gmailApiService.kirimEmail(
-//                "Smile Notifikasi",
-//                note.getMahasiswa().getEmailTazkia(),
-//                "Pendaftaran Konsep Note Disetujui",
-//                output.toString());
-
         gmailApiService.kirimEmail(
                 "Smile Notifikasi",
-                "gfrhaidar@gmail.com",
+                note.getMahasiswa().getEmailTazkia(),
                 "Pendaftaran Konsep Note Disetujui",
                 output.toString());
 
