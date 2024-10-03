@@ -13140,18 +13140,19 @@ public class StudiesActivityController {
         new File(uploadFotoKuliah).mkdirs();
         File tujuan2 = new File(uploadFotoKuliah + File.separator + namaFileSimpan);
 
+
         // Konversi dan kompres gambar agar di bawah 100KB
         Thumbnails.of(file.getInputStream())
-                .size(1024, 1024) // Mengatur ukuran maksimal (bisa disesuaikan)
+                .size(500, 500) // Mengurangi ukuran maksimal
                 .outputFormat(extension)
-                .outputQuality(0.8) // Menurunkan kualitas untuk kompresi
+                .outputQuality(0.2) // Menurunkan kualitas untuk kompresi lebih besar
                 .toFile(tujuan2);
 
-        // Validasi ukuran file agar kurang dari 100KB
-        if (tujuan2.length() > 100 * 1024) {
+// Validasi ukuran file agar kurang dari 100KB
+        if (tujuan2.length() > 50 * 1024) {
             Thumbnails.of(tujuan2)
                     .scale(1.0) // tidak mengubah ukuran
-                    .outputQuality(0.5) // Kompres lebih lanjut
+                    .outputQuality(0.2) // Kompres lebih lanjut jika masih terlalu besar
                     .toFile(tujuan2);
         }
 
