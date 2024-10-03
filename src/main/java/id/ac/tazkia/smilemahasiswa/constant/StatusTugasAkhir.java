@@ -1,6 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.constant;
 
-public enum StatusSempro {
+public enum StatusTugasAkhir {
     WAITING ("Menunggu", 1),
     PENDING_SCHEDULED ("Belum Dijadwalkan", 2),
     SCHEDULED ("Dijadwalkan", 3),
@@ -12,7 +12,7 @@ public enum StatusSempro {
     private final String displayName;
     private final int order;
 
-    StatusSempro(String displayName, int order) {
+    StatusTugasAkhir(String displayName, int order) {
         this.displayName = displayName;
         this.order = order;
     }
