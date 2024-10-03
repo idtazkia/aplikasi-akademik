@@ -48,7 +48,7 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
     @Query(value = "select p.id as idPembayaran, t.id as idTagihan, m.nim as nim, m.nama as nama, m.angkatan as angkatan, prm.nama_program as program, pr.nama_prodi as prodi, jt.nama as jenisTagihan, ta.nama_tahun_akademik as tahunAkademik, b.nama as bank, p.amount as jumlah, p.waktu_bayar as tanggalTransaksi, p.referensi as referensi from pembayaran as p inner join tagihan as t on p.id_tagihan=t.id inner join mahasiswa as m on t.id_mahasiswa=m.id inner join prodi as pr on m.id_prodi=pr.id inner join program as prm on m.id_program=prm.id inner join tahun_akademik as ta on t.id_tahun_akademik=ta.id inner join bank as b on p.id_bank=b.id inner join nilai_jenis_tagihan as njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan as jt on njt.id_jenis_tagihan=jt.id where p.waktu_bayar between :mulai and :sampai order by p.waktu_bayar", nativeQuery = true)
     List<PembayaranDto> downloadPembayaran(@Param("mulai") String mulai, @Param("sampai") String selesai);
 
-    @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id where b.status!='HAPUS'", nativeQuery = true)
+    @Query(value = "select sum(a.amount)as dibayar from pembayaran as a inner join tagihan as b on b.id=a.id_tagihan inner join mahasiswa as c on b.id_mahasiswa = c.id where a.status = 'AKTIF' and b.status='AKTIF' and c.status = 'AKTIF' and c.status_aktif='AKTIF'", nativeQuery = true)
     BigDecimal totalAllDibayar();
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where c.nim=?1 and b.status!='HAPUS'", nativeQuery = true)

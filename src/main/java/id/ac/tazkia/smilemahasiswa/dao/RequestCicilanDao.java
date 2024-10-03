@@ -84,7 +84,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "(select * from request_cicilan where status='AKTIF')as b on a.id=b.id_tagihan where b.tanggal_pengajuan between ?1 and ?2 group by b.id_tagihan order by nim")
     Page<Object[]> listRekapanCicilanDate(String tglAwal, String tglAkhir, String idTahunAkademik, Pageable page);
 
-    @Query(value = "select sum(nilai_cicilan) as sisaCicilan from request_cicilan where status_cicilan!='LUNAS' and id_tagihan=?1 and status='AKTIF'", nativeQuery = true)
+    @Query(value = "select sum(nilai_cicilan) as sisaCicilan from request_cicilan where status_cicilan in('SEDANG_DITAGIHKAN', 'CICILAN') and id_tagihan=?1 and status='AKTIF'", nativeQuery = true)
     BigDecimal pengajuanPelunasan(String idTagihan);
 
     List<RequestCicilan> findByTagihanAndStatusAndStatusApprove(Tagihan tagihan, StatusRecord statusRecord, StatusApprove statusApprove);
