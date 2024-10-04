@@ -51,8 +51,7 @@ public class JadwalService {
         List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "REGENERATE");
         for (Jadwal j : cekJadwal) {
             System.out.println(j.getId() + " : id jadwal");
-            presensiService.reGenerate1(j);
-
+            presensiService.updateSesi1(j);
         }
     }
 

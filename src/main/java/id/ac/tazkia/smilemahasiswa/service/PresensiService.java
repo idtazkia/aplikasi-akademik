@@ -594,6 +594,8 @@ public class PresensiService {
                     pertemuan);
 
         }
+        jadwal.setFinalPloting("FINISHED");
+        jadwalDao.save(jadwal);
 
     }
 
@@ -617,6 +619,8 @@ public class PresensiService {
                     pertemuan);
 
         }
+        jadwal.setFinalPloting("FINISHED");
+        jadwalDao.save(jadwal);
 
     }
 
