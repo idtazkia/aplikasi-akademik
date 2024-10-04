@@ -212,7 +212,7 @@ public class TugasMateriService {
                 try(InputStream inputStream = Files.newInputStream(file)){
                     JadwalTugasJawaban namaFile = tugasJawabanDao.findByFile(file.getFileName().toString());
                     if (namaFile != null) {
-                        zipOutputStream.putNextEntry(new ZipEntry(namaFile.getNamaFile()));
+                        zipOutputStream.putNextEntry(new ZipEntry(namaFile.getMahasiswa().getNim() + " - " + namaFile.getMahasiswa().getNama() + " - " + namaFile.getNamaFile()));
                     }else{
                         zipOutputStream.putNextEntry(new ZipEntry(file.getFileName().toString()));
                     }

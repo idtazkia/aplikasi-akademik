@@ -291,6 +291,7 @@ public class TagihanService {
         pembayaran.setAmount(pt.getNilaiPembayaran());
         pembayaran.setWaktuBayar(LocalDateTime.parse(pt.getWaktuPembayaran(), FORMATTER_ISO_DATE_TIME));
         pembayaran.setReferensi(pt.getReferensiPembayaran());
+        pembayaran.setTipePengiriman(Pembayaran.TipePengiriman.VIRTUAL_ACCOUNT);
 
         Bank bank = new Bank();
         bank.setId(pt.getBank());

@@ -91,7 +91,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-xs-12">
-                <div th:if="${berhasil}" class="alert alert-success alert-dismissible" role="alert">
+                <div th:if="${berhasil}" class="alert alert-success alert-dismissible" role="alert" id="alert-berhasil">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"><i class="notika-icon notika-close"></i></span></button> <b>Berhasil!</b> Tugas telah berhasil dikumpulkan.
                 </div>
                 <div class="normal-table-list mg-t-30">
@@ -193,8 +193,11 @@
 </body>
 </html>
 <script>
-    $(function (){
-
+    $(document).ready(function (){
+        setTimeout(function (){
+            var alert = document.getElementById('alert-berhasil');
+            alert.style.display = 'none';
+        }, 3000);
     });
 
     // tinymce
