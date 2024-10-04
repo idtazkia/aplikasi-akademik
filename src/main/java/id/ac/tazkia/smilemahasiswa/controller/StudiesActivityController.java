@@ -13091,18 +13091,14 @@ public class StudiesActivityController {
         return response;
     }
 
-    @GetMapping("/regenerate-sesikuliah")
+    @GetMapping("/regenerate-sesikuliah/{tanggal}")
     @ResponseBody
-    public void regeneratePresensi(@RequestParam String tanggal)
-            throws Exception {
-        List<Jadwal> cekJadwal = jadwalDao.jadwalMatrik();
-        System.out.println("jadwal matrik");
+    public void regeneratePresensiPerJadwal(@PathVariable String tanggal) throws Exception {
+        List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "REGENERATE");
         for (Jadwal j : cekJadwal) {
             System.out.println(j.getId() + " : id jadwal");
             presensiService.reGenerate(j, tanggal);
-
         }
-
     }
 
 
