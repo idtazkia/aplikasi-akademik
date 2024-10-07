@@ -48,6 +48,42 @@
                                 <h3 class="mb-0">Detail Tagihan Mahasiswa</h3>
                             </div>
                             <div class="col text-right">
+                                <button th:if="${message == null && tagihan.lunas == false}" type="button" class="btn btn-info btn-sm" data-toggle="modal" title="Kirim Ulang" data-target="#modal-kirimulang">
+                                    <i class="fa fa-paper-plane"></i> Kirim ulang tagihan
+                                </button>
+                                <div class="modal fade" id="modal-kirimulang" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                    <div class="modal-dialog model-info modal-dialog-centered modal-" role="document">
+                                        <div class="modal-content bg-gradient-info">
+
+                                            <div class="modal-header">
+                                                <h6 class="modal-title text-white" id="modal-title-notification">Your attention is required</h6>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+
+                                                <div class="py-3 text-center">
+                                                    <i class="far fa-paper-plane fa-3x text-white"></i>
+                                                    <h4 class="heading mt-4 text-white">Kirim ulang tagihan</h4>
+                                                    <b class="text-white">Pastikan tagihan <span th:text="${tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></span> a.n <span th:text="${tagihan.mahasiswa.nama}"></span> sudah dihapus diaplikasi tagihan!</b>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <form method="post" th:action="@{/studentBill/billAdmin/resendTagihan}">
+                                                    <input type="hidden" name="tagihan" th:value="${tagihan.id}">
+                                                    <button type="submit" class="btn btn-secondary">Kirim</button>
+                                                </form>
+                                                <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <a th:href="@{/studentBill/billAdmin/list(tahunAkademik = ${tagihan.tahunAkademik.id}, nim = ${tagihan.mahasiswa.nim})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                             </div>
                         </div>
@@ -115,6 +151,9 @@
                                             <h2 class="mb-0">Keterangan Cicilan</h2>
                                         </div>
                                         <div class="col text-right">
+                                            <button th:if="${message != null && tagihan.lunas == false}" type="button" class="btn btn-info btn-sm" data-toggle="modal" title="Kirim Ulang" data-target="#modal-kirimulang">
+                                                <i class="fa fa-paper-plane"></i> Kirim ulang tagihan
+                                            </button>
                                             <button th:if="${cekJumlahCicilan > 1}" type="button" class="btn btn-primary btn-sm" data-toggle="modal" title="Hapus" data-target="#modal-pelunasan">
                                                 <i class="fa fa-money-bill-wave"></i> Pelunasan
                                             </button>

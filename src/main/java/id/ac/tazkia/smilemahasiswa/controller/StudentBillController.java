@@ -545,16 +545,15 @@ public class StudentBillController {
 
     @PostMapping("/studentBill/billAdmin/resendTagihan")
     public String resendTagihan(@RequestParam Tagihan tagihan){
-
         if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL) {
             RequestCicilan cicilan = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
             if (cicilan != null) {
-                tagihanService.ubahJadiCicilan(cicilan);
+                tagihanService.mengirimCicilanSelanjutnya(cicilan);
             }
         }else{
             tagihanService.requestCreateTagihan(tagihan);
         }
-        return "redirect:/tagihan";
+        return "redirect:detail?tagihan="+tagihan.getId();
     }
 
     @GetMapping("/studentBill/billAdmin/date")
@@ -2159,12 +2158,6 @@ public class StudentBillController {
 
         return "redirect:../../requestCicilan/approval?tagihan="+tagihan;
 
-    }
-
-    @PostMapping("/studentBill/requestCicilan/resend")
-    public String resendCicilan(@RequestParam RequestCicilan cicilan){
-
-        return "";
     }
 
     @GetMapping("/studentBill/requestCicilan/detail")
