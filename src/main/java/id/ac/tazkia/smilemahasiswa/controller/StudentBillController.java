@@ -1577,26 +1577,17 @@ public class StudentBillController {
         return "studentBill/rekapTagihan/detail";
     }
 
-//    @GetMapping("/studentBill/rekapTagihan/detailAsli")
-//    public String detailRekapanTagihanNilaiAsli(Model model, @RequestParam(required = false) String nim, @RequestParam(required = false) String tahunAkademik){
-//
-//        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
-//        List<Object[]> listDetail = tagihanDao.listDetailRekapTagihanPerMahasiswa(nim);
-//        model.addAttribute("selectTahun", tahunAkademik);
-//
-//        model.addAttribute("listDetail", listDetail);
-//        model.addAttribute("totalTagihan", tagihanDao.totalAllTagihanPerMahasiswa(nim));
-//        model.addAttribute("totalDibayar", pembayaranDao.totalAllDibayarPerMahasiswa(nim));
-//        model.addAttribute("mhs", mhs);
-//
-//        if (tahunAkademik != null) {
-//            model.addAttribute("listDetail", tagihanDao.listDetailRekapTagihanPerMahasiswaByTahunAkademik(nim, tahunAkademik));
-//            model.addAttribute("totalTagihan", tagihanDao.totalAllTagihanPerMahasiswaByTahunAkademik(nim, tahunAkademik));
-//            model.addAttribute("totalDibayar", pembayaranDao.totalAllDibayarPerMahasiswaByTahunAkademik(nim, tahunAkademik));
-//        }
-//
-//        return "studentBill/rekapTagihan/detail";
-//    }
+    @GetMapping("/studentBill/rekapTagihan/detailAsli")
+    public void detailRekapanTagihanNilaiAsli(Model model, @RequestParam String nim){
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        List<Object[]> listDetail = tagihanDao.listDetailRekapTagihanPerMahasiswa(nim);
+
+        model.addAttribute("listDetail", listDetail);
+        model.addAttribute("totalTagihan", tagihanDao.totalAllTagihanAsliPerMahasiswa(nim));
+        model.addAttribute("totalDibayar", pembayaranDao.totalAllDibayarPerMahasiswa(nim));
+        model.addAttribute("mhs", mhs);
+    }
 
     @GetMapping("/rekapTagihan/detailMahasiswa")
     public void rekapTagihanPerMahasiswa(@RequestParam String nim, HttpServletResponse response) throws IOException {
