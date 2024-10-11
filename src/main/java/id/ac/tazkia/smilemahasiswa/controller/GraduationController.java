@@ -760,7 +760,7 @@ public class GraduationController {
     public String sempro(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
         if (note.getStatus() == StatusApprove.APPROVED) {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
-            if(LocalDate.now().isAfter(periodeWisuda.getTutupSeminar()) && LocalDate.now().isBefore(periodeWisuda.getBukaSeminar())){
+            if(LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminar()) && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar())){
                 return "redirect:seminar/info";
             }
 
@@ -803,7 +803,7 @@ public class GraduationController {
                     model.addAttribute("seminar", new Seminar());
                 }
 
-                if (periodeWisuda.getTutupLoa().compareTo(LocalDate.now()) >= 0 && note.getJenis() == StatusRecord.JURNAL){
+                if (periodeWisuda.getTutupLoa().compareTo(LocalDateTime.now().plusHours(7)) >= 0 && note.getJenis() == StatusRecord.JURNAL){
                     return "redirect:loa";
                 }else {
                     return "graduation/sempro";
@@ -816,7 +816,7 @@ public class GraduationController {
                         model.addAttribute("seminar", new Seminar());
                     }
 
-                    if (periodeWisuda.getTutupLoa().compareTo(LocalDate.now()) >= 0 && note.getJenis() == StatusRecord.JURNAL){
+                    if (periodeWisuda.getTutupLoa().compareTo(LocalDateTime.now().plusHours(7)) >= 0 && note.getJenis() == StatusRecord.JURNAL){
                         return "redirect:loa";
                     }else {
                         return "graduation/sempro";

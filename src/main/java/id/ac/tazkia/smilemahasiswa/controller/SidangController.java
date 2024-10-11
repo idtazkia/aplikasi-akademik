@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -336,8 +337,8 @@ public class SidangController {
                     return "graduation/info";
                 }
             } else {
-                if (LocalDate.now().isAfter(periodeWisuda.getTutupSidang())
-                        && LocalDate.now().isBefore(periodeWisuda.getBukaSidang())) {
+                if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSidang())
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSidang())) {
                     return "redirect:info";
                 } else {
                     TahunAkademik ta = null;
@@ -436,8 +437,8 @@ public class SidangController {
                 return "graduation/info";
             }
         } else {
-            if (LocalDate.now().isAfter(periodeWisuda.getTutupSidang())
-                    && LocalDate.now().isBefore(periodeWisuda.getBukaSidang())) {
+            if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSidang())
+                    && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSidang())) {
                 return "redirect:info";
             } else {
                 TahunAkademik ta = null;
