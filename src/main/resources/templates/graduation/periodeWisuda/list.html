@@ -74,7 +74,7 @@
                                     <a href="" class="btn btn-danger btn-danger btn-sm" th:if="${data.status.NONAKTIF}== ${data.status}" th:text="${data.status}"></a>
                                 </td>
                                 <td>
-                                    <a th:href="@{/graduation/periodeWisuda/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                    <a th:href="@{/graduation/periodeWisuda/edit(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
 
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">
                                         <i class="fas fa-trash"></i>
