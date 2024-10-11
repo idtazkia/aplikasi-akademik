@@ -46,7 +46,7 @@ public class BebasKewajibanController {
     public static final List<String> USER_PERPUS = Arrays.asList("perpustakaan", "kabagperpus");
     public static final List<String> USER_FINANCE = Arrays.asList("finance", "kabagfinance");
     public static final List<String> USER_TLC = Arrays.asList("tlc", "staftlc");
-    public static final List<String> USER_TQC = Arrays.asList("staftqc");
+    public static final List<String> USER_TQC = Arrays.asList("staftqc", "adminmatrik");
     public static final List<String> USER_AKADEMIK = Arrays.asList("akademik1", "akademik2", "kabagakademik", "superuser");
 
     @Value("${upload.sertifikatTlc}")
