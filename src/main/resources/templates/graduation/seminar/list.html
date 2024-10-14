@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
 
 <head>
     <meta charset="UTF-8">
@@ -8,171 +8,171 @@
 </head>
 
 <body>
-    <div layout:fragment="main">
-        <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-            <div class="container-fluid">
-                <div class="header-body">
-                    <!-- Card stats -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12">
-                            <div class="card card-stats mb-4 mb-xl-0">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col">
-                                            <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                            <span class="h2 font-weight-bold mb-0">Seminar</span>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Seminar</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div
                                                 class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                                <i class="fas fa-user-astronaut"></i>
-                                            </div>
+                                            <i class="fas fa-user-astronaut"></i>
                                         </div>
                                     </div>
-
                                 </div>
+
                             </div>
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="container-fluid mt--7">
-            <!-- Table -->
-            <div class="row">
-                <div class="col">
-                    <div class="card shadow">
-                        <div class="card-header border-0">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h3 class="mb-0">Data List</h3>
-                                </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <form method="get">
-                                <div class="row">
-                                    <div class="col-md-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label>Tahun Akademik</label>
-                                            <select name="tahunAkademik" required class="form-control">
-                                                <option value="" selected disabled>-- Select One --</option>
-                                                <option th:each="tahun : ${tahun}"
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required class="form-control">
+                                            <option value="" selected disabled>-- Select One --</option>
+                                            <option th:each="tahun : ${tahun}"
                                                     th:selected="(${tahun} == *{selectedTahun})"
                                                     th:text="${tahun.namaTahunAkademik}" th:value="${tahun.id}">
-                                                </option>
-                                            </select>
-                                        </div>
+                                            </option>
+                                        </select>
                                     </div>
-                                    <div class="col-md-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label>Program Study</label>
-                                            <select name="prodi" required class="form-control">
-                                                <option value="" selected disabled>-- Select One --</option>
-                                                <option th:each="prodi : ${prodi}"
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Program Study</label>
+                                        <select name="prodi" required class="form-control">
+                                            <option value="" selected disabled>-- Select One --</option>
+                                            <option th:each="prodi : ${prodi}"
                                                     th:selected="(${prodi} == *{selectedProdi})"
                                                     th:text="${prodi.namaProdi}" th:value="${prodi.id}"></option>
-                                            </select>
-                                        </div>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12 text-center">
-                                        <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i>
-                                            Show</button>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i>
+                                        Show</button>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="card-body" th:if="${selectedTahun != null}">
-                            <div class="card shadow">
-                                <div class="card-header border-0">
-                                    <h3 class="mb-0">List</h3>
-                                </div>
-                                <div class="card-body">
-                                    <a th:href="@{/dowload/dataSeminar(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"
-                                        class="btn btn-success">Download Excel</a>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table align-items-center table-flush">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">NIM</th>
-                                                <th scope="col">Nama</th>
-                                                <th scope="col">Pembimbing</th>
-                                                <th scope="col">Jenis</th>
-                                                <th scope="col">Status</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr th:each="data,row : ${listSempro}" th:if="${data.jenis != data.jenis.KONVERSI_JURNAL}">
-                                                <td
-                                                    th:text="${(row.index + 1) + (listSempro.number * listSempro.size)}">
-                                                    1</td>
-                                                <td th:text="${data.note.mahasiswa.nim}">12121</td>
-                                                <td th:text="${data.note.mahasiswa.nama}">Muhammmad Rafizki</td>
-                                                <td th:text="${data.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki
-                                                </td>
-                                                <td th:text="${data.note.jenis}">Muhammmad Rafizki</td>
-                                                <div class="modal fade" th:id="${'modal-default' + data.id}"
-                                                    tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Sempro
-                                                                </h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body" th:if="${selectedTahun != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">List</h3>
+                            </div>
+                            <div class="card-body">
+                                <a th:href="@{/dowload/dataSeminar(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"
+                                   class="btn btn-success">Download Excel</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">NIM</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Pembimbing</th>
+                                        <th scope="col">Jenis</th>
+                                        <th scope="col">Status</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listSempro}" th:if="${data.jenis != data.jenis.KONVERSI_JURNAL}">
+                                        <td
+                                                th:text="${(row.index + 1) + (listSempro.number * listSempro.size)}">
+                                            1</td>
+                                        <td th:text="${data.note.mahasiswa.nim}">12121</td>
+                                        <td th:text="${data.note.mahasiswa.nama}">Muhammmad Rafizki</td>
+                                        <td th:text="${data.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki
+                                        </td>
+                                        <td th:text="${data.note.jenis}">Muhammmad Rafizki</td>
+                                        <div class="modal fade" th:id="${'modal-default' + data.id}"
+                                             tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Sempro
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="alert alert-danger alert-with-icon"
+                                                             id="alertSave" style="display: none">
+                                                            <button type="button" aria-hidden="true"
+                                                                    class="close" data-dismiss="alert"
                                                                     aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="alert alert-danger alert-with-icon"
-                                                                    id="alertSave" style="display: none">
-                                                                    <button type="button" aria-hidden="true"
-                                                                        class="close" data-dismiss="alert"
-                                                                        aria-label="Close">
-                                                                        <i class="fas fa-warning"></i>
-                                                                    </button>
-                                                                    <span data-notify="icon"
-                                                                        class="tim-icons icon-trophy"></span>
-                                                                    <span id="textAlert"><b> Maaf! - </b>Nilai Belum
+                                                                <i class="fas fa-warning"></i>
+                                                            </button>
+                                                            <span data-notify="icon"
+                                                                  class="tim-icons icon-trophy"></span>
+                                                            <span id="textAlert"><b> Maaf! - </b>Nilai Belum
                                                                         Lengkap.</span>
-                                                                </div>
-                                                                <b>Title</b>
-                                                                <p th:text="${data.note.judul}">Far far away, behind the
-                                                                    word mountains, far from the countries Vokalia and
-                                                                    Consonantia, there live the blind texts. Separated
-                                                                    they live in Bookmarksgrove right at the coast of
-                                                                    the Semantics, a large language ocean.</p>
-                                                                <b>Title in English</b>
-                                                                <p th:text="${data.note.judulInggris}">A small river
-                                                                    named Duden flows by their place and supplies it
-                                                                    with the necessary regelialia. It is a paradisematic
-                                                                    country, in which roasted parts of sentences fly
-                                                                    into your mouth.</p>
-                                                                <div class="row"
-                                                                    th:if="${data.status != data.status.APPROVED}">
-                                                                    <div class="col-md-12">
-                                                                        <center>
-                                                                            <a th:href="@{/graduation/seminar/view(id = ${data.id})}"
-                                                                                class="btn btn-primary btn-sm"><i
-                                                                                    class="fa fa-cog"></i> Validation
-                                                                            </a>
-                                                                        </center>
-                                                                    </div>
-                                                                </div>
-                                                                <br>
+                                                        </div>
+                                                        <b>Title</b>
+                                                        <p th:text="${data.note.judul}">Far far away, behind the
+                                                            word mountains, far from the countries Vokalia and
+                                                            Consonantia, there live the blind texts. Separated
+                                                            they live in Bookmarksgrove right at the coast of
+                                                            the Semantics, a large language ocean.</p>
+                                                        <b>Title in English</b>
+                                                        <p th:text="${data.note.judulInggris}">A small river
+                                                            named Duden flows by their place and supplies it
+                                                            with the necessary regelialia. It is a paradisematic
+                                                            country, in which roasted parts of sentences fly
+                                                            into your mouth.</p>
+                                                        <div class="row"
+                                                             th:if="${data.status != data.status.APPROVED}">
+                                                            <div class="col-md-12">
+                                                                <center>
+                                                                    <a th:href="@{/graduation/seminar/view(id = ${data.id})}"
+                                                                       class="btn btn-primary btn-sm"><i
+                                                                            class="fa fa-cog"></i> Validation
+                                                                    </a>
+                                                                </center>
+                                                            </div>
+                                                        </div>
+                                                        <br>
 
-                                                                <!--                                                        <span th:if="${data.statusSempro != data.statusSempro.APPROVED}">-->
-                                                                <span>
+                                                        <!--                                                        <span th:if="${data.statusSempro != data.statusSempro.APPROVED}">-->
+                                                        <span>
                                                                     <div class="row"
-                                                                        th:if="${data.status == data.status.APPROVED}">
+                                                                         th:if="${data.status == data.status.APPROVED}">
                                                                         <div class="col-md-6">
                                                                             <center>
                                                                                 <b>Date</b>
@@ -189,24 +189,24 @@
                                                                         </div>
                                                                     </div>
                                                                     <center
-                                                                        th:if="${data.status == data.status.APPROVED && data.note.jenis != data.note.jenis.JURNAL}">
+                                                                            th:if="${data.status == data.status.APPROVED && data.note.jenis != data.note.jenis.JURNAL}">
                                                                         <b>Room</b>
                                                                         <p th:text="${data.ruangan.namaRuangan}">Abu
                                                                             Hanifah 1</p>
                                                                     </center>
                                                                 </span>
 
-                                                                <span
-                                                                    th:if="${data.statusSempro == data.statusSempro.APPROVED}">
+                                                        <span
+                                                                th:if="${data.statusSempro == data.statusSempro.APPROVED}">
                                                                     <div class="text-muted text-center mt-2 mb-3">
                                                                         <small>Score</small></div>
                                                                     <div class="row"
-                                                                        th:if="${data.status == data.status.APPROVED}">
+                                                                         th:if="${data.status == data.status.APPROVED}">
                                                                         <div class="col-md-4">
                                                                             <center>
                                                                                 <b>Chairman</b>
                                                                                 <p th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"
-                                                                                    th:text="${#numbers.formatDecimal((data.ka * 0.25) + (data.kb * 0.15) + (data.kc * 0.2) + (data.kd * 0.1) + (data.ke * 0.15) + (data.kf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                                                   th:text="${#numbers.formatDecimal((data.ka * 0.25) + (data.kb * 0.15) + (data.kc * 0.2) + (data.kd * 0.1) + (data.ke * 0.15) + (data.kf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                         <p th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((data.ka * 0.3) + (data.kb * 0.25) + (data.kc * 0.2) + (data.kd * 0.15) + (data.ke * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                     </center>
                                                                 </div>
@@ -539,7 +539,7 @@
                                             <button th:if="${data.publish == 'NONAKTIF' && data.status == data.status.APPROVED}" type="button" class="btn btn-info btn-outline-success btn-sm fas fa-share"
                                                     data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish1'+data.id}"> Publish</button>
                                             <button type="button" class="btn btn-success btn-sm"
-                                                th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'AKTIF' && data.note.jenis != data.note.jenis.JURNAL }">
+                                                    th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'AKTIF' && data.note.jenis != data.note.jenis.JURNAL }">
                                                 <a class="text-white" th:href="@{/suratTugas/seminar/pdf(seminar = ${data.id})}">Cetak Surat Tugas</a>
                                             </button>
 
@@ -548,9 +548,9 @@
                                             </button>
 
                                             <button type="button" class="btn btn-success btn-outline-success btn-sm"
-                                                data-toggle="modal"
-                                                th:data-target="${'#modal-approvedakademik' + data.id}"
-                                                th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis == data.note.jenis.JURNAL && kps != null}">
+                                                    data-toggle="modal"
+                                                    th:data-target="${'#modal-approvedakademik' + data.id}"
+                                                    th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis == data.note.jenis.JURNAL && kps != null}">
                                                 Approved
                                             </button>
 
@@ -559,9 +559,9 @@
                                             </button>
 
                                             <button type="button" class="btn btn-danger btn-outline-danger btn-sm"
-                                                data-toggle="modal"
-                                                th:data-target="${'#modal-rejectakademik' + data.id}"
-                                                th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis
+                                                    data-toggle="modal"
+                                                    th:data-target="${'#modal-rejectakademik' + data.id}"
+                                                    th:if="${data.status == data.status.APPROVED_AKADEMIK && data.note.jenis
                                                 == data.note.jenis.JURNAL && kps != null}">
                                                 Reject
                                             </button>
@@ -577,9 +577,9 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <form
-                                                                th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
-                                                                method="post"
-                                                                th:if="${data.note.jenis != data.note.jenis.JURNAL}">
+                                                                    th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
+                                                                    method="post"
+                                                                    th:if="${data.note.jenis != data.note.jenis.JURNAL}">
                                                                 <div class="form-group">
                                                                     <textarea name="keterangan" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
                                                                 </div>
@@ -589,34 +589,34 @@
                                                             </form>
 
                                                             <form
-                                                                th:action="@{/graduation/seminar/approved-jurnal (seminar = ${data.id})}"
-                                                                method="post" th:if="${data.note.jenis ==
+                                                                    th:action="@{/graduation/seminar/approved-jurnal (seminar = ${data.id})}"
+                                                                    method="post" th:if="${data.note.jenis ==
                                                                 data.note.jenis.JURNAL &&
                                                                 data.status == data.status.APPROVED_AKADEMIK}">
                                                                 <div class="form-group">
                                                                     <textarea name="keterangan" class="form-control"
-                                                                        placeholder="Comment" id="" cols="30"
-                                                                        rows="10"></textarea>
+                                                                              placeholder="Comment" id="" cols="30"
+                                                                              rows="10"></textarea>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <button class="btn btn-success"
-                                                                        type="submit">Approved</button>
+                                                                            type="submit">Approved</button>
                                                                 </div>
                                                             </form>
 
                                                             <form
-                                                                th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
-                                                                method="post"
-                                                                th:if="${data.note.jenis == data.note.jenis.JURNAL &&
+                                                                    th:action="@{/graduation/seminar/approvedakademik (seminar = ${data.id})}"
+                                                                    method="post"
+                                                                    th:if="${data.note.jenis == data.note.jenis.JURNAL &&
                                                                 data.status == data.status.WAITING}">
                                                                 <div class="form-group">
                                                                     <textarea name="keterangan" class="form-control"
-                                                                        placeholder="Comment" id="" cols="30"
-                                                                        rows="10"></textarea>
+                                                                              placeholder="Comment" id="" cols="30"
+                                                                              rows="10"></textarea>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <button class="btn btn-success"
-                                                                        type="submit">Approved</button>
+                                                                            type="submit">Approved</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -653,33 +653,33 @@
                                             </button>
 
                                             <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat
                                                 File</button>
 
-                                                <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Artikel Jurnal & LOA</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'pendaftaran'})}" target="_blank">Permohonan Pernyataan Kelulusan</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ijazah'})}" target="_blank">Ijazah</a>
-                                                </div>
+                                            <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Artikel Jurnal & LOA</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'pendaftaran'})}" target="_blank">Permohonan Pernyataan Kelulusan</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ijazah'})}" target="_blank">Ijazah</a>
+                                            </div>
 
-                                                <div class="dropdown-menu" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/bimbingan/(seminar=${data.id})}" target="_blank">Kartu Bimbingan</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/kehadiran/(seminar=${data.id})}" target="_blank">Kartu Kehadiran Seminar</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/skripsi/(seminar=${data.id})}" target="_blank">Skripsi Bab 1 - 3</a>
-                                                </div>
+                                            <div class="dropdown-menu" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/bimbingan/(seminar=${data.id})}" target="_blank">Kartu Bimbingan</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/kehadiran/(seminar=${data.id})}" target="_blank">Kartu Kehadiran Seminar</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/skripsi/(seminar=${data.id})}" target="_blank">Skripsi Bab 1 - 3</a>
+                                            </div>
 
-                                                <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/skripsi/(seminar=${data.id})}" target="_blank">Draft Seminar</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/bimbingan/(seminar=${data.id})}" target="_blank">Laporan Kehadiran Seminar</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/fileturnitin/(seminar=${data.id})}" target="_blank">Hasil Turnitin</a>
-                                                    <a class="dropdown-item" th:href="@{/upload/{seminar}/covernote/(seminar=${data.id})}" target="_blank">Cover Note (Ringkasan Proposal)</a>
-                                                </div>
+                                            <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/skripsi/(seminar=${data.id})}" target="_blank">Draft Seminar</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/bimbingan/(seminar=${data.id})}" target="_blank">Laporan Kehadiran Seminar</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/fileturnitin/(seminar=${data.id})}" target="_blank">Hasil Turnitin</a>
+                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/covernote/(seminar=${data.id})}" target="_blank">Cover Note (Ringkasan Proposal)</a>
+                                            </div>
 
                                             <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish1'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
@@ -700,13 +700,13 @@
                                                             </div>
 
                                                             <div class="alert alert-danger alert-with-icon"
-                                                                th:id="${data.id+'-alertKrs'}" style="display: none">
+                                                                 th:id="${data.id+'-alertKrs'}" style="display: none">
                                                                 <button type="button" aria-hidden="true" class="close"
-                                                                    data-dismiss="alert" aria-label="Close">
+                                                                        data-dismiss="alert" aria-label="Close">
                                                                     <i class="fas fa-warning"></i>
                                                                 </button>
                                                                 <span data-notify="icon"
-                                                                    class="tim-icons icon-trophy"></span>
+                                                                      class="tim-icons icon-trophy"></span>
                                                                 <span id="textAlert"><b> Maaf! - </b>Anda Belum Mengambil KRS Ujian Proposal.</span>
                                                             </div>
                                                             <table class="table table-bordered table-hover">
@@ -941,11 +941,11 @@
 
                 if (data.responseText == "krs"){
                     document.getElementById(id+'-alertKrs').style.display = "block";
-                setTimeout(function () {
-                    document.getElementById(id+'alertKrs').style.display = "none";
+                    setTimeout(function () {
+                        document.getElementById(id+'alertKrs').style.display = "none";
                     }, 5000);
                 }
-                
+
 
                 if (data.responseText == "berhasil"){
                     window.location.reload();

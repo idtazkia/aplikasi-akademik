@@ -284,7 +284,7 @@
                                                                 <tr class="table-primary">
                                                                     <td align="center">1</td>
                                                                     <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Inovasi Produk</b></td>
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Perumusan Masalah</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}"><b>Perumusan Masalah</b></td>
                                                                     <td align="center" th:text="${data.ka}">90.00</td>
                                                                     <td align="center" th:text="${data.ua}">90.00</td>
                                                                     <td align="center" th:text="${data.pa}">90.00</td>
@@ -292,7 +292,7 @@
                                                                 <tr class="table-primary">
                                                                     <td align="center">2</td>
                                                                     <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Manfaat Produk/Bisnis</b></td>
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Tinjauan Pustaka</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}"><b>Tinjauan Pustaka</b></td>
                                                                     <td align="center" th:text="${data.kb}">90.00</td>
                                                                     <td align="center" th:text="${data.ub}">90.00</td>
                                                                     <td align="center" th:text="${data.pb}">90.00</td>
@@ -300,7 +300,7 @@
                                                                 <tr class="table-primary">
                                                                     <td align="center">3</td>
                                                                     <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Kelayakan Bisnis</b></td>
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Metode Penelitian</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}"><b>Metode Penelitian</b></td>
                                                                     <td align="center" th:text="${data.kc}">90.00</td>
                                                                     <td align="center" th:text="${data.uc}">90.00</td>
                                                                     <td align="center" th:text="${data.pc}">90.00</td>
@@ -308,7 +308,7 @@
                                                                 <tr class="table-primary">
                                                                     <td align="center">4</td>
                                                                     <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Tinjauan Syariah</b></td>
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Manfaat Tugas Akhir</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}"><b>Manfaat Tugas Akhir</b></td>
                                                                     <td align="center" th:text="${data.kd}">90.00</td>
                                                                     <td align="center" th:text="${data.ud}">90.00</td>
                                                                     <td align="center" th:text="${data.pd}">90.00</td>
@@ -316,14 +316,14 @@
                                                                 <tr class="table-primary">
                                                                     <td align="center">5</td>
                                                                     <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Tinajauan Pustaka</b></td>
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Kelayakan Tugas Akhir</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}"><b>Kelayakan Tugas Akhir</b></td>
                                                                     <td align="center" th:text="${data.ke}">90.00</td>
                                                                     <td align="center" th:text="${data.ue}">90.00</td>
                                                                     <td align="center" th:text="${data.pe}">90.00</td>
                                                                 </tr>
                                                                 <tr class="table-primary">
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}">1</td>
-                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Kedalaman Tinjauan Syariah</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}">6</td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.JURNAL}"><b>Kedalaman Tinjauan Syariah</b></td>
                                                                     <td align="center" th:text="${data.kf}">90.00</td>
                                                                     <td align="center" th:text="${data.uf}">90.00</td>
                                                                     <td align="center" th:text="${data.pf}">90.00</td>

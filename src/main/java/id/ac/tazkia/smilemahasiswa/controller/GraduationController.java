@@ -2066,7 +2066,7 @@ public class GraduationController {
                             @RequestParam(required = false) String beritaAcara,
                             @RequestParam(required = false) BigDecimal kf, @RequestParam(required = false) String komentarKetua) {
         if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
-                || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
+                || seminar.getNote().getJenis() == StatusRecord.MAGANG || seminar.getNote().getJenis() == StatusRecord.JURNAL) {
             seminar.setKa(ka);
             seminar.setKb(kb);
             seminar.setKc(kc);
@@ -2142,7 +2142,7 @@ public class GraduationController {
                             @RequestParam(required = false) BigDecimal ub, @RequestParam(required = false) BigDecimal uc,
                             @RequestParam(required = false) BigDecimal ud, @RequestParam(required = false) BigDecimal ue,
                             @RequestParam(required = false) BigDecimal uf, @RequestParam(required = false) String komentarPenguji) {
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.JURNAL
                 || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setUa(ua);
             seminar.setUb(ub);
@@ -2216,7 +2216,7 @@ public class GraduationController {
                                  @RequestParam(required = false) BigDecimal pb, @RequestParam(required = false) BigDecimal pc,
                                  @RequestParam(required = false) BigDecimal pd, @RequestParam(required = false) BigDecimal pe,
                                  @RequestParam(required = false) BigDecimal pf, @RequestParam(required = false) String komentarPembimbing) {
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.JURNAL
                 || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setPa(pa);
             seminar.setPb(pb);

@@ -506,14 +506,6 @@
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat
                                                 File</button>
 
-                                            <div class="dropdown-menu" th:if="${data.note.jenis == data.note.jenis.JURNAL}">
-                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'jurnal'})}" target="_blank">Artikel Jurnal & LOA</a>
-                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'pendaftaran'})}" target="_blank">Permohonan Pernyataan Kelulusan</a>
-                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'bimbingan'})}" target="_blank">Kartu Bimbingan</a>
-                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ktp'})}" target="_blank">KTP</a>
-                                                <a class="dropdown-item" th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.id},file=${'ijazah'})}" target="_blank">Ijazah</a>
-                                            </div>
-
                                             <div class="dropdown-menu" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
                                                 <a class="dropdown-item" th:href="@{/upload/{seminar}/formulir/(seminar=${data.id})}" target="_blank">Formulir Sempro</a>
                                                 <a class="dropdown-item" th:href="@{/upload/{seminar}/pengesahan/(seminar=${data.id})}" target="_blank">Lembar Persetujuan Pembimbing</a>

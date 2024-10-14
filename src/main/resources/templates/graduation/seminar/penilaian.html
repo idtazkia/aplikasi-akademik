@@ -164,7 +164,7 @@
 
                                         </div>
 
-                                        <div class="col-md-4" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.MAGANG}">
+                                        <div class="col-md-4" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.MAGANG || seminar.note.jenis == seminar.note.jenis.JURNAL}">
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="card shadow">
@@ -320,7 +320,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.MAGANG}">
+                                        <div class="col-md-4" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.MAGANG || seminar.note.jenis == seminar.note.jenis.JURNAL}">
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="card shadow">
@@ -469,7 +469,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.MAGANG}">
+                                        <div class="col-md-4" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.MAGANG || seminar.note.jenis == seminar.note.jenis.JURNAL}">
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="card shadow">
@@ -664,7 +664,7 @@
                                                     </div>
                                                 </form>
 
-                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}">
+                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.JURNAL}">
                                                     <div class="card-header border-1">
                                                         <center>
                                                             <h3 class="mb-0">Main Examiner</h3>
@@ -741,7 +741,7 @@
                                                         </div>
                                                 </form>
 
-                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}">
+                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.JURNAL}">
                                                     <div class="card-header border-1">
                                                         <center>
                                                             <h3 class="mb-0">Co-examiner 1</h3>
@@ -820,7 +820,7 @@
                                                     </div>
                                                 </form>
 
-                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}">
+                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI || seminar.note.jenis == seminar.note.jenis.JURNAL || seminar.note.jenis == seminar.note.jenis.JURNAL}">
                                                     <div class="card-header border-1">
                                                         <center>
                                                             <h3 class="mb-0">Co-examiner 2</h3>
