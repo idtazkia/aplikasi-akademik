@@ -621,10 +621,8 @@ public class StudentBillController {
                            @PageableDefault(size = 50) Pageable page){
 
         Tagihan tagihan1 = tagihanDao.findById(tagihan).get();
-        StatusTagihan info = tagihan1.getStatusTagihan();
         RequestCicilan cekCicilan = requestCicilanDao.cariCicilan(tagihan);
-        if (info == StatusTagihan.DICICIL){
-            model.addAttribute("message", "message");
+        if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL){
             model.addAttribute("cekJumlahCicilan", requestCicilanDao.jumlahCicilan(tagihan1));
             model.addAttribute("sisaCicilan", requestCicilanDao.pengajuanPelunasan(tagihan1.getId()));
         }
@@ -635,6 +633,7 @@ public class StudentBillController {
         model.addAttribute("tagihan", tagihan1);
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         if (cekCicilan != null){
+            model.addAttribute("message", "message");
             model.addAttribute("cekCicilan", "cicilan");
         }
 
@@ -873,32 +872,6 @@ public class StudentBillController {
 
                             } else {
 
-                                if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
-                                    List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
-                                    if (cekSisaCicilan != null) {
-                                        for (RequestCicilan listCicilan : cekSisaCicilan){
-                                            listCicilan.setStatus(StatusRecord.HAPUS);
-                                            listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
-                                            listCicilan.setStatusApprove(StatusApprove.HAPUS);
-                                            requestCicilanDao.save(listCicilan);
-                                        }
-                                    }
-                                }
-
-                                if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
-                                    RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
-                                    if (rp != null) {
-                                        rp.setStatus(StatusRecord.HAPUS);
-                                        rp.setStatusApprove(StatusApprove.HAPUS);
-                                        requestPenangguhanDao.save(rp);
-                                    }
-                                }
-
-                                tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
-                                tagihan1.setStatus(StatusRecord.NONAKTIF);
-                                tagihanDao.save(tagihan1);
-                                tagihanService.hapusTagihan(tagihan1);
-
                                 Integer sisaCicilan = tagihan1.getNilaiTagihan().intValue() - tagihan1.getAkumulasiPembayaran().intValue();
 
                                 Tagihan tagihan = new Tagihan();
@@ -941,13 +914,47 @@ public class StudentBillController {
                                         requestCicilan.setUserApprove(karyawan);
                                         requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
                                         requestCicilanDao.save(requestCicilan);
-                                        tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
+                                        RequestCicilan cariSebelumnya = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan1, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+                                        if (cariSebelumnya.getTanggalJatuhTempo().isAfter(LocalDate.now()) || cariSebelumnya.getTanggalJatuhTempo().isEqual(LocalDate.now())) {
+                                            tagihanService.ubahJadiCicilan(requestCicilan);
+                                        }else{
+                                            tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
+                                        }
                                     }
                                     tagihan.setStatusTagihan(StatusTagihan.DICICIL);
                                     tagihanDao.save(tagihan);
                                 }else {
-                                    tagihanService.requestCreateTagihan(tagihan);
+                                    if (tagihan1.getTanggalJatuhTempo().isAfter(LocalDate.now())) {
+                                        tagihanService.editTagihan(tagihan);
+                                    }else{
+                                        tagihanService.requestCreateTagihan(tagihan);
+                                    }
                                 }
+
+                                if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
+                                    List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+                                    if (cekSisaCicilan != null) {
+                                        for (RequestCicilan listCicilan : cekSisaCicilan){
+                                            listCicilan.setStatus(StatusRecord.NONAKTIF);
+                                            listCicilan.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
+                                            requestCicilanDao.save(listCicilan);
+                                        }
+                                    }
+                                }
+
+                                if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
+                                    RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
+                                    if (rp != null) {
+                                        rp.setStatus(StatusRecord.HAPUS);
+                                        rp.setStatusApprove(StatusApprove.HAPUS);
+                                        requestPenangguhanDao.save(rp);
+                                    }
+                                }
+
+                                tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
+                                tagihan1.setStatus(StatusRecord.NONAKTIF);
+                                tagihanDao.save(tagihan1);
+                                tagihanService.hapusTagihan(tagihan1);
 
                             }
                         }else{
@@ -1071,9 +1078,8 @@ public class StudentBillController {
                                         List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
                                         if (cekSisaCicilan != null) {
                                             for (RequestCicilan listCicilan : cekSisaCicilan){
-                                                listCicilan.setStatus(StatusRecord.HAPUS);
-                                                listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
-                                                listCicilan.setStatusApprove(StatusApprove.HAPUS);
+                                                listCicilan.setStatus(StatusRecord.NONAKTIF);
+                                                listCicilan.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
                                                 requestCicilanDao.save(listCicilan);
                                             }
                                         }
@@ -1169,9 +1175,8 @@ public class StudentBillController {
                                         List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
                                         if (cekSisaCicilan != null) {
                                             for (RequestCicilan listCicilan : cekSisaCicilan){
-                                                listCicilan.setStatus(StatusRecord.HAPUS);
-                                                listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
-                                                listCicilan.setStatusApprove(StatusApprove.HAPUS);
+                                                listCicilan.setStatus(StatusRecord.NONAKTIF);
+                                                listCicilan.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
                                                 requestCicilanDao.save(listCicilan);
                                             }
                                         }
@@ -1367,7 +1372,6 @@ public class StudentBillController {
                     rc.setStatusApprove(StatusApprove.APPROVED);
                     rc.setTanggalJatuhTempo(t.getTanggalPembuatan().plusMonths(i));
                     rc.setWaktuApprove(LocalDateTime.now());
-                    log.info("Request Cicilan : {}", rc);
                     requestCicilanDao.save(rc);
                 }
                 RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(t);
@@ -1375,8 +1379,8 @@ public class StudentBillController {
                     requestCicilan.setUserApprove(karyawan);
                     requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
                     requestCicilanDao.save(requestCicilan);
-                    RequestCicilan cariSebelumnya = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(t, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
-                    if (cariSebelumnya.getTanggalJatuhTempo().isAfter(LocalDate.now())) {
+                    RequestCicilan cariSebelumnya = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tgh, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+                    if (cariSebelumnya.getTanggalJatuhTempo().isAfter(LocalDate.now()) || cariSebelumnya.getTanggalJatuhTempo().isEqual(LocalDate.now())) {
                         tagihanService.ubahJadiCicilan(requestCicilan);
                     }else{
                         tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
@@ -1392,8 +1396,24 @@ public class StudentBillController {
                 }
             }
 
-            tgh.setStatus(StatusRecord.NONAKTIF);
-            tagihanDao.save(tgh);
+            if (tgh.getStatusTagihan() == StatusTagihan.DICICIL) {
+                List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tgh, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+                if (cekSisaCicilan != null) {
+                    for (RequestCicilan listCicilan : cekSisaCicilan){
+                        listCicilan.setStatus(StatusRecord.NONAKTIF);
+                        listCicilan.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
+                        requestCicilanDao.save(listCicilan);
+                    }
+                }
+            }
+
+            if (tgh.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
+                RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tgh, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
+                if (rp != null) {
+                    rp.setStatus(StatusRecord.NONAKTIF);
+                    requestPenangguhanDao.save(rp);
+                }
+            }
 
             if (uas != null){
                 EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.UAS, false, tahunAkademik);
@@ -1433,7 +1453,9 @@ public class StudentBillController {
                     enableFitureDao.save(enableFiture);
                 }
             }
-
+            tgh.setStatusTagihan(StatusTagihan.NONAKTIF);
+            tgh.setStatus(StatusRecord.NONAKTIF);
+            tagihanDao.save(tgh);
         }else{
             attributes.addFlashAttribute("gagal", "Data sudah ada!!");
             return "redirect:form?tahunAkademik="+tahunAkademik.getId()+"&nim="+mhs.getNim();
@@ -1498,9 +1520,6 @@ public class StudentBillController {
 
     @PostMapping("/studentBill/billAdmin/delete")
     public String deleteBill(@RequestParam Tagihan tagihan){
-        tagihan.setStatus(StatusRecord.HAPUS);
-        tagihan.setStatusTagihan(StatusTagihan.HAPUS);
-        tagihanDao.save(tagihan);
         StatusTagihan info = tagihan.getStatusTagihan();
         if (info == StatusTagihan.DICICIL) {
             List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
@@ -1517,6 +1536,9 @@ public class StudentBillController {
         for(VirtualAccount listVa : va){
             virtualAccountDao.delete(listVa);
         }
+        tagihan.setStatus(StatusRecord.HAPUS);
+        tagihan.setStatusTagihan(StatusTagihan.HAPUS);
+        tagihanDao.save(tagihan);
         tagihanService.hapusTagihan(tagihan);
         return "redirect:list?tahunAkademik="+tagihan.getTahunAkademik().getId()+"&nim="+tagihan.getMahasiswa().getNim();
     }
@@ -2164,9 +2186,8 @@ public class StudentBillController {
     public void detailCicilan(Model model, @RequestParam(required = false) Tagihan tagihan,
                               @PageableDefault(size = 50) Pageable page){
 
-        StatusTagihan info = tagihan.getStatusTagihan();
-        model.addAttribute("cek", info);
-        if (info == StatusTagihan.DICICIL){
+        RequestCicilan cicilan = requestCicilanDao.findFirstByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.EDITED, StatusRecord.AKTIF);
+        if (cicilan == null) {
             model.addAttribute("message", "message");
         }
         Integer jumlahCicilan = requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF);
