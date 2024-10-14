@@ -3276,6 +3276,7 @@ public class StudentBillController {
 
                 Tagihan tagihan = cariCicilanHariIni.getTagihan();
                 tagihan.setStatus(StatusRecord.NONAKTIF);
+                tagihan.setStatusTagihan(StatusTagihan.NONAKTIF);
                 tagihanDao.save(tagihan);
             }
 
