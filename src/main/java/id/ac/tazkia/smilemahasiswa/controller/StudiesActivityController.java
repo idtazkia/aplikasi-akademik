@@ -369,7 +369,7 @@ public class StudiesActivityController {
     public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
         List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal, Arrays.asList(StatusRecord.HAPUS));
         if (!cekRps.isEmpty()) {
-            model.addAttribute("gagal", "Submit Rencana Pembelajaran terlebih dahulu!");
+            model.addAttribute("gagal", "Unggah Rencana Pembelajaran terlebih dahulu!");
         }
 
         List<SesiKuliah> cekSesi = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotIn(jadwal, Arrays.asList(StatusRecord.HAPUS));

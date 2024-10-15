@@ -83,7 +83,7 @@
                                 <td class="align-middle" th:text="${data.getEventName()}">Panduan Akademik 2024-2025</td>
 <!--                                <td th:utext="${data.getEventDescription()}"></td>-->
                                 <td class="align-middle" th:text="${data.getTahunAkademik().getNamaTahunAkademik()}">Panduan Akademik 2024-2025</td>
-                                <td class="align-middle" th:text="${#temporals.format(data.getScheduleStart().plusHours(7),'dd-MMM-yyyy HH:mm:ss') + ' s/d ' + #temporals.format(data.getScheduleEnd().plusHours(7),'dd-MMM-yyyy HH:mm:ss')}">01 September 2024 - 31 Agustus 2025</td>
+                                <td class="align-middle" th:text="${#temporals.format(data.getScheduleStart(),'dd-MMM-yyyy HH:mm:ss') + ' s/d ' + #temporals.format(data.getScheduleEnd(),'dd-MMM-yyyy HH:mm:ss')}">01 September 2024 - 31 Agustus 2025</td>
                                 <td class="align-middle p-0">
                                     <a class="btn btn-sm btn-success" title="Download Flyer" th:href="@{/event/{event}/download/(event = ${data.getId()})}" target="_blank" th:download="${data.getEventName()}" >
                                         <i class="fa fa-download"></i>

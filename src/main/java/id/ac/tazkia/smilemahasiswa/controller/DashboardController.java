@@ -430,7 +430,7 @@ public class DashboardController {
 
         StatusRecord statusRecord = mahasiswaDao.stausAktifMahasiswa(ta.getId(),mahasiswa.getId());
         if(statusRecord.equals(StatusRecord.AKTIF)){
-            model.addAttribute("listEvent", eventDao.findByStatusAndSchedulePublishBeforeAndScheduleEndAfterOrderByScheduleStart(StatusRecord.AKTIF, LocalDateTime.now(), LocalDateTime.now()));
+            model.addAttribute("listEvent", eventDao.findByStatusAndSchedulePublishBeforeAndScheduleEndAfterOrderByScheduleStart(StatusRecord.AKTIF, LocalDateTime.now().plusHours(7), LocalDateTime.now().plusHours(7)));
         }
 
         return "dashboard";
