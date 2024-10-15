@@ -91,7 +91,7 @@ public class SidangService {
 
     public Seminar updatePublish(Seminar seminar, SeminarDto seminarDto) {
         BeanUtils.copyProperties(seminarDto, seminar);
-        if (seminarDto.getJenis() == StatusRecord.SKRIPSI) {
+        if (seminarDto.getJenis() == StatusRecord.SKRIPSI || seminarDto.getJenis() == StatusRecord.JURNAL) {
             BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
                     .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
             BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
