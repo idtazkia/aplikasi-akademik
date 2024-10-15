@@ -225,7 +225,7 @@
                                                                                         </tr>
                                                                                         </thead>
 
-                                                                                        <tbody class="text-95 text-secondary-d3" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.MAGANG}">
+                                                                                        <tbody class="text-95 text-secondary-d3" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.MAGANG || data.note.jenis == data.note.jenis.JURNAL}">
                                                                                         <tr></tr>
                                                                                         <tr>
                                                                                             <td>1</td>
@@ -563,7 +563,7 @@
                                                                 </tr>
                                                                 </thead>
 
-                                                                <tbody class="text-95 text-secondary-d3" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.MAGANG}">
+                                                                <tbody class="text-95 text-secondary-d3" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.MAGANG || data.note.jenis == data.note.jenis.JURNAL}">
                                                                 <tr></tr>
                                                                 <tr>
                                                                     <td>1</td>
@@ -774,7 +774,7 @@
             data: JSON.stringify({
                 "id" : id,
             }), error: function (data) {
-                if (data.responseText == "lengkapi"){
+                if (data.responseText == "kosong"){
                     document.getElementById(id+'-alertSave').style.display = "block";
                     setTimeout(function () {
                         document.getElementById(id+'alertSave').style.display = "none";
