@@ -2094,10 +2094,12 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            seminarDao.save(seminar);
+
             if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.ASSESSMENT);
             }
             seminarDao.save(seminar);
         }
@@ -2126,10 +2128,12 @@ public class GraduationController {
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
+            seminarDao.save(seminar);
+
+            if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.ASSESSMENT);
             }
             seminarDao.save(seminar);
         }
@@ -2173,7 +2177,7 @@ public class GraduationController {
             if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.ASSESSMENT);
             }
             seminarDao.save(seminar);
         }
@@ -2200,10 +2204,12 @@ public class GraduationController {
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
+            seminarDao.save(seminar);
+
+            if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.ASSESSMENT);
             }
             seminarDao.save(seminar);
         }
@@ -2244,10 +2250,11 @@ public class GraduationController {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            seminarDao.save(seminar);
             if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.ASSESSMENT);
             }
             seminarDao.save(seminar);
         }
@@ -2274,10 +2281,12 @@ public class GraduationController {
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-            if (seminarDao.validasiSemproStudy(seminar, BigDecimal.ZERO) == null) {
+            seminarDao.save(seminar);
+
+            if (seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO) == null) {
                 seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             } else {
-                seminar.setStatusSempro(StatusTugasAkhir.WAITING);
+                seminar.setStatusSempro(StatusTugasAkhir.ASSESSMENT);
             }
             seminarDao.save(seminar);
         }
