@@ -134,6 +134,9 @@ public class GraduationController {
     private EnableFitureDao enableFitureDao;
 
     @Autowired
+    private UjianTahfidzKompreDao ujianTahfidzKompreDao;
+
+    @Autowired
     private SidangDao sidangDao;
 
     @Autowired
@@ -359,6 +362,7 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             file.transferTo(tujuan);
 
+
             note.setMahasiswa(mahasiswa);
             note.setFileUpload(idFile + "." + extension);
             note.setTanggalInput(LocalDate.now());
@@ -374,6 +378,7 @@ public class GraduationController {
             note.setTahunAkademik(ta);
             noteDao.save(note);
             mailService.registerNote(note);
+            graduationService.createTugasAkhir(mahasiswa,StatusTugasAkhir.WAITING, TugasAkhir.MenuTugasAkhir.NOTE);
         } else {
             note.setMahasiswa(mahasiswa);
             note.setFileUpload(note.getFileUpload());
@@ -390,6 +395,8 @@ public class GraduationController {
             note.setTahunAkademik(ta);
             noteDao.save(note);
             mailService.registerNote(note);
+            graduationService.createTugasAkhir(mahasiswa,StatusTugasAkhir.WAITING, TugasAkhir.MenuTugasAkhir.NOTE);
+            
         }
 
         return "redirect:list";
@@ -588,6 +595,7 @@ public class GraduationController {
         note1.setUserApprove(user);
         noteDao.save(note1);
         mailService.approvedNote(note1);
+        graduationService.createTugasAkhir(note1.getMahasiswa(), StatusTugasAkhir.APPROVED, TugasAkhir.MenuTugasAkhir.NOTE);
 
         return "redirect:list?tahun=" + note1.getTahunAkademik().getId() + "&prodi="
                 + note1.getMahasiswa().getIdProdi().getId();
@@ -975,6 +983,17 @@ public class GraduationController {
                 StatusRecord.SKRIPSI, Boolean.TRUE);
         EnableFiture semprop = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),
                 StatusRecord.SEMPRO, Boolean.TRUE);
+
+        UjianTahfidzKompre tahfidz = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(seminar.getNote().getMahasiswa(), "UjianTahfidz", StatusRecord.LULUS);
+        UjianTahfidzKompre kompre = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(seminar.getNote().getMahasiswa(), "UjianKomprehensif", StatusRecord.LULUS);
+        if (tahfidz != null) {
+            model.addAttribute("tahfidz", tahfidz);
+        }
+
+        if (kompre != null) {
+            model.addAttribute("kompre", kompre);
+        }
+
         if (semprop != null) {
             model.addAttribute("sempro", semprop);
             if (enableFiture != null) {
@@ -2716,7 +2735,7 @@ public class GraduationController {
             }
         }
 
-        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.MAGANG || seminar.getNote().getJenis() == StatusRecord.JURNAL) {
             Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
