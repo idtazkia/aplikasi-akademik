@@ -2,10 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotScoreDto;
-import id.ac.tazkia.smilemahasiswa.entity.BobotTugas;
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.JadwalBobotTugasMoodle;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +14,7 @@ public interface BobotTugasDao extends PagingAndSortingRepository<BobotTugas, St
     List<BobotTugas> findByJadwalAndStatus(Jadwal jadwal, StatusRecord aktif);
     List<BobotTugas> findByJadwalAndStatusOrderByPertemuanAsc(Jadwal jadwal, StatusRecord aktif);
 
-    BobotTugas findByJadwalAndPertemuanAndStatus(Jadwal jadwal, String pertemuan, StatusRecord status);
+    BobotTugas findByJadwalAndJadwalTugasAndStatus(Jadwal jadwal, JadwalTugas pertemuan, StatusRecord status);
 
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.assesment.BobotScoreDto(bt.id,bt.bobot) from BobotTugas bt where bt.jadwal.id= :jadwal and bt.status = :status")
     List<BobotScoreDto> bobotTugas(@Param("jadwal")String jadwal, @Param("status")StatusRecord statusRecord);

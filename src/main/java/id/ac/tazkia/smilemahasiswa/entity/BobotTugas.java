@@ -18,6 +18,10 @@ public class BobotTugas {
     private String id;
 
     @ManyToOne
+    @JoinColumn(name = "id_jadwal_tugas")
+    private JadwalTugas jadwalTugas;
+
+    @ManyToOne
     @NotNull
     @JoinColumn(name = "id_jadwal")
     @JsonBackReference
@@ -32,4 +36,7 @@ public class BobotTugas {
     private StatusRecord status = StatusRecord.AKTIF;
 
     private String pertemuan;
+
+    @Enumerated(EnumType.STRING)
+    private KategoriTugas kategoriTugas;
 }
