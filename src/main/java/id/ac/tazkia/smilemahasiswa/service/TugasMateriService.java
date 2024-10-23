@@ -53,17 +53,17 @@ public class TugasMateriService {
     private String uploadMateri;
 
     public JadwalTugas.JenisPengiriman setPengiriman(String online, String upload, String presentasi, String ujian){
-        if (online != null) {
-            return JadwalTugas.JenisPengiriman.ONLINE_TEKS;
+        if (online != null && upload != null && presentasi != null && ujian != null) {
+            return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_PRESENTASI_UJIAN;
         }
-        if (upload != null) {
-            return JadwalTugas.JenisPengiriman.UPLOAD_FILE;
+        if (online != null && upload != null && presentasi != null) {
+            return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_PRESENTASI;
         }
-        if (presentasi != null) {
-            return JadwalTugas.JenisPengiriman.PRESENTASI;
+        if (online != null && upload != null && ujian != null) {
+            return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_UJIAN;
         }
-        if (ujian != null) {
-            return JadwalTugas.JenisPengiriman.UJIAN;
+        if (upload != null && presentasi != null && ujian != null) {
+            return JadwalTugas.JenisPengiriman.UPLOAD_FILE_PRESENTASI_UJIAN;
         }
         if (online != null && upload != null) {
             return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE;
@@ -83,19 +83,19 @@ public class TugasMateriService {
         if (presentasi != null && ujian != null) {
             return JadwalTugas.JenisPengiriman.PRESENTASI_UJIAN;
         }
-        if (online != null && upload != null && presentasi != null) {
-            return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_PRESENTASI;
+        if (online != null) {
+            return JadwalTugas.JenisPengiriman.ONLINE_TEKS;
         }
-        if (online != null && upload != null && ujian != null) {
-            return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_UJIAN;
+        if (upload != null) {
+            return JadwalTugas.JenisPengiriman.UPLOAD_FILE;
         }
-        if (upload != null && presentasi != null && ujian != null) {
-            return JadwalTugas.JenisPengiriman.UPLOAD_FILE_PRESENTASI_UJIAN;
+        if (presentasi != null) {
+            return JadwalTugas.JenisPengiriman.PRESENTASI;
         }
-        if (online != null && upload != null && presentasi != null && ujian != null) {
-            return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_PRESENTASI;
+        if (ujian != null) {
+            return JadwalTugas.JenisPengiriman.UJIAN;
         }
-        return JadwalTugas.JenisPengiriman.ONLINE_TEKS;
+        return JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE_PRESENTASI_UJIAN;
     }
 
     public void saveBobotTugas(Jadwal jadwal, JadwalTugas jadwalTugas){
@@ -107,7 +107,7 @@ public class TugasMateriService {
             bobotTugas.setBobot(jadwalTugas.getBobot());
             bobotTugas.setNamaTugas(jadwalTugas.getNamaTugas());
             bobotTugas.setPertemuan(String.valueOf(jadwalTugas.getPertemuanKe()));
-//            bobotTugas.setKategoriTugas(jadwalTugas.getKategoriTugas());
+            bobotTugas.setKategoriTugas(jadwalTugas.getKategoriTugas());
             bobotTugasDao.save(bobotTugas);
 
             List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(), StatusRecord.AKTIF);
@@ -118,7 +118,7 @@ public class TugasMateriService {
                 nilaiTugas.setKrsDetail(kd);
                 nilaiTugas.setBobotTugas(bobotTugas);
                 nilaiTugas.setStatus(StatusRecord.AKTIF);
-//                nilaiTugas.setKategoriTugas(jadwalTugas.getKategoriTugas());
+                nilaiTugas.setKategoriTugas(jadwalTugas.getKategoriTugas());
                 nilaiTugasDao.save(nilaiTugas);
             }
         }else{
@@ -128,20 +128,20 @@ public class TugasMateriService {
             bt.setPertemuan(String.valueOf(jadwalTugas.getPertemuanKe()));
             bt.setKategoriTugas(jadwalTugas.getKategoriTugas());
 
-//            List<NilaiTugas> nt = nilaiTugasDao.findByStatusAndBobotTugas(StatusRecord.AKTIF, bt);
-//            for (NilaiTugas tugas : nt){
-//                tugas.setKategoriTugas(jadwalTugas.getKategoriTugas());
-//                nilaiTugasDao.save(tugas);
-//            }
+            List<NilaiTugas> nt = nilaiTugasDao.findByStatusAndBobotTugas(StatusRecord.AKTIF, bt);
+            for (NilaiTugas tugas : nt){
+                tugas.setKategoriTugas(jadwalTugas.getKategoriTugas());
+                nilaiTugasDao.save(tugas);
+            }
 
             bobotTugasDao.save(bt);
         }
 
-//        if (JadwalTugas.JenisPengiriman.PRESENTASI.equals(jadwalTugas.getJenisPengiriman()) ||
-//                JadwalTugas.JenisPengiriman.UJIAN.equals(jadwalTugas.getJenisPengiriman()) ||
-//                JadwalTugas.JenisPengiriman.PRESENTASI_UJIAN.equals(jadwalTugas.getJenisPengiriman())) {
-//            generateJawabanOtomatis(jadwalTugas);
-//        }
+        if (JadwalTugas.JenisPengiriman.PRESENTASI.equals(jadwalTugas.getJenisPengiriman()) ||
+                JadwalTugas.JenisPengiriman.UJIAN.equals(jadwalTugas.getJenisPengiriman()) ||
+                JadwalTugas.JenisPengiriman.PRESENTASI_UJIAN.equals(jadwalTugas.getJenisPengiriman())) {
+            generateJawabanOtomatis(jadwalTugas);
+        }
     }
 
     public void deleteBobotTugas(JadwalTugas jadwalTugas){
@@ -183,13 +183,32 @@ public class TugasMateriService {
                     nilai.setNilai(new BigDecimal(pilihan));
                     nilai.setNilaiAkhir(nilaiAkhir);
                     nilaiTugasDao.save(nilai);
-//                    if (KategoriTugas.UTS.equals(jadwalTugas.getKategoriTugas())){
-//                        scoreService.hitungNilaiUTS(nilai);
-//                    }
+                    switch (jadwalTugas.getKategoriTugas()){
+                        case UTS:
+                            scoreService.hitungNilaiUTS(nilai);
+                            break;
+                        case UAS:
+                            scoreService.hitungNilaiUAS(nilai);
+                            break;
+                        default:
+                            scoreService.hitungNilaiTugas(nilai);
+                            break;
+                    }
                 }else{
                     validasi.setNilai(new BigDecimal(pilihan));
                     validasi.setNilaiAkhir(nilaiAkhir);
                     nilaiTugasDao.save(validasi);
+                    switch (jadwalTugas.getKategoriTugas()){
+                        case UTS:
+                            scoreService.hitungNilaiUTS(validasi);
+                            break;
+                        case UAS:
+                            scoreService.hitungNilaiUAS(validasi);
+                            break;
+                        default:
+                            scoreService.hitungNilaiTugas(validasi);
+                            break;
+                    }
                 }
             }
         }

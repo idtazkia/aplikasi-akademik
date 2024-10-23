@@ -45,7 +45,8 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Tugas matakuliah <span th:text="${tugasjawaban.jadwalTugas.sesiKuliah.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span> Pertemuan <span th:text="${tugasjawaban.jadwalTugas.pertemuanKe}"></span></h3>
+                                <h3 class="mb-0">Tugas matakuliah <span th:text="${tugasjawaban.jadwalTugas.sesiKuliah.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span> Pertemuan <span th:text="${tugasjawaban.jadwalTugas.pertemuanKe}"></span>
+                                    - <span th:text="${tugasjawaban.mahasiswa.nim + ' - ' + tugasjawaban.mahasiswa.nama}"></span></h3>
                                 <h3 class="mb-0" th:text="${tugasjawaban.jadwalTugas.namaTugas}"></h3>
                             </div>
                             <div class="col text-right">
@@ -69,17 +70,30 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <div class="card shadow mt-5">
                                     <form method="post" th:action="@{/studiesActivity/assesment/collection/detail}">
                                         <input type="hidden" name="jawaban" th:value="${tugasjawaban.id}">
                                         <div class="card-body">
-                                            <label for="nilai">Nilai</label>
-                                            <div class="input-group">
-                                                <input type="number" name="nilai" id="nilai" max="100" style="min-width: 50px;" th:value="${tugasjawaban.nilai}" required class="form-control">
-                                                <span class="input-group-text mr-5">/100</span>
-                                                <button type="submit" class="btn btn-success btn-lg"> Save</button>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <label for="masukan">Masukan</label>
+                                                    <div class="input-group">
+<!--                                                        <input type="text" name="nilai" id="nilai" max="100" style="min-width: 50px;" th:value="${tugasjawaban.nilai}" required class="form-control">-->
+                                                        <textarea name="masukan" id="masukan" cols="30" rows="10" th:text="${tugasjawaban.masukan}" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <label for="nilai">Nilai</label>
+                                                    <div class="input-group">
+                                                        <input type="number" name="nilai" id="nilai" max="100" style="min-width: 50px;" th:value="${tugasjawaban.nilai}" required class="form-control">
+                                                        <span class="input-group-text mr-5">/100</span>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-success btn-lg"> Simpan</button>
                                         </div>
                                     </form>
                                 </div>

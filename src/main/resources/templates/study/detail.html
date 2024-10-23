@@ -175,8 +175,8 @@
                                                     </div>
                                                     <br>
                                                     <h5 th:if="${tugas.tenggatWaktu < now}" style="color: red;">Pengumpulan tugas sudah melewati tenggat waktu <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy HH:mm')}"></span></h5>
-                                                    <h5 th:if="${tugas.tenggatWaktu >= now}"  style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy HH:mm')}"></span></h5>
-                                                    <a th:if="${tugas.tenggatWaktu >= now}" th:href="@{/study/tugas(jadwalTugas=${tugas.id}, jadwal=${jadwal.id})}" class="btn btn-info">Jawab Tugas</a>
+                                                    <h5 th:if="${tugas.waktuMulai <= now && tugas.tenggatWaktu >= now}"  style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy HH:mm')}"></span></h5>
+                                                    <a th:if="${tugas.waktuMulai <= now && tugas.tenggatWaktu >= now}" th:href="@{/study/tugas(jadwalTugas=${tugas.id}, jadwal=${jadwal.id})}" class="btn btn-info">Jawab Tugas</a>
                                                 </div>
                                             </div>
                                         </div>

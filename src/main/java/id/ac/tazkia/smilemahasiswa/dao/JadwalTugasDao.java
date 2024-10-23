@@ -14,10 +14,17 @@ public interface JadwalTugasDao extends PagingAndSortingRepository<JadwalTugas, 
 
     List<JadwalTugas> findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(Jadwal jadwal, StatusRecord status);
 
-    @Query("select coalesce(sum(jt.bobot), 0) from JadwalTugas jt where jt.status = 'AKTIF' and jt.sesiKuliah.jadwal = :jadwal")
+    @Query("select coalesce(sum(jt.bobot), 0) from JadwalTugas jt where jt.kategoriTugas = 'TUGAS' and jt.status = 'AKTIF' and jt.sesiKuliah.jadwal = :jadwal")
     BigDecimal totalBobot(@Param("jadwal")Jadwal jadwal);
+
+    @Query("select coalesce(sum(jt.bobot), 0) from JadwalTugas jt where jt.kategoriTugas = 'UTS' and jt.status = 'AKTIF' and jt.sesiKuliah.jadwal = :jadwal")
+    BigDecimal totalBobotUTS(@Param("jadwal")Jadwal jadwal);
+
+    @Query("select coalesce(sum(jt.bobot), 0) from JadwalTugas jt where jt.kategoriTugas = 'UAS' and jt.status = 'AKTIF' and jt.sesiKuliah.jadwal = :jadwal")
+    BigDecimal totalBobotUAS(@Param("jadwal")Jadwal jadwal);
 
 
     List<JadwalTugas> findByStatusAndSesiKuliahJadwalOrderBySesiKuliahPertemuanKe(StatusRecord status, Jadwal jadwal);
 
 }
+

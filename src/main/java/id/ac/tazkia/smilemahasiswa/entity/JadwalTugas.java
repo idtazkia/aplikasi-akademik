@@ -40,7 +40,11 @@ public class JadwalTugas {
 
     private String namaFile;
 
-    @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "DATETIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime waktuMulai = LocalDateTime.now();
+
+    @Column(columnDefinition = "DATETIME")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tenggatWaktu;
 

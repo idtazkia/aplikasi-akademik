@@ -831,7 +831,7 @@ public class StudyActivityController {
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("materi", materiMengajarDao.findByStatusAndSesiKuliahJadwal(StatusRecord.AKTIF, jadwal));
         model.addAttribute("tugas", jadwalTugasDao.findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(jadwal, StatusRecord.AKTIF));
-        model.addAttribute("now", LocalDateTime.now());
+        model.addAttribute("now", LocalDateTime.now().plusHours(7));
     }
 
     @GetMapping("/jadwal/{jadwal}/tugas")

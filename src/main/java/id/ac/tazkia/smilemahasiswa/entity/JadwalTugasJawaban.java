@@ -43,4 +43,7 @@ public class JadwalTugasJawaban {
     @Column(columnDefinition = "DATETIME")
     private LocalDateTime waktuPengumpulan = LocalDateTime.now();
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String masukan;
 }
