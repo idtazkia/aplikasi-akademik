@@ -830,7 +830,7 @@ public class StudyActivityController {
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("materi", materiMengajarDao.findByStatusAndSesiKuliahJadwal(StatusRecord.AKTIF, jadwal));
-        model.addAttribute("tugas", jadwalTugasDao.findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(jadwal, StatusRecord.AKTIF));
+        model.addAttribute("tugas", jadwalTugasDao.listTugasMahasiswa(mahasiswa.getId(), jadwal.getId()));
         model.addAttribute("now", LocalDateTime.now().plusHours(7));
     }
 

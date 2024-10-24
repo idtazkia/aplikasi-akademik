@@ -157,26 +157,27 @@
                                                 </div>
                                                 <hr>
                                                 <h4>Tugas</h4>
-                                                <div th:each="tugas, row : ${tugas}" th:if="${tugas.sesiKuliah.id == data[4]}" class="tpgp-al-cl">
-                                                    <h5 th:text="${'Judul Tugas : ' + tugas.namaTugas}"></h5>
-                                                    <div th:if="${tugas.file != null}"> <a th:href="@{/jadwal/{jadwal}/tugas(jadwal=${tugas.id})}" th:text="${tugas.namaFile}"></a></div>
+                                                <!-- && tugas[7] <= now -->
+                                                <div th:each="tugas, row : ${tugas}" th:if="${tugas.getIdSesi() == data[4] && tugas.getWaktuMulai <= now}" class="tpgp-al-cl">
+                                                    <h5 th:text="${'Judul Tugas : ' + tugas.getNamaTugas()}"></h5>
+                                                    <div th:if="${tugas.getFile() != null}"> <a th:href="@{/jadwal/{jadwal}/tugas(jadwal=${tugas.getId()})}" th:text="${tugas.getNamaFile()}"></a></div>
                                                     <br>
                                                     <div class="row">
                                                         <div class="col-md-6 col-sm-12 col-xs-12">
-                                                            <textarea th:text="${tugas.deskripsi}" cols="30" rows="10" class="form-control" readonly disabled>
+                                                            <textarea th:text="${tugas.getDeskripsi()}" cols="30" rows="10" class="form-control" readonly disabled>
                                                                 asoajdaosijdoa
                                                             </textarea>
                                                         </div>
                                                         <div class="col-md-6 col-sm-12 col-xs-12">
-                                                            <textarea th:text="${tugas.petunjukAktivitas}" cols="30" rows="10" class="form-control" readonly disabled>
+                                                            <textarea th:text="${tugas.getPetunjukAktivitas()}" cols="30" rows="10" class="form-control" readonly disabled>
                                                                 asoajdaosijdoa
                                                             </textarea>
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <h5 th:if="${tugas.tenggatWaktu < now}" style="color: red;">Pengumpulan tugas sudah melewati tenggat waktu <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy HH:mm')}"></span></h5>
-                                                    <h5 th:if="${tugas.waktuMulai <= now && tugas.tenggatWaktu >= now}"  style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada <span th:text="${#temporals.format(tugas.tenggatWaktu, 'dd MMM yyyy HH:mm')}"></span></h5>
-                                                    <a th:if="${tugas.waktuMulai <= now && tugas.tenggatWaktu >= now}" th:href="@{/study/tugas(jadwalTugas=${tugas.id}, jadwal=${jadwal.id})}" class="btn btn-info">Jawab Tugas</a>
+                                                    <h5 th:if="${tugas.getTenggatWaktu() < now}" style="color: red;">Pengumpulan tugas sudah melewati tenggat waktu <span th:text="${#temporals.format(tugas.getTenggatWaktu(), 'dd MMM yyyy HH:mm')}"></span></h5>
+                                                    <h5 th:if="${tugas.getWaktuMulai() <= now && tugas.getTenggatWaktu() >= now}"  style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada <span th:text="${#temporals.format(tugas.getTenggatWaktu(), 'dd MMM yyyy HH:mm')}"></span></h5>
+                                                    <a th:if="${tugas.getWaktuMulai() <= now && tugas.getTenggatWaktu() >= now}" th:href="@{/study/tugas(jadwalTugas=${tugas.getId()}, jadwal=${jadwal.id})}" class="btn btn-info">Jawab Tugas</a>
                                                 </div>
                                             </div>
                                         </div>
