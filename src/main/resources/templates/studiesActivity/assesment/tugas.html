@@ -153,7 +153,7 @@
                                                 <label for="presentasi" >Presentasi</label>
                                             </div>
                                             <div id="checkboxUjian" class="col-md-3">
-                                                <input type="checkbox" id="ujian" name="ujian" class="js-switch" value="UJian">
+                                                <input type="checkbox" id="ujian" name="ujian" class="js-switch" value="UJian" checked>
                                                 <label for="ujian" >Ujian</label>
                                             </div>
                                         </div>
@@ -248,7 +248,9 @@
         if (idSelect === 'UTS' || idSelect === 'UAS'){
             ujianCheckbox.style.display = 'block';
             ujianInput.checked = true;
-            ujianInput.disabled = true;
+            document.getElementById('ujian').addEventListener('click', function (event){
+                event.preventDefault();
+            });
         }else{
             ujianCheckbox.style.display = 'none';
             ujianInput.checked = false;

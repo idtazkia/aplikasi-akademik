@@ -252,6 +252,9 @@
         if (idSelect === 'UTS' || idSelect === 'UAS'){
             ujianCheckbox.style.display = 'block';
             ujianInput.checked = true;
+            document.getElementById('ujian').addEventListener('click', function (event){
+                event.preventDefault();
+            });
         }else{
             ujianCheckbox.style.display = 'none';
             ujianInput.checked = false;

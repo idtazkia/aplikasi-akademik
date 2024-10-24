@@ -868,6 +868,13 @@ public class StudyActivityController {
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mhs);
 
+        if (jadwalTugas.getJenisPengiriman().name().contains("UPLOAD_FILE")) {
+            model.addAttribute("upload", "upload");
+        }
+        if (jadwalTugas.getJenisPengiriman().name().contains("ONLINE_TEKS")) {
+            model.addAttribute("online", "online");
+        }
+
         model.addAttribute("kesempatanUpload", tugasJawabanDao.cariTotalTugas(mhs.getId(), jadwalTugas.getId()));
         model.addAttribute("history", tugasJawabanDao.findTopByMahasiswaAndJadwalTugasAndStatus(mhs, jadwalTugas, StatusRecord.AKTIF));
     }

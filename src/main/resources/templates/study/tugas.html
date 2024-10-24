@@ -125,7 +125,7 @@
                                 <div>
                                     <input type="hidden" name="mahasiswa" th:value="${mahasiswa.id}">
                                     <input type="hidden" name="jadwalTugas" th:value="${tugas.id}">
-                                    <div th:if="${tugas.jenisPengiriman.ONLINE_TEKS == tugas.jenisPengiriman || tugas.jenisPengiriman.ONLINE_TEKS_UPLOAD_FILE == tugas.jenisPengiriman}">
+                                    <div th:if="${online}">
                                         <h2>Pertanyaan</h2>
                                         <span th:utext="${tugas.pertanyaan}" readonly disabled ></span>
                                         <br>
@@ -134,7 +134,7 @@
                                         <textarea th:if="${history == null}" name="jawabanTeks" id="jawab" cols="30" rows="10" class="form-control"></textarea>
                                         <br>
                                     </div>
-                                    <div th:if="${tugas.jenisPengiriman.UPLOAD_FILE == tugas.jenisPengiriman || tugas.jenisPengiriman.ONLINE_TEKS_UPLOAD_FILE == tugas.jenisPengiriman}">
+                                    <div th:if="${upload}">
 <!--                                            <input type="text" th:text="${kesempatanUpload}" th:value="${kesempatanUpload}">-->
                                         <div th:if="${kesempatanUpload == null}">
                                             <input type="file" name="fileJawaban" class="form-control">
