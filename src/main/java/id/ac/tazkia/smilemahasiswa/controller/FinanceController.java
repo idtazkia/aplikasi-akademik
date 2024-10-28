@@ -393,11 +393,8 @@ public class FinanceController {
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
 
         if (JenisTest.TOEFL.equals(jenis)) {
-            EnableFiture toefl = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(mhs, StatusRecord.TOEFL, tahunAkademik);
-            if (toefl != null) {
-                toefl.setEnable(true);
-                enableFitureDao.save(toefl);
-            }else{
+            EnableFiture toefl = enableFitureDao.findByMahasiswaAndFiturAndEnable(mhs, StatusRecord.TOEFL, true);
+            if (toefl == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setFitur(StatusRecord.TOEFL);
                 enableFiture.setMahasiswa(mhs);
@@ -408,11 +405,8 @@ public class FinanceController {
                 enableFitureDao.save(enableFiture);
             }
         } else if (JenisTest.IELTS.equals(jenis)) {
-            EnableFiture ielts = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(mhs, StatusRecord.IELTS, tahunAkademik);
-            if (ielts != null) {
-                ielts.setEnable(true);
-                enableFitureDao.save(ielts);
-            }else{
+            EnableFiture ielts = enableFitureDao.findByMahasiswaAndFiturAndEnable(mhs, StatusRecord.IELTS, true);
+            if (ielts == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setFitur(StatusRecord.IELTS);
                 enableFiture.setMahasiswa(mhs);

@@ -115,7 +115,7 @@
         </div>
     </div>
 
-    <div th:if="${tugas.getWaktuMulai() <= now && tugas.getTenggatWaktu() >= now}" class="container">
+    <div class="container">
         <div th:if="${online != null || upload != null}" class="row">
             <div class="col-md-12 col-xs-12">
                 <div class="normal-table-list mg-t-30">
@@ -132,42 +132,32 @@
                                         <h2>Jawaban</h2>
                                         <textarea th:if="${history != null}" name="jawabanTeks" id="jawab" cols="30" rows="10" th:text="${history.jawabanTeks}" class="form-control"></textarea>
                                         <textarea th:if="${history == null}" name="jawabanTeks" id="jawab" cols="30" rows="10" class="form-control"></textarea>
+                                        <p th:if="${history != null}" class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MM - yyyy HH:ss')}"></span></p>
                                         <br>
                                     </div>
                                     <div th:if="${upload}">
 <!--                                            <input type="text" th:text="${kesempatanUpload}" th:value="${kesempatanUpload}">-->
                                         <div th:if="${kesempatanUpload == null}">
-                                            <input type="file" name="fileJawaban" class="form-control">
+                                            <input th:if="${tugas.getTenggatWaktu() >= now}" type="file" name="fileJawaban" class="form-control">
                                             <p style="color: red;">Anda mempunyai <span th:text="${tugas.maksFileUpload}"></span> kali kesempatan upload</p>
                                         </div>
                                         <div th:if="${kesempatanUpload != null && kesempatanUpload != 0}">
-                                            <input type="file" name="fileJawaban" class="form-control">
                                             <a class="text-warning" th:text="${history.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${history.id})}"></a>
+                                            <input th:if="${tugas.getTenggatWaktu() >= now}" type="file" name="fileJawaban" class="form-control">
                                             <p class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MM - yyyy HH:ss')}"></span></p>
-                                            <p style="color: red;">Anda mempunyai <span th:text="${kesempatanUpload}"></span> kali kesempatan upload</p>
+                                            <p th:if="${tugas.getTenggatWaktu() >= now}" style="color: red;">Anda mempunyai <span th:text="${kesempatanUpload}"></span> kali kesempatan upload</p>
                                         </div>
                                         <div th:if="${kesempatanUpload != null && kesempatanUpload == 0}">
                                             <a class="text-warning" th:text="${history.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${history.id})}"></a>
                                             <p class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MM - yyyy HH:ss')}"></span></p>
-                                            <p style="color: red;">Anda sudah tidak punya kesempatan upload</p>
+                                            <p th:if="${tugas.getTenggatWaktu() >= now}" style="color: red;">Anda sudah tidak punya kesempatan upload</p>
                                         </div><br>
                                     </div>
-                                    <button th:if="${online != null || upload != null}" type="submit" class="btn btn-success">Save</button>
+                                    <h5 th:if="${tugas.getTenggatWaktu() < now}" style="color: red;">Pengumpulan tugas sudah melewati tenggat : <span th:text="${#temporals.format(tugas.getTenggatWaktu(), 'EEEE, dd MMM yyyy HH:mm', 'id')}"></span></h5>
+                                    <button th:if="${(online != null || upload != null) && tugas.getTenggatWaktu() >= now}" type="submit" class="btn btn-success">Save</button>
                                 </div>
                             </form>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div th:if="${tugas.getTenggatWaktu() < now}" class="container">
-        <div class="row">
-            <div class="col-md-12 col-xs-12">
-                <div class="normal-table-list mg-t-30">
-                    <div class="basic-tb-hd">
-                        <h4 style="color: red;">Pengumpulan tugas sudah melewati tenggat waktu : <span th:text="${#temporals.format(tugas.getTenggatWaktu(), 'EEEE, dd MMM yyyy HH:mm', 'id')}"></span></h4>
                     </div>
                 </div>
             </div>

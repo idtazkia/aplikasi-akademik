@@ -44,9 +44,9 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
     List<PresensiDosenDto> listPresensiDosen2(Jadwal jadwal);
 
 
-    @Query(value = "\tselect d.nama_karyawan as dosen, e.nama_kelas as kelas, nama_matakuliah as matkul,b.jam_mulai as mulai, a.waktu_masuk + INTERVAL 7 HOUR as realisasi,\n"
+    @Query(value = "\tselect d.nama_karyawan as dosen, e.nama_kelas as kelas, nama_matakuliah as matkul,b.jam_mulai as mulai, a.waktu_masuk as realisasi,\n"
             +
-            "\tTIMEDIFF(a.waktu_masuk + INTERVAL 7 HOUR,STR_TO_DATE(concat(date(a.waktu_masuk),' ',b.jam_mulai), '%Y-%m-%d %T')) as rangeWaktu, pertemuan, \n"
+            "\tTIMEDIFF(a.waktu_masuk,STR_TO_DATE(concat(date(a.waktu_masuk),' ',b.jam_mulai), '%Y-%m-%d %T')) as rangeWaktu, pertemuan, \n"
             +
             "\ta.status_presensi as presensi,count(g.id_sesi_kuliah) as jumlahMahasiswa, \n" +
             "\tsum(if(g.status_presensi = 'HADIR',1,0)) as hadir,\n" +
@@ -171,12 +171,12 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "    and b.pertemuan_ke = ?3 order by g.nama_karyawan ASC", nativeQuery = true)
     List<ReportUjianDto> reportUjian(TahunAkademik tahunAkademik, Prodi prodi, String jenis);
 
-    @Query(value = "select id,dosen,'2024-03-01' as dari, '2024-03-31' as sampai,  terlambat, concat(coalesce(round((terlambat * 100)/total,0),0),'%') as persentase_terlambat,\n" +
+    @Query(value = "select id,dosen, ?1 as dari, ?2 as sampai,  terlambat, concat(coalesce(round((terlambat * 100)/total,0),0),'%') as persentase_terlambat,\n" +
             "tepat_waktu,concat(coalesce(round((tepat_waktu * 100)/total,0),0),'%') as persentase_tepat_waktu, total  from\n" +
             "(select id,dosen, sum(if(statuss = 'AKTIF',1,0)) as total, sum(if(status = 'TERLAMBAT',1,0)) as terlambat,  sum(if(status = 'TEPAT_WAKTU',1,0)) as tepat_waktu from\n" +
             "(select id,nama_karyawan as dosen, rangewaktu,statuss, if(statuss = 'AKTIF',if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU'),'BELUM MULAI') as status from\n" +
-            "(select d.id,e.nama_karyawan, c.jam_mulai,b.status as statuss, a.waktu_mulai + interval 7 hour as waktu_mulai, \n" +
-            "TIMEDIFF(b.waktu_masuk + interval 7 hour,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "(select d.id,e.nama_karyawan, c.jam_mulai,b.status as statuss, a.waktu_mulai as waktu_mulai, \n" +
+            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
             "from sesi_kuliah as a\n" +
             "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
@@ -187,8 +187,8 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
     List<Object[]> rekapPresensiDosen(LocalDate dari, LocalDate sampai);
 
     @Query(value = "select nama_karyawan as dosen, nama_matakuliah, nama_kelas,jam_mulai,waktu_mulai, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
-            "(select e.nama_karyawan,nama_matakuliah, nama_kelas, STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T') as jam_mulai, a.waktu_mulai + interval 7 hour as waktu_mulai, \n" +
-            "TIMEDIFF(b.waktu_masuk + interval 7 hour,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "(select e.nama_karyawan,nama_matakuliah, nama_kelas, STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T') as jam_mulai, a.waktu_mulai as waktu_mulai, \n" +
+            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
             "from sesi_kuliah as a\n" +
             "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
@@ -205,8 +205,8 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "tepat_waktu,concat(round((tepat_waktu * 100)/total,0),'%') as persentase_tepat_waktu, total  from\n" +
             "(select id,dosen, count(dosen) as total, sum(if(status = 'TERLAMBAT',1,0)) as terlambat,  sum(if(status = 'TEPAT_WAKTU',1,0)) as tepat_waktu from\n" +
             "(select id,nama_karyawan as dosen, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
-            "(select d.id,e.nama_karyawan, c.jam_mulai, a.waktu_mulai + interval 7 hour as waktu_mulai, \n" +
-            "TIMEDIFF(b.waktu_masuk + interval 7 hour,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "(select d.id,e.nama_karyawan, c.jam_mulai, a.waktu_mulai as waktu_mulai, \n" +
+            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
             "from sesi_kuliah as a\n" +
             "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
