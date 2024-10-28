@@ -48,6 +48,12 @@
                             <div th:if="${gagal != null}" class="alert alert-danger">
                                 <span th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
                             </div>
+                            <div th:if="${error != null}" class="alert alert-danger">
+                                <span th:text="${error}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
+                            </div>
+                            <div th:if="${success != null}" class="alert alert-success">
+                                <span th:text="${success}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
+                            </div>
 
                             <!-- Title dan Tombol -->
                             <div class="row align-items-center">
@@ -275,7 +281,7 @@
                                                         </a>
                                                         &nbsp;
                                                         <a
-                                                                onclick="return confirm('Apakah anda yakin untuk dokumen ini? ')"
+                                                                onclick="return confirm('Apakah anda yakin untuk menghapus dokumen ini? ')"
                                                                 th:href="@{/studiesActivity/attendance/hapusfoto(sesiKuliahFoto=${dataFoto.getId()})}"
                                                                 th:if="${data.sesi == dataFoto.sesiKuliah.id}"
                                                                 class="fa fa-trash mt-0"
@@ -397,7 +403,7 @@
 
                                             <form
                                                     id="form4"
-                                                    th:action="@{/studiesActivity/attendance/tambahfoto(id=${data.getSesi()})}"
+                                                    th:action="@{/studiesActivity/attendance/tambahfoto(sesiKuliah=${data.sesi})}"
                                                     method="post"
                                                     enctype="multipart/form-data"
                                             >
@@ -564,14 +570,14 @@
 
         if (fileSize > 1000) {
             event.target.value = ""; // Reset file input
-            alert("Ukuran file melebihi 100 Kb");
+            alert("Ukuran file melebihi 1 Mb");
         } else {
             // Tampilkan modal "Tunggu Sebentar"
             $('#loadingModal').modal('show');
 
             // Submit form setelah sedikit penundaan
             setTimeout(() => {
-                form.submit();
+                input.form.submit();
             }, 500); // Penundaan 0.5 detik
         }
     }

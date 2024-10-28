@@ -13107,7 +13107,7 @@ public class StudiesActivityController {
 
 
     @PostMapping("/studiesActivity/attendance/tambahfoto")
-    public String tambahFilePerkuliahan(@RequestParam String id,
+    public String tambahFilePerkuliahan(@RequestParam SesiKuliah sesiKuliah,
                                         @RequestParam("fotoKuliah") MultipartFile file,
                                         Authentication authentication,
                                         RedirectAttributes redirectAttributes) throws Exception {
@@ -13116,15 +13116,14 @@ public class StudiesActivityController {
 //        Karyawan karyawan = karyawanDao.findByUser(user);
 //        Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        // Validasi ekstensi file (hanya gambar)
+
         String namaAsli = file.getOriginalFilename();
         if (namaAsli == null || !isImageFile(namaAsli)) {
             redirectAttributes.addFlashAttribute("error", "File yang diunggah bukan gambar");
-            return "redirect:../detail";
+            return "redirect:../attendance/detail?jadwal="+ sesiKuliah.getJadwal().getId();
         }
 
-        SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
-
+//        SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
         SesiKuliahFoto sesiKuliahFoto = new SesiKuliahFoto();
         sesiKuliahFoto.setJadwal(sesiKuliah.getJadwal());
         sesiKuliahFoto.setSesiKuliah(sesiKuliah);
