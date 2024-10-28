@@ -867,6 +867,7 @@ public class StudyActivityController {
         model.addAttribute("tugas", jadwalTugas);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mhs);
+        model.addAttribute("now", LocalDateTime.now().plusHours(7));
 
         if (jadwalTugas.getJenisPengiriman().name().contains("UPLOAD_FILE")) {
             model.addAttribute("upload", "upload");

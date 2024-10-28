@@ -46,7 +46,7 @@
                     <div class="card shadow">
                         <div class="card-header border-0">
                             <div th:if="${gagal != null}" class="alert alert-danger">
-                                <span th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
+                                <h3 class="text-white text-center" th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</h3>
                             </div>
 
                             <!-- Title dan Tombol -->
@@ -288,13 +288,18 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-3 mb-2">
+                                        <div th:if="${gagal != null}" class="col-md-12">
+                                            <div class="alert alert-danger">
+                                                <h3 class="text-white text-center" th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</h3>
+                                            </div>
+                                        </div>
+                                        <div th:if="${gagal == null}" class="col-md-3 mb-2">
                                             <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm col-md-5"  aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-plus"></i>
                                                 Materi
                                             </button>
                                         </div>
-                                        <div class="col-md-4 mb-2">
+                                        <div th:if="${gagal == null}" class="col-md-4 mb-2">
                                             <b class="text-danger mb-1" th:if="${(data.pertemuan != 'Belum Mengajar' && data.link == null)}">
                                                 Input link materi terlebih dahulu untuk mengakses Absensi <br>
                                             </b>
@@ -383,13 +388,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 mb-2">
+                                        <div th:if="${gagal == null}" class="col-md-3 mb-2">
                                             <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-plus"></i>
                                                 Tugas
                                             </a>
                                         </div>
-                                        <div class="col-md-2 mb-2">
+                                        <div th:if="${gagal == null}" class="col-md-2 mb-2">
 <!--                                            <a th:href="@{/studiesActivity/attendance/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">-->
 <!--                                                <i class="fas fa-camera"></i>-->
 <!--                                                Foto-->

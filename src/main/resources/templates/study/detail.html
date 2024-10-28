@@ -158,27 +158,73 @@
                                                 <hr>
                                                 <h4>Tugas</h4>
                                                 <!-- && tugas[7] <= now -->
-                                                <div th:each="tugas, row : ${tugas}" th:if="${tugas.getIdSesi() == data[4] && tugas.getWaktuMulai <= now}" class="tpgp-al-cl">
-                                                    <h5 th:text="${'Judul Tugas : ' + tugas.getNamaTugas()}"></h5>
-                                                    <div th:if="${tugas.getFile() != null}"> <a th:href="@{/jadwal/{jadwal}/tugas(jadwal=${tugas.getId()})}" th:text="${tugas.getNamaFile()}"></a></div>
-                                                    <br>
-                                                    <div class="row">
-                                                        <div class="col-md-6 col-sm-12 col-xs-12">
-                                                            <textarea th:text="${tugas.getDeskripsi()}" cols="30" rows="10" class="form-control" readonly disabled>
-                                                                asoajdaosijdoa
-                                                            </textarea>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-12 col-xs-12">
-                                                            <textarea th:text="${tugas.getPetunjukAktivitas()}" cols="30" rows="10" class="form-control" readonly disabled>
-                                                                asoajdaosijdoa
-                                                            </textarea>
-                                                        </div>
+                                                <div th:each="tugas, row : ${tugas}" th:if="${tugas.getIdSesi() == data[4] && tugas.getWaktuMulai() <= now}" class="tpgp-al-cl">
+                                                    <div class="list-tugas">
+                                                        <h5 th:text="${'Judul Tugas : ' + tugas.getNamaTugas()}"></h5>
+                                                        <input type="hidden" class="waktu-mulai" th:value="${tugas.getWaktuMulai()}">
+                                                        <input type="hidden" class="tenggat-waktu" th:value="${tugas.getTenggatWaktu()}">
+                                                        <h5 class="message" style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada</h5>
+                                                        <a th:href="@{/study/tugas(jadwalTugas=${tugas.getId()}, jadwal=${jadwal.id})}" class="btn btn-info detail-button">Detail Tugas</a><br><br>
                                                     </div>
-                                                    <br>
-                                                    <h5 th:if="${tugas.getTenggatWaktu() < now}" style="color: red;">Pengumpulan tugas sudah melewati tenggat waktu <span th:text="${#temporals.format(tugas.getTenggatWaktu(), 'dd MMM yyyy HH:mm')}"></span></h5>
-                                                    <h5 th:if="${tugas.getWaktuMulai() <= now && tugas.getTenggatWaktu() >= now}"  style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada <span th:text="${#temporals.format(tugas.getTenggatWaktu(), 'dd MMM yyyy HH:mm')}"></span></h5>
-                                                    <a th:if="${tugas.getWaktuMulai() <= now && tugas.getTenggatWaktu() >= now}" th:href="@{/study/tugas(jadwalTugas=${tugas.getId()}, jadwal=${jadwal.id})}" class="btn btn-info">Jawab Tugas</a>
                                                 </div>
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function (){
+                                                        function getTimeRemaining(targetDate) {
+                                                            var now = new Date();
+                                                            var timeDiff = targetDate - now;
+                                                            if (timeDiff <= 0) return "0 hari, 0 jam, 0 menit, dan 0 detik lagi"; // Jika waktu sudah lewat
+
+                                                            var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                                                            var hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+                                                            var minutes = Math.floor((timeDiff / 1000 / 60) % 60);
+                                                            var seconds = Math.floor((timeDiff / 1000) % 60);
+
+                                                            // Format deskriptif: "X hari, Y jam, Z menit, dan W detik lagi"
+                                                            var result = '';
+                                                            if (days > 0) result += days + " hari, ";
+                                                            if (hours > 0) result += hours + " jam, ";
+                                                            if (minutes > 0) result += minutes + " menit, ";
+                                                            result += seconds + " detik lagi";
+
+                                                            return result;
+                                                        }
+
+                                                        document.querySelectorAll('.list-tugas').forEach(function (eventElement){
+                                                            var waktuMulai = new Date(eventElement.querySelector('.waktu-mulai').value);
+                                                            var tenggatWaktu = new Date(eventElement.querySelector('.tenggat-waktu').value);
+                                                            var message = eventElement.querySelector('.message');
+                                                            var button = eventElement.querySelector('.detail-button');
+                                                            const format = {weekday: 'long', year : 'numeric', month : 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false};
+
+                                                            function updateWaktu(){
+                                                                var now = new Date();
+
+                                                                if (tenggatWaktu < now){
+                                                                    message.textContent = "Pengumpulan tugas sudah melewati tenggat waktu : " + tenggatWaktu.toLocaleString('id-ID', format);
+                                                                    message.style.display = 'block';
+                                                                    button.style.display = 'inline';
+                                                                }else if (waktuMulai <= now && tenggatWaktu >= now){
+                                                                    message.textContent = "Waktu pengumpulan tugas tersisa : " + getTimeRemaining(tenggatWaktu);
+                                                                    message.style.display = 'block';
+                                                                    button.style.display = 'inline';
+                                                                }else{
+                                                                    message.style.display = 'none';
+                                                                    button.style.display = 'none';
+                                                                }
+                                                            }
+
+                                                            function startCountdown(){
+                                                                console.log('countdown jalan');
+                                                                updateWaktu();
+                                                                setInterval(function (){
+                                                                    updateWaktu();
+                                                                }, 1000);
+                                                            }
+
+                                                            startCountdown();
+                                                        });
+                                                    });
+                                                </script>
                                             </div>
                                         </div>
                                     </div>
@@ -197,7 +243,9 @@
     $(document).ready(function (){
         setTimeout(function (){
             var alert = document.getElementById('alert-berhasil');
-            alert.style.display = 'none';
+            if (alert){
+                alert.style.display = 'none';
+            }
         }, 3000);
     });
 
