@@ -15,7 +15,13 @@ public interface NilaiTugasDao extends PagingAndSortingRepository<NilaiTugas, St
 
     NilaiTugas findByStatusAndBobotTugasAndKrsDetail(StatusRecord aktif, BobotTugas bobotTugas, KrsDetail krsDetail);
 
+    List<NilaiTugas> findByStatusAndBobotTugas(StatusRecord status, BobotTugas bobotTugas);
+
+//    List<NilaiTugas> findByStatusAndBobot
+
     List<NilaiTugas> findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord aktif, KrsDetail krsDetail, StatusRecord aktif1);
+
+    List<NilaiTugas> findByStatusAndKrsDetailAndBobotTugasStatusAndKategoriTugas(StatusRecord aktif, KrsDetail krsDetail, StatusRecord aktif1, KategoriTugas kategoriTugas);
 
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.report.TugasDto(nt.krsDetail.id,nt.bobotTugas.pertemuan,nt.nilai) from NilaiTugas nt where nt.status = 'AKTIF' and nt.bobotTugas.status = 'AKTIF' and nt.krsDetail.id = :id order by nt.bobotTugas.pertemuan asc ")
     List<TugasDto> findTaskScore(@Param("id")String id);

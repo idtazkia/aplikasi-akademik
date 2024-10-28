@@ -10,5 +10,6 @@ public class SendTagihanDto {
     private String dateTransaction;
     private String description;
     private String institut = "bed6a06c-afe9-4345-8b3f-ebe2cbb49a51";
+    private String type;
     private BigDecimal amounts;
 }

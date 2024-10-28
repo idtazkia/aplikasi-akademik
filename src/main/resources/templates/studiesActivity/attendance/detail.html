@@ -46,7 +46,7 @@
                     <div class="card shadow">
                         <div class="card-header border-0">
                             <div th:if="${gagal != null}" class="alert alert-danger">
-                                <span th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
+                                <h3 class="text-white text-center" th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</h3>
                             </div>
                             <div th:if="${error != null}" class="alert alert-danger">
                                 <span th:text="${error}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</span>
@@ -294,21 +294,26 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-3 mb-2">
+                                        <div th:if="${gagal != null}" class="col-md-12">
+                                            <div class="alert alert-danger">
+                                                <h3 class="text-white text-center" th:text="${gagal}">Buat / Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!</h3>
+                                            </div>
+                                        </div>
+                                        <div th:if="${gagal == null}" class="col-md-3 mb-2">
                                             <button data-toggle="modal" th:id="${data.sesi}" th:attr="data-link=${data.link}" onclick="openModalMateri(this.id, this.getAttribute('data-link'))" data-target="#modal-materi" class="btn btn-outline-primary border-primary btn-sm col-md-5"  aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-plus"></i>
                                                 Materi
                                             </button>
                                         </div>
-                                        <div class="col-md-4 mb-2">
+                                        <div th:if="${gagal == null}" class="col-md-4 mb-2">
                                             <b class="text-danger mb-1" th:if="${(data.pertemuan != 'Belum Mengajar' && data.link == null)}">
-                                                Upload link materi terlebih dahulu untuk mengakses Absensi <br>
+                                                Input link materi terlebih dahulu untuk mengakses Absensi <br>
                                             </b>
                                             <b class="text-danger mb-1" th:if="${(data.tanggal == date && data.pertemuan == 'Belum Mengajar' && data.link == null)}">
-                                                Upload link materi terlebih dahulu sebelum mulai mengajar <br>
+                                                Input link materi terlebih dahulu sebelum mulai mengajar <br>
                                             </b>
                                             <b class="text-danger" th:if="${(date == data.tanggal && data.pertemuan == 'Belum Mengajar' && validasiMateri >= 1) or (data.pertemuan == 'Belum Mengajar' && validasiMateri >= 1)}">
-                                                Upload link materi pada pertemuan sebelumnya terlebih dahulu
+                                                Input link materi pada pertemuan sebelumnya terlebih dahulu
                                             </b>
                                             <a th:href="@{/studiesActivity/attendance/mulai (id = ${data.sesi})}"
                                                th:if="${data.pertemuan == 'Belum Mengajar' && gagal == null && date == data.tanggal && data.link != null && validasiMateri < 1}"
@@ -389,13 +394,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 mb-2">
+                                        <div th:if="${gagal == null}" class="col-md-3 mb-2">
                                             <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-plus"></i>
                                                 Tugas
                                             </a>
                                         </div>
-                                        <div class="col-md-2 mb-2">
+                                        <div th:if="${gagal == null}" class="col-md-2 mb-2">
 <!--                                            <a th:href="@{/studiesActivity/attendance/weight (jadwal = ${jadwal.id})}" class="btn btn-outline-primary border-primary btn-sm col-md-5 mx-auto" aria-haspopup="true" aria-expanded="false">-->
 <!--                                                <i class="fas fa-camera"></i>-->
 <!--                                                Foto-->
@@ -460,17 +465,13 @@
                 </div>
             </div>
 
-
-
-            <div class="modal fade" id="modal-materi" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal-materi" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-                <form id="add-materi" method="post" th:action="@{/studiesActivity/attendance/materi/upload}" >
+                <form id="add-materi" method="post" th:action="@{/studiesActivity/attendance/materi/upload}">
                     <input type="hidden" name="idSesi" id="idSesi">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">
-                                Upload materi
-                            </h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Input materi</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -479,19 +480,20 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
-                                        <label>Link materi :</label>
-                                        <!--                                                <input type="text" name="linkVideo" class="form-control">-->
-                                        <textarea cols="10" rows="3" name="materi" class="form-control" id="link" required minlength="10"></textarea>
+                                        <label>Salin dan tempel link materi disini :</label>
+                                        <!-- Textarea for input link -->
+                                        <textarea cols="10" rows="3" name="materi" class="form-control" id="link" required minlength="10" oninput="updateLink()"></textarea>
                                         <p style="font-size: 15px; color: red;"><b>* Jika lebih dari 1 link, pisahkan dengan ',(koma)' dan pastikan link bisa di akses secara umum.</b></p>
+                                        <p style="font-size: 15px; color: red;"><b>* Pastikan yang di tempel berupa link, jika tidak tombol simpan tidak bisa di klik.</b></p>
+                                        <!-- Link display for dynamic link -->
+                                        <a class="text-body" id="dynamicLink" href="#" target="_blank"></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                Tutup
-                            </button>
-                            <button type="submit" id="btnMateri" class="btn btn-primary">Simpan</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            <button type="submit" id="btnMateri" class="btn btn-primary" disabled>Simpan</button> <!-- Initially disabled -->
                         </div>
                     </div>
                 </form>
@@ -524,14 +526,14 @@
                           <div class="col-md-6">
                               <div class="form-group">
                                   <label>Waktu Masuk :</label>
-                                  <input type="text" required autocomplete="off"
+                                  <input type="text" required autocomplete="off" id="waktuMasuk"
                                          placeholder="09:30:00" name="waktuMulai" class="time-picker form-control">
                               </div>
                           </div>
                           <div class="col-md-6">
                               <div class="form-group">
                                   <label>Waktu Keluar :</label>
-                                  <input type="text" required autocomplete="off"
+                                  <input type="text" required autocomplete="off" id="waktuKeluar"
                                          placeholder="09:30:00" name="waktuSelesai" class="time-picker form-control">
                               </div>
                           </div>
@@ -606,7 +608,39 @@
     });
 </script>
 
+<script>
+    function updateLink() {
+        var input = document.getElementById('link').value;
+        var dynamicLink = document.getElementById('dynamicLink');
+        var btnMateri = document.getElementById('btnMateri'); // Button reference
 
+        // Split input into multiple links (separated by commas)
+        var links = input.split(',');
+        var allValid = true; // Flag to check if all links are valid
+
+        // Simple URL validation using regex
+        var urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?$/;
+
+        // Loop through each link and validate
+        for (var i = 0; i < links.length; i++) {
+            var currentLink = links[i].trim(); // Trim whitespace
+            if (!urlPattern.test(currentLink)) {
+                allValid = false; // Set flag to false if any link is invalid
+                break; // Exit loop if invalid link is found
+            }
+        }
+
+        if (allValid && links.length > 0) {
+            // Set first valid link for the dynamic link
+            dynamicLink.href = links[0].trim().startsWith('http') ? links[0].trim() : 'https://' + links[0].trim();
+            btnMateri.disabled = false; // Enable "Simpan" button if all links are valid
+        } else {
+            // alert("Input salah satu link tidak valid. Harap masukkan semua link dengan benar.");
+            dynamicLink.href = '#'; // Disable link
+            btnMateri.disabled = true; // Disable "Simpan" button
+        }
+    }
+</script>
 
 <script>
 
@@ -742,6 +776,12 @@
             }
             return;
         } else {
+            var waktuMasuk = document.getElementById('waktuMasuk').value;
+            var waktuKeluar = document.getElementById('waktuKeluar').value;
+            if (waktuMasuk >= waktuKeluar){
+                alert('Waktu masuk tidak boleh lebih besar atau sama dengan waktu keluar');
+                return false;
+            }
             $("#btnPresensi").removeClass("btn-primary").addClass("btn-warning").prop("disabled", true).html("Loading...");
             form.submit();
         }

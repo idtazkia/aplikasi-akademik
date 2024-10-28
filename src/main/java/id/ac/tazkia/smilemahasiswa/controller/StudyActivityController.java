@@ -830,8 +830,8 @@ public class StudyActivityController {
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("materi", materiMengajarDao.findByStatusAndSesiKuliahJadwal(StatusRecord.AKTIF, jadwal));
-        model.addAttribute("tugas", jadwalTugasDao.findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(jadwal, StatusRecord.AKTIF));
-        model.addAttribute("now", LocalDateTime.now());
+        model.addAttribute("tugas", jadwalTugasDao.listTugasMahasiswa(mahasiswa.getId(), jadwal.getId()));
+        model.addAttribute("now", LocalDateTime.now().plusHours(7));
     }
 
     @GetMapping("/jadwal/{jadwal}/tugas")
@@ -867,6 +867,14 @@ public class StudyActivityController {
         model.addAttribute("tugas", jadwalTugas);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mhs);
+        model.addAttribute("now", LocalDateTime.now().plusHours(7));
+
+        if (jadwalTugas.getJenisPengiriman().name().contains("UPLOAD_FILE")) {
+            model.addAttribute("upload", "upload");
+        }
+        if (jadwalTugas.getJenisPengiriman().name().contains("ONLINE_TEKS")) {
+            model.addAttribute("online", "online");
+        }
 
         model.addAttribute("kesempatanUpload", tugasJawabanDao.cariTotalTugas(mhs.getId(), jadwalTugas.getId()));
         model.addAttribute("history", tugasJawabanDao.findTopByMahasiswaAndJadwalTugasAndStatus(mhs, jadwalTugas, StatusRecord.AKTIF));

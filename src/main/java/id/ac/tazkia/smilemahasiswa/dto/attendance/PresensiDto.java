@@ -18,6 +18,7 @@ public class PresensiDto {
     private String beritaAcara;
     private String rps;
     private Jadwal jadwal;
+    private String jenisPertemuan;
     private DetailPertemuan detailPertemuan;
     private PresensiDosen presensiDosen;
     private String waktuMulai;

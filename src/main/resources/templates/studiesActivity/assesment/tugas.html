@@ -7,6 +7,12 @@
     <meta charset="UTF-8">
     <title>Upload Tugas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        #checkboxUjian{
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="main">
@@ -59,6 +65,19 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="Kategori">Kategori Tugas</label>
+                                        <select name="kategoriTugas" id="kategori" onchange="updateMaksBobot()" class="form-control">
+                                            <option selected disabled>Pilih kategori tugas</option>
+                                            <option th:data-bobot="${bobotMaksTugas}" value="TUGAS">Tugas</option>
+                                            <option th:data-bobot="${bobotMaksUTS}" value="UTS">UTS</option>
+                                            <option th:data-bobot="${bobotMaksUAS}" value="UAS">UAS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6 col-xs-12">
                                     <input type="hidden" name="jadwal" th:value="${jadwal.id}">
                                     <div class="form-group">
@@ -73,6 +92,7 @@
                                             <option value="5">5</option>
                                             <option value="6">6</option>
                                             <option value="7">7</option>
+                                            <option value="8">8</option>
                                             <option value="9">9</option>
                                             <option value="10">10</option>
                                             <option value="11">11</option>
@@ -80,13 +100,14 @@
                                             <option value="13">13</option>
                                             <option value="14">14</option>
                                             <option value="15">15</option>
+                                            <option value="16">16</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
                                         <label>Bobot :</label>
-                                        <input type="number" name="bobot" th:placeholder="${'Maks : ' + bobotMaks}" th:max="${bobotMaks}" class="form-control" required>
+                                        <input type="number" step="any" name="bobot" id="maksBobot" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -109,19 +130,31 @@
                                         <input type="file" name="fileTugas" class="form-control">
                                     </div>
                                     <div class="form-group">
+                                        <label>Waktu mulai : </label>
+                                        <input type="text" name="waktuMulai" class="form-control tanggal" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
                                         <label>Tenggat waktu pengumpulan : </label>
-                                        <input type="text" name="tenggatWaktu" class="form-control tanggal" required>
+                                        <input type="text" name="tenggatWaktu" class="form-control tanggal" required autocomplete="off">
                                     </div>
                                     <div class="form-group">
                                         <label>Jenis Pengiriman Tugas : </label>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <input type="checkbox" id="online" name="online" class="js-switch" value="Online teks">
                                                 <label for="online">Online Teks</label>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <input type="checkbox" id="uploadfile" name="upload" class="js-switch" value="Upload File">
                                                 <label for="uploadfile" >Upload file</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" id="presentasi" name="presentasi" class="js-switch" value="Presentasi">
+                                                <label for="presentasi" >Presentasi</label>
+                                            </div>
+                                            <div id="checkboxUjian" class="col-md-3">
+                                                <input type="checkbox" id="ujian" name="ujian" class="js-switch" value="UJian" checked>
+                                                <label for="ujian" >Ujian</label>
                                             </div>
                                         </div>
                                     </div>
@@ -200,4 +233,35 @@
         ],
     });
 
+</script>
+<script>
+    function updateMaksBobot(){
+        const select = document.getElementById('kategori');
+        const bobot = document.getElementById('maksBobot');
+
+        const ujianCheckbox = document.getElementById('checkboxUjian');
+        const ujianInput = document.getElementById('ujian');
+
+        const idSelect = select.value;
+        const option = select.options[select.selectedIndex];
+
+        if (idSelect === 'UTS' || idSelect === 'UAS'){
+            ujianCheckbox.style.display = 'block';
+            ujianInput.checked = true;
+            document.getElementById('ujian').addEventListener('click', function (event){
+                event.preventDefault();
+            });
+        }else{
+            ujianCheckbox.style.display = 'none';
+            ujianInput.checked = false;
+        }
+
+        let bobotMaks = option.getAttribute('data-bobot');
+
+        if (bobotMaks){
+            bobot.placeholder = `Maks : ${bobotMaks}`;
+            bobot.max = bobotMaks;
+        }
+
+    }
 </script>

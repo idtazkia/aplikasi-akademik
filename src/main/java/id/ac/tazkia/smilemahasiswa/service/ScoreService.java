@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,42 @@ public class ScoreService {
     private BobotTugasDao bobotTugasDao;
     @Autowired
     private NilaiTugasDao nilaiTugasDao;
+
+    public void hitungNilaiTugas(NilaiTugas nilaiTugas) {
+        List<NilaiTugas> semuaNilaiTugas = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatusAndKategoriTugas(StatusRecord.AKTIF, nilaiTugas.getKrsDetail(), StatusRecord.AKTIF, KategoriTugas.TUGAS);
+        BigDecimal sumNilaiTugas = semuaNilaiTugas.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        KrsDetail krsDetail = krsDetailDao.findById(nilaiTugas.getKrsDetail().getId()).get();
+        krsDetail.setNilaiTugas(sumNilaiTugas);
+        krsDetail.setNilaiAkhir(sumNilaiTugas.add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiUas()));
+        krsDetailDao.save(krsDetail);
+
+        hitungNilaiAkhir(krsDetail);
+    }
+
+    public void hitungNilaiUTS(NilaiTugas nilaiTugas) {
+        List<NilaiTugas> semuaNilaiUts = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatusAndKategoriTugas(StatusRecord.AKTIF, nilaiTugas.getKrsDetail(), StatusRecord.AKTIF, KategoriTugas.UTS);
+        BigDecimal sumNilaiUtsAkhir = semuaNilaiUts.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        KrsDetail krsDetail = krsDetailDao.findById(nilaiTugas.getKrsDetail().getId()).get();
+        krsDetail.setNilaiUts(sumNilaiUtsAkhir);
+        krsDetail.setNilaiAkhir(sumNilaiUtsAkhir.add(krsDetail.getNilaiTugas()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
+        krsDetailDao.save(krsDetail);
+
+        hitungNilaiAkhir(krsDetail);
+    }
+
+    public void hitungNilaiUAS(NilaiTugas nilaiTugas) {
+        List<NilaiTugas> semuaNilaiUas = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatusAndKategoriTugas(StatusRecord.AKTIF, nilaiTugas.getKrsDetail(), StatusRecord.AKTIF, KategoriTugas.UAS);
+        BigDecimal sumUas = semuaNilaiUas.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        KrsDetail krsDetail = krsDetailDao.findById(nilaiTugas.getKrsDetail().getId()).get();
+        krsDetail.setNilaiUas(sumUas);
+        krsDetail.setNilaiAkhir(sumUas.add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiTugas()).add(krsDetail.getNilaiUts()));
+        krsDetailDao.save(krsDetail);
+
+        hitungNilaiAkhir(krsDetail);
+    }
 
     public KrsDetail hitungKomponenNilai(ScoreInput scoreInput) {
         KrsDetail krsDetail = krsDetailDao.findById(scoreInput.getKrsDetail()).get();

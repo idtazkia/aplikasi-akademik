@@ -33,6 +33,7 @@ public class JadwalDto {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime jamSelesai;
     private TahunAkademik tahunAkademik;
+    private String jenisPertemuan;
     private DetailPertemuan detailPertemuan;
     private KrsDetail krsDetail;
     private SesiKuliah sesiKuliah;

@@ -47,6 +47,8 @@ public class SesiKuliah {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tanggalInput;
+
+    private String jenisPertemuan;
     
     @JoinColumn(name = "id_detail_pertemuan")
     @ManyToOne

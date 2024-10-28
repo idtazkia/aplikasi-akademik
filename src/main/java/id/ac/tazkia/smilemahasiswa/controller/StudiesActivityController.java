@@ -369,7 +369,7 @@ public class StudiesActivityController {
     public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
         List<SesiKuliah> cekRps = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotInAndRpsIsNull(jadwal, Arrays.asList(StatusRecord.HAPUS));
         if (!cekRps.isEmpty()) {
-            model.addAttribute("gagal", "Submit Rencana Pembelajaran terlebih dahulu!");
+            model.addAttribute("gagal", "Unggah Rencana Pembelajaran terlebih dahulu!");
         }
 
         List<SesiKuliah> cekSesi = sesiKuliahDao.findByJadwalAndPresensiDosenStatusNotIn(jadwal, Arrays.asList(StatusRecord.HAPUS));
@@ -919,6 +919,7 @@ public class StudiesActivityController {
         jadwalDto.setPresensiDosen(sesiKuliah.getPresensiDosen());
         jadwalDto.setTanggal(sesiKuliah.getWaktuMulai().toLocalDate());
         jadwalDto.setId(sesiKuliah.getId());
+        jadwalDto.setJenisPertemuan(sesiKuliah.getJenisPertemuan());
         jadwalDto.setDetailPertemuan(sesiKuliah.getDetailPertemuan());
         jadwalDto.setJamMulai(sesiKuliah.getWaktuMulai().toLocalTime());
         jadwalDto.setJamSelesai(sesiKuliah.getWaktuSelesai().toLocalTime());
@@ -941,6 +942,7 @@ public class StudiesActivityController {
 
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+        sesiKuliah.setJenisPertemuan(jadwalDto.getJenisPertemuan());
         sesiKuliah.setDetailPertemuan(jadwalDto.getDetailPertemuan());
         sesiKuliah.setCeramah(jadwalDto.getCeramah());
         sesiKuliah.setDiskusi(jadwalDto.getDiskusi());
@@ -1525,72 +1527,154 @@ public class StudiesActivityController {
         model.addAttribute("now", LocalDate.now());
         model.addAttribute("sesi", sesi);
         BigDecimal bobotMaks = jadwal.getBobotTugas().subtract(jadwalTugasDao.totalBobot(jadwal));
-        model.addAttribute("bobotMaks", bobotMaks);
+        model.addAttribute("bobotMaksTugas", bobotMaks);
+        BigDecimal bobotMaksUTS = jadwal.getBobotUts().subtract(jadwalTugasDao.totalBobotUTS(jadwal));
+        model.addAttribute("bobotMaksUTS", bobotMaksUTS);
+        BigDecimal bobotMaksUAS = jadwal.getBobotUas().subtract(jadwalTugasDao.totalBobotUAS(jadwal));
+        model.addAttribute("bobotMaksUAS", bobotMaksUAS);
     }
 
     @PostMapping("/studiesActivity/assesment/tugas")
-    public String simpanTugas(@Valid JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload, RedirectAttributes attributes) throws IOException {
+    public String simpanTugas(@Valid JadwalTugas jadwalTugas, @RequestParam Jadwal jadwal, MultipartFile fileTugas,
+                              @RequestParam(required = false) String online, @RequestParam(required = false) String upload,
+                              @RequestParam(required = false) String presentasi, @RequestParam(required = false) String ujian,
+                              RedirectAttributes attributes) throws IOException {
+        log.info("Online : {}, Upload : {}, Presentasi : {}, Ujian : {}", online, upload, presentasi, ujian);
         SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwal, jadwalTugas.getPertemuanKe()).get();
-        if (online == null && upload == null) {
+        if (online == null && upload == null && presentasi == null && ujian == null) {
             attributes.addFlashAttribute("gagal", "Wajib pilih salah satu jenis pengiriman");
             return "redirect:tugas?jadwal="+jadwal.getId();
         }else{
-            if (online != null) {
-                jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS);
-            }
-            if (upload != null) {
-                jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.UPLOAD_FILE);
-            }
-            if (online != null && upload != null) {
-                jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE);
-            }
+            jadwalTugas.setJenisPengiriman(tugasMateriService.setPengiriman(online, upload, presentasi, ujian));
         }
         jadwalTugas.setSesiKuliah(sesiKuliah);
         if (!fileTugas.isEmpty()){
             jadwalTugas.setFile(tugasMateriService.uploadFile(fileTugas, jadwalTugas));
             jadwalTugas.setNamaFile(fileTugas.getOriginalFilename());
         }
+        if (jadwalTugas.getWaktuMulai() == null) {
+            jadwalTugas.setWaktuMulai(LocalDateTime.now());
+        }
         jadwalTugasDao.save(jadwalTugas);
         tugasMateriService.saveBobotTugas(jadwal, jadwalTugas);
+
+        if(!KategoriTugas.TUGAS.equals(jadwalTugas.getKategoriTugas())){
+            SesiKuliah sk = jadwalTugas.getSesiKuliah();
+            sk.setJenisPertemuan(jadwalTugas.getKategoriTugas().toString());
+            sesiKuliahDao.save(sk);
+        }
 
         return "redirect:weight?jadwal="+sesiKuliah.getJadwal().getId();
     }
 
     @GetMapping("/studiesActivity/assesment/edit")
     public void editTugas(@RequestParam(name = "id", value = "id") JadwalTugas jadwalTugas, Model model) {
-        if (JadwalTugas.JenisPengiriman.ONLINE_TEKS == jadwalTugas.getJenisPengiriman()) {
-            model.addAttribute("onlineteks", "checked");
-        }else if (JadwalTugas.JenisPengiriman.UPLOAD_FILE == jadwalTugas.getJenisPengiriman()){
-            model.addAttribute("uploadfile", "checked");
-        }else if (JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE == jadwalTugas.getJenisPengiriman()){
-            model.addAttribute("onlineteks", "checked");
-            model.addAttribute("uploadfile", "checked");
+        switch (jadwalTugas.getJenisPengiriman()){
+            case ONLINE_TEKS:
+                model.addAttribute("onlineteks", "checked");
+                break;
+            case UPLOAD_FILE:
+                model.addAttribute("uploadfile", "checked");
+                break;
+            case PRESENTASI:
+                model.addAttribute("presentasi", "checked");
+                break;
+            case UJIAN:
+                model.addAttribute("ujian", "checked");
+                break;
+            case ONLINE_TEKS_UPLOAD_FILE:
+                model.addAttribute("onlineteks", "checked");
+                model.addAttribute("uploadfile", "checked");
+                break;
+            case ONLINE_TEKS_PRESENTASI:
+                model.addAttribute("onlineteks", "checked");
+                model.addAttribute("presentasi", "checked");
+                break;
+            case ONLINE_TEKS_UJIAN:
+                model.addAttribute("onlineteks", "checked");
+                model.addAttribute("ujian", "checked");
+                break;
+            case UPLOAD_FILE_PRESENTASI:
+                model.addAttribute("uploadfile", "checked");
+                model.addAttribute("presentasi", "checked");
+                break;
+            case UPLOAD_FILE_UJIAN:
+                model.addAttribute("uploadfile", "checked");
+                model.addAttribute("ujian", "checked");
+                break;
+            case PRESENTASI_UJIAN:
+                model.addAttribute("presentasi", "checked");
+                model.addAttribute("ujian", "checked");
+                break;
+            case ONLINE_TEKS_UPLOAD_FILE_PRESENTASI:
+                model.addAttribute("onlineteks", "checked");
+                model.addAttribute("uploadfile", "checked");
+                model.addAttribute("presentasi", "checked");
+                break;
+            case ONLINE_TEKS_UPLOAD_FILE_UJIAN:
+                model.addAttribute("onlineteks", "checked");
+                model.addAttribute("uploadfile", "checked");
+                model.addAttribute("ujian", "checked");
+                break;
+            case UPLOAD_FILE_PRESENTASI_UJIAN:
+                model.addAttribute("uploadfile", "checked");
+                model.addAttribute("presentasi", "checked");
+                model.addAttribute("ujian", "checked");
+                break;
+            default:
+                model.addAttribute("onlineteks", "checked");
+                model.addAttribute("uploadfile", "checked");
+                model.addAttribute("presentasi", "checked");
+                model.addAttribute("ujian", "checked");
+                break;
         }
         Jadwal jadwal = jadwalTugas.getSesiKuliah().getJadwal();
         BigDecimal bobotMaks = jadwal.getBobotTugas().subtract(jadwalTugasDao.totalBobot(jadwal));
+        BigDecimal bobotMaksUTS = jadwal.getBobotUts().subtract(jadwalTugasDao.totalBobotUTS(jadwal));
+        BigDecimal bobotMaksUAS = jadwal.getBobotUas().subtract(jadwalTugasDao.totalBobotUAS(jadwal));
         BigDecimal akumulasiBobot = BigDecimal.ZERO;
+        BigDecimal akumulasiBobotUTS = BigDecimal.ZERO;
+        BigDecimal akumulasiBobotUAS = BigDecimal.ZERO;
         if (jadwalTugas.getBobot() != null) {
-            akumulasiBobot = bobotMaks.add(jadwalTugas.getBobot());
+            if (KategoriTugas.TUGAS.equals(jadwalTugas.getKategoriTugas())) {
+                akumulasiBobot = bobotMaks.add(jadwalTugas.getBobot());
+            }else{
+                akumulasiBobot = bobotMaks;
+            }
+            if (KategoriTugas.UTS.equals(jadwalTugas.getKategoriTugas())) {
+                akumulasiBobotUTS = bobotMaksUTS.add(jadwalTugas.getBobot());
+            }else{
+                akumulasiBobotUTS = bobotMaksUTS;
+            }
+            if (KategoriTugas.UAS.equals(jadwalTugas.getKategoriTugas())) {
+                akumulasiBobotUAS = bobotMaksUAS.add(jadwalTugas.getBobot());
+            }else{
+                akumulasiBobotUAS = bobotMaksUAS;
+            }
         }else{
             akumulasiBobot = bobotMaks;
+            akumulasiBobotUTS = bobotMaksUTS;
+            akumulasiBobotUAS = bobotMaksUAS;
         }
 
+        model.addAttribute("bobotMaksTugas", akumulasiBobot);
+        model.addAttribute("bobotMaksUTS", akumulasiBobotUTS);
+        model.addAttribute("bobotMaksUAS", akumulasiBobotUAS);
         model.addAttribute("now", LocalDate.now());
-        model.addAttribute("akumulasiBobot", akumulasiBobot);
         model.addAttribute("jadwalTugas", jadwalTugas);
     }
 
     @PostMapping("/studiesActivity/assesment/edit")
-    public String prosesEditTugas(@ModelAttribute @Valid JadwalTugas jadwalTugas, MultipartFile fileTugas, @RequestParam(required = false) String online, @RequestParam(required = false) String upload) throws IOException {
+    public String prosesEditTugas(@ModelAttribute @Valid JadwalTugas jadwalTugas, MultipartFile fileTugas,
+                                  @RequestParam(required = false) String online, @RequestParam(required = false) String upload,
+                                  @RequestParam(required = false) String presentasi, @RequestParam(required = false) String ujian,
+                                  RedirectAttributes attributes) throws IOException {
         SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwalTugas.getSesiKuliah().getJadwal(), jadwalTugas.getPertemuanKe()).get();
-        if (online != null) {
-            jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS);
-        }
-        if (upload != null) {
-            jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.UPLOAD_FILE);
-        }
-        if (online != null && upload != null) {
-            jadwalTugas.setJenisPengiriman(JadwalTugas.JenisPengiriman.ONLINE_TEKS_UPLOAD_FILE);
+        if (online == null && upload == null && presentasi == null && ujian == null) {
+            attributes.addFlashAttribute("gagal", "Wajib pilih salah satu jenis pengiriman");
+            return "redirect:tugas?jadwal="+jadwalTugas.getSesiKuliah().getJadwal().getId();
+        }else{
+            jadwalTugas.setJenisPengiriman(tugasMateriService.setPengiriman(online, upload, presentasi, ujian));
         }
         jadwalTugas.setSesiKuliah(sesiKuliah);
         if (!fileTugas.isEmpty()){
@@ -1667,9 +1751,10 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/assesment/collection/detail")
-    public String nilaiTugasDetail(@RequestParam JadwalTugasJawaban jawaban, @RequestParam String nilai){
+    public String nilaiTugasDetail(@RequestParam JadwalTugasJawaban jawaban, @RequestParam(required = false) String masukan, @RequestParam String nilai){
         if (nilai != null && !nilai.trim().isEmpty()){
             jawaban.setNilai(new BigDecimal(nilai));
+            jawaban.setMasukan(masukan);
             tugasJawabanDao.save(jawaban);
             tugasMateriService.saveNilaiJawaban(nilai, jawaban, jawaban.getJadwalTugas());
         }
@@ -13091,18 +13176,14 @@ public class StudiesActivityController {
         return response;
     }
 
-    @GetMapping("/regenerate-sesikuliah")
+    @GetMapping("/regenerate-sesikuliah/{tanggal}")
     @ResponseBody
-    public void regeneratePresensi(@RequestParam String tanggal)
-            throws Exception {
-        List<Jadwal> cekJadwal = jadwalDao.jadwalMatrik();
-        System.out.println("jadwal matrik");
+    public void regeneratePresensiPerJadwal(@PathVariable String tanggal) throws Exception {
+        List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), "REGENERATE");
         for (Jadwal j : cekJadwal) {
             System.out.println(j.getId() + " : id jadwal");
             presensiService.reGenerate(j, tanggal);
-
         }
-
     }
 
 

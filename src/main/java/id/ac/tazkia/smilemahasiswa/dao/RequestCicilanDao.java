@@ -45,8 +45,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
     @Query(value = "select * from request_cicilan where id_tagihan = ?1 and status_cicilan = 'CICILAN' and status_approve='APPROVED' order by tanggal_jatuh_tempo limit 1", nativeQuery = true)
     RequestCicilan cariCicilanSelanjutnya(Tagihan tagihan);
 
-    @Query(value = "select * from request_cicilan where id_tagihan=?1 \n" +
-            "and status='AKTIF' and status_approve='APPROVED' limit 1", nativeQuery = true)
+    @Query(value = "select * from request_cicilan where id_tagihan=?1 and status in('AKTIF', 'NONAKTIF') and status_approve='APPROVED' limit 1", nativeQuery = true)
     RequestCicilan cariCicilan(String idTagihan);
 
     @Query(value = "select a.id, e.nama as tagihan, count(b.id) as cicilan, b.status_approve as status, b.status_cicilan from tagihan as a inner join mahasiswa as c " +
@@ -90,6 +89,8 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
     List<RequestCicilan> findByTagihanAndStatusAndStatusApprove(Tagihan tagihan, StatusRecord statusRecord, StatusApprove statusApprove);
 
     RequestCicilan findByTagihanAndStatusCicilanAndStatus(Tagihan tagihan, StatusCicilan sc, StatusRecord statusRecord);
+
+    RequestCicilan findFirstByTagihanAndStatusCicilanAndStatus(Tagihan tagihan, StatusCicilan cicilan, StatusRecord status);
 
     // Integer countByTagihanAndStatusAndStatusCicilanNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusCicilan> asList);
 

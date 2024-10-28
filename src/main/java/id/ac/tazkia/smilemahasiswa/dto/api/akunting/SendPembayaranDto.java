@@ -1,0 +1,16 @@
+package id.ac.tazkia.smilemahasiswa.dto.api.akunting;
+
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+@Data
+public class SendPembayaranDto {
+    private String codeTemplate;
+    private String dateTransaction;
+    private String description;
+    private String institut = "bed6a06c-afe9-4345-8b3f-ebe2cbb49a51";
+    public String attachment;
+    public ArrayList<BigDecimal> amounts;
+}

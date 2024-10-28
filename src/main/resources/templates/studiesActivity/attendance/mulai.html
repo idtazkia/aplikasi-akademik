@@ -7,7 +7,7 @@
     <title>Presensi</title>
 </head>
 
-<body>
+<body onload="updateJenis()">
     <div layout:fragment="main">
         <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
             <div class="container-fluid">
@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Pertemuan :</label>
                                                 <select name="pertemuan" class="form-control" id="pertemuan" th:if="${now == sesi.tanggal}" required>
@@ -69,22 +69,30 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Jenis Pertemuan :</label>
+                                                <select id="select-jenis" onchange="updateJenis()" name="jenisPertemuan" th:field="*{jenisPertemuan}" class="form-control">
+                                                    <option value="reguler">Reguler</option>
+                                                    <option value="UTS">UTS</option>
+                                                    <option value="UAS">UAS</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Detail Pertemuan :</label>
-                                                <select name="detailPertemuan" th:field="*{detailPertemuan}" readonly
-                                                        class="form-control" th:if="${validPertemuan == null}">
+                                                <select id="select-reguler" readonly class="form-control">
                                                     <option value="1">Attendance</option>
                                                 </select>
-                                                <select name="detailPertemuan" th:field="*{detailPertemuan}"
-                                                        class="form-control" th:if="${validPertemuan != null}">
+                                                <select id="select-ujian" style="display: none;" name="detailPertemuan" th:field="*{detailPertemuan}" class="form-control">
                                                     <option th:each="data : ${detailPertemuans}" th:text="${data.nama}"
                                                             th:value="${data.id}">
                                                         Offline</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="col-md-3 col-sm-6 col-xs-12">
                                             <div class="form-group">
                                                 <label>Dosen :</label>
                                                 <select name="dosen" th:field="*{dosen}" class="form-control">
@@ -342,5 +350,22 @@
         }
     }
     document.getElementById('btnSimpan').addEventListener('click', saveSimpan);
+</script>
+<script>
+    function updateJenis(){
+        const jenis = document.getElementById('select-jenis').value;
+        const reguler = document.getElementById('select-reguler');
+        const ujian = document.getElementById('select-ujian');
 
+        console.log(jenis);
+
+        reguler.style.display = 'none';
+        ujian.style.display = 'none';
+
+        if (jenis === 'UTS' || jenis === 'UAS'){
+            ujian.style.display = 'block';
+        }else{
+            reguler.style.display = 'block';
+        }
+    }
 </script>

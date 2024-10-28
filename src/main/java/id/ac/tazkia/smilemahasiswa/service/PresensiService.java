@@ -594,6 +594,8 @@ public class PresensiService {
                     pertemuan);
 
         }
+        jadwal.setFinalPloting("FINISHED");
+        jadwalDao.save(jadwal);
 
     }
 
@@ -617,6 +619,8 @@ public class PresensiService {
                     pertemuan);
 
         }
+        jadwal.setFinalPloting("FINISHED");
+        jadwalDao.save(jadwal);
 
     }
 
@@ -717,6 +721,7 @@ public class PresensiService {
         }
 
         sesiKuliah.setBeritaAcara(jadwalDto.getRps());
+        sesiKuliah.setJenisPertemuan(jadwalDto.getJenisPertemuan());
         sesiKuliah.setDetailPertemuan(jadwalDto.getDetailPertemuan());
         sesiKuliah.setTanggalInput(LocalDateTime.now());
         sesiKuliah.setCeramah(jadwalDto.getCeramah());
@@ -831,7 +836,7 @@ public class PresensiService {
         Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR, StatusPresensi.TERLAMBAT), StatusRecord.AKTIF, kd);
 
         if (presensiDosen != null){
-            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen));
+            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen).multiply(kd.getJadwal().getBobotPresensi()).divide(new BigDecimal(100)));
             kd.setJumlahKehadiran(presensiMhs);
             krsDetailDao.save(kd);
         }

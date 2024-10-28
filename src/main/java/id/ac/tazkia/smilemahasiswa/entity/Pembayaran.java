@@ -45,4 +45,11 @@ public class Pembayaran {
     @Enumerated(EnumType.STRING)
     private AkuntansiExport zahirExport = AkuntansiExport.NEW;
 
+    @Enumerated(EnumType.STRING)
+    private TipePengiriman tipePengiriman;
+
+    public enum TipePengiriman{
+        MANUAL, VIRTUAL_ACCOUNT;
+    }
+
 }

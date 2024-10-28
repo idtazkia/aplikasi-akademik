@@ -118,12 +118,29 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                <label>Upload Bukti</label>
-                                                <input type="file" name="fileBukti"
-                                                       class="form-control"
-                                                       placeholder="Upload Bukti" autofocus/>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <label>Upload Bukti</label>
+                                                        <input type="file" name="fileBukti"
+                                                               class="form-control"
+                                                               placeholder="Upload Bukti" autofocus/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <label>Tipe Pengiriman</label>
+                                                        <select name="tipePengiriman" class="form-control" required >
+                                                            <option selected disabled>-</option>
+                                                            <option th:each="tipe : ${tipe}"
+                                                                    th:value="${tipe}"
+                                                                    th:text="${tipe}"></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group">

@@ -40,7 +40,11 @@ public class JadwalTugas {
 
     private String namaFile;
 
-    @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "DATETIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime waktuMulai = LocalDateTime.now();
+
+    @Column(columnDefinition = "DATETIME")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tenggatWaktu;
 
@@ -54,10 +58,13 @@ public class JadwalTugas {
     private String pertanyaan;
 
     @Enumerated(EnumType.STRING)
+    private KategoriTugas kategoriTugas = KategoriTugas.TUGAS;
+
+    @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
     public enum JenisPengiriman{
-        ONLINE_TEKS, UPLOAD_FILE, ONLINE_TEKS_UPLOAD_FILE
+        ONLINE_TEKS, UPLOAD_FILE, PRESENTASI, UJIAN, ONLINE_TEKS_UPLOAD_FILE, ONLINE_TEKS_PRESENTASI, ONLINE_TEKS_UJIAN, UPLOAD_FILE_PRESENTASI, UPLOAD_FILE_UJIAN, PRESENTASI_UJIAN, ONLINE_TEKS_UPLOAD_FILE_PRESENTASI, ONLINE_TEKS_UPLOAD_FILE_UJIAN, UPLOAD_FILE_PRESENTASI_UJIAN, ONLINE_TEKS_UPLOAD_FILE_PRESENTASI_UJIAN
     }
 
 }

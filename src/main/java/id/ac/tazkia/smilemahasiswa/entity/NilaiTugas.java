@@ -35,4 +35,7 @@ public class NilaiTugas {
 
     private BigDecimal nilaiAkhir;
 
+    @Enumerated(EnumType.STRING)
+    private KategoriTugas kategoriTugas = KategoriTugas.TUGAS;
+
 }

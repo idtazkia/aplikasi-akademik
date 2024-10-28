@@ -1449,7 +1449,7 @@ public class  AcademicActivityController {
         }
         if (jadwal.getFinalPloting().equals("FINISHED")){
             if (Boolean.TRUE.equals(cekEdit)) {
-                presensiService.reGenerate(jadwal, jadwal.getTahunAkademik().getTanggalMulaiKuliah().toString());
+                presensiService.updateSesi1(jadwal);
             }
         }
 
