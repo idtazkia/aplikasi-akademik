@@ -186,9 +186,9 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "as a group by dosen) as a", nativeQuery = true)
     List<Object[]> rekapPresensiDosen(LocalDate dari, LocalDate sampai);
 
-    @Query(value = "select nama_karyawan as dosen, nama_matakuliah, nama_kelas,jam_mulai,waktu_mulai, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
-            "(select e.nama_karyawan,nama_matakuliah, nama_kelas, STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T') as jam_mulai, a.waktu_mulai as waktu_mulai, \n" +
-            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+    @Query(value = "select nama_karyawan as dosen, nama_matakuliah, nama_kelas,jam_mulai,waktu_masuk, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
+            "(select e.nama_karyawan,nama_matakuliah, nama_kelas, STR_TO_DATE(a.waktu_mulai, '%Y-%m-%d %T') as jam_mulai, b.waktu_masuk,\n" +
+            "CAST(TIMEDIFF(b.waktu_masuk,STR_TO_DATE(a.waktu_mulai, '%Y-%m-%d %T')) as CHAR) as rangewaktu \n" +
             "from sesi_kuliah as a\n" +
             "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
@@ -198,7 +198,7 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "inner join matakuliah as g on f.id_matakuliah = g.id\n" +
             "inner join kelas as h on c.id_kelas = h.id\n" +
             "where b.status='AKTIF' and d.id = ?1 and date(a.waktu_mulai) >= ?2 and date(a.waktu_mulai) <= ?3)as a\n" +
-            "order by waktu_mulai", nativeQuery = true)
+            "order by jam_mulai", nativeQuery = true)
     List<Object[]> detailPresensiDosen(String idDosen, LocalDate dari, LocalDate sampai);
 
     @Query(value = "select terlambat, concat(round((terlambat * 100)/total,0),'%') as persentase_terlambat,\n" +
