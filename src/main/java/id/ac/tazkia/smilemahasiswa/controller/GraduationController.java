@@ -277,7 +277,6 @@ public class GraduationController {
         Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
         model.addAttribute("note", new Note());
 
-        System.out.println();
         if (krsDetailDao.validasiMetolitPublikasi(mahasiswa).length > 0){
             model.addAttribute("publikasi", "publikasi");
         }
@@ -803,7 +802,6 @@ public class GraduationController {
             }
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
             Integer semester = krsDao.countSemester(note.getMahasiswa().getNim());
-            System.out.println(semester);
             if (semester == 7){
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
@@ -1163,6 +1161,7 @@ public class GraduationController {
         }
         seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
+        graduationService.createTugasAkhir(mahasiswa,StatusTugasAkhir.WAITING, TugasAkhir.MenuTugasAkhir.SEMINAR);
 
         return "redirect:seminar/waiting?id=" + seminar.getNote().getId();
 
@@ -1353,6 +1352,8 @@ public class GraduationController {
         }
         seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
+//        graduationService.createTugasAkhir(mahasiswa,StatusTugasAkhir.WAITING, TugasAkhir.MenuTugasAkhir.SEMINAR);
+
 
         return "redirect:seminar/waiting?id=" + seminar.getNote().getId();
 
@@ -1529,7 +1530,7 @@ public class GraduationController {
         }
         seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
-
+        graduationService.createTugasAkhir(mahasiswa,StatusTugasAkhir.WAITING, TugasAkhir.MenuTugasAkhir.SEMINAR);
         return "redirect:seminar/waiting?id=" + seminar.getNote().getId();
 
     }
