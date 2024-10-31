@@ -36,7 +36,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -680,7 +679,7 @@ public class TugasAkhirController {
     public void resultWisuda(Model model, @RequestParam(required = false) Prodi prodi,
             @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
         model.addAttribute("periode",
-                periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+                periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("selectedPeriode", periode);
 
@@ -1409,7 +1408,7 @@ public class TugasAkhirController {
     public void setWisudaFoto(Model model, RedirectAttributes attributes, @RequestParam(required = false) Prodi prodi,
             @RequestParam(required = false) PeriodeWisuda periode) {
         model.addAttribute("periode",
-                periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+                periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("selectedPeriode", periode);
 

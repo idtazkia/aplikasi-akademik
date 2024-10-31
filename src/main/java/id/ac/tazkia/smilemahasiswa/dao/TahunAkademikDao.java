@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.PeriodeDto;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import org.springframework.data.domain.Page;
@@ -9,9 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkademik, String> {
 
@@ -68,4 +67,15 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
     Integer countByKodeTahunAkademikGreaterThanEqualAndKodeTahunAkademikLessThanEqualAndStatusNotInAndJenisNotIn(String kodeAwal, String  kodeTahunTerakhir, List<StatusRecord> status, List<StatusRecord> notJenis);
 
+    @Query(value = "SELECT id,CONCAT(nama_tahun_akademik, ' s/d ', LEFT(nama_tahun_akademik, LENGTH(nama_tahun_akademik) - 6), ' Genap') AS tahun FROM tahun_akademik WHERE nama_tahun_akademik like %?1% and status NOT IN ('HAPUS') AND jenis NOT IN ('GENAP', 'PENDEK') ORDER BY kode_tahun_akademik DESC limit ?2 offset ?3",
+            nativeQuery = true)
+    List<PeriodeDto> listTahunAkademikSearch(String search, Integer limit, Integer offset);
+
+    @Query(value = "SELECT id,CONCAT(nama_tahun_akademik, ' s/d ', LEFT(nama_tahun_akademik, LENGTH(nama_tahun_akademik) - 6), ' Genap') AS tahun FROM tahun_akademik WHERE status NOT IN ('HAPUS') AND jenis NOT IN ('GENAP', 'PENDEK') ORDER BY kode_tahun_akademik DESC limit ?1 offset ?2",
+            nativeQuery = true)
+    List<PeriodeDto> listTahunAkademik(Integer limit, Integer offset);
+
+    @Query(value = "SELECT count(*) FROM tahun_akademik where status not in('HAPUS') order by kode_tahun_akademik desc",
+            nativeQuery = true)
+    Integer countTahunAkademik();
 }

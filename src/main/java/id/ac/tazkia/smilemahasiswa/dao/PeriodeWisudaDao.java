@@ -15,7 +15,7 @@ public interface PeriodeWisudaDao extends PagingAndSortingRepository<PeriodeWisu
 
     Page<PeriodeWisuda> findByStatusNotInAndNamaContainingIgnoreCase(List<StatusRecord> asList, String search, Pageable page);
 
-    List<PeriodeWisuda> findByStatusNotInOrderByTanggalWisudaDesc(List<StatusRecord> statusRecord);
+    List<PeriodeWisuda> findByStatusNotInOrderByNumberDesc(List<StatusRecord> statusRecord);
 
     Page<PeriodeWisuda> findByStatusNotInOrderByNumberDesc(List<StatusRecord> asList, Pageable page);
 

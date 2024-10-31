@@ -252,6 +252,13 @@ public class  AcademicActivityController {
         return dosenDao.searchPlotingDosen(tahun,search);
     }
 
+    @GetMapping("/lectures")
+    @ResponseBody
+    public List<SelectDosen> cariDosen(@RequestParam String search){
+
+        return dosenDao.searchDosen(search);
+    }
+
     @GetMapping("/select2/team/{id}")
     @ResponseBody
     public List<SelectDosen> cariTeamTeaching(@PathVariable String id ,@RequestParam String search,TahunAkademik tahun){

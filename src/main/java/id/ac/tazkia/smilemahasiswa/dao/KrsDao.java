@@ -1,8 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.EnrollMahasiswaIntDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.StatusImportNilaiDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.StatusImportNilaiDosenIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
@@ -225,8 +224,8 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                 "WHERE kd.id_tahun_akademik = ?1 AND excludeMangkir.id_krs_detail IS NULL GROUP BY jd.id_number_elearning ORDER BY jd.id_number_elearning DESC) AS subquery WHERE  subquery.statusImportTugas = 'TUGAS BELUM' OR subquery.statusImportUts = 'UTS BELUM' OR subquery.statusImportUas = 'UAS BELUM' ORDER BY subquery.namaProdi ASC , subquery.namaMatakuliah ASC , subquery.dosen ASC",countQuery = "SELECT COUNT(*) AS jml FROM (SELECT kr.nama_karyawan AS dosen, jd.id_number_elearning AS idNumberElearning, pr.nama_prodi AS namaProdi, mk.kode_matakuliah AS kodeMatakuliah, kl.nama_kelas AS namaKelas, mk.nama_matakuliah AS namaMatakuliah, mk.nama_matakuliah_english AS namaMatakuliahEnglish, CASE WHEN MIN(kd.nilai_tugas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_tugas) > 0 AND MIN(kd.nilai_tugas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'TUGAS BELUM' END AS statusImportTugas, CASE WHEN MIN(kd.nilai_uts) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uts) > 0 AND MIN(kd.nilai_uts) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UTS BELUM' END AS statusImportUts, CASE WHEN MIN(kd.nilai_uas) > 0 THEN 'SUDAH' WHEN  MAX(kd.nilai_uas) > 0 AND MIN(kd.nilai_uas) = 0 THEN 'SUDAH (ada beberapa mahasiswa/i yang masih belum atau tidak dinilai, mohon dicek.)' ELSE 'UAS BELUM' END AS statusImportUas  FROM krs_detail AS kd INNER JOIN matakuliah_kurikulum AS mku ON kd.id_matakuliah_kurikulum = mku.id INNER JOIN matakuliah AS mk ON mku.id_matakuliah = mk.id INNER JOIN mahasiswa AS ma ON kd.id_mahasiswa = ma.id INNER JOIN tahun_akademik AS ta ON kd.id_tahun_akademik = ta.id INNER JOIN jadwal AS jd ON kd.id_jadwal = jd.id INNER JOIN kelas AS kl ON jd.id_kelas = kl.id INNER JOIN prodi AS pr ON jd.id_prodi = pr.id INNER JOIN dosen AS ds ON jd.id_dosen_pengampu = ds.id INNER JOIN karyawan AS kr ON ds.id_karyawan = kr.id LEFT JOIN (SELECT  kd.id,  pm.id AS id_presensi_mahasiswa,  jd.id_tahun_akademik,  pm.id_krs_detail,  pm.id_mahasiswa AS idMahasiswa,  ma.nim AS nim,  ma.email_tazkia AS email,  pm.waktu_masuk,  pm.waktu_keluar,  pm.status_presensi,  pm.status,  jd.id AS idJadwal,  jd.id_number_elearning AS idNumberElearning,  jd.jam_mulai,  jd.jam_selesai,  COUNT(pm.id) AS absensi FROM krs_detail AS kd LEFT JOIN presensi_mahasiswa AS pm ON kd.id = pm.id_krs_detail INNER JOIN sesi_kuliah AS sk ON pm.id_sesi_kuliah = sk.id INNER JOIN jadwal AS jd ON sk.id_jadwal = jd.id INNER JOIN mahasiswa AS ma ON pm.id_mahasiswa = ma.id  WHERE jd.id_tahun_akademik = ?1 AND pm.status_presensi IN ('MANGKIR' , 'TERLAMBAT') AND pm.status = 'AKTIF' AND kd.status = 'AKTIF' GROUP BY pm.id_mahasiswa , jd.id HAVING COUNT(pm.id) > 3 ORDER BY COUNT(pm.id) DESC) AS excludeMangkir ON kd.id = excludeMangkir.id_krs_detail  WHERE kd.id_tahun_akademik = ?1 AND excludeMangkir.id_krs_detail IS NULL GROUP BY jd.id_number_elearning ORDER BY jd.id_number_elearning DESC) AS subquery WHERE subquery.statusImportTugas = 'TUGAS BELUM' OR subquery.statusImportUts = 'UTS BELUM' OR subquery.statusImportUas = 'UAS BELUM'\n", nativeQuery = true)
         List<StatusImportNilaiDosenIntDto> findStatusImportNilaiDosenList(TahunAkademik ta);
 
-
-
-
+        @Query(value = "select m.id as id, m.nim as nim, m.nama as nama, p.nama_prodi as prodi from krs as k inner join mahasiswa as m on k.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where (m.nim like %?1% or m.nama like %?1%) and k.status = 'AKTIF' and k.id_tahun_akademik = ?2 order by m.nim asc",
+                nativeQuery = true)
+        List<MahasiswaDto> cariMahasiswa(String search, String tahunAkademik);
 
 }
