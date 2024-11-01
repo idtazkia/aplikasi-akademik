@@ -5,10 +5,12 @@ public enum StatusTugasAkhir {
     PENDING_SCHEDULED ("Belum Dijadwalkan", 2),
     SCHEDULED ("Dijadwalkan", 3),
     ASSESSMENT ("Menunggu Penilaian Lengkap & Publish", 4),
-    APPROVED ("Seminar Sudah Publish", 5),
-    FAILED ("Seminar Tidak Lulus", 6),
-    REJECTED ("Seminar Tidak Lulus", 7),
-    HAPUS("Dihapus", 8);
+    APPROVED_AKADEMIK ("Approved Akademik", 5),
+    APPROVED ("Menunggu Publish", 6),
+    PUBLISHED ("Sudah Publish", 8),
+    FAILED ("Tidak Lulus", 9),
+    REJECTED ("DItolak", 10),
+    HAPUS("Dihapus", 9);
 
     private final String displayName;
     private final int order;
