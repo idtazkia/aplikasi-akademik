@@ -1579,6 +1579,7 @@ public class GraduationController {
         seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.APPROVED_AKADEMIK);
         seminarDao.save(seminar);
+        graduationService.createTugasAkhir(seminar.getNote().getMahasiswa(),StatusTugasAkhir.APPROVED, TugasAkhir.MenuTugasAkhir.SEMINAR);
 
         return "redirect:admin/list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
@@ -1604,6 +1605,8 @@ public class GraduationController {
         seminar.setKomentarAkademik(keterangan);
         seminar.setStatus(StatusApprove.REJECTED);
         seminarDao.save(seminar);
+        graduationService.createTugasAkhir(seminar.getNote().getMahasiswa(),StatusTugasAkhir.REJECTED, TugasAkhir.MenuTugasAkhir.SEMINAR);
+
 
         return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
