@@ -3121,7 +3121,7 @@ public class GraduationController {
             seminar.setKetuaPenguji(note.getDosen());
             seminar.setJenis(StatusRecord.KONVERSI_JURNAL);
             seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
-            seminar.setNote(note);S
+            seminar.setNote(note);
             seminar.setJamMulai(LocalTime.now());
             seminar.setJamSelesai(LocalTime.now());
             seminar.setPublish("AKTIF");
