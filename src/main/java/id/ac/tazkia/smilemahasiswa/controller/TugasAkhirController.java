@@ -152,17 +152,18 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/periodeWisuda/form")
-    public void formPeriode(Model model, @RequestParam(required = false) String id) {
+    public void formPeriode(Model model) {
         model.addAttribute("newPeriode", new PeriodeWisuda());
         model.addAttribute("nama", "LULUSAN KE " + graduationService.intToRoman(periodeWisudaDao.getLastNumber() + 1));
 
+    }
+
+    @GetMapping("/graduation/periodeWisuda/edit")
+    public void editPeriode(Model model, @RequestParam String id) {
         if (id != null && !id.isEmpty()) {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findById(id).get();
             if (periodeWisuda != null) {
-                model.addAttribute("newPeriode", periodeWisuda);
-                if (periodeWisuda.getStatus() == null) {
-                    periodeWisuda.setStatus(StatusRecord.NONAKTIF);
-                }
+                model.addAttribute("periode", periodeWisuda);
             }
         }
 
@@ -170,7 +171,19 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/periodeWisuda/new")
     public String inputPeriode(@Valid PeriodeWisuda wisuda) {
+        PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+        periodeWisuda.setStatus(StatusRecord.NONAKTIF);
+        periodeWisudaDao.save(periodeWisuda);
+
         wisuda.setNumber(periodeWisudaDao.getLastNumber() + 1);
+        wisuda.setStatus(StatusRecord.AKTIF );
+        periodeWisudaDao.save(wisuda);
+        return "redirect:list";
+
+    }
+
+    @PostMapping("/graduation/periodeWisuda/edit")
+    public String editPeriode(@Valid PeriodeWisuda wisuda) {
         periodeWisudaDao.save(wisuda);
         return "redirect:list";
 

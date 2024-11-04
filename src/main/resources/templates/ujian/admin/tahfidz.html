@@ -197,6 +197,10 @@
                                                             <input type="text" readonly class="form-control" value="Ujian Tahfidz">
                                                         </div>
                                                         <div class="form-group">
+                                                            <label>Status Tahfidz</label>
+                                                            <input type="text" readonly class="form-control" id="statusTahfidz">
+                                                        </div>
+                                                        <div class="form-group">
                                                             <label>Komentar</label>
                                                             <textarea name="komentarKps" id="komentarApprove"
                                                                       class="form-control"></textarea>
@@ -234,6 +238,10 @@
                                                         <div class="form-group">
                                                             <label>Jenis Ujian</label>
                                                             <input type="text" readonly class="form-control" value="Ujian Tahfidz">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Status Tahfidz</label>
+                                                            <input type="text" readonly class="form-control" id="statusTahfidzReject">
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Komentar</label>
@@ -333,9 +341,20 @@
                                                             <label>Jenis Ujian</label>
                                                             <input type="text" readonly class="form-control" value="Ujian Tahfidz">
                                                         </div>
-                                                        <div class="form-group">
+                                                        <div class="form-group" id="nilaiReg">
                                                             <label>Nilai</label>
-                                                            <input type="text" class="form-control" id="nilai" name="nilai">
+                                                            <input type="text" required class="form-control" id="nilai" name="nilai">
+                                                        </div>
+                                                        <div class="form-group" id="nilaiTahfidz" style="display: none">
+                                                            <label>Nilai</label>
+                                                            <select name="nilai" id="nilaiHp" class="form-control">
+                                                                <option value="5">5</option>
+                                                                <option value="10">10</option>
+                                                                <option value="15">15</option>
+                                                                <option value="20">20</option>
+                                                                <option value="25">25</option>
+                                                                <option value="30">30</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -569,9 +588,14 @@
             $('#idUjianPenilaian').val(data.id)
             $('#namaPenilaian').val(data.mahasiswa.nama)
             $('#nimPenilaian').val(data.mahasiswa.nim)
+            if (data.statusTahfidz == 'HP') {
+                document.getElementById('nilaiTahfidz').style.display = "block";
+                document.getElementById('nilaiReg').style.display = "none";
+            }else {
+                document.getElementById('nilaiReg').style.display = "block";
+                document.getElementById('nilaiTahfidz').style.display = "none";
+            }
         });
-
-
     }
 
     function openReject(id) {
@@ -581,6 +605,7 @@
         $.getJSON(url, function (data) {
             $('#idUjianReject').val(data.id)
             $('#namaReject').val(data.mahasiswa.nama)
+            $('#statusTahfidzReject').val(data.statusTahfidz)
             $('#nimReject').val(data.mahasiswa.nim)
         });
 
@@ -593,6 +618,7 @@
         $.getJSON(url, function (data) {
             $('#idUjianApprove').val(data.id)
             $('#namaApprove').val(data.mahasiswa.nama)
+            $('#statusTahfidz').val(data.statusTahfidz)
             $('#nimApprove').val(data.mahasiswa.nim)
         });
 
@@ -614,6 +640,8 @@
         $('#namaPenilaian').val(null)
         $('#nilai').val(null)
         $('#nimPenilaian').val(null)
+        document.getElementById('nilaiTahfidz').style.display = "none";
+        document.getElementById('nilaiReg').style.display = "block";
     }
 
     function closeModalReject(){
@@ -778,27 +806,36 @@
         var token = $("input[name='_csrf']").val();
 
         request["id"] = $('#idUjianPenilaian').val();
-        request["nilai"] = $('#nilai').val();
+        var nilai = null;
 
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            headers: {"X-CSRF-TOKEN": token},
-            url: "/penilaian/tahfidz/" + $('#idUjianPenilaian').val() + "?nilai=" + $('#nilai').val(),
-            data: JSON.stringify(request),
-            dataType: 'json',
-            cache: false,
-            timeout: 600000,
-            success: function (result) {
-                $('#penilaian').modal('hide');
-                iziToast.success({title: 'Data Tersimpan', message: result.message});
-                $tableUjian.bootstrapTable('refresh')
-                closeModalPenjadwalan()
-
-            },
-            error: function (result) {
-                console.log("error : ", result)
+        const url = '/get-detail-tahfidz/'+ $('#idUjianPenilaian').val();
+        $.getJSON(url, function (data) {
+            if (data.statusTahfidz == 'HP') {
+                nilai = document.getElementById("nilaiHp").value;
+            }else {
+                nilai = document.getElementById("nilai").value;
             }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                headers: {"X-CSRF-TOKEN": token},
+                url: "/penilaian/tahfidz/" + $('#idUjianPenilaian').val() + "?nilai=" + nilai,
+                data: JSON.stringify(request),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (result) {
+                    $('#penilaian').modal('hide');
+                    iziToast.success({title: 'Data Tersimpan', message: result.message});
+                    $tableUjian.bootstrapTable('refresh')
+                    closeModalPenjadwalan()
+
+                },
+                error: function (result) {
+                    console.log("error : ", result)
+                }
+            });
         });
     }
 

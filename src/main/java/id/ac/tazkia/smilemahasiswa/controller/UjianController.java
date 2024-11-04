@@ -591,10 +591,18 @@ public class UjianController {
 
         BigDecimal nilaiUjian = new BigDecimal(nilai);
         ujianTahfidzKompre.setNilai(nilaiUjian);
-        if (nilaiUjian.compareTo(new BigDecimal(70)) >= 0) {
-            ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
-        } else {
-            ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
+        if (ujianTahfidzKompre.getStatusTahfidz().equals("HP")){
+            if (nilaiUjian.compareTo(new BigDecimal(10)) >= 0) {
+                ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
+            } else {
+                ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
+            }
+        }else{
+            if (nilaiUjian.compareTo(new BigDecimal(70)) >= 0) {
+                ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
+            } else {
+                ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
+            }
         }
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 

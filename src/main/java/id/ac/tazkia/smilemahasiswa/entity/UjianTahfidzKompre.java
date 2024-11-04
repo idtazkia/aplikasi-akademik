@@ -77,4 +77,6 @@ public class UjianTahfidzKompre {
 
     private String grade;
 
+    private String statusTahfidz;
+
 }

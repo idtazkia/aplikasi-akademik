@@ -167,8 +167,8 @@ public class EventController {
         event.setStatus(StatusRecord.AKTIF);
         event.setUserInsert(user.getUsername());
         event.setUserUpdate(user.getUsername());
-        event.setDateInsert(LocalDateTime.now());
-        event.setDateUpdate(LocalDateTime.now());
+        event.setDateInsert(LocalDateTime.now().plusHours(7));
+        event.setDateUpdate(LocalDateTime.now().plusHours(7));
         eventDao.save(event);
 
 
@@ -309,13 +309,13 @@ public class EventController {
         eventAbsensi.setStatus(StatusRecord.AKTIF);
 //        eventAbsensi.setWaktuAbsen(LocalDateTime.now());
         if(mode.equals("save")){
-            eventAbsensi.setWaktuAbsen(LocalDateTime.now());
-            eventAbsensi.setDateInsert(LocalDateTime.now());
+            eventAbsensi.setWaktuAbsen(LocalDateTime.now().plusHours(7));
+            eventAbsensi.setDateInsert(LocalDateTime.now().plusHours(7));
         }else{
             EventAbsensi eventAbsensi1 = eventAbsensiDao.findByStatusAndEventAndMahasiswa(StatusRecord.AKTIF,event,mahasiswa);
             eventAbsensi.setDateInsert(eventAbsensi1.getDateInsert());
             eventAbsensi.setWaktuAbsen(eventAbsensi1.getWaktuAbsen());
-            eventAbsensi.setDateUpdate(LocalDateTime.now());
+            eventAbsensi.setDateUpdate(LocalDateTime.now().plusHours(7));
         }
         eventAbsensiDao.save(eventAbsensi);
 
