@@ -310,7 +310,7 @@ public class EventController {
             eventAbsensi.setWaktuAbsen(LocalDateTime.now().plusHours(7));
             eventAbsensi.setDateInsert(LocalDateTime.now().plusHours(7));
         }else{
-            EventAbsensi eventAbsensi1 = eventAbsensiDao.findByStatusAndEventAndMahasiswa(StatusRecord.AKTIF,event,mahasiswa);
+            EventAbsensi eventAbsensi1 = eventAbsensiDao.findByStatusAndEventAndMahasiswa(StatusRecord.AKTIF,eventAbsensi.getEvent(),mahasiswa);
             eventAbsensi.setDateInsert(eventAbsensi1.getDateInsert());
             eventAbsensi.setWaktuAbsen(eventAbsensi1.getWaktuAbsen());
             eventAbsensi.setDateUpdate(LocalDateTime.now().plusHours(7));
