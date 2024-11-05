@@ -44,7 +44,7 @@
         <div class="row">
             <div class="col-md-12 col-xs-12">
                 <div class="normal-table-list ">
-                    <form method="post" th:action="@{/academic/event/presensi/save(event=${event.getId()},mode=${mode})}" th:object="${eventAbsensi}" enctype="multipart/form-data">
+                    <form method="post" th:action="@{/academic/event/presensi/save}" th:object="${eventAbsensi}" enctype="multipart/form-data">
                         <div class="row">
                            <div class="col-md-12">
                                <div class="alert alert-warning">
@@ -70,6 +70,8 @@
                                     <p th:if="${error != null}" th:text="${error}" class="text-danger"> Mata Anggaran Error</p>
                                 </div>
                                 <input type="hidden" name="tahunAkademik" th:field="*{tahunAkademik}" th:value="${event.getTahunAkademik()}">
+                                <input type="hidden" name="event" th:field="*{event}" th:value="${event.getId()}">
+                                <input type="hidden" name="mode" th:value="${mode}">
                                 <input type="hidden" name="id" th:field="*{id}">
                             </div>
                         </div>

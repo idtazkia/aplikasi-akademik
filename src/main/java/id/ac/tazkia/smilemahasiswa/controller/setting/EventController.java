@@ -239,8 +239,7 @@ public class EventController {
     @PostMapping("/academic/event/presensi/save")
     public String eventAbsensiSave(@ModelAttribute @Valid EventAbsensi eventAbsensi,
                                    BindingResult error, // Pindahkan BindingResult langsung setelah @Valid
-                                   @RequestParam Event event,
-                                   @RequestParam String mode,
+                                   @RequestParam (required = false) String mode,
                                    @RequestParam("fileUpload") MultipartFile file,
                                    RedirectAttributes redirectAttributes,
                                    Authentication authentication,
@@ -253,7 +252,7 @@ public class EventController {
 
         // Cek apakah ada error validasi
         if (error.hasErrors()) {
-            model.addAttribute("event", event);
+            model.addAttribute("event", eventAbsensi.getEvent());
             model.addAttribute("eventAbsensi", eventAbsensi);
             return "event/absen"; // Kembali ke halaman form jika ada error
         }
@@ -261,7 +260,7 @@ public class EventController {
         // Validasi untuk file upload
         if (file.isEmpty()) {
             model.addAttribute("error", "File upload tidak boleh kosong");
-            model.addAttribute("event", event);
+            model.addAttribute("event", eventAbsensi.getEvent());
             model.addAttribute("eventAbsensi", eventAbsensi);
             return "event/absen";
         }
@@ -279,8 +278,8 @@ public class EventController {
 
         // Cek apakah file kosong
         if (ukuran <= 0) {
-            if (event.getFile() == null) {
-                event.setFile("default.jpg");
+            if (eventAbsensi.getEvent().getFile() == null) {
+                eventAbsensi.getEvent().setFile("default.jpg");
             }
             return "redirect:/dashboard";
         }
@@ -305,7 +304,6 @@ public class EventController {
             eventAbsensi.setFile(idFile + "." + extension);
         }
         eventAbsensi.setMahasiswa(mahasiswa);
-        eventAbsensi.setEvent(event);
         eventAbsensi.setStatus(StatusRecord.AKTIF);
 //        eventAbsensi.setWaktuAbsen(LocalDateTime.now());
         if(mode.equals("save")){
