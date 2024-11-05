@@ -36,7 +36,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -153,17 +152,18 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/periodeWisuda/form")
-    public void formPeriode(Model model, @RequestParam(required = false) String id) {
+    public void formPeriode(Model model) {
         model.addAttribute("newPeriode", new PeriodeWisuda());
         model.addAttribute("nama", "LULUSAN KE " + graduationService.intToRoman(periodeWisudaDao.getLastNumber() + 1));
 
+    }
+
+    @GetMapping("/graduation/periodeWisuda/edit")
+    public void editPeriode(Model model, @RequestParam String id) {
         if (id != null && !id.isEmpty()) {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findById(id).get();
             if (periodeWisuda != null) {
-                model.addAttribute("newPeriode", periodeWisuda);
-                if (periodeWisuda.getStatus() == null) {
-                    periodeWisuda.setStatus(StatusRecord.NONAKTIF);
-                }
+                model.addAttribute("periode", periodeWisuda);
             }
         }
 
@@ -171,7 +171,19 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/periodeWisuda/new")
     public String inputPeriode(@Valid PeriodeWisuda wisuda) {
+        PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+        periodeWisuda.setStatus(StatusRecord.NONAKTIF);
+        periodeWisudaDao.save(periodeWisuda);
+
         wisuda.setNumber(periodeWisudaDao.getLastNumber() + 1);
+        wisuda.setStatus(StatusRecord.AKTIF );
+        periodeWisudaDao.save(wisuda);
+        return "redirect:list";
+
+    }
+
+    @PostMapping("/graduation/periodeWisuda/edit")
+    public String editPeriode(@Valid PeriodeWisuda wisuda) {
         periodeWisudaDao.save(wisuda);
         return "redirect:list";
 
@@ -680,7 +692,7 @@ public class TugasAkhirController {
     public void resultWisuda(Model model, @RequestParam(required = false) Prodi prodi,
             @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
         model.addAttribute("periode",
-                periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+                periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("selectedPeriode", periode);
 
@@ -1409,7 +1421,7 @@ public class TugasAkhirController {
     public void setWisudaFoto(Model model, RedirectAttributes attributes, @RequestParam(required = false) Prodi prodi,
             @RequestParam(required = false) PeriodeWisuda periode) {
         model.addAttribute("periode",
-                periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+                periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("selectedPeriode", periode);
 

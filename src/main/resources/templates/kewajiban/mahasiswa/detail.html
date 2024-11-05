@@ -64,6 +64,9 @@
 <body>
 <div class="container">
     <div class="mt-5"></div>
+    <div th:if="${berhasil}" class="alert alert-success" role="alert" id="berhasil">
+        <b>Berhasil!</b>
+    </div>
     <div class="row g-4">
         <div class="col-lg-4">
             <input type="hidden" id="status" th:value="${bebasKewajiban.statusApprove}">
@@ -362,7 +365,7 @@
                             <form method="post" th:action="@{/kewajiban/mahasiswa/tqc/update(bebasKewajiban=${bebasKewajiban.id})}" enctype="multipart/form-data">
                                 <div class="row ">
                                     <div class="form-group pb-4">
-                                        <label for="file">Upload bukti Mutqin : </label>
+                                        <label for="file">Upload bukti Ziadah 30 Juz : </label>
                                         <input type="file" id="file" name="file" class="form-control" required>
                                     </div>
                                 </div>
@@ -433,7 +436,14 @@
 <div class="mt-5"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<script type="text/javascript">
-    var stat = document.getElementById('status').value;
-</script>
 </html>
+<script>
+    var stat = document.getElementById('status').value;
+
+    document.addEventListener('DOMContentLoaded', function (){
+        setTimeout(function (){
+            const alert = document.getElementById('berhasil');
+            alert.style.display = 'none';
+        }, 3000);
+    });
+</script>

@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
 import id.ac.tazkia.smilemahasiswa.dto.ploting.DataPlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.ploting.ValidasiSesi;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -250,6 +252,13 @@ public class  AcademicActivityController {
     public List<SelectDosen> cariDosen(@RequestParam String search,TahunAkademik tahun){
 
         return dosenDao.searchPlotingDosen(tahun,search);
+    }
+
+    @GetMapping("/lectures")
+    @ResponseBody
+    public List<SelectDosen> cariDosen(@RequestParam String search){
+
+        return dosenDao.searchDosen(search);
     }
 
     @GetMapping("/select2/team/{id}")
@@ -2193,6 +2202,34 @@ public class  AcademicActivityController {
 //
 //        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
 
+    }
+
+    @GetMapping("/api/list-tahunakademik")
+    @ResponseBody
+    public ResponseEntity<BaseResponseDto> getListTahunakademik(){
+        try {
+            List<TahunAkademik> tahunAkademik = tahunAkademikDao.findByStatusNotInOrderByKodeTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
+            if (tahunAkademik.isEmpty()){
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .responseMessage("Data Kosong")
+                                .build());
+            }else {
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .data(tahunAkademik)
+                                .responseMessage("Tahun Akademik Ditemukan")
+                                .build());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    BaseResponseDto.builder()
+                            .responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage())
+                            .build());
+        }
     }
 
 

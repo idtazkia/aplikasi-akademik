@@ -41,6 +41,8 @@ public class StudyActivityController {
 
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40", "44");
 
+    public static final List<String> FORMAT_EKSTENSI = Arrays.asList("doc", "docx", "pdf", "xlsx", "xls", "ppt", "pptx");
+
     @Value("${upload.tugas.dosen}")
     private String uploadTugas;
 
@@ -859,13 +861,13 @@ public class StudyActivityController {
     }
 
     @GetMapping("/study/tugas")
-    public void detailTugas(Model model, @RequestParam JadwalTugas jadwalTugas, @RequestParam(required = false) Jadwal jadwal, Authentication authentication){
+    public void detailTugas(Model model, @RequestParam JadwalTugas jadwalTugas, Authentication authentication){
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
 
         model.addAttribute("tugas", jadwalTugas);
-        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("jadwal", jadwalTugas.getSesiKuliah().getJadwal());
         model.addAttribute("mahasiswa", mhs);
         model.addAttribute("now", LocalDateTime.now().plusHours(7));
 
@@ -883,17 +885,37 @@ public class StudyActivityController {
     @PostMapping("/study/tugas")
     public String saveTugas(@ModelAttribute @Valid JadwalTugasJawaban tugasJawaban, @RequestParam JadwalTugas jadwalTugas, @RequestParam Mahasiswa mahasiswa, MultipartFile fileJawaban, RedirectAttributes attributes) throws IOException {
 
+        if (fileJawaban != null) {
+            String namaAsli = fileJawaban.getOriginalFilename();
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            if (!FORMAT_EKSTENSI.contains(extension)) {
+                attributes.addFlashAttribute("failedFormat", "Format file tidak sesuai");
+                return "redirect:/study/tugas?jadwalTugas="+jadwalTugas.getId();
+            }
+
+            Long size = fileJawaban.getSize();
+            if (size > 1000000){
+                attributes.addFlashAttribute("failedSize", "Ukuran file terlalu besar");
+                return "redirect:/study/tugas?jadwalTugas="+jadwalTugas.getId();
+            }
+
+            tugasJawaban.setFile(tugasMateriService.uploadJawaban(fileJawaban, tugasJawaban));
+            tugasJawaban.setNamaFile(fileJawaban.getOriginalFilename());
+        }
+
         List<JadwalTugasJawaban> cekSudahAda = tugasJawabanDao.findByJadwalTugasAndMahasiswa(jadwalTugas, mahasiswa);
         if (cekSudahAda != null) {
             for (JadwalTugasJawaban tugas : cekSudahAda){
                 tugas.setStatus(StatusRecord.NONAKTIF);
                 tugasJawabanDao.save(tugas);
             }
-        }
-
-        if (fileJawaban != null) {
-            tugasJawaban.setFile(tugasMateriService.uploadJawaban(fileJawaban, tugasJawaban));
-            tugasJawaban.setNamaFile(fileJawaban.getOriginalFilename());
         }
 
         tugasJawabanDao.save(tugasJawaban);

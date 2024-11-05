@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -51,8 +53,8 @@ public class Seminar {
     private String fileKehadiran;
 
     @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tanggalInput;
+    @DateTimeFormat(pattern = "yyyy-MM-dd ")
+    private LocalDateTime tanggalInput;
 
     @Enumerated(EnumType.STRING)
     private StatusApprove status;
@@ -151,7 +153,7 @@ public class Seminar {
     private BigDecimal ef = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
-    private StatusApprove statusSempro;
+    private StatusTugasAkhir statusSempro;
 
     private String publish = "NONAKTIF";
 

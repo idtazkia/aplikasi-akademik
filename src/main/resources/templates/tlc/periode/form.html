@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Jadwal Bahasa</title>
+</head>
+
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Jadwal Bahasa</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div
+                                                class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <form id="formSimpan" method="post" th:action="@{/tlc/periode/form}">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Form</h3>
+                                    </div>
+                                    <div class="col text-right">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Nama Jadwal :</label>
+                                            <input type="text" class="form-control" name="jadwal">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Nama Kelas :</label>
+                                            <input type="text" class="form-control" name="kelas">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Jenis :</label>
+                                            <select name="jenis"  class="form-control">
+                                                <option value="INGGRIS">Bahasa Inggris</option>
+                                                <option value="ARAB">Bahasa Arab</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Dosen :</label>
+                                            <select id="dosenList" name="dosen" style="width: 100%!important;"
+                                                    class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Realisasi</h3>
+                                    </div>
+                                    <div class="col text-right">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Sesi 1 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 1</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi1" onchange="checkSessions()">
+                                                        <option value="-">-</option>
+                                                        <option value="0">Minggu</option>
+                                                        <option value="1">Senin</option>
+                                                        <option value="2">Selasa</option>
+                                                        <option value="3">Rabu</option>
+                                                        <option value="4">Kamis</option>
+                                                        <option value="5">Jumat</option>
+                                                        <option value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi1">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" required name="jamMulaiSesi1" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" required name="jamSelesaiSesi1" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi1" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sesi 2 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 2</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi2" onchange="checkSessions()">
+                                                        <option value="-">-</option>
+                                                        <option value="0">Minggu</option>
+                                                        <option value="1">Senin</option>
+                                                        <option value="2">Selasa</option>
+                                                        <option value="3">Rabu</option>
+                                                        <option value="4">Kamis</option>
+                                                        <option value="5">Jumat</option>
+                                                        <option value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi2">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" name="jamMulaiSesi2" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" required name="jamSelesaiSesi2" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi2" value="2">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sesi 3 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 3</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi3" onchange="checkSessions()">
+                                                        <option value="-">-</option>
+                                                        <option value="0">Minggu</option>
+                                                        <option value="1">Senin</option>
+                                                        <option value="2">Selasa</option>
+                                                        <option value="3">Rabu</option>
+                                                        <option value="4">Kamis</option>
+                                                        <option value="5">Jumat</option>
+                                                        <option value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi3">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" name="jamMulaiSesi3" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" required name="jamSelesaiSesi3" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi3" value="3">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sesi 4 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 4</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi4" onchange="checkSessions()">
+                                                        <option value="-">-</option>
+                                                        <option value="0">Minggu</option>
+                                                        <option value="1">Senin</option>
+                                                        <option value="2">Selasa</option>
+                                                        <option value="3">Rabu</option>
+                                                        <option value="4">Kamis</option>
+                                                        <option value="5">Jumat</option>
+                                                        <option value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi4">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" name="jamMulaiSesi4" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" required name="jamSelesaiSesi4" autocomplete="off" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi4" value="4">
+                                            </div>
+                                        </div>
+                                        <input type="hidden" th:if="${tahunAkademik != null}" name="tahunAkademik" th:value="${tahunAkademik.id}">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button type="submit" id="btnSimpan" onclick="saveSimpan()" class="btn btn-primary">Simpan</button>
+                                            <!--                                        <a href="" class="btn btn-danger">Batal</a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>
+<!-- Include Moment.js CDN -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js">
+</script>
+
+<!-- Include Bootstrap DateTimePicker CDN -->
+<link
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"
+        rel="stylesheet">
+
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js">
+</script>
+<script>
+    $(document).ready(function() {
+        $('.js-example-placeholder-single').select2();
+
+        $("#dosenList").select2(
+            {
+                placeholder: 'Cari Dosen',
+                multiple: 'true',
+                minimumInputLength: 3,
+                ajax: {
+                    url: function (params) {
+                        return '/lectures?search=' + params.term;
+                    },
+                    dataType: 'json',
+                    type: "GET",
+                    delay: 300,
+                    data: function (params) {
+                        return {
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        for(var i = 0; i < data.length; i++){
+                            data[i]={id:data[i].id,text:data[i].dosen,value:data[i].id}
+                        }
+                        return {
+                            results: data
+                        };
+                    }
+                },
+
+            });
+
+        $('#input-a').datetimepicker({
+            format: 'HH:mm'
+        });
+
+        function checkSessions() {
+            const sessionDays = [
+                document.querySelector('select[name="hariSesi2"]').value,
+                document.querySelector('select[name="hariSesi3"]').value,
+                document.querySelector('select[name="hariSesi4"]').value
+            ];
+
+            sessionDays.forEach((day, index) => {
+                const sessionIndex = index + 2; // Start from session 2
+                const disableInputs = day === "-";
+
+                const inputs = [
+                    `input[name="jamMulaiSesi${sessionIndex}"]`,
+                    `input[name="jamSelesaiSesi${sessionIndex}"]`,
+                    `select[name="ruanganSesi${sessionIndex}"]`
+                ];
+
+                inputs.forEach(inputSelector => {
+                    const inputElement = document.querySelector(inputSelector);
+                    if (disableInputs) {
+                        inputElement.disabled = true;
+                        inputElement.required = false;
+                    } else {
+                        inputElement.disabled = false;
+                        inputElement.required = true;
+                    }
+                });
+            });
+        }
+
+        checkSessions();
+
+        const daySelects = [
+            'hariSesi2',
+            'hariSesi3',
+            'hariSesi4'
+        ];
+
+        daySelects.forEach(selectName => {
+            document.querySelector(`select[name="${selectName}"]`).addEventListener('change', checkSessions);
+        });
+
+        function saveSimpan(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('formSimpan');
+
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+
+                const pertemuanForm = document.getElementById('pertemuan');
+                if (!pertemuanForm.value) {
+                    pertemuanForm.focus();
+                    pertemuanForm.click();
+                }
+                return;
+            } else {
+                $("#btnSimpan").removeClass("btn-primary")
+                    .addClass("btn-warning")
+                    .prop("disabled", true)
+                    .html("Loading...");
+
+                form.submit(); // Submit the form
+            }
+        }
+
+        // Attach the saveSimpan function to the button click event
+        document.getElementById('btnSimpan').addEventListener('click', saveSimpan);
+    });
+</script>

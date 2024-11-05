@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layoutadmin}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Jadwal Bahasa</title>
+</head>
+
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Jadwal Bahasa</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div
+                                                class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <form id="formSimpan" method="post" th:action="@{/tlc/periode/edit}">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Form</h3>
+                                    </div>
+                                    <div class="col text-right">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Nama Jadwal :</label>
+                                            <input type="text" class="form-control" name="jadwal" th:value="${jadwal.namaJadwal}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Nama Kelas :</label>
+                                            <input type="text" class="form-control" name="kelas" th:value="${jadwal.namaKelas}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Jenis :</label>
+                                            <select name="jenis"  class="form-control">
+                                                <option th:selected="${jadwal.jenis == 'INGGRIS'}" value="INGGRIS">Bahasa Inggris</option>
+                                                <option th:selected="${jadwal.jenis == 'ARAB'}" value="ARAB">Bahasa Arab</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Dosen :</label>
+                                            <select name="dosen" style="width: 100%!important;"
+                                                    class="form-control js-example-basic-multiple" multiple>
+                                                <option th:each="dosen : ${listDosen}"
+                                                        th:value="${dosen.karyawan.id}"
+                                                        th:text="${dosen.karyawan.namaKaryawan}"
+                                                        th:selected="${#lists.contains(jadwal.dosens, dosen)}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Realisasi</h3>
+                                    </div>
+                                    <div class="col text-right">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Sesi 1 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 1</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi1" onchange="checkSessions()">
+                                                        <option th:selected="${sesi1.hari.id == '-'}" value="-">-</option>
+                                                        <option th:selected="${sesi1.hari.id == '0'}" value="0">Minggu</option>
+                                                        <option th:selected="${sesi1.hari.id == '1'}" value="1">Senin</option>
+                                                        <option th:selected="${sesi1.hari.id == '2'}" value="2">Selasa</option>
+                                                        <option th:selected="${sesi1.hari.id == '3'}" value="3">Rabu</option>
+                                                        <option th:selected="${sesi1.hari.id == '4'}" value="4">Kamis</option>
+                                                        <option th:selected="${sesi1.hari.id == '5'}" value="5">Jumat</option>
+                                                        <option th:selected="${sesi1.hari.id == '6'}" value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi1">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:selected="(${data} == *{sesi1.ruangan})"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" required name="jamMulaiSesi1" th:value="${sesi1.jamMulai}" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" required name="jamSelesaiSesi1" th:value="${sesi1.jamSelesai}" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi1" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sesi 2 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 2</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi2" onchange="checkSessions()">
+                                                        <option th:selected="${sesi2 == null}" value="-">-</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '0'}" value="0">Minggu</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '1'}" value="1">Senin</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '2'}" value="2">Selasa</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '3'}" value="3">Rabu</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '4'}" value="4">Kamis</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '5'}" value="5">Jumat</option>
+                                                        <option th:selected="${sesi2 != null && sesi2.hari.id == '6'}" value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" th:if="${sesi2 != null}"  name="ruanganSesi2">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:if="${sesi2 != null}"
+                                                                th:selected="(${data} == *{sesi2.ruangan})"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                    <select class="form-control js-example-placeholder-single" th:if="${sesi2 == null}"  name="ruanganSesi2">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" th:if="${sesi2 != null}" autocomplete="off" th:value="${sesi2.jamMulai}"  name="jamMulaiSesi2" class="form-control timePicker">
+                                                    <input type="text" th:if="${sesi2 == null}" autocomplete="off"  name="jamMulaiSesi2" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" th:if="${sesi2 != null}" autocomplete="off" th:value="${sesi2.jamSelesai}" required name="jamSelesaiSesi2" class="form-control timePicker">
+                                                    <input type="text" th:if="${sesi2 == null}" autocomplete="off"  required name="jamSelesaiSesi2" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi2" value="2">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sesi 3 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 3</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi3" onchange="checkSessions()">
+                                                        <option th:selected="${sesi3 == null}" value="-">-</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '0'}" value="0">Minggu</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '1'}" value="1">Senin</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '2'}" value="2">Selasa</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '3'}" value="3">Rabu</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '4'}" value="4">Kamis</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '5'}" value="5">Jumat</option>
+                                                        <option th:selected="${sesi3 != null && sesi3.hari.id == '6'}" value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi3"
+                                                            th:if="${sesi3 == null}">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi3"
+                                                            th:if="${sesi3 != null}">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:selected="(${data} == *{sesi3.ruangan})"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" th:if="${sesi3 != null}" autocomplete="off" th:value="${sesi3.jamMulai}" name="jamMulaiSesi3" class="form-control timePicker">
+                                                    <input type="text" th:if="${sesi3 == null}" autocomplete="off" name="jamMulaiSesi3" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" required th:if="${sesi3 != null}" autocomplete="off" th:value="${sesi3.jamSelesai}" name="jamSelesaiSesi3" class="form-control timePicker">
+                                                    <input type="text" required th:if="${sesi3 == null}" autocomplete="off" name="jamSelesaiSesi3" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi3" value="3">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sesi 4 -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">Sesi 4</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Hari :</label>
+                                                    <select class="form-control" name="hariSesi4" onchange="checkSessions()">
+                                                        <option th:selected="${sesi4 == null}" value="-">-</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '0'}" value="0">Minggu</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '1'}" value="1">Senin</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '2'}" value="2">Selasa</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '3'}" value="3">Rabu</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '4'}" value="4">Kamis</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '5'}" value="5">Jumat</option>
+                                                        <option th:selected="${sesi4 != null && sesi4.hari.id == '6'}" value="6">Sabtu</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Ruangan :</label>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi4"
+                                                            th:if="${sesi4 == null}">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                    <select class="form-control js-example-placeholder-single" name="ruanganSesi4"
+                                                            th:if="${sesi4 != null}">
+                                                        <option value=""></option>
+                                                        <option th:each="data: ${ruangan}"
+                                                                th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                                th:selected="(${data} == *{sesi4.ruangan})"
+                                                                th:value="${data.id}">sdasd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mulai :</label>
+                                                    <input type="text" th:if="${sesi4 != null}" autocomplete="off" th:value="${sesi4.jamMulai}" name="jamMulaiSesi4" class="form-control timePicker">
+                                                    <input type="text" th:if="${sesi4 == null}" autocomplete="off" name="jamMulaiSesi4" class="form-control timePicker">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Selesai :</label>
+                                                    <input type="text" th:if="${sesi4 != null}" autocomplete="off" th:value="${sesi4.jamSelesai}" required name="jamSelesaiSesi4" class="form-control timePicker">
+                                                    <input type="text" th:if="${sesi4 == null}" autocomplete="off" required name="jamSelesaiSesi4" class="form-control timePicker">
+                                                </div>
+                                                <input type="hidden" name="sesi4" value="4">
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="id" th:value="${jadwal.id}">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button type="submit" id="btnSimpan" onclick="saveSimpan()" class="btn btn-primary">Simpan</button>
+                                            <!--                                        <a href="" class="btn btn-danger">Batal</a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>
+<!-- Include Moment.js CDN -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js">
+</script>
+
+<!-- Include Bootstrap DateTimePicker CDN -->
+<link
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"
+        rel="stylesheet">
+
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js">
+</script>
+<script>
+    $(document).ready(function() {
+        $('.js-example-placeholder-single').select2();
+        $('.js-example-basic-multiple').select2();
+
+        $("#dosenList").select2({
+            placeholder: 'Cari Dosen',
+            multiple: 'true',
+            minimumInputLength: 3,
+            ajax: {
+                url: function (params) {
+                    return '/lectures?search=' + params.term;
+                },
+                dataType: 'json',
+                type: "GET",
+                delay: 300,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data) {
+                    for(var i = 0; i < data.length; i++){
+                        data[i] = { id: data[i].id, text: data[i].dosen, value: data[i].id };
+                    }
+                    return { results: data };
+                }
+            },
+        });
+
+        $('#input-a').datetimepicker({
+            format: 'HH:mm'
+        });
+
+        // Function to check session inputs
+        window.checkSessions = function() { // Declare function in the global scope
+            const sessionDays = [
+                document.querySelector('select[name="hariSesi2"]').value,
+                document.querySelector('select[name="hariSesi3"]').value,
+                document.querySelector('select[name="hariSesi4"]').value
+            ];
+
+            sessionDays.forEach((day, index) => {
+                const sessionIndex = index + 2; // Start from session 2
+                const disableInputs = day === "-";
+
+                const inputs = [
+                    `input[name="jamMulaiSesi${sessionIndex}"]`,
+                    `input[name="jamSelesaiSesi${sessionIndex}"]`,
+                    `select[name="ruanganSesi${sessionIndex}"]`
+                ];
+
+                inputs.forEach(inputSelector => {
+                    const inputElement = document.querySelector(inputSelector);
+                    if (disableInputs) {
+                        inputElement.disabled = true;
+                        inputElement.required = false;
+
+                        // Set the values to null when the day is set to "-"
+                        if (inputElement.tagName.toLowerCase() === 'input') {
+                            inputElement.value = ''; // Clear input values
+                        } else if (inputElement.tagName.toLowerCase() === 'select') {
+                            // Clear select values and trigger change event for Select2
+                            $(inputElement).val(null).trigger('change'); // Set select2 to null
+                        }
+                    } else {
+                        inputElement.disabled = false;
+                        inputElement.required = true;
+                    }
+                });
+            });
+        }
+
+        // Initial check for session states
+        checkSessions();
+
+        const daySelects = [
+            'hariSesi2',
+            'hariSesi3',
+            'hariSesi4'
+        ];
+
+        // Attach event listeners for day selects
+        daySelects.forEach(selectName => {
+            document.querySelector(`select[name="${selectName}"]`).addEventListener('change', checkSessions);
+        });
+
+        function saveSimpan(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('formSimpan');
+
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+
+                const pertemuanForm = document.getElementById('pertemuan');
+                if (!pertemuanForm.value) {
+                    pertemuanForm.focus();
+                    pertemuanForm.click();
+                }
+                return;
+            } else {
+                $("#btnSimpan").removeClass("btn-primary")
+                    .addClass("btn-warning")
+                    .prop("disabled", true)
+                    .html("Loading...");
+
+                form.submit(); // Submit the form
+            }
+        }
+
+        // Attach the saveSimpan function to the button click event
+        document.getElementById('btnSimpan').addEventListener('click', saveSimpan);
+    });
+</script>

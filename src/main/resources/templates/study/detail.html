@@ -164,7 +164,7 @@
                                                         <input type="hidden" class="waktu-mulai" th:value="${tugas.getWaktuMulai()}">
                                                         <input type="hidden" class="tenggat-waktu" th:value="${tugas.getTenggatWaktu()}">
                                                         <h5 class="message" style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada</h5>
-                                                        <a th:href="@{/study/tugas(jadwalTugas=${tugas.getId()}, jadwal=${jadwal.id})}" class="btn btn-info detail-button">Detail Tugas</a><br><br>
+                                                        <a th:href="@{/study/tugas(jadwalTugas=${tugas.getId()})}" class="btn btn-info detail-button">Detail Tugas</a><br><br>
                                                     </div>
                                                 </div>
                                                 <script>

@@ -10,6 +10,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
+import id.ac.tazkia.smilemahasiswa.dao.TugasAkhirDao;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -32,18 +35,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import id.ac.tazkia.smilemahasiswa.dao.NoteDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
-import id.ac.tazkia.smilemahasiswa.entity.Note;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.Seminar;
-import id.ac.tazkia.smilemahasiswa.entity.Sidang;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 
 @Service
 public class GraduationService {
     @Autowired
     private NoteDao noteDao;
+
+    @Autowired
+    private TugasAkhirDao tugasAkhirDao;
 
     @Value("${upload.seminar}")
     private String seminarFolder;
@@ -276,4 +275,21 @@ public class GraduationService {
                 tens[(num % 100) / 10] +
                 units[num % 10];
     }
+
+    public void createTugasAkhir(Mahasiswa mahasiswa, StatusTugasAkhir statusTugasAkhir, TugasAkhir.MenuTugasAkhir menuTugasAkhir){
+        TugasAkhir tugasAkhir = tugasAkhirDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
+        if (tugasAkhir == null) {
+            TugasAkhir t = new TugasAkhir();
+            t.setMahasiswa(mahasiswa);
+            t.setStatus(StatusRecord.AKTIF);
+            t.setMenu(menuTugasAkhir);
+            t.setStatusTugasAkhir(statusTugasAkhir);
+            tugasAkhirDao.save(t);
+        }else {
+            tugasAkhir.setStatusTugasAkhir(statusTugasAkhir);
+            tugasAkhir.setMenu(menuTugasAkhir);
+            tugasAkhirDao.save(tugasAkhir);
+        }
+    }
+
 }

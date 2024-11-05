@@ -156,6 +156,15 @@ public class TugasMateriService {
                 nilaiTugasDao.save(tugas);
             }
         }
+        if (JadwalTugas.JenisPengiriman.PRESENTASI.equals(jadwalTugas.getJenisPengiriman()) ||
+                JadwalTugas.JenisPengiriman.UJIAN.equals(jadwalTugas.getJenisPengiriman()) ||
+                JadwalTugas.JenisPengiriman.PRESENTASI_UJIAN.equals(jadwalTugas.getJenisPengiriman())) {
+            List<JadwalTugasJawaban> listJawaban = tugasJawabanDao.findByJadwalTugasAndStatusOrderByWaktuPengumpulan(jadwalTugas, StatusRecord.AKTIF);
+            for (JadwalTugasJawaban tj : listJawaban){
+                tj.setStatus(StatusRecord.HAPUS);
+                tugasJawabanDao.save(tj);
+            }
+        }
     }
 
     public void generateJawabanOtomatis(JadwalTugas jt){

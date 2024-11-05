@@ -26,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -200,7 +201,7 @@ public class BebasKewajibanController {
     }
 
     @PostMapping("/kewajiban/mahasiswa/tlc/dikampus")
-    public String sertiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String jenis){
+    public String sertiTlc(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String jenis, RedirectAttributes attributes){
         KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
             KewajibanSertifikatTlc tlc = new KewajibanSertifikatTlc();
@@ -216,12 +217,12 @@ public class BebasKewajibanController {
             bebasKewajibanDao.save(kewajiban);
 
         }
-
+        attributes.addFlashAttribute("berhasil", "Alert berhasil save tugas");
         return "redirect:/kewajiban/mahasiswa/detail";
     }
 
     @PostMapping("/kewajiban/mahasiswa/tlc/diluar")
-    public String sertiTlcDiluar(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String tempat, @RequestParam String jenis, MultipartFile file) throws IOException {
+    public String sertiTlcDiluar(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam String tanggal, @RequestParam String tempat, @RequestParam String jenis, MultipartFile file, RedirectAttributes attributes) throws IOException {
         KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
 
@@ -261,11 +262,12 @@ public class BebasKewajibanController {
             bebasKewajibanDao.save(kewajiban);
         }
 
+        attributes.addFlashAttribute("berhasil", "Alert berhasil save tugas");
         return "redirect:/kewajiban/mahasiswa/detail";
     }
 
     @PostMapping("/kewajiban/mahasiswa/tqc/update")
-    public String sertiTqcUpload(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, MultipartFile file) throws IOException {
+    public String sertiTqcUpload(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, MultipartFile file, RedirectAttributes attributes) throws IOException {
         KewajibanSertifikatTlc cek = kewajibanSertifikatTlcDao.findByBebasKewajibanAndStatus(bebasKewajiban, StatusRecord.AKTIF);
         if (cek == null) {
 
@@ -294,7 +296,7 @@ public class BebasKewajibanController {
             tlc.setFile(idFile + "." + extension);
             tlc.setBebasKewajiban(bebasKewajiban);
             tlc.setKeteranganUjian(ByBagian.HAFIDZPRENEUR);
-            tlc.setJenisTes("MUTQIN");
+            tlc.setJenisTes("Ziadah 30 Juz");
             tlc.setTipe(Tipe.TQC);
             kewajibanSertifikatTlcDao.save(tlc);
 
@@ -303,15 +305,17 @@ public class BebasKewajibanController {
             bebasKewajibanDao.save(kewajiban);
         }
 
+        attributes.addFlashAttribute("berhasil", "Alert berhasil save tugas");
         return "redirect:/kewajiban/mahasiswa/detail";
     }
 
     @PostMapping("/kewajiban/mahasiswa/tlc/delete")
-    public String deleteFileUpload(@RequestParam KewajibanSertifikatTlc sertifikat){
+    public String deleteFileUpload(@RequestParam KewajibanSertifikatTlc sertifikat, RedirectAttributes attributes){
 
         sertifikat.setStatus(StatusRecord.HAPUS);
         kewajibanSertifikatTlcDao.save(sertifikat);
 
+        attributes.addFlashAttribute("berhasil", "Alert berhasil save tugas");
         return "redirect:/kewajiban/mahasiswa/detail";
     }
 

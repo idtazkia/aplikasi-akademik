@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Periode Wisuda </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/graduation/periodeWisuda/edit}"  th:object="${periode}">
+
+                            <div class="form-group">
+                                <label>Nama</label>
+                                <input type="text" name="nama" class="form-control" readonly th:field="*{nama}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Wisuda</label>
+                                <input type="text" name="tanggalWisuda" class="form-control tanggal" th:field="*{tanggalWisuda}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Tutup Sempro Jurnal</label>
+                                <input type="text" name="tutupSeminarJurnal" class="form-control tanggal" th:field="*{tutupSeminarJurnal}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Buka Sempro Jurnal</label>
+                                <input type="text" name="bukaSeminarJurnal" class="form-control tanggal" th:field="*{bukaSeminarJurnal}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Tutup Sempro Reguler</label>
+                                <input type="text" name="tutupSeminar" class="form-control tanggal" th:field="*{tutupSeminar}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Buka Sempro Reguler</label>
+                                <input type="text" name="bukaSeminar" class="form-control tanggal" th:field="*{bukaSeminar}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Tutup LOA</label>
+                                <input type="text" name="tutupLoa" class="form-control tanggal" th:field="*{tutupLoa}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Buka LOA</label>
+                                <input type="text" name="bukaLoa" class="form-control tanggal" th:field="*{bukaLoa}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Tutup Sidang</label>
+                                <input type="text" name="tutupSidang" class="form-control tanggal" th:field="*{tutupSidang}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Buka Sidang</label>
+                                <input type="text" name="bukaSidang" class="form-control tanggal" th:field="*{bukaSidang}">
+                            </div>
+
+                            <input type="hidden" name="id" th:field="*{id}">
+                            <input type="hidden" name="number" th:field="*{number}">
+                            <input type="hidden" name="status" th:field="*{status}">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a th:href="@{/graduation/periodeWisuda/list}" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    flatpickr(".tanggal", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i:S",
+        time_24hr: true
+    });
+</script>
