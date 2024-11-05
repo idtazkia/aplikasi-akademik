@@ -121,6 +121,12 @@
                 <div class="normal-table-list mg-t-30">
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
+                            <div th:if="${failedFormat}" class="alert alert-danger alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"><i class="notika-icon notika-close"></i></span></button> <b>Gagal!</b> <span th:text="${failedFormat}"></span>
+                            </div>
+                            <div th:if="${failedSize}" class="alert alert-danger alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"><i class="notika-icon notika-close"></i></span></button> <b>Gagal!</b> <span th:text="${failedSize}"></span>
+                            </div>
                             <form method="post" th:action="@{/study/tugas}" enctype="multipart/form-data">
                                 <div>
                                     <input type="hidden" name="mahasiswa" th:value="${mahasiswa.id}">
@@ -140,11 +146,15 @@
                                         <div th:if="${kesempatanUpload == null}">
                                             <input th:if="${tugas.getTenggatWaktu() >= now}" type="file" name="fileJawaban" class="form-control">
                                             <p style="color: red;">Anda mempunyai <span th:text="${tugas.maksFileUpload}"></span> kali kesempatan upload</p>
+                                            <p style="color: red;">Maksimal ukuran file 1MB </p>
+                                            <p style="color: red;">Format file yang diterima hanya : doc, docx, pdf, xlsx, xls, ppt, pptx </p>
                                         </div>
                                         <div th:if="${kesempatanUpload != null && kesempatanUpload != 0}">
                                             <a class="text-warning" th:text="${history.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${history.id})}"></a>
                                             <input th:if="${tugas.getTenggatWaktu() >= now}" type="file" name="fileJawaban" class="form-control">
-                                            <p class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MM - yyyy HH:ss')}"></span></p>
+                                            <p class="text-primary">Anda telah mengirim tugas ini pada <span th:text="${#temporals.format(history.waktuPengumpulan, 'dd - MMM - yyyy HH:ss')}"></span></p>
+                                            <p style="color: red;">Maksimal ukuran file 1MB </p>
+                                            <p style="color: red;">Format file yang diterima hanya : doc, docx, pdf, xlsx, xls, ppt, pptx </p>
                                             <p th:if="${tugas.getTenggatWaktu() >= now}" style="color: red;">Anda mempunyai <span th:text="${kesempatanUpload}"></span> kali kesempatan upload</p>
                                         </div>
                                         <div th:if="${kesempatanUpload != null && kesempatanUpload == 0}">

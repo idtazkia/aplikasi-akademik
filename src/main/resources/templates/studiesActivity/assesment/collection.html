@@ -54,6 +54,7 @@
                                 <h3 class="mb-0" th:text="${jadwaltugas.namaTugas}"></h3>
                             </div>
                             <div class="col text-right">
+<!--                                <a th:href="@{/studiesActivity/assesment/collection/download(jadwalTugas=${jadwaltugas.id})}" class="btn btn-sm btn-info"><i class="fas fa-file-download"></i> Download semua file</a>-->
                                 <a th:href="@{/studiesActivity/assesment/weight(jadwal=${jadwaltugas.sesiKuliah.jadwal.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
                             </div>
                         </div>
@@ -70,7 +71,7 @@
                             </div>
                         </div>
                     </div>
-                    <form method="post" th:action="@{/studiesActivity/assesment/collection}">
+                    <form id="form-nilai" method="post" th:action="@{/studiesActivity/assesment/collection}">
                         <input type="hidden" name="jadwalTugas" th:value="${jadwaltugas.id}">
                         <div class="table-responsive">
                             <table class="table align-items-center table-flush table-striped">
@@ -108,7 +109,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 mt-3 mb-3">
-                                <button type="submit" class="btn btn-success center">Save</button>
+                                <button type="submit" id="btnSave" onclick="saveNilai()" class="btn btn-success center">Save</button>
                             </div>
                         </div>
                     </form>
@@ -119,3 +120,10 @@
 </div>
 </body>
 </html>
+<script>
+    function saveNilai(){
+        $('#btnSave').removeClass("btn-success").addClass("btn-warning").prop("disabled", true).html('Loading . . .');
+
+        $('#form-nilai').submit();
+    }
+</script>
