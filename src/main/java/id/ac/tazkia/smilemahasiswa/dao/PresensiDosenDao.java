@@ -138,8 +138,8 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
 
     @Query(value = "\n" +
             "select jadwal, dosen, nama, email, matkul, kelas, sks, bulan, hari,  \n" +
-            "group_concat(if(presensi is not null and pertemuan = 'Offline',date,null) order by date) as Offline,\n" +
-            "group_concat(if(presensi is not null and pertemuan = 'Online',date,null) order by date) as Online,\n" +
+            "group_concat(if(presensi is not null and pertemuan like '%Offline%',date,null) order by date) as Offline,\n" +
+            "group_concat(if(presensi is not null and pertemuan like '%Online%',date,null) order by date) as Online,\n" +
             "group_concat(if(presensi is null,date,null) order by date) as abstain, sum(if(presensi is not null,1,0)) as totalsesi,\n" +
             "sum(if(presensi is not null,sks,0)) as totalsks, sum(1) as totalseluruhsesi, sum(sks) as totalseluruhsks, id_prodi as idprodi, nama_prodi as prodi,\n" +
             "id_jenjang as idjenjang, jenjang, sdosen from\n" +
