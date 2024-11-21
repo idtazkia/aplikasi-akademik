@@ -136,14 +136,17 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "having count(pd.id) >= 32) as a", nativeQuery = true)
     Page<KlasemenDosenIntDto> klasemenDosenByTahunDanSearch(TahunAkademik tahunAkademik, String dosen, Pageable pageable);
 
-    @Query(value = "select jadwal, dosen, nama, email, matkul, kelas, sks, bulan, hari,  group_concat(if(presensi is not null,date,null) order by date) as tanggal,\n" +
+    @Query(value = "\n" +
+            "select jadwal, dosen, nama, email, matkul, kelas, sks, bulan, hari,  \n" +
+            "group_concat(if(presensi is not null and pertemuan = 'Offline',date,null) order by date) as Offline,\n" +
+            "group_concat(if(presensi is not null and pertemuan = 'Online',date,null) order by date) as Online,\n" +
             "group_concat(if(presensi is null,date,null) order by date) as abstain, sum(if(presensi is not null,1,0)) as totalsesi,\n" +
             "sum(if(presensi is not null,sks,0)) as totalsks, sum(1) as totalseluruhsesi, sum(sks) as totalseluruhsks, id_prodi as idprodi, nama_prodi as prodi,\n" +
             "id_jenjang as idjenjang, jenjang, sdosen from\n" +
             "(select a.*,b.id as presensi from\n" +
             "(select c.id_presensi_dosen as id_presensi, b.id as jadwal, d.id as dosen, e.nama_karyawan as nama, e.email, nama_matakuliah as matkul,nama_kelas as kelas, jumlah_sks as sks,\n" +
             "monthname(c.waktu_mulai) as bulan, dayname(c.waktu_mulai) as hari,concat(day(waktu_mulai),'-',left(monthname(waktu_mulai),3)) as date,\n" +
-            "h.id_prodi,i.nama_prodi,i.id_jenjang,nama_jenjang as jenjang, status_dosen as sdosen from jadwal_dosen as a\n" +
+            "h.id_prodi,i.nama_prodi,i.id_jenjang,nama_jenjang as jenjang, status_dosen as sdosen,c.pertemuan from jadwal_dosen as a\n" +
             "inner join jadwal as b on a.id_jadwal = b.id\n" +
             "inner join sesi_kuliah as c on b.id = c.id_jadwal\n" +
             "inner join dosen as d on a.id_dosen = d.id\n" +

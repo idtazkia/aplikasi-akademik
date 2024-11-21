@@ -11,7 +11,9 @@ public interface SalaryDto {
 
     Integer getSks();
 
-    String getTanggal();
+    String getOffline();
+
+    String getOnline();
 
     String getAbstain();
 
