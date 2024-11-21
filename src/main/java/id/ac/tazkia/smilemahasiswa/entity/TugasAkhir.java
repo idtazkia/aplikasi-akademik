@@ -24,7 +24,8 @@ public class TugasAkhir {
     public enum MenuTugasAkhir {
         NOTE,
         SEMINAR,
-        SIDANG
+        SIDANG,
+        WISUDA
     }
 
     @Enumerated(EnumType.STRING)

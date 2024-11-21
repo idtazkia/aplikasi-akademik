@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     @Query("select d from Dosen d where d.status not in(:status)")
@@ -67,4 +68,6 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     @Query(value = "select count(*) from dosen as d inner join karyawan as k on d.id_karyawan = k.id inner join jabatan_dosen as jd on d.id_jabatan = jd.id\n" +
             "where d.status = 'AKTIF' and d.id_jabatan = ?1 and k.nama_karyawan like %?2% ", nativeQuery = true)
     Integer countListJabatanDosenSearch(JabatanDosen jabatanDosen, String search);
+
+    Optional<Dosen> findByKaryawanEmailAndStatus(String email, StatusRecord statusRecord);
 }

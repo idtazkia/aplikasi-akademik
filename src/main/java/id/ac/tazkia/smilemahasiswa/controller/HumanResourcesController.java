@@ -1,12 +1,17 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.human.DosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.human.JabatanRequest;
 import id.ac.tazkia.smilemahasiswa.dto.human.TableJabatan;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.DetailDosen;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.DosenMengajar;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.SKMengajar;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +32,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.SplittableRandom;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Controller
+@Slf4j
 public class HumanResourcesController {
 
     private static final Logger logger = LoggerFactory.getLogger(HumanResourcesController.class);
@@ -58,6 +62,10 @@ public class HumanResourcesController {
 
     @Value("${upload.fotoKaryawan}")
     private String uploadFolder;
+    @Autowired
+    private JadwalDosenDao jadwalDosenDao;
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
 
     @GetMapping("/select/dosen-jabatan")
     @ResponseBody
@@ -458,6 +466,94 @@ public class HumanResourcesController {
         dosenDao.save(dosen);
 
         return "redirect:list";
+    }
+
+    @GetMapping("/api/jadwal-dosen/{tahun}")
+    public ResponseEntity<BaseResponseDto> getLectureId(@PathVariable String tahun, @RequestParam String id, @RequestParam String no) {
+        try {
+            SKMengajar skMengajar = new SKMengajar();
+            Optional<Dosen> optionalDosen = dosenDao.findById(id);
+            Optional<TahunAkademik> optionalTahunAkademik = tahunAkademikDao.findById(tahun);
+            String namaTahunAkademik = optionalTahunAkademik
+                    .map(TahunAkademik::getNamaTahunAkademik)
+                    .map(nama -> nama.length() > 10 ? nama.substring(0, 10) : nama)
+                    .orElse("");
+            String tanggalFirstFormatted = optionalTahunAkademik
+                    .map(t -> t.getTanggalMulaiKuliah().format(DateTimeFormatter.ofPattern("ddMM")))
+                    .orElse("");
+            String tanggalLastFormatted = optionalTahunAkademik
+                    .map(t -> t.getTanggalMulaiKuliah().format(DateTimeFormatter.ofPattern("M/yyyy")))
+                    .orElse("");
+
+//            2409001/SKM/SDM/KPTS-Institut-Tazkia/9/2024
+
+            System.out.println(optionalTahunAkademik.get().getTanggalMulaiKuliah().getDayOfMonth());
+            skMengajar.setDosen(optionalDosen.get().getKaryawan().getNamaKaryawan());
+            skMengajar.setEmail(optionalDosen.get().getKaryawan().getEmail());
+            skMengajar.setNomor(tanggalFirstFormatted+no+"/SKM/SDM/KPTS-Institut-Tazkia/"+tanggalLastFormatted);
+            skMengajar.setTahun("SEMESTER " + optionalTahunAkademik.get().getJenis() + " TAHUN AKADEMIK " + namaTahunAkademik);
+            if (optionalDosen.isEmpty()) {
+                log.info("Lecture id {} not found", id);
+            }
+
+            if (optionalDosen.isEmpty()) {
+                log.info("Tahun id {} not found", tahun);
+            }
+
+            List<DetailDosen> jadwalDosen = jadwalDosenDao.getJadwalDosen(optionalTahunAkademik.get(), optionalDosen.get());
+            skMengajar.setJadwal(jadwalDosen);
+
+            if (!jadwalDosen.isEmpty()) {
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("00")
+                                .responseMessage("Data Found")
+                                .data(skMengajar)
+                                .build());
+            } else {
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("404")
+                                .responseMessage("Jadwal Dosen Not Found")
+                                .build());
+            }
+        } catch (Exception e) {
+            log.error("[GET Dosen] - [ERROR] : Unable to Get data , {} ", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    BaseResponseDto.builder()
+                            .responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage())
+                            .build());
+        }
+    }
+
+    @GetMapping("/api/list-dosen-mengajar/{tahunId}")
+    @ResponseBody
+    public ResponseEntity<BaseResponseDto> getListTahunakademik(@PathVariable String tahunId){
+        try {
+            Optional<TahunAkademik> tahunAkademik = tahunAkademikDao.findById(tahunId);
+            if (tahunAkademik.isEmpty()){
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .responseMessage("Tahun TIdak Ditemukan")
+                                .build());
+            }else {
+                List<DosenMengajar> jadwalDosen = jadwalDosenDao.listDosenMengajar(tahunAkademik.get());
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .data(jadwalDosen)
+                                .responseMessage("Data Ditemukan")
+                                .build());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    BaseResponseDto.builder()
+                            .responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage())
+                            .build());
+        }
     }
 
 

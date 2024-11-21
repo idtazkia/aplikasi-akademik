@@ -1,30 +1,13 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
+import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
+import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.GraduationService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,44 +23,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import id.ac.tazkia.smilemahasiswa.dao.AyahDao;
-import id.ac.tazkia.smilemahasiswa.dao.BeasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.IbuDao;
-import id.ac.tazkia.smilemahasiswa.dao.KategoriTugasAkhirDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.MatakuliahDao;
-import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
-import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
-import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
-import id.ac.tazkia.smilemahasiswa.dao.WisudaDao;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
-import id.ac.tazkia.smilemahasiswa.entity.Ayah;
-import id.ac.tazkia.smilemahasiswa.entity.Ibu;
-import id.ac.tazkia.smilemahasiswa.entity.Jenis;
-import id.ac.tazkia.smilemahasiswa.entity.JenisKelamin;
-import id.ac.tazkia.smilemahasiswa.entity.JenisValidasi;
-import id.ac.tazkia.smilemahasiswa.entity.KategoriTugasAkhir;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.Sidang;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.User;
-import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.GraduationService;
-import id.ac.tazkia.smilemahasiswa.service.MailService;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class TugasAkhirController {
@@ -176,7 +141,7 @@ public class TugasAkhirController {
         periodeWisudaDao.save(periodeWisuda);
 
         wisuda.setNumber(periodeWisudaDao.getLastNumber() + 1);
-        wisuda.setStatus(StatusRecord.AKTIF );
+        wisuda.setStatus(StatusRecord.AKTIF);
         periodeWisudaDao.save(wisuda);
         return "redirect:list";
 
@@ -211,7 +176,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/kategori/list")
     public void listKategori(Model model, @RequestParam(required = false) Prodi prodi,
-            @PageableDefault(size = 10) Pageable page) {
+                             @PageableDefault(size = 10) Pageable page) {
 
         model.addAttribute("selectProdi", prodi);
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
@@ -230,8 +195,8 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/kategori/new")
     public String saveKategori(@RequestParam(required = false) String[] prodi,
-            @RequestParam(required = false) String nama,
-            @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi) {
+                               @RequestParam(required = false) String nama,
+                               @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi) {
 
         for (String p : prodi) {
             Prodi prod = prodiDao.findById(p).get();
@@ -305,7 +270,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/mahasiswa/wisudarevisi")
     public void revisiWisuda(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda,
-            Authentication authentication) {
+                             Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -337,7 +302,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/wisuda/revisi")
     public void revisiWisudaPasca(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda,
-            Authentication authentication) {
+                                  Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -367,7 +332,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-post")
     public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-            Authentication authentication) throws Exception {
+                               Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -439,7 +404,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/wisuda/form-post")
     public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-            Authentication authentication) throws Exception {
+                                    Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -503,7 +468,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-revisi")
     public String revisiWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-            Authentication authentication) throws Exception {
+                               Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -572,7 +537,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/wisuda/wisuda-revisi")
     public String revisiWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-            Authentication authentication) throws Exception {
+                                    Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -644,7 +609,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/mahasiswa/waiting")
     public void waitingWisuda(Model model, @RequestParam(required = false) String pasca,
-            Authentication authentication) {
+                              Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -673,7 +638,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/mahasiswa/valid")
     public String resultWisuda(Model model, @RequestParam(name = "id", value = "id") Mahasiswa mahasiswa,
-            Authentication authentication) {
+                               Authentication authentication) {
         Wisuda wisuda = wisudaDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
 
         if (wisuda != null) {
@@ -690,7 +655,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/admin/listwisuda")
     public void resultWisuda(Model model, @RequestParam(required = false) Prodi prodi,
-            @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
+                             @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
         model.addAttribute("periode",
                 periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
@@ -784,8 +749,8 @@ public class TugasAkhirController {
 
     @RequestMapping("/downloadwisuda/{wisuda}")
     public void downloadImage(HttpServletRequest request,
-            HttpServletResponse response,
-            @PathVariable("wisuda") Wisuda wisuda) {
+                              HttpServletResponse response,
+                              @PathVariable("wisuda") Wisuda wisuda) {
         // If user is not authorized - he should be thrown out from here itself
 
         // Authorized user will download the file
@@ -1419,7 +1384,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/wisuda/foto")
     public void setWisudaFoto(Model model, RedirectAttributes attributes, @RequestParam(required = false) Prodi prodi,
-            @RequestParam(required = false) PeriodeWisuda periode) {
+                              @RequestParam(required = false) PeriodeWisuda periode) {
         model.addAttribute("periode",
                 periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
@@ -1451,7 +1416,7 @@ public class TugasAkhirController {
         }
     }
 
-//    @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
+    //    @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal2() throws Exception {
 
         List<Wisuda> cekMahasiswaWisuda = wisudaDao.findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(
@@ -1480,5 +1445,41 @@ public class TugasAkhirController {
             wisudaDao.save(wisuda);
 
         }
+    }
+
+    @GetMapping("/cek-foto")
+    @ResponseBody
+    public void cekFoto(@RequestParam String periodeId, @RequestParam String prodiId) {
+        PeriodeWisuda periodeWisuda = periodeWisudaDao.findById(periodeId).get();
+        List<Wisuda> listWisuda = wisudaDao.cariWisudaProdi(periodeWisuda, prodiId);
+        for (Wisuda wisuda : listWisuda){
+            String lokasiUpload = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                    + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
+                    + File.separator + wisuda.getMahasiswa().getNim();
+            Path lokasiFoto = Path.of(lokasiUpload + File.separator + wisuda.getFoto());
+            System.out.println(lokasiFoto);
+            try {
+                String extension = "";
+                int i = wisuda.getFoto().lastIndexOf('.');
+                if (i > 0) {
+                    extension = wisuda.getFoto().substring(i + 1);
+                }
+
+                String namaBaru = wisuda.getMahasiswa().getNim() + "." + extension;
+                Path lokasiFotoBaru = lokasiFoto.resolveSibling(namaBaru);
+
+                Files.move(lokasiFoto, lokasiFotoBaru);
+                wisuda.setFoto(namaBaru);
+                wisudaDao.save(wisuda);
+            } catch (NoSuchFileException e){
+                System.out.println("File not found: " + lokasiFoto);
+            }catch (IOException e){
+                System.out.println("Error moving file: " + lokasiFoto);
+                e.printStackTrace();
+            }
+
+
+        }
+
     }
 }

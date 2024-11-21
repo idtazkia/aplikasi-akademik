@@ -1,6 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.api.DosenAktifSemesterDto;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.DetailDosen;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.DosenMengajar;
 import id.ac.tazkia.smilemahasiswa.dto.machine.JadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
@@ -72,5 +74,30 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
             "group by b.id_prodi, a.id_dosen) as a \n" +
             "group by kode_prodi order by count(kode_prodi) desc", nativeQuery = true)
     List<DosenAktifSemesterDto> cariDosenAktifSemester();
+
+    @Query(value = "SELECT k.email as email,j.jam_mulai as mulai ,j.jam_selesai as selesai, m.nama_matakuliah as matakuliah, ke.nama_kelas as kelas, jd.status_jadwal_dosen as jenis " +
+            "FROM jadwal as j inner join jadwal_dosen as jd on j.id = jd.id_jadwal inner join dosen as d on jd.id_dosen = d.id inner join karyawan as k on d.id_karyawan = k.id inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id" +
+            " inner join matakuliah as m on mk.id_matakuliah = m.id inner join kelas as ke on j.id_kelas = ke.id" +
+            " where j.id_tahun_akademik = ?1 and j.status = 'AKTIF' and j.id_hari is not null and j.jam_mulai is not null and jd.id_dosen = ?2", nativeQuery = true)
+    List<DetailDosen> getJadwalDosen(TahunAkademik tahunAkademik, Dosen dosen);
+
+    @Query(value = "SELECT\n" +
+            "       d.id,\n" +
+            "       k.nama_karyawan AS dosen,\n" +
+            "       k.jenis_kelamin as gender\n" +
+            "FROM jadwal AS j \n" +
+            "INNER JOIN jadwal_dosen AS jd ON j.id = jd.id_jadwal \n" +
+            "INNER JOIN dosen AS d ON jd.id_dosen = d.id \n" +
+            "INNER JOIN karyawan AS k ON d.id_karyawan = k.id \n" +
+            "INNER JOIN matakuliah_kurikulum AS mk ON j.id_matakuliah_kurikulum = mk.id \n" +
+            "INNER JOIN matakuliah AS m ON mk.id_matakuliah = m.id \n" +
+            "INNER JOIN kelas AS ke ON j.id_kelas = ke.id \n" +
+            "WHERE j.id_tahun_akademik = ?1 \n" +
+            "  AND j.status = 'AKTIF' \n" +
+            "  AND j.id_hari IS NOT NULL \n" +
+            "  AND j.jam_mulai IS NOT NULL\n" +
+            "GROUP BY jd.id_dosen, k.nama_karyawan\n" +
+            "ORDER by k.nama_karyawan ASC \n", nativeQuery = true)
+    List<DosenMengajar> listDosenMengajar(TahunAkademik tahunAkademik);
 
 }

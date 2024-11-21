@@ -221,11 +221,11 @@
                             </div>
                         </div>
                     </span>
-                    <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang == null}">
+                    <div class="col-md-12 col-xs-12 margin-col">
                         <div class="card card-red p-4 text-center">
                             <b class="card-title">Pastikan Anda sudah memenuhi syarat berikut:</b>
 
-                            <div class="form-check my-2">
+                            <div class="form-check my-2"  th:if="${valid == null}">
                                 <label class="custom-checkbox form-check-label">
                                     <input type="checkbox" class="form-check-input" th:checked="${kompre != null}" readonly disabled>
                                     <span class="checkmark"></span>
@@ -233,7 +233,7 @@
                                 </label>
                             </div>
 
-                            <div class="form-check my-2">
+                            <div class="form-check my-2" th:if="${valid == null}">
                                 <label class="custom-checkbox form-check-label">
                                     <input type="checkbox" class="form-check-input" th:checked="${tahfidz != null}" readonly disabled>
                                     <span class="checkmark"></span>
@@ -268,7 +268,8 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 margin-col text-center">
-                        <a th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" th:if="${sidang != null && seminar.nilai >= 70 && tahfidz != null && kompre != null}" class="hvr-sweep-to-top">Lanjut Sidang</a>
+                        <a th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" th:if="${sidang != null && seminar.nilai >= 70 && tahfidz != null && kompre != null && valid == null}" class="hvr-sweep-to-top">Lanjut Sidang</a>
+                        <a th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" th:if="${sidang != null && seminar.nilai >= 70 && valid != null}" class="hvr-sweep-to-top">Lanjut Sidang</a>
                         <a th:href="@{/graduation/seminar/ulang (id = ${seminar.note.id})}" th:if="${sempro != null && seminar.nilai < 70}" class="hvr-sweep-to-top">Daftar Ulang</a>
                         <a th:href="@{/studentBill/bill/list}" th:if="${sidang == null}" class="hvr-sweep-to-top">Lihat Tagihan</a>
                         <a th:href="@{/dashboard}" class="hvr-sweep-to-top" style="background-color: #fc6258">Kembali ke Dashboard</a>
