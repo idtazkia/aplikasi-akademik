@@ -78,7 +78,7 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
     @Query(value = "SELECT k.email as email,j.jam_mulai as mulai ,j.jam_selesai as selesai, m.nama_matakuliah as matakuliah, ke.nama_kelas as kelas, jd.status_jadwal_dosen as jenis " +
             "FROM jadwal as j inner join jadwal_dosen as jd on j.id = jd.id_jadwal inner join dosen as d on jd.id_dosen = d.id inner join karyawan as k on d.id_karyawan = k.id inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id" +
             " inner join matakuliah as m on mk.id_matakuliah = m.id inner join kelas as ke on j.id_kelas = ke.id" +
-            " where j.id_tahun_akademik = ?1 and j.status = 'AKTIF' and j.id_hari is not null and j.jam_mulai is not null and jd.id_dosen = ?2", nativeQuery = true)
+            " where j.id_tahun_akademik = ?1 and j.status = 'AKTIF' and j.id_hari is not null and j.jam_mulai is not null and jd.id_dosen = ?2 and m.singkatan not in ('SDS')", nativeQuery = true)
     List<DetailDosen> getJadwalDosen(TahunAkademik tahunAkademik, Dosen dosen);
 
     @Query(value = "SELECT\n" +
