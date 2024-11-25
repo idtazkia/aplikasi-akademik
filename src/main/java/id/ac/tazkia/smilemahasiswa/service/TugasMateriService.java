@@ -171,11 +171,14 @@ public class TugasMateriService {
     public void generateJawabanOtomatis(JadwalTugas jt){
         List<KrsDetail> cariMahasiswa = krsDetailDao.findByJadwalAndStatus(jt.getSesiKuliah().getJadwal(), StatusRecord.AKTIF);
         for (KrsDetail kd : cariMahasiswa){
-            JadwalTugasJawaban jawaban = new JadwalTugasJawaban();
-            jawaban.setMahasiswa(kd.getMahasiswa());
-            jawaban.setJadwalTugas(jt);
-            jawaban.setNilai(BigDecimal.ZERO);
-            tugasJawabanDao.save(jawaban);
+            JadwalTugasJawaban cek = tugasJawabanDao.findTopByMahasiswaAndJadwalTugasAndStatus(kd.getMahasiswa(), jt, StatusRecord.AKTIF);
+            if (cek == null) {
+                JadwalTugasJawaban jawaban = new JadwalTugasJawaban();
+                jawaban.setMahasiswa(kd.getMahasiswa());
+                jawaban.setJadwalTugas(jt);
+                jawaban.setNilai(BigDecimal.ZERO);
+                tugasJawabanDao.save(jawaban);
+            }
         }
     }
 
