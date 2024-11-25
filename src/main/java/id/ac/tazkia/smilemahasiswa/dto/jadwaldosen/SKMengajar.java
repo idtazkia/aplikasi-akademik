@@ -10,6 +10,7 @@ public class SKMengajar {
     private String email;
     private String nomor;
     private String tahun;
+    private String prodi;
     private List<DetailDosen> jadwal;
 
 }

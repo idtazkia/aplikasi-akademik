@@ -187,6 +187,8 @@ public class ReportMahasiswaController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         List<TugasDto> tugasDtos = new ArrayList<>();
+        List<TugasDto> utsDtos = new ArrayList<>();
+        List<TugasDto> uasDtos = new ArrayList<>();
         model.addAttribute("tahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
             List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
@@ -195,13 +197,19 @@ public class ReportMahasiswaController {
 
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik, mahasiswa);
             for (DataKhsDto data : krsDetail) {
-                List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
+                List<TugasDto> nilaiTugas = nilaiTugasDao.findScore(data.getId(), KategoriTugas.TUGAS);
+                List<TugasDto> nilaiUts = nilaiTugasDao.findScore(data.getId(), KategoriTugas.UTS);
+                List<TugasDto> nilaiUas = nilaiTugasDao.findScore(data.getId(), KategoriTugas.UAS);
                 tugasDtos.addAll(nilaiTugas);
+                utsDtos.addAll(nilaiUts);
+                uasDtos.addAll(nilaiUas);
             }
 
             if (validasiEdom.isEmpty() || validasiEdom == null) {
                 if (!krsDetail.isEmpty()) {
                     model.addAttribute("tugas", tugasDtos);
+                    model.addAttribute("uts", utsDtos);
+                    model.addAttribute("uas", uasDtos);
                     model.addAttribute("khs", krsDetail);
                     model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
                     model.addAttribute("ip", krsDetailDao.ip(mahasiswa, tahunAkademik));

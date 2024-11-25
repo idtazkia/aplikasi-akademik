@@ -9,6 +9,7 @@ import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.TugasMateriService;
 import nz.net.ultraq.thymeleaf.layoutdialect.models.extensions.IModelExtensions;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -124,6 +125,21 @@ public class ReportController {
     @Autowired
     private BebasKewajibanDao bebasKewajibanDao;
 
+    @Autowired
+    private JadwalTugasDao jadwalTugasDao;
+
+    @Autowired
+    private SesiKuliahFotoDao sesiKuliahFotoDao;
+
+    @Autowired
+    private BobotTugasDao bobotTugasDao;
+
+    @Autowired
+    private NilaiTugasDao nilaiTugasDao;
+
+    @Autowired
+    private TugasMateriService tugasMateriService;
+
     @Value("${upload.soal}")
     private String uploadFolder;
 
@@ -180,6 +196,22 @@ public class ReportController {
         model.addAttribute("rekapJumlahSks", rekapJumlahSks);
         model.addAttribute("rekapJadwalDosen", rekap);
         model.addAttribute("rekapJadwalPerDosen", detailJadwalPerDosen);
+
+    }
+
+    @GetMapping("/report/recapitulation/detail")
+    public void detailJadwal(Model model, @RequestParam Jadwal jadwal){
+
+        // Halaman presensi
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
+        model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
+        model.addAttribute("jadwalTugas", jadwalTugasDao.findByStatusAndSesiKuliahJadwalOrderBySesiKuliahPertemuanKe(StatusRecord.AKTIF,jadwal));
+        model.addAttribute("sesiKuliahFoto", sesiKuliahFotoDao.findByStatusAndJadwalOrderBySesiKuliahPertemuan(StatusRecord.AKTIF,jadwal));
+
+        // Halaman penilaian
+        model.addAttribute("krsDetail", krsDetailDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF));
+        model.addAttribute("nilai", tugasMateriService.getNilaiByJadwal(jadwal));
 
     }
 

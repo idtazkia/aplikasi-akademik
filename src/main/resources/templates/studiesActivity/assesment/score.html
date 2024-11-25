@@ -118,11 +118,7 @@
                         </div>
                     </div>
 
-                    <div id="loading-message" style="display: block; text-align: center;">
-                        <p>Sedang mengambil data...</p>
-                    </div>
-
-                    <div class="table-responsive" id="data-container" style="display: none;">
+                    <div class="table-responsive" id="data-container" >
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
@@ -175,7 +171,7 @@
                         </table>
                     </div>
 
-                    <div class="card-body" id="penilaian-container" style="display: none;">
+                    <div class="card-body" id="penilaian-container">
                         <div class="card shadow">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">Penilaian</h3>
@@ -197,17 +193,23 @@
                                             <th>
                                                 <center>PRS</center>
                                             </th>
-                                            <th th:each="tugas :${bobotTugas}">
-                                                <center>Tgs <span th:text="${tugas.nama + '  ' + tugas.bobot +'%'}">0.00%</span>
-                                                </center>
+                                            <th th:each="tugas: ${nilai.tugasList}">
+                                                <center><span th:text="${'Tgs ' + tugas.pertemuan + ' ' + tugas.bobot + '%'}"></span></center>
                                             </th>
                                             <th>
-                                                <center>UTS <span th:text="${detailJadwal.bobotUts + '%'}">0.00%</span>
-                                                </center>
+                                                <center>Total Tugas</center>
+                                            </th>
+                                            <th th:each="uts : ${nilai.utsList}">
+                                                <center>UTS <span th:text="${uts.pertemuan + '  ' + uts.bobot + '%'}">0.00%</span></center>
                                             </th>
                                             <th>
-                                                <center>UAS <span th:text="${detailJadwal.bobotUas + '%'}">0.00%</span>
-                                                </center>
+                                                <center>Total UTS</center>
+                                            </th>
+                                            <th th:each="uas : ${nilai.uasList}">
+                                                <center>UAS <span th:text="${uas.pertemuan + '  ' + uas.bobot + '%'}">0.00%</span></center>
+                                            </th>
+                                            <th>
+                                                <center>Total UAS</center>
                                             </th>
                                             <th>
                                                 <center>NA</center>
@@ -228,42 +230,29 @@
                                                 th:text="${data.jumlahKehadiran}">
                                                 <center>14</center>
                                             </td>
-                                            <input type="hidden" name="absensi" th:id="${'absensi-'+data.id}"
-                                                   th:if="${data.nilaiPresensi == null}" value="0">
-                                            <input type="hidden" name="absensi" th:id="${'absensi-'+data.id}"
-                                                   th:if="${data.nilaiPresensi != null}"
-                                                   th:value="${data.nilaiPresensi}">
                                             <td width="5%" th:id="${'presensi-'+data.id}"
                                                 th:text="${data.nilaiPresensi}">
                                                 <center>0.00</center>
                                             </td>
-                                            <td width="5%" th:each="tugas :${bobotTugas}">
-                                                <center>
-                                                    <input type="number" class="filterme" step="0.01" min="0" max="100"
-                                                           th:attr="data-type='tugas', data-id-krs-detail=${data.id}, data-tugas-id=${tugas.id}"
-                                                           th:id="${data.id+'-'+tugas.id + '-tugas'}"
-                                                           th:name="${data.mahasiswa.nim + '-' + tugas.id + '-tugas'}"
-                                                           onkeyup="validateAndSave(this)">
-                                                </center>
+                                            <td width="5%" th:each="tugas :${nilai.tugasList}">
+                                                <center><span th:with="nilaiKey=${data.mahasiswa.nim + '_' + tugas.id}"
+                                                      th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
                                             </td>
+                                            <td th:if="${nilai.tugasList != null && !nilai.tugasList.isEmpty()}" ><center th:text="${data.nilaiTugas}"></center></td>
                                             <td width="5%">
-                                                <center>
-                                                    <input class="filterme" type="number" step="0.01" min="0" max="100"
-                                                           th:attr="data-type='uts', data-id-krs-detail=${data.id}"
-                                                           th:id="${data.id + '-uts'}"
-                                                           th:name="${data.id + '-uts'}" style="width: 50px;"
-                                                           onkeyup="validateAndSave(this)">
-                                                </center>
+                                                <center><div th:each="uts :${nilai.utsList}">
+                                                    <span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uts.id}"
+                                                          th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span>
+                                                </div></center>
                                             </td>
+                                            <td th:if="${nilai.utsList != null && !nilai.utsList.isEmpty()}" ><center th:text="${data.nilaiUts}"></center></td>
                                             <td width="5%">
-                                                <center>
-                                                    <input class="filterme" type="number" step="0.01" min="0" max="100"
-                                                           th:attr="data-type='uas', data-id-krs-detail=${data.id}"
-                                                           th:id="${data.id + '-uas'}"
-                                                           th:name="${data.id + '-uas'}" style="width: 50px;"
-                                                           onkeyup="validateAndSave(this)">
-                                                </center>
+                                                <center><div th:each="uas :${nilai.uasList}">
+                                                    <span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uas.id}"
+                                                          th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span>
+                                                </div></center>
                                             </td>
+                                            <td th:if="${nilai.uasList != null && !nilai.uasList.isEmpty()}" ><center th:text="${data.nilaiUas}"></center></td>
                                             <td width="10%">
                                                 <center th:id="${data.id}" th:text="${data.nilaiAkhir}">89.00</center>
                                             </td>
@@ -284,128 +273,3 @@
 </div>
 </body>
 </html>
-<script>
-    let timer;
-
-    function validateAndSave(element) {
-        const value = element.value;
-        if (value < 0 || value > 100) {
-            alert("Nilai harus antara 0 dan 100.");
-            element.value = "";
-            return;
-        }
-        delayedSave(element);
-    }
-
-    function delayedSave(element) {
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-            saveNilai(element);
-        }, 3000); // 3000 milidetik = 3 detik
-    }
-
-    $(document).ready(function () {
-        $('.filterme').on('keyup', function () {
-            validateAndSave(this);
-        });
-
-        // Fetch and fill scores
-        fetch('/studiesActivity/assesment/list-mahasiswa/'+document.getElementById('jadwalId').value)
-            .then(response => response.json())
-            .then(data => {
-                fillScores(data.data);
-                document.getElementById('loading-message').style.display = 'none';
-                document.getElementById('data-container').style.display = 'block';
-                document.getElementById('penilaian-container').style.display = 'block';
-            });
-    });
-
-    function fillScores(data) {
-        data.forEach(item => {
-            const presensiElement = document.getElementById('kehadiran-' + item.id);
-            const kehadiranElement = document.getElementById('presensi-' + item.id);
-            const inputUas = document.getElementById(item.id + '-uas');
-            const inputUts = document.getElementById(item.id + '-uts');
-
-            if (!presensiElement || !kehadiranElement) {
-                // If either presensiElement or kehadiranElement is not found, skip this item
-                return;
-            }
-
-            // Update presensiElement
-            presensiElement.textContent = item.jumlahKehadiran;
-
-            // Update inputUts if nilaiUts is not null
-            if (item.nilaiUts !== null) {
-                inputUts.value = item.nilaiUts;
-            }
-
-            // Update inputUas if nilaiUas is not null
-            if (item.nilaiUas !== null) {
-                inputUas.value = item.nilaiUas;
-            }
-
-            // Update nilaiTugasList if it exists and has items
-            if (item.nilaiTugasList && item.nilaiTugasList.length > 0) {
-                item.nilaiTugasList.forEach(tugas => {
-                    const inputId = `${item.id}-${tugas.bobotTugas.id}-tugas`;
-                    const inputElement = document.getElementById(inputId);
-
-                    if (inputElement) {
-                        inputElement.value = tugas.nilai;
-                    } else {
-                        console.error(`Element with id '${inputId}' not found.`);
-                    }
-                });
-            }
-        });
-    }
-
-    function saveNilai(element) {
-        const id = $(element).attr('id');
-        const type = $(element).data('type');
-        const value = $(`#${id}`).val();
-        const idKrsDetail = $(element).data('id-krs-detail');
-        const idTugas = $(element).data('tugas-id') || null;  // Mendapatkan data tugas ID jika ada
-        const absensiValue = $(`#absensi-${idKrsDetail}`).val();
-
-        console.log({
-            krsDetail: idKrsDetail,
-            tugas: idTugas,
-            nilai: value,
-            absensi: absensiValue,
-            type: type
-        });
-
-        const token = $("input[name='_csrf']").val();
-
-        $.ajax({
-            url: '/studiesActivity/assesment/score',
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json;charset=UTF-8",
-            headers: {"X-CSRF-TOKEN": token},
-            data: JSON.stringify({
-                krsDetail: idKrsDetail,
-                tugas: idTugas,
-                nilai: value,
-                absensi: absensiValue,
-                type: type
-            }),
-            success: function (response) {
-                console.log('Nilai berhasil disimpan');
-                $(`#${idKrsDetail}`).text(response.data.bobot);
-                $(`#${idKrsDetail + 'grade'}`).text(response.data.nama);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error saat menyimpan nilai: ' + error);
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        $('.filterme').on('keyup', function () {
-            validateAndSave(this);
-        });
-    });
-</script>

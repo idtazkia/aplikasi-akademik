@@ -469,6 +469,7 @@ public class HumanResourcesController {
     }
 
     @GetMapping("/api/jadwal-dosen/{tahun}")
+    @ResponseBody
     public ResponseEntity<BaseResponseDto> getLectureId(@PathVariable String tahun, @RequestParam String id, @RequestParam String no) {
         try {
             SKMengajar skMengajar = new SKMengajar();
@@ -490,8 +491,9 @@ public class HumanResourcesController {
             System.out.println(optionalTahunAkademik.get().getTanggalMulaiKuliah().getDayOfMonth());
             skMengajar.setDosen(optionalDosen.get().getKaryawan().getNamaKaryawan());
             skMengajar.setEmail(optionalDosen.get().getKaryawan().getEmail());
-            skMengajar.setNomor(tanggalFirstFormatted+no+"/SKM/SDM/KPTS-Institut-Tazkia/"+tanggalLastFormatted);
+            skMengajar.setNomor(tanggalFirstFormatted+no+"/SDM/SK Mengajar-Institut-Tazkia/"+tanggalLastFormatted);
             skMengajar.setTahun("SEMESTER " + optionalTahunAkademik.get().getJenis() + " TAHUN AKADEMIK " + namaTahunAkademik);
+            skMengajar.setProdi(optionalDosen.get().getProdi().getId());
             if (optionalDosen.isEmpty()) {
                 log.info("Lecture id {} not found", id);
             }

@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rekap matakuliah</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">List </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0"> Rekap Kehadiran</h3>
+                            </div>
+                            <!--                                    <div class="col text-right">-->
+                            <!--                                        <a th:href="@{/studentBill/billAdmin/tagihan}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Semua Tagihan</a>-->
+                            <!--                                    </div>-->
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="nav-wrapper mb-4">
+                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"> Presensi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="true"> Penilaian</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+                            <!-- Halaman presensi -->
+                            <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                <div class="row border-bottom border-top pt-3 pb-3 mt-2 mb-3 bg-light rounded shadow">
+                                    <!-- Info Matakuliah -->
+                                    <div class="col-md-6 border-right mb-2">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12">
+                                                <i class="fa fa-archive text-warning"></i>
+                                                <b class="h5 text-indigo">Matakuliah :</b>
+                                                <b class="h5" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Intership</b>
+                                                <span class="badge badge-warning" th:text="${jadwal.matakuliahKurikulum.jumlahSks + ' SKS'}">3 SKS</span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-12">
+                                                <i class="fa fa-box text-warning"></i>
+                                                <b class="h5 text-indigo">Kelas :</b>
+                                                <b class="h5" th:text="${jadwal.kelas.namaKelas}">MUA-15</b>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <i class="fa fa-calendar text-warning"></i>
+                                                <b class="h5 text-indigo">Jadwal :</b>
+                                                <b class="h5" th:text="${jadwal.hari.namaHari +', ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">
+                                                    Sunday, 15:31:00 - 18:00:00
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Info Dosen -->
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <i class="fa fa-star text-warning"></i>
+                                                <b class="h5 text-indigo">Dosen :</b>
+                                                <div th:each="dataTeam,row : ${teamTeaching}">
+                                                    <b class="h5" th:text="${dataTeam.dosen.karyawan.namaKaryawan}">MUA-15</b>
+                                                    <b class="h5 text-primary" th:text="${'('+#strings.toLowerCase(dataTeam.statusJadwalDosen)} + ')'">MUA-15</b>
+                                                </div>
+                                                <!--                                            <b class="h5" th:text="${jadwal.dosen.karyawan.namaKaryawan}">MUA-15</b>-->
+                                            </div>
+                                            <!--                                        <div class="col-md-12" th:each="dataTeam,row : ${teamTeaching}">-->
+                                            <!--                                            <b class="h5" th:text="${dataTeam.dosen.karyawan.namaKaryawan}">MUA-15</b>-->
+                                            <!--                                        </div>-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row border mb-3 pt-3 pb-2 shadow-sm small rounded" th:each="data,row : ${detail}">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-calendar-times text-warning"></i> <span class="text-blue font-weight-bold" th:text="${'Pertemuan '+ data.pertemuanke}"></span>
+                                                        <span>, </span>
+                                                        <span class="text-dark font-weight-bold"  th:text="${#temporals.format(data.sesiMulai, 'EEEE, dd MMMM yyyy', 'id')}"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <i class="fa fa-clock text-warning"></i>
+                                                        <span class="text-dark"> Waktu terjadwal pukul :</span>
+                                                        <span class="font-weight-bold text-primary" th:text="${#temporals.format(data.sesiMulai, 'HH:mm') + ' s/d ' + #temporals.format(data.sesiSelesai, 'HH:mm') + ' WIB,'}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-right">
+                                                        <span th:if="${data.pertemuan != 'Belum Mengajar'}" class="text-dark">Realisasi pada : </span>
+                                                        <span th:if="${data.pertemuan != 'Belum Mengajar'}" class="text-green" th:text="${#temporals.format(data.masuk, 'dd MMMM yyyy HH:mm') + ' WIB,'}"></span>
+                                                        <span class="badge badge-warning" th:text="${data.pertemuan}">New</span></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="row" th:if="${data.pertemuan != 'Belum Mengajar'}">
+                                                    <div class="col-md-12 text-right" th:if="${data.pertemuan != 'Belum Mengajar'}">
+                                                        <i class="fa fa-stamp text-green"></i>
+                                                        <span class="text-dark"> Pemateri :</span>
+                                                        <span class="font-weight-bold text-primary" th:text="${data.dosen}">New</span></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3 border-right">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-star text-yellow"></i>
+                                                        <span class="text-dark font-weight-bold">Link Materi : </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div th:if="${data.link != null}" class="col-md-12" th:each="link, row:${#strings.arraySplit(data.link, ',')}">
+
+                                                        <a th:href="${link}" class="d-inline-block text-truncate w-100" target="_blank">
+                                                            <i class="fa fa-link fa-sm"></i> <span th:text="${link}"></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3 border-right">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-sticky-note text-yellow"></i>
+                                                        <span class="text-dark font-weight-bold">Berita Acara Perkuliahan : </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12" >
+                                                        <div id="berita-content" th:utext="${data.berita}" >
+                                                            <!-- This is where your dynamic content will be placed -->
+                                                        </div>
+                                                        <!--                                                    <a href="javascript:void(0);" id="toggle-button" onclick="toggleText()">See More</a>-->
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 mb-3 border-right">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-archive text-yellow"></i>
+                                                        <span class="text-dark font-weight-bold">List Tugas : </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row" th:each="dataTugas,row : ${jadwalTugas}">
+                                                    <div class="col-md-12" th:if="${data.sesi == dataTugas.sesiKuliah.id}">
+                                                        <a class="d-inline-block text-truncate w-100" th:if="${data.sesi == dataTugas.sesiKuliah.id}" th:href="@{/studiesActivity/assesment/collection(jadwalTugas=${dataTugas.id})}" title="Klik untuk penilaian tugas">
+                                                            <i class="fa fa-arrow-right" th:if="${data.sesi == dataTugas.sesiKuliah.id}"></i> <span th:text="${dataTugas.namaTugas}"></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 mb-3">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <i class="fa fa-camera text-yellow"></i>
+                                                        <span class="text-dark font-weight-bold">Dokumentasi : </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row" th:each="dataFoto,row : ${sesiKuliahFoto}">
+                                                    <div class="col-md-12" th:if="${data.sesi == dataFoto.sesiKuliah.id}">
+                                                        <a class="d-inline-block text-truncate w-75" th:if="${data.sesi == dataFoto.sesiKuliah.id}" th:href="@{/studiesActivity/{sesiKuliahFoto}/fotoKuliah/(sesiKuliahFoto=${dataFoto.id})}" title="Lihat" target="_blank">
+                                                            <i class="fa fa-image" th:if="${data.sesi == dataFoto.sesiKuliah.id}"></i>
+                                                            <span th:text="${dataFoto.getNamaFile()}"></span>
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Halaman penilaian -->
+
+                            <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                <div class="card-body">
+                                    <div class="card shadow">
+                                        <div class="card-header border-0">
+                                            <h3 class="mb-0">Penilaian</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table-striped table-bordered freeze-table" border="1">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th width="10%" class="col-id-no fixed-header">
+                                                            <center>NIM</center>
+                                                        </th>
+                                                        <th class="col-first-name fixed-header">
+                                                            <center>Mahasiswa</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Σ PRS</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>PRS</center>
+                                                        </th>
+                                                        <th th:each="tugas: ${nilai.tugasList}">
+                                                            <center><span th:text="${'Tgs ' + tugas.pertemuan + ' ' + tugas.bobot + '%'}"></span></center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Total Tugas</center>
+                                                        </th>
+<!--                                                            <center>Tgs <span th:text="${tugas.nama + '  ' + tugas.bobot +'%'}">0.00%</span></center>-->
+                                                        <th th:each="uts : ${nilai.utsList}">
+                                                            <center>UTS <span th:text="${uts.pertemuan + '  ' + uts.bobot + '%'}">0.00%</span>
+                                                            </center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Total UTS</center>
+                                                        </th>
+                                                        <th th:each="uas : ${nilai.uasList}">
+                                                            <center>UAS <span th:text="${uas.pertemuan + '  ' + uas.bobot + '%'}">0.00%</span>
+                                                            </center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Total UAS</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>NA</center>
+                                                        </th>
+                                                        <th>
+                                                            <center>Grade</center>
+                                                        </th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tr th:each="data,row : ${krsDetail}">
+                                                        <td scope="row" class="col-id-no" th:text="${data.mahasiswa.nim}"
+                                                            width="5%">12345678
+                                                        </td>
+                                                        <td scope="row" class="col-first-name" th:text="${data.mahasiswa.nama}"
+                                                            width="12%" height="50px">Naufal Rizqullah Al Banjar
+                                                        </td>
+                                                        <td width="5%" class="text-center" th:id="${'kehadiran-'+data.id}"
+                                                            th:text="${data.jumlahKehadiran}">
+                                                            <center>14</center>
+                                                        </td>
+                                                        <td width="5%" class="text-center" th:id="${'presensi-'+data.id}"
+                                                            th:text="${data.nilaiPresensi}">
+                                                            <center>0.00</center>
+                                                        </td>
+                                                        <td width="5%" th:each="tugas :${nilai.tugasList}">
+                                                                <center><span th:with="nilaiKey=${data.mahasiswa.nim + '_' + tugas.id}"
+                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
+                                                        </td>
+                                                        <td th:if="${nilai.tugasList != null && !nilai.tugasList.isEmpty()}" class="text-center" th:text="${data.nilaiTugas}"></td>
+                                                        <td width="5%">
+                                                            <center><div th:each="uts :${nilai.utsList}">
+                                                                <span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uts.id}"
+                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span>
+                                                            </div></center>
+                                                        </td>
+                                                        <td th:if="${nilai.utsList != null && !nilai.utsList.isEmpty()}" class="text-center" th:text="${data.nilaiUts}"></td>
+                                                        <td width="5%">
+                                                            <center><div th:each="uas :${nilai.uasList}">
+                                                                <span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uas.id}"
+                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span>
+                                                            </div></center>
+                                                        </td>
+                                                        <td th:if="${nilai.uasList != null && !nilai.uasList.isEmpty()}" class="text-center" th:text="${data.nilaiUas}"></td>
+                                                        <td width="10%">
+                                                            <center th:id="${data.id}" th:text="${data.nilaiAkhir}">89.00</center>
+                                                        </td>
+                                                        <td width="5%">
+                                                            <center th:id="${data.id+'grade'}" th:text="${data.grade}">A</center>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+
+<script>
+    $(document).ready(function (){
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e){
+            localStorage.setItem('activeTab', $(e.target).attr('href'));
+        });
+        var activeTab = localStorage.getItem('activeTab');
+        var nim = document.getElementById("nim").value;
+        if (nim){
+            var tab = "#tabs-icons-text-1";
+            $('#tabs-icons-text a[href="' + tab + '"]').tab('show');
+            console.log(nim);
+        }else if (activeTab){
+            $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
+            console.log(activeTab);
+        }
+    });
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+
+
+
+</script>

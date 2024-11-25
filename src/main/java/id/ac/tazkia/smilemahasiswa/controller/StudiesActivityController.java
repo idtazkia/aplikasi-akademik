@@ -1975,7 +1975,7 @@ public class StudiesActivityController {
         model.addAttribute("jumlahMahasiswa",
                 krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal, StatusRecord.AKTIF)
                         .size());
-        model.addAttribute("bobotTugas", bobotTugasDao. Tugas(jadwal.getId(), StatusRecord.AKTIF));
+        model.addAttribute("nilai", tugasMateriService.getNilaiByJadwal(jadwal));
 
         return "studiesActivity/assesment/score";
 

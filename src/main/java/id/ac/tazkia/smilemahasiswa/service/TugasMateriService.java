@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -334,4 +335,39 @@ public class TugasMateriService {
             }
         }
     }
+
+    public Map<String, Object> getNilaiByJadwal(Jadwal jadwal){
+
+        List<BobotTugas> allTugas = bobotTugasDao.findByJadwalAndStatusOrderByPertemuanAsc(jadwal, StatusRecord.AKTIF);
+
+        List<BobotTugas> tugasList = allTugas.stream()
+                .filter(t -> t.getKategoriTugas() == KategoriTugas.TUGAS)
+                .collect(Collectors.toList());
+
+        List<BobotTugas> utsList = allTugas.stream()
+                .filter(t -> t.getKategoriTugas() == KategoriTugas.UTS)
+                .collect(Collectors.toList());
+
+        List<BobotTugas> uasList = allTugas.stream()
+                .filter(t -> t.getKategoriTugas() == KategoriTugas.UAS)
+                .collect(Collectors.toList());
+
+        Map<String, BigDecimal> nilaiMap = new HashMap<>();
+        List<NilaiTugas> listNilai = nilaiTugasDao.findByBobotTugasIn(allTugas);
+
+        for (NilaiTugas nilai : listNilai){
+            String key = nilai.getKrsDetail().getMahasiswa().getNim() + "_" + nilai.getBobotTugas().getId();
+            nilaiMap.put(key, nilai.getNilai());
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("tugasList", tugasList);
+        result.put("utsList", utsList);
+        result.put("uasList", uasList);
+        result.put("nilaiMap", nilaiMap);
+
+        return result;
+
+    }
+
 }

@@ -19,8 +19,8 @@ public interface BobotTugasDao extends PagingAndSortingRepository<BobotTugas, St
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.assesment.BobotScoreDto(bt.id,bt.bobot) from BobotTugas bt where bt.jadwal.id= :jadwal and bt.status = :status")
     List<BobotScoreDto> bobotTugas(@Param("jadwal")String jadwal, @Param("status")StatusRecord statusRecord);
 
-    @Query("select new id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto(bt.id,bt.pertemuan,bt.bobot) from BobotTugas bt where bt.jadwal.id= :jadwal and bt.status = :status order by bt.pertemuan asc")
-    List<BobotDto> Tugas(@Param("jadwal")String jadwal, @Param("status")StatusRecord statusRecord);
+    @Query("select new id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto(bt.id,bt.pertemuan,bt.bobot) from BobotTugas bt where bt.jadwal.id= :jadwal and bt.kategoriTugas = :kategori and bt.status = :status order by bt.pertemuan asc")
+    List<BobotDto> Tugas(@Param("jadwal")String jadwal, @Param("kategori")KategoriTugas kategoriTugas, @Param("status")StatusRecord statusRecord);
 
     @Query(value = "select sum(bobot) as bobot from jadwal_bobot_tugas where id_jadwal=?1 and status='AKTIF'", nativeQuery = true)
     BigDecimal totalBobotTugas(String idJadwal);
