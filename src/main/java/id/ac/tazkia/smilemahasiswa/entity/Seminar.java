@@ -41,6 +41,7 @@ public class Seminar {
     private String filePengesahan;
 
     private String fileBimbingan;
+    private String fileBimbinganPasca;
 
     private String fileSkripsi;
     private String fileFormulir;
