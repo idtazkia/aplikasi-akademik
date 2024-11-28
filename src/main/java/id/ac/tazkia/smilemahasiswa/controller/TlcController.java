@@ -11,6 +11,8 @@ import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalBahasaRequest;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.DataPeriodeTlc;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.PeriodeDto;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.DataPresensiMahasiswa;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.GetDataPresensiMahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,8 @@ public class TlcController {
 
     @Autowired
     private PresensiDosenBahasaDao presensiDosenBahasaDao;
+    @Autowired
+    private PresensiMahasiswaBahasaDao presensiMahasiswaBahasaDao;
 
     @GetMapping("/tlc/periode/list")
     public void periodeList(Model model) {
@@ -320,6 +324,31 @@ public class TlcController {
 
     }
 
+    @GetMapping("/tlc/presensi-mahasiswa/{id}")
+    @ResponseBody
+    public DataPresensiMahasiswa listPresensiMahasiswa(@PathVariable String id, @RequestParam String presensiId) {
+        Optional<JadwalBahasa> jadwalBahasaOpt = jadwalBahasaDao.findById(id);
+        if (!jadwalBahasaOpt.isPresent()) {
+            return null;
+        }
+
+        Optional<PresensiDosenBahasa> presensiDosenBahasaOpt = presensiDosenBahasaDao.findById(presensiId);
+        if (!presensiDosenBahasaOpt.isPresent()) {
+            return null;
+        }
+
+        JadwalBahasa jadwalBahasa = jadwalBahasaOpt.get();
+        PresensiDosenBahasa presensiDosenBahasa = presensiDosenBahasaOpt.get();
+        List<GetDataPresensiMahasiswa> presensi = presensiMahasiswaBahasaDao.listPresensiMahasiswa(jadwalBahasa, presensiDosenBahasa);
+
+        DataPresensiMahasiswa response = new DataPresensiMahasiswa();
+        response.setTotal(presensi.size());
+        response.setTotalNotFiltered(presensi.size());
+        response.setRows(presensi);
+        return response;
+    }
+
+
     @GetMapping("/tlc/jadwal-dosen-bahasa/{id}")
     @ResponseBody
     public List<Dosen> listJadwalDosenBahasa(@PathVariable String id) {
@@ -365,6 +394,14 @@ public class TlcController {
         response.setTotalNotFiltered(presensiDosenBahasa.size());
         response.setRows(presensiDosenBahasa);
         return response;
+
+    }
+
+    @GetMapping("/tlc/detail-presensi-dosen/{id}")
+    @ResponseBody
+    public PresensiDosenBahasa listDetailresensiDosen(@PathVariable String id) {
+        PresensiDosenBahasa presensiDosenBahasa = presensiDosenBahasaDao.findById(id).get();
+        return presensiDosenBahasa;
 
     }
 
