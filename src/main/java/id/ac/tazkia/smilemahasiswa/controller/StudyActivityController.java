@@ -242,7 +242,7 @@ public class StudyActivityController {
 
         String prodi = mahasiswa.getIdProdi().getId();
         if (mahasiswa.getIdKonsentrasi() == null){
-            Integer semester = krsDao.countSemester(mahasiswa.getNim());
+            Integer semester = krsDao.countSemester(mahasiswa.getId());
             if (semester == 5){
                 // Manajemen Bisnis Syariah
                 if (prodi.equals("01")){
@@ -930,10 +930,9 @@ public class StudyActivityController {
     public String formKonsentrasi(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        String nim = mahasiswa.getNim();
         String prodi = mahasiswa.getIdProdi().getId();
 
-        Integer semester = krsDao.countSemester(nim);
+        Integer semester = krsDao.countSemester(mahasiswa.getId());
         if (semester == 5){
             // Manajemen Bisnis Syariah
             if (prodi.equals("01")){
