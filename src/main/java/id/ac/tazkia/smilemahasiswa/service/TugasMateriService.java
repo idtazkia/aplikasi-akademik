@@ -345,14 +345,35 @@ public class TugasMateriService {
 
         List<BobotTugas> tugasList = allTugas.stream()
                 .filter(t -> t.getKategoriTugas() == KategoriTugas.TUGAS)
+                .sorted(Comparator.comparing(t -> {
+                    try {
+                        return Integer.parseInt(t.getPertemuan());
+                    }catch (NumberFormatException err){
+                        return 0;
+                    }
+                }))
                 .collect(Collectors.toList());
 
         List<BobotTugas> utsList = allTugas.stream()
                 .filter(t -> t.getKategoriTugas() == KategoriTugas.UTS)
+                .sorted(Comparator.comparing(t -> {
+                    try {
+                        return Integer.parseInt(t.getPertemuan());
+                    }catch (NumberFormatException err){
+                        return 0;
+                    }
+                }))
                 .collect(Collectors.toList());
 
         List<BobotTugas> uasList = allTugas.stream()
                 .filter(t -> t.getKategoriTugas() == KategoriTugas.UAS)
+                .sorted(Comparator.comparing(t -> {
+                    try {
+                        return Integer.parseInt(t.getPertemuan());
+                    }catch (NumberFormatException err){
+                        return 0;
+                    }
+                }))
                 .collect(Collectors.toList());
 
         Map<String, BigDecimal> nilaiMap = new HashMap<>();

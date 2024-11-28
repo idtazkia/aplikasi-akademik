@@ -7,8 +7,57 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="X-UA-Compatible">
     <title>Rekap matakuliah</title>
+    <style>
+        .table-fixed-header{
+            max-height: 500px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .table-fixed-header table{
+            width: 100%;
+            background-color: #fff;
+        }
+
+        .table-fixed-header thead{
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f8f8f8;
+        }
+
+        .table-fixed-header thead th:nth-child(1),
+        .table-fixed-header thead th:nth-child(2){
+            position: sticky;
+            background-color: #f8f8f8;
+            z-index: 20;
+        }
+
+        .table-fixed-header thead th:nth-child(1){
+            left: 0;
+        }
+
+        .table-fixed-header thead th:nth-child(2){
+            left: 100px;
+        }
+
+        .table-fixed-header tbody tr td:nth-child(1),
+        .table-fixed-header tbody tr td:nth-child(2){
+            position: sticky;
+            background-color: white;
+            z-index: 5;
+        }
+
+        .table-fixed-header tbody tr td:nth-child(1){
+            left: 0;
+        }
+
+        .table-fixed-header tbody tr td:nth-child(2){
+            left: 100px;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="main">
@@ -235,14 +284,14 @@
                                             <h3 class="mb-0">Penilaian</h3>
                                         </div>
                                         <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table-striped table-bordered freeze-table" border="1">
+                                            <div class="table-fixed-header table-responsive">
+                                                <table class="table table-striped table-bordered table-hover">
                                                     <thead class="thead-light">
                                                     <tr>
-                                                        <th width="10%" class="col-id-no fixed-header">
+                                                        <th>
                                                             <center>NIM</center>
                                                         </th>
-                                                        <th class="col-first-name fixed-header">
+                                                        <th >
                                                             <center>Mahasiswa</center>
                                                         </th>
                                                         <th>
@@ -281,43 +330,39 @@
                                                     </tr>
                                                     </thead>
                                                     <tr th:each="data,row : ${krsDetail}">
-                                                        <td scope="row" class="col-id-no" th:text="${data.mahasiswa.nim}"
-                                                            width="5%">12345678
+                                                        <td scope="row" th:text="${data.mahasiswa.nim}">12345678
                                                         </td>
-                                                        <td scope="row" class="col-first-name" th:text="${data.mahasiswa.nama}"
-                                                            width="12%" height="50px">Naufal Rizqullah Al Banjar
+                                                        <td scope="row" th:text="${data.mahasiswa.nama}">Naufal Rizqullah Al Banjar
                                                         </td>
-                                                        <td width="5%" class="text-center" th:id="${'kehadiran-'+data.id}"
+                                                        <td class="text-center" th:id="${'kehadiran-'+data.id}"
                                                             th:text="${data.jumlahKehadiran}">
                                                             <center>14</center>
                                                         </td>
-                                                        <td width="5%" class="text-center" th:id="${'presensi-'+data.id}"
+                                                        <td class="text-center" th:id="${'presensi-'+data.id}"
                                                             th:text="${data.nilaiPresensi}">
                                                             <center>0.00</center>
                                                         </td>
-                                                        <td width="5%" th:each="tugas :${nilai.tugasList}">
+                                                        <td th:each="tugas :${nilai.tugasList}">
                                                                 <center><span th:with="nilaiKey=${data.mahasiswa.nim + '_' + tugas.id}"
                                                                 th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
                                                         </td>
                                                         <td th:if="${nilai.tugasList != null && !nilai.tugasList.isEmpty()}" class="text-center" th:text="${data.nilaiTugas}"></td>
-                                                        <td width="5%">
-                                                            <center><div th:each="uts :${nilai.utsList}">
+                                                        <td th:each="uts :${nilai.utsList}">
+                                                            <center>
                                                                 <span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uts.id}"
-                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span>
-                                                            </div></center>
+                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
                                                         </td>
-                                                        <td th:if="${nilai.utsList != null && !nilai.utsList.isEmpty()}" class="text-center" th:text="${data.nilaiUts}"></td>
-                                                        <td width="5%">
-                                                            <center><div th:each="uas :${nilai.uasList}">
+                                                        <td ><center th:if="${nilai.utsList != null && !nilai.utsList.isEmpty()}" th:text="${data.nilaiUts}"></center></td>
+                                                        <td th:each="uas :${nilai.uasList}">
+                                                            <center>
                                                                 <span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uas.id}"
-                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span>
-                                                            </div></center>
+                                                                th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
                                                         </td>
-                                                        <td th:if="${nilai.uasList != null && !nilai.uasList.isEmpty()}" class="text-center" th:text="${data.nilaiUas}"></td>
-                                                        <td width="10%">
+                                                        <td><center th:if="${nilai.uasList != null && !nilai.uasList.isEmpty()}" th:text="${data.nilaiUas}"></center></td>
+                                                        <td >
                                                             <center th:id="${data.id}" th:text="${data.nilaiAkhir}">89.00</center>
                                                         </td>
-                                                        <td width="5%">
+                                                        <td >
                                                             <center th:id="${data.id+'grade'}" th:text="${data.grade}">A</center>
                                                         </td>
                                                     </tr>
