@@ -2,6 +2,8 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@SQLDelete(sql = "UPDATE presensi_mahasiswa_bahasa SET status = 'HAPUS' WHERE id=?")
+@Where(clause = "status = 'AKTIF'")
 public class PresensiMahasiswaBahasa {
     @Id
     @GeneratedValue(generator = "uuid" )

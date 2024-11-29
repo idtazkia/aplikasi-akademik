@@ -541,18 +541,16 @@
         }
 
         function mahasiswaFormatter(value, row, index) {
-            if (!row || !row.nim) {
-                console.error('Invalid row data:', value);
-                return '<select class="form-control"><option value="-">-</option></select>';
-            }
+            // Jika presensi null, gunakan "-"
+            const presensi = row && row.presensi ? row.presensi : "-";
 
             return [
-                '<select class="form-control" id="kehadiran-' + row.id + '" name="kehadiran" onchange="updateKehadiran(this, \'' + row.id + '\')">',
-                '<option value="-">-</option>',
-                '<option value="Hadir">Hadir</option>',
-                '<option value="Mangkir">Mangkir</option>',
-                '<option value="IZIN">IZIN</option>',
-                '<option value="SAKIT">SAKIT</option>',
+                '<select class="form-control" id="kehadiran-' + row.nim + '" name="kehadiran" onchange="updateKehadiran(this, \'' + row.nim + '\', \'' + row.id + '\')">',
+                '<option value="-" ' + (presensi === "-" ? "selected" : "") + '>-</option>',
+                '<option value="HADIR" ' + (presensi === "HADIR" ? "selected" : "") + '>Hadir</option>',
+                '<option value="MANGKIR" ' + (presensi === "MANGKIR" ? "selected" : "") + '>Mangkir</option>',
+                '<option value="IZIN" ' + (presensi === "IZIN" ? "selected" : "") + '>IZIN</option>',
+                '<option value="SAKIT" ' + (presensi === "SAKIT" ? "selected" : "") + '>SAKIT</option>',
                 '</select>'
             ].join('');
         }
@@ -601,7 +599,6 @@
 
         function openModalMahasiswa(args) {
             $('#presensiId').val(args.id)
-            console.log(args)
             $tableMahasiswa.bootstrapTable('refresh');
             // $("#div-detail").slideUp("slow");
             // document.getElementById("div-detail").style.display = "none";
@@ -661,6 +658,42 @@
                 },
                 error: function (result) {
                     // Handle the error response here if needed
+                }
+            });
+        }
+
+        function updateKehadiran(selectElement, mahasiswaId) {
+            const kehadiran = selectElement.value;
+            const presensiId = document.getElementById('presensiId').value;
+            const token = $("input[name='_csrf']").val(); // Ambil CSRF token jika diperlukan
+
+            const requestData = {
+                mahasiswaId: mahasiswaId,
+                kehadiran: kehadiran,
+                presensiId: presensiId
+            };
+
+            $.ajax({
+                url: '/tlc/attendance/update-kehadiran', // Sesuaikan URL endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {"X-CSRF-TOKEN": token}, // Jika ada CSRF
+                data: JSON.stringify(requestData),
+                success: function(response) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Kehadiran berhasil diperbarui',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                },
+                error: function(error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Terjadi kesalahan saat memperbarui kehadiran'
+                    });
                 }
             });
         }

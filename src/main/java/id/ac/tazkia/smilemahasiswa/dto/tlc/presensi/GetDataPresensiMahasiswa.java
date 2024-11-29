@@ -4,5 +4,5 @@ public interface GetDataPresensiMahasiswa {
     String getId();
     String getNim();
     String getNama();
-    String getStatusPresensi();
+    String getPresensi();
 }

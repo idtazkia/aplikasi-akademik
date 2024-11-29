@@ -13,6 +13,7 @@ import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.DataPeriodeTlc;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.PeriodeDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.DataPresensiMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.GetDataPresensiMahasiswa;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.KehadiranRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,8 @@ public class TlcController {
     private PresensiDosenBahasaDao presensiDosenBahasaDao;
     @Autowired
     private PresensiMahasiswaBahasaDao presensiMahasiswaBahasaDao;
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
 
     @GetMapping("/tlc/periode/list")
     public void periodeList(Model model) {
@@ -453,6 +456,55 @@ public class TlcController {
             log.error("[SAVE - ATTENDANCE] - [ERROR] : Unable to save data , {} ", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseDto.builder().responseCode("ERR500").responseMessage(e.getLocalizedMessage()).build());
+        }
+    }
+
+    @PostMapping("/tlc/attendance/update-kehadiran")
+    @ResponseBody
+    public ResponseEntity<BaseResponseDto> updateKehadiran(@RequestBody KehadiranRequest request) {
+        try {
+            Optional<Mahasiswa> optionalMahasiswa = mahasiswaDao.findById(request.getMahasiswaId());
+            if (optionalMahasiswa.isEmpty()) {
+                log.info("Mahasiswa id {} not found", request.getMahasiswaId());
+            }
+
+            Optional<PresensiDosenBahasa> optionalPresensiDosenBahasa = presensiDosenBahasaDao.findById(request.getPresensiId());
+            if (optionalPresensiDosenBahasa.isEmpty()) {
+                log.info("Presensi id {} not found", request.getPresensiId());
+            }
+
+
+            PresensiMahasiswaBahasa presensiMahasiswaBahasa = presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(optionalMahasiswa.get(),optionalPresensiDosenBahasa.get());
+            if (presensiMahasiswaBahasa ==  null) {
+                presensiMahasiswaBahasa = new PresensiMahasiswaBahasa();
+                presensiMahasiswaBahasa.setMahasiswa(optionalMahasiswa.get());
+                presensiMahasiswaBahasa.setPresensiDosenBahasa(optionalPresensiDosenBahasa.get());
+                presensiMahasiswaBahasa.setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
+                presensiMahasiswaBahasa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
+                presensiMahasiswaBahasaDao.save(presensiMahasiswaBahasa);
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("00")
+                                .responseMessage("Kehadiran Berhasil Diproses")
+                                .data(presensiMahasiswaBahasa)
+                                .build());
+            } else {
+                presensiMahasiswaBahasa.setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
+                presensiMahasiswaBahasaDao.save(presensiMahasiswaBahasa);
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("00")
+                                .responseMessage("Kehadiran Berhasil Diproses")
+                                .data(presensiMahasiswaBahasa)
+                                .build());
+            }
+        } catch (Exception e) {
+            log.error("[POST ATTENDANCE] - [ERROR] : Unable to Get data , {} ", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    BaseResponseDto.builder()
+                            .responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage())
+                            .build());
         }
     }
 
