@@ -809,7 +809,7 @@ public class GraduationController {
                 }
             }
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(), ta);
-            Integer semester = krsDao.countSemester(note.getMahasiswa().getNim());
+            Integer semester = krsDao.countSemester(note.getMahasiswa().getId());
             if (semester == 7) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
