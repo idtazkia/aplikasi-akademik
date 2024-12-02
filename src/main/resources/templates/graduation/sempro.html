@@ -29,13 +29,8 @@
                                         <div class="breadcomb-ctn">
                                             <h2 th:if="${note.jenis != note.jenis.JURNAL}">Sempro</h2>
                                             <h2 th:if="${note.jenis == note.jenis.JURNAL}">Pendaftaran Publikasi Jurnal</h2>
-                                            <a th:href="@{/graduation/seminar/formulir (id = ${note.id})}"
-                                                class="btn btn-info btn-sm" th:if="${note.jenis != note.jenis.JURNAL}">
+                                            <a th:href="@{/graduation/seminar/formulir (id = ${note.id})}">
                                                 Download Formulir
-                                            </a>
-                                            <a th:href="@{/sample/form-jurnal}"
-                                                class="btn btn-info btn-sm" th:if="${note.jenis == note.jenis.JURNAL}">
-                                                Download Surat Permohonan Pernyataan Kelulusan
                                             </a>
                                         </div>
                                     </div>
