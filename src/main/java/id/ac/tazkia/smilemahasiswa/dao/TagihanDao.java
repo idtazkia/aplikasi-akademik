@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +30,9 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     Page<Tagihan> findByStatusNotInAndTahunAkademikOrderByTanggalPembuatanDesc(List<StatusRecord> asList, TahunAkademik tahunAkademik, Pageable page);
 
     Page<Tagihan> findByStatusAndMahasiswaOrderByNilaiJenisTagihan(StatusRecord statusRecord, Mahasiswa mhs, Pageable page);
+
+    @Query("select t from Tagihan t where t.nilaiJenisTagihan.jenisTagihan.id = 'du2017' and t.tahunAkademik = :tahun and t.status <> 'HAPUS' and t.nilaiJenisTagihan.status = 'AKTIF'")
+    Page<Tagihan> listTagihanDaftarUlang(@Param("tahun") TahunAkademik tahunAkademik, Pageable page);
 
     Tagihan findByNomor(String nomor);
 

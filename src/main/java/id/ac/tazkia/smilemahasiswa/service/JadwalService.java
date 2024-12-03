@@ -34,7 +34,7 @@ public class JadwalService {
         }
     }
 
-    @Scheduled(cron = "0 00 17 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 30 16 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal2() throws Exception {
 
         List<Jadwal> cekJadwal = jadwalDao.findByStatusAndTahunAkademikAndFinalPloting(StatusRecord.AKTIF,
