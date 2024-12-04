@@ -301,12 +301,6 @@ public class TagihanService {
         BigDecimal nilai = tagihan.getNilaiTagihan();
         tagihan.setAkumulasiPembayaran(akumulasi);
         log.info("akumulasi : {}", akumulasi);
-        if (akumulasi.compareTo(nilai) == 0){
-            tagihan.setLunas(true);
-            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-            tagihanDao.save(tagihan);
-            log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
-        }
 
         if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya())){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
@@ -500,6 +494,13 @@ public class TagihanService {
                 }
 
             }
+        }
+
+        if (akumulasi.compareTo(nilai) == 0){
+            tagihan.setLunas(true);
+            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+            tagihanDao.save(tagihan);
+            log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
         }
 
     }
