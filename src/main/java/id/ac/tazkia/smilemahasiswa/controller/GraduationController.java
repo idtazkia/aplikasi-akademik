@@ -3090,8 +3090,9 @@ public class GraduationController {
         fileMagang.setKomentar(komentar);
         fileMagang.setStatus(StatusApprove.REJECTED);
         fileMagangDao.save(fileMagang);
+        mailService.intershipRejected(fileMagang);
         return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
-                + fileMagang.getMahasiswa().getIdProdi().getId();
+                + fileMagang.getMahasiswa().getIdProdi().getId()+"&status=ALL";
     }
 
     @PostMapping("/graduation/magang/admin/terima")
@@ -3100,8 +3101,9 @@ public class GraduationController {
         fileMagang.setKomentar(komentar);
         fileMagang.setStatus(StatusApprove.APPROVED);
         fileMagangDao.save(fileMagang);
+        mailService.intershipApproved(fileMagang);
         return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
-                + fileMagang.getMahasiswa().getIdProdi().getId();
+                + fileMagang.getMahasiswa().getIdProdi().getId()+"&status=ALL";
     }
 
     @GetMapping("/upload/{seminar}/file-jurnal/{file}/")

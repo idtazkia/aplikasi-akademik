@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.service;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.PendaftaranBebasKewajiban;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -298,6 +299,48 @@ public class MailService {
                 "Smile Notifikasi",
                 note.getMahasiswa().getEmailTazkia(),
                 "Pendaftaran Konsep Note Disetujui",
+                output.toString());
+
+    }
+
+    public void intershipApproved(FileMagang fileMagang) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/magang/approve.html");
+        Map<String, String> data = new HashMap<>();
+        String message = null;
+
+        message = fileMagang.getJenis().equals(MagangStatus.MBKM)
+                ? "Menunggu penilaian dari Program Studi."
+                : "Menunggu penilaian dari Akademik.";
+
+        data.put("nim", fileMagang.getMahasiswa().getNim());
+        data.put("nama", fileMagang.getMahasiswa().getNama());
+        data.put("jenis", fileMagang.getJenis().getDisplayName());
+        data.put("message", message);
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                fileMagang.getMahasiswa().getUser().getUsername(),
+                "Pendaftaran Magang Disetujui",
+                output.toString());
+
+    }
+
+    public void intershipRejected(FileMagang fileMagang) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/magang/reject.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nim", fileMagang.getMahasiswa().getNim());
+        data.put("nama", fileMagang.getMahasiswa().getNama());
+        data.put("jenis", fileMagang.getJenis().getDisplayName());
+        data.put("keterangan", fileMagang.getKomentar());
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                fileMagang.getMahasiswa().getUser().getUsername(),
+                "Pendaftaran Magang Disetujui",
                 output.toString());
 
     }
