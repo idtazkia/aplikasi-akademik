@@ -272,7 +272,7 @@ public class KuesionerController {
         if (totalTest < 1){
             return "kuesioner/toefl/view";
         }else {
-            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS,StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
+            PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING,StatusUjian.LULUS,StatusUjian.TIDAK_LULUS,StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
             if (validate != null) {
                 return "redirect:list";
             }else {
@@ -840,7 +840,7 @@ public class KuesionerController {
         } else {
             PrediksiTest validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(
                     Arrays.asList(StatusRecord.HAPUS),
-                    Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.IELTS);
+                    Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI, StatusUjian.TIDAK_LULUS), mahasiswa, JenisTest.IELTS);
             if (validate != null) {
                 return "redirect:list";
             } else {
