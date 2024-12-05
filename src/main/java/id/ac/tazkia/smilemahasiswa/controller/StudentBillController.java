@@ -429,6 +429,27 @@ public class StudentBillController {
         return "redirect:list";
     }
 
+    // LIST TAGIHAN DAFTAR ULANG
+    @GetMapping("/studentBill/daftarulang/list")
+    public void listTagihanDaftarUlang(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
+        model.addAttribute("selectTahun", tahunAkademik);
+        if (tahunAkademik != null) {
+            model.addAttribute("listTagihan", tagihanDao.listTagihanDaftarUlang(tahunAkademik, page));
+        }else{
+            TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            model.addAttribute("listTagihan", tagihanDao.listTagihanDaftarUlang(ta, page));
+        }
+    }
+
+    @GetMapping("/get-cicilan-daftarulang/{id}")
+    @ResponseBody
+    public List<RequestCicilan> getDetailCicilanDaftarUlang(@PathVariable String id){
+
+        Tagihan t = tagihanDao.findById(id).get();
+
+        return requestCicilanDao.findByStatusAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF,t);
+    }
+
     // List Tagihan
     @GetMapping("/studentBill/bill/list")
     public void listBill(Model model, @PageableDefault(size = 10) Pageable page,
