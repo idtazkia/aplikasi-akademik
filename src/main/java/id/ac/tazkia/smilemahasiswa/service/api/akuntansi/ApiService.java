@@ -90,7 +90,7 @@ public class ApiService {
 
     @Scheduled(cron = "${scheduled.sendTagihanAkun}", zone = "Asia/Jakarta")
     public void kirimTagihan() throws JsonProcessingException {
-        List<Tagihan> cekTagihan = tagihanDao.findByStatusAndTahunAkademikAndZahirExport(StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), AkuntansiExport.NEW);
+        List<Tagihan> cekTagihan = tagihanDao.findByStatusAndZahirExport(StatusRecord.AKTIF, AkuntansiExport.NEW);
         if(!cekTagihan.isEmpty()){
             for (Tagihan t : cekTagihan){
                 if (t.getNilaiJenisTagihan().getKodeTagihan() != null) {
@@ -112,7 +112,7 @@ public class ApiService {
 
     @Scheduled(cron = "${scheduled.sendTagihanHapus}", zone = "Asia/Jakarta")
     public void kirimTagihandiHapus() throws JsonProcessingException {
-        List<Tagihan> cekTagihan = tagihanDao.findByStatusAndTahunAkademikAndZahirExport(StatusRecord.HAPUS, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), AkuntansiExport.SENT);
+        List<Tagihan> cekTagihan = tagihanDao.findByStatusAndZahirExport(StatusRecord.HAPUS, AkuntansiExport.SENT);
         if(!cekTagihan.isEmpty()){
             for (Tagihan t : cekTagihan){
                 if (t.getNilaiJenisTagihan().getKodeTagihan() != null) {
