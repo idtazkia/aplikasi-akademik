@@ -133,7 +133,7 @@
                                             </div>
                                             <br>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <label>Alamat</label>
                                                     <h4 th:if="${mhs.namaJalan} == null">-</h4>
                                                     <h4 th:if="${mhs.idKelurahan != null || mhs.namaJalan != null}" th:text="${mhs.namaJalan + ' Rt.' + mhs.rt + '/Rw.' + mhs.rw + ' Desa ' + mhs.idKelurahan + ' Kec. ' + mhs.idKecamatan + ' ' + mhs.idKotaKabupaten }">Bogor</h4>
@@ -143,11 +143,34 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <label>Beasiswa</label>
-                                                    <h4>-</h4>
+                                                    <h4 th:if="${mhs.beasiswa == null}">-</h4>
+                                                    <h4 th:if="${mhs.beasiswa != null}" th:text="${mhs.beasiswa.namaBeasiswa}"></h4>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label>Tahun Akademik Masuk</label>
-                                                    <h4>2019</h4>
+                                                    <h4 th:text="${tahunMasuk}">2019</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div th:if="${mhs.ayah != null}" class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nama Ayah</label>
+                                                    <h4 th:text="${mhs.ayah.namaAyah}"></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Kontak Ayah</label>
+                                                    <h4 th:text="${(mhs.ayah.nomorAyah + ' / ' + mhs.ayah.emailAyah)}">2019</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div th:if="${mhs.ibu != null}" class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nama Ibu</label>
+                                                    <h4 th:text="${mhs.ibu.namaIbuKandung}"></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Kontak Ibu</label>
+                                                    <h4 th:text="${(mhs.ibu.nomorIbu + ' / ' + mhs.ibu.emailIbu)}">2019</h4>
                                                 </div>
                                             </div>
                                             <br>

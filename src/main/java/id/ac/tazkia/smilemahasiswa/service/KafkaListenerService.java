@@ -181,6 +181,11 @@ public class KafkaListenerService {
 
             if (response.getSukses()) {
                 log.debug("Hapus tagihan sukses : {}", response.getDebitur());
+                try {
+                    Thread.sleep(1000);
+                }catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                }
                 tagihanService.kirimCicilanJatuhTempo(response);
             }
 

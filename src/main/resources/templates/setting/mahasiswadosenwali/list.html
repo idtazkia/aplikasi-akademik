@@ -102,7 +102,7 @@
                                     <div class="row">
                                         <div class="col-md-12" style="text-align: center;">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Caria</button>
+                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
                                             </div>
                                         </div>
 
@@ -123,6 +123,7 @@
                                     <th scope="col">NIM</th>
                                     <th scope="col">Nama</th>
                                     <th scope="col">Prodi</th>
+                                    <th scope="col">Program</th>
                                     <th scope="col">Dosen Wali</th>
                                     <th scope="col"></th>
 
@@ -136,6 +137,7 @@
                                     <td th:text="${dataMahasiswaDosenWali[2]}">Pendapatan dari Beasiswa</td>
                                     <td th:text="${selectedProdi.namaProdi}">-</td>
                                     <td th:text="${dataMahasiswaDosenWali[3]}">AKTIF</td>
+                                    <td th:text="${dataMahasiswaDosenWali[4]}">AKTIF</td>
                                     <td>
                                         <input type="checkbox" th:value="${dataMahasiswaDosenWali[0]}" class="flat" name="mahasiswas">
                                     </td>

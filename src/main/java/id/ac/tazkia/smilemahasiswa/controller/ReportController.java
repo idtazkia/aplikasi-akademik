@@ -527,6 +527,7 @@ public class ReportController {
             model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
             model.addAttribute("sksTotal", krsDetailDao.totalSks(mahasiswa));
             model.addAttribute("semester", krsDetailDao.semesterHistory(mahasiswa));
+            model.addAttribute("tahunMasuk", krsDao.masukMahasiswa(mahasiswa));
             model.addAttribute("khsHistory", krsDetailDao.khsHistoty(mahasiswa));
             model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
             model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));

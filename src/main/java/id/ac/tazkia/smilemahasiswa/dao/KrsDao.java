@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -25,6 +26,9 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                         Prodi prodi, Program program, String angkatan, Pageable pageable);
 
         Krs findByTahunAkademikAndMahasiswaAndStatus(TahunAkademik tahunAkademik, Mahasiswa mhsw, StatusRecord aktif);
+
+        @Query(value = "select substr(ta.nama_tahun_akademik, 1, 4) as tahun from krs k inner join tahun_akademik ta on k.id_tahun_akademik=ta.id where id_mahasiswa=?1 and k.status='AKTIF' order by ta.kode_tahun_akademik asc limit 1", nativeQuery = true)
+        String masukMahasiswa(Mahasiswa mhs);
 
         Page<Krs> findByProdiAndTahunAkademikAndStatus(Prodi prodi, TahunAkademik tahunAkademik,
                         StatusRecord statusRecord, Pageable page);
