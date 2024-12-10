@@ -254,6 +254,7 @@ public class EventController {
         if (error.hasErrors()) {
             model.addAttribute("event", eventAbsensi.getEvent());
             model.addAttribute("eventAbsensi", eventAbsensi);
+            model.addAttribute("mode", mode);
             return "event/absen"; // Kembali ke halaman form jika ada error
         }
 
@@ -261,6 +262,7 @@ public class EventController {
         if (file.isEmpty()) {
             model.addAttribute("error", "File upload tidak boleh kosong");
             model.addAttribute("event", eventAbsensi.getEvent());
+            model.addAttribute("mode", mode);
             model.addAttribute("eventAbsensi", eventAbsensi);
             return "event/absen";
         }
