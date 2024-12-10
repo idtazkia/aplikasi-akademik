@@ -240,6 +240,7 @@ public class EventController {
     public String eventAbsensiSave(@ModelAttribute @Valid EventAbsensi eventAbsensi,
                                    BindingResult error, // Pindahkan BindingResult langsung setelah @Valid
                                    @RequestParam (required = false) String mode,
+                                   @RequestParam(required = true) Event event,
                                    @RequestParam("fileUpload") MultipartFile file,
                                    RedirectAttributes redirectAttributes,
                                    Authentication authentication,
@@ -252,7 +253,7 @@ public class EventController {
 
         // Cek apakah ada error validasi
         if (error.hasErrors()) {
-            model.addAttribute("event", eventAbsensi.getEvent());
+            model.addAttribute("event", event);
             model.addAttribute("eventAbsensi", eventAbsensi);
             model.addAttribute("mode", mode);
             return "event/absen"; // Kembali ke halaman form jika ada error
@@ -261,7 +262,7 @@ public class EventController {
         // Validasi untuk file upload
         if (file.isEmpty()) {
             model.addAttribute("error", "File upload tidak boleh kosong");
-            model.addAttribute("event", eventAbsensi.getEvent());
+            model.addAttribute("event", event);
             model.addAttribute("mode", mode);
             model.addAttribute("eventAbsensi", eventAbsensi);
             return "event/absen";
@@ -323,6 +324,7 @@ public class EventController {
             eventAbsensi.setDateUpdate(LocalDateTime.now().plusHours(7));
             System.out.println(" isi absen lama ");
         }
+        eventAbsensi.setEvent(event);
         eventAbsensiDao.save(eventAbsensi);
         System.out.println(" isi absen sukses");
         redirectAttributes.addFlashAttribute("sukses","Absensi event sukses..");
