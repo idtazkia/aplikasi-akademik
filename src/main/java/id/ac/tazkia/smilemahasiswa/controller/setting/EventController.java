@@ -302,23 +302,29 @@ public class EventController {
         } else {
             // Simpan file tanpa kompresi jika ukurannya <= 500KB
             File tujuan = new File(uploadFolderAbsensi + File.separator + idFile + "." + extension);
+            System.out.println("tujuan : " + tujuan);
             file.transferTo(tujuan);
+            System.out.println("transfer : OK ");
             eventAbsensi.setFile(idFile + "." + extension);
         }
+        System.out.println(" selesai kompress ");
         eventAbsensi.setMahasiswa(mahasiswa);
         eventAbsensi.setStatus(StatusRecord.AKTIF);
 //        eventAbsensi.setWaktuAbsen(LocalDateTime.now());
+        System.out.println(" isi absen ");
         if(mode.equals("save")){
             eventAbsensi.setWaktuAbsen(LocalDateTime.now().plusHours(7));
             eventAbsensi.setDateInsert(LocalDateTime.now().plusHours(7));
+            System.out.println(" isi absen baru ");
         }else{
             EventAbsensi eventAbsensi1 = eventAbsensiDao.findByStatusAndEventAndMahasiswa(StatusRecord.AKTIF,eventAbsensi.getEvent(),mahasiswa);
             eventAbsensi.setDateInsert(eventAbsensi1.getDateInsert());
             eventAbsensi.setWaktuAbsen(eventAbsensi1.getWaktuAbsen());
             eventAbsensi.setDateUpdate(LocalDateTime.now().plusHours(7));
+            System.out.println(" isi absen lama ");
         }
         eventAbsensiDao.save(eventAbsensi);
-
+        System.out.println(" isi absen sukses");
         redirectAttributes.addFlashAttribute("sukses","Absensi event sukses..");
         return "redirect:../../../dashboard";
     }
