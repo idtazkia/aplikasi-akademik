@@ -283,7 +283,7 @@ public class EventController {
             if (eventAbsensi.getEvent().getFile() == null) {
                 eventAbsensi.getEvent().setFile("default.jpg");
             }
-            return "redirect:/dashboard";
+            return "redirect:../../../dashboard";
         }
 
         // Cek ukuran file
@@ -320,7 +320,7 @@ public class EventController {
         eventAbsensiDao.save(eventAbsensi);
 
         redirectAttributes.addFlashAttribute("sukses","Absensi event sukses..");
-        return "redirect:/dashboard";
+        return "redirect:../../../dashboard";
     }
 
     @GetMapping("/attendance/{eventAbsensi}/download")
