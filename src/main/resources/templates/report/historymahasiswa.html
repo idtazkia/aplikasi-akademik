@@ -155,22 +155,22 @@
                                             <div th:if="${mhs.ayah != null}" class="row">
                                                 <div class="col-md-6">
                                                     <label>Nama Ayah</label>
-                                                    <h4 th:text="${mhs.ayah.namaAyah}"></h4>
+                                                    <h4 th:text="${mhs.ayah.namaAyah ?: '-'}"></h4>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label>Kontak Ayah</label>
-                                                    <h4 th:text="${(mhs.ayah.nomorAyah + ' / ' + mhs.ayah.emailAyah)}">2019</h4>
+                                                    <h4 th:text="${(mhs.ayah.nomorAyah ?: '-') + ' / ' + (mhs.ayah.emailAyah ?: '-')}">2019</h4>
                                                 </div>
                                             </div>
                                             <br>
                                             <div th:if="${mhs.ibu != null}" class="row">
                                                 <div class="col-md-6">
                                                     <label>Nama Ibu</label>
-                                                    <h4 th:text="${mhs.ibu.namaIbuKandung}"></h4>
+                                                    <h4 th:text="${mhs.ibu.namaIbuKandung ?: '-'}"></h4>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label>Kontak Ibu</label>
-                                                    <h4 th:text="${(mhs.ibu.nomorIbu + ' / ' + mhs.ibu.emailIbu)}">2019</h4>
+                                                    <h4 th:text="${(mhs.ibu.nomorIbu ?: '-') + ' / ' + (mhs.ibu.emailIbu ?: '-')}">2019</h4>
                                                 </div>
                                             </div>
                                             <br>
