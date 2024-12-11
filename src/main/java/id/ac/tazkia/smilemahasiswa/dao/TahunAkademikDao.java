@@ -81,6 +81,6 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
         @Query(value = "SELECT id,CONCAT(nama_tahun_akademik, ' s/d ', LEFT(nama_tahun_akademik, LENGTH(nama_tahun_akademik) - 6), ' Genap') AS tahun FROM tahun_akademik WHERE status NOT IN ('HAPUS') AND jenis NOT IN ('GENAP', 'PENDEK') ORDER BY kode_tahun_akademik DESC limit ?1 offset ?2", nativeQuery = true)
         List<PeriodeDto> listTahunAkademik(Integer limit, Integer offset);
 
-        @Query(value = "SELECT count(*) FROM tahun_akademik where status not in('HAPUS') order by kode_tahun_akademik desc", nativeQuery = true)
+        @Query(value = "SELECT count(*) FROM tahun_akademik WHERE status NOT IN ('HAPUS') AND jenis NOT IN ('GENAP', 'PENDEK') ORDER BY kode_tahun_akademik DESC", nativeQuery = true)
         Integer countTahunAkademik();
 }
