@@ -380,7 +380,7 @@ public class StudentBillController {
         }else{
             if (StringUtils.hasText(search)){
                 model.addAttribute("search", search);
-                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProgramNamaProgramContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, page));
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullAndAngkatanContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProdiNamaProdiContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndProgramNamaProgramContainingIgnoreCaseOrStatusNotInAndTahunAkademikAndProdiNotNullAndJenisTagihanNamaContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, page));
             }else{
                 model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndProdiNotNullOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
             }
