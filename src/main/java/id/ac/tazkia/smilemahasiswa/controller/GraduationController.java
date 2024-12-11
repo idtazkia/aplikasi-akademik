@@ -1655,8 +1655,8 @@ public class GraduationController {
         seminar.setDosenPenguji(request.getDosenPenguji());
         seminar.setRuangan(request.getRuangan());
         seminar.setTanggalUjian(request.getTanggalUjian());
-        seminar.setJamMulai(request.getJamMulai());
-        seminar.setJamSelesai(request.getJamSelesai());
+        seminar.setJamMulai(LocalTime.parse(request.getJamMulai()));
+        seminar.setJamSelesai(LocalTime.parse(request.getJamSelesai()));
         seminar.setUserApprove(user);
         seminar.setStatus(StatusApprove.APPROVED);
         seminar.setStatusSempro(StatusTugasAkhir.SCHEDULED);

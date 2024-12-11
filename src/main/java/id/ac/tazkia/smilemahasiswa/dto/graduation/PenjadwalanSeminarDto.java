@@ -18,6 +18,6 @@ public class PenjadwalanSeminarDto {
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalUjian;
-    private LocalTime jamMulai;
-    private LocalTime jamSelesai;
+    private String jamMulai;
+    private String jamSelesai;
 }
