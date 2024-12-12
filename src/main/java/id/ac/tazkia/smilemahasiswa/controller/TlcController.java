@@ -15,11 +15,13 @@ import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.DataPresensiMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.GetDataPresensiMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.KehadiranRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -64,9 +66,17 @@ public class TlcController {
     private PresensiMahasiswaBahasaDao presensiMahasiswaBahasaDao;
     @Autowired
     private MahasiswaDao mahasiswaDao;
+    @Autowired
+    private CurrentUserService currentUserService;
+    @Autowired
+    private KaryawanDao karyawanDao;
 
     @GetMapping("/tlc/periode/list")
     public void periodeList(Model model) {
+    }
+
+    @GetMapping("/tlc/dosen/list")
+    public void jadwalDosenList(Model model) {
     }
 
     @GetMapping("/tlc/periode/form")
@@ -310,6 +320,22 @@ public class TlcController {
         response.setTotal(jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF).size());
         response.setTotalNotFiltered(jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF).size());
         response.setRows(jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF));
+        return response;
+
+    }
+    @GetMapping("/tlc/jadwal-dosen-list/{tahun}")
+    @ResponseBody
+    public DataJadwalBahasa listJadwalDosen(Authentication authentication, @PathVariable String tahun) {
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+
+        DataJadwalBahasa response = new DataJadwalBahasa();
+        response.setTotal(jadwalBahasaDao.findByDosen(dosen, tahunAkademik).size());
+        response.setTotalNotFiltered(jadwalBahasaDao.findByDosen(dosen, tahunAkademik).size());
+        response.setRows(jadwalBahasaDao.findByDosen(dosen, tahunAkademik));
         return response;
 
     }
