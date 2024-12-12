@@ -158,6 +158,12 @@
                                                         <div class="col-md-6">
                                                             <h6 class="mb-0">List Tugas</h6>
                                                         </div>
+                                                        <div class="col text-right">
+                                                            <a id="tambahLink" class="btn btn-sm btn-default"><i
+                                                                    class="fas fa-plus-circle"></i>
+                                                                Tambah Tugas</a>
+                                                        </div>
+                                                        <br>
                                                     </div>
                                                 </div>
                                                 <div class="card-body pt-4 p-3">
@@ -339,6 +345,8 @@
             $tableDetail.bootstrapTable('refresh')
             $("#div-form-jadwal").slideUp("slow");
             document.getElementById("div-form-jadwal").style.display = "none";
+            $("#div-form-presensi").slideUp("slow");
+            document.getElementById("div-form-presensi").style.display = "none";
             $("#div-detail").slideDown("slow");
             document.getElementById("div-detail").style.display = "block";
             $("#presensiId").val(args.id);
@@ -600,8 +608,8 @@
         function openModalMahasiswa(args) {
             $('#presensiId').val(args.id)
             $tableMahasiswa.bootstrapTable('refresh');
-            // $("#div-detail").slideUp("slow");
-            // document.getElementById("div-detail").style.display = "none";
+            $("#div-detail").slideUp("slow");
+            document.getElementById("div-detail").style.display = "none";
             $("#div-form-presensi").slideDown("slow");
             document.getElementById("div-form-presensi").style.display = "block";
 
