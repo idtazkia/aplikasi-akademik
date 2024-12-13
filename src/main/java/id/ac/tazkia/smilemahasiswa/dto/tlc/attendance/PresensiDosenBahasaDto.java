@@ -10,5 +10,6 @@ public class PresensiDosenBahasaDto {
     private String dosen;
     private String pertemuan;
     private String berita;
+    private String jenis;
 
 }

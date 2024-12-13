@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
+import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,6 +44,9 @@ public class PresensiDosenBahasa {
 
     @NotNull
     private String pertemuan;
+
+    @NotNull @Enumerated(EnumType.STRING)
+    private JenisTest jenis;
 
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
