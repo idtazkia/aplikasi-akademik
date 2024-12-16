@@ -2,14 +2,12 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.RekapTugasAkhir;
-import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
-import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
-import id.ac.tazkia.smilemahasiswa.dto.report.ReportUjianDto;
-import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.*;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TugasMateriService;
+import net.bytebuddy.asm.Advice;
 import nz.net.ultraq.thymeleaf.layoutdialect.models.extensions.IModelExtensions;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -32,15 +30,19 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class ReportController {
@@ -160,44 +162,87 @@ public class ReportController {
 
     @GetMapping("/report/recapitulation/lecturer")
     public void rekapDosen(Model model, @RequestParam(required = false) TahunAkademik ta,
-            @PageableDefault(size = Integer.MAX_VALUE) Pageable page) {
+                           @PageableDefault(size = Integer.MAX_VALUE) Pageable page) {
+        if (ta == null) {
+            ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        }
+
         model.addAttribute("selectedTahun", ta);
 
-        Page<RekapJadwalDosenDto> rekap = jadwalDosenDao
-                .rekapJadwalDosen(StatusJadwalDosen.PENGAMPU, ta, StatusRecord.AKTIF, page);
+//        Page<RekapJadwalDosenDto> rekap = jadwalDosenDao.rekapJadwalDosen2(ta.getId(), page);
+//
+//        Map<String, RekapSksDosenDto> rekapJumlahSks = new LinkedHashMap<>();
+//        Map<String, List<RekapJadwalDosenDto>> detailJadwalPerDosen = new LinkedHashMap<>();
+//
+//        for (RekapJadwalDosenDto r : rekap.getContent()) {
+//            // Hitung total SKS
+//            RekapSksDosenDto rsks = rekapJumlahSks.computeIfAbsent(r.getIdDosen(), id -> {
+//                RekapSksDosenDto newRsks = new RekapSksDosenDto();
+//                newRsks.setNamaDosen(r.getNamaDosen());
+//                newRsks.setIdDosen(r.getIdDosen());
+//                newRsks.setTotalSks(0);
+//                return newRsks;
+//            });
+//
+//            rsks.tambahSks(r.getSks());
+//
+//            // Jadwal per dosen
+//            detailJadwalPerDosen.computeIfAbsent(r.getIdDosen(), id -> new ArrayList<>()).add(r);
+//        }
 
+        List<Object[]> result = jadwalDosenDao.rekapJadwalDosen3(ta.getId());
+
+// Konversi hasil query ke DTO
+        List<RekapJadwalDosenDto> dtos = result.stream()
+                .map(row -> {
+                    RekapJadwalDosenDto dto = new RekapJadwalDosenDto();
+                    dto.setIdJadwal((String) row[0]); // idJadwal
+                    dto.setIdDosen((String) row[1]); // idDosen
+                    dto.setNamaDosen((String) row[2]); // namaDosen
+                    dto.setNamaMatakuliah((String) row[3]);
+                    dto.setSks(((Integer) row[4]).intValue()); // sks
+                    dto.setNamaProdi((String) row[5]);
+                    dto.setNamaKelas((String) row[6]);
+                    dto.setNamaHari((String) row[7]);
+                    dto.setSesi((String) row[8]);
+                    dto.setJamMulai(((Time) row[9]).toLocalTime());
+                    dto.setJamSelesai(((Time) row[10]).toLocalTime());
+                    dto.setNamaRuangan((String) row[11]);
+                    dto.setNamaGedung((String) row[12]);
+                    dto.setJumlahKehadiran(((BigInteger) row[13]).intValue());
+
+                    return dto;
+
+                })
+                .collect(Collectors.toList());
+
+// Inisialisasi map untuk rekap SKS dan jadwal per dosen
         Map<String, RekapSksDosenDto> rekapJumlahSks = new LinkedHashMap<>();
         Map<String, List<RekapJadwalDosenDto>> detailJadwalPerDosen = new LinkedHashMap<>();
 
-        for (RekapJadwalDosenDto r : rekap.getContent()) {
-
-            // hitung total sks
-            RekapSksDosenDto rsks = rekapJumlahSks.get(r.getIdDosen());
-            if (rsks == null) {
-                rsks = new RekapSksDosenDto();
-                rsks.setNamaDosen(r.getNamaDosen());
-                rsks.setIdDosen(r.getIdDosen());
-                rsks.setTotalSks(0);
-            }
-
+// Iterasi untuk penghitungan total SKS dan detail jadwal
+        for (RekapJadwalDosenDto r : dtos) {
+            // Rekap total SKS per dosen
+            RekapSksDosenDto rsks = rekapJumlahSks.computeIfAbsent(r.getIdDosen(), id -> {
+                RekapSksDosenDto newRsks = new RekapSksDosenDto();
+                newRsks.setIdDosen(r.getIdDosen());
+                newRsks.setNamaDosen(r.getNamaDosen());
+                newRsks.setTotalSks(0); // Default nilai SKS
+                return newRsks;
+            });
             rsks.tambahSks(r.getSks());
-            rekapJumlahSks.put(r.getIdDosen(), rsks);
 
-            // jadwal per dosen
-            List<RekapJadwalDosenDto> rd = detailJadwalPerDosen.get(r.getIdDosen());
-            if (rd == null) {
-                rd = new ArrayList<>();
-                detailJadwalPerDosen.put(r.getIdDosen(), rd);
-            }
-
-            rd.add(r);
+            // Tambahkan detail jadwal ke list per dosen
+            detailJadwalPerDosen
+                    .computeIfAbsent(r.getIdDosen(), id -> new ArrayList<>())
+                    .add(r);
         }
 
         model.addAttribute("rekapJumlahSks", rekapJumlahSks);
-        model.addAttribute("rekapJadwalDosen", rekap);
+        model.addAttribute("rekapJadwalDosen", dtos);
         model.addAttribute("rekapJadwalPerDosen", detailJadwalPerDosen);
-
     }
+
 
     @GetMapping("/report/recapitulation/detail")
     public void detailJadwal(Model model, @RequestParam Jadwal jadwal){

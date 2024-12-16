@@ -5,6 +5,8 @@ import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.DetailDosen;
 import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.DosenMengajar;
 import id.ac.tazkia.smilemahasiswa.dto.machine.JadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosen2Dto;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosen3Dto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -44,6 +46,71 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
 
     @Query(REKAP_JADWAL_DOSEN)
     Page<RekapJadwalDosenDto> rekapJadwalDosen(@Param("statusJadwalDosen")StatusJadwalDosen sjd, @Param("ta")TahunAkademik ta, @Param("statusJadwal")StatusRecord statusJadwal, Pageable page);
+
+    @Query(value = "SELECT new id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto(b.id AS idJadwal, a.id_dosen AS idDosen, nama_karyawan AS namaDosen, nama_matakuliah AS namaMatakuliah, " +
+           "jumlah_sks AS sks, nama_prodi AS namaProdi, nama_kelas AS namaKelas, nama_hari AS namaHari, sesi, " +
+           "jam_mulai AS jamMulai, jam_selesai AS jamSelesai, nama_ruangan AS namaRuangan, nama_gedung AS namaGedung, " +
+           "COALESCE(jumlahKehadiran, 0) AS jumlahKehadiran )" +
+           "FROM jadwal_dosen AS a " +
+           "INNER JOIN jadwal AS b ON a.id_jadwal = b.id AND b.id_tahun_akademik = ?1 AND b.status = 'AKTIF' " +
+                               "AND a.status_jadwal_dosen = 'PENGAMPU' " +
+           "INNER JOIN prodi AS c ON b.id_prodi = c.id AND c.status = 'AKTIF' " +
+           "INNER JOIN kelas AS d ON b.id_kelas = d.id AND d.status = 'AKTIF' " +
+           "INNER JOIN hari AS e ON b.id_hari = e.id AND e.status = 'AKTIF' " +
+           "INNER JOIN matakuliah_kurikulum AS f ON b.id_matakuliah_kurikulum = f.id AND f.status = 'AKTIF' " +
+           "INNER JOIN matakuliah AS g ON f.id_matakuliah = g.id AND g.status = 'AKTIF' " +
+           "INNER JOIN ruangan AS h ON b.id_ruangan = h.id AND h.status = 'AKTIF' " +
+           "INNER JOIN gedung AS i ON h.id_gedung = i.id AND i.status = 'AKTIF' " +
+           "INNER JOIN dosen AS j ON a.id_dosen = j.id AND j.status = 'AKTIF' " +
+           "INNER JOIN karyawan AS k ON j.id_karyawan = k.id AND k.status = 'AKTIF' " +
+           "LEFT JOIN ( " +
+               "SELECT COUNT(id_jadwal) AS jumlahKehadiran, id_jadwal " +
+               "FROM presensi_dosen " +
+               "WHERE status = 'AKTIF' AND status_presensi = 'HADIR' " +
+               "GROUP BY id_jadwal " +
+           ") AS l ON b.id = l.id_jadwal " +
+           "ORDER BY nama_karyawan, nama_matakuliah", countQuery = "SELECT COUNT(b.id) " +
+           "FROM jadwal_dosen AS a INNER JOIN jadwal AS b ON a.id_jadwal = b.id AND b.id_tahun_akademik = ?1 AND b.status = 'AKTIF'" +
+            "AND a.status_jadwal_dosen = 'PENGAMPU'" +
+            "INNER JOIN prodi AS c ON b.id_prodi = c.id AND c.status = 'AKTIF'" +
+            "INNER JOIN kelas AS d ON b.id_kelas = d.id AND d.status = 'AKTIF'" +
+            "INNER JOIN hari AS e ON b.id_hari = e.id AND e.status = 'AKTIF'" +
+            "INNER JOIN matakuliah_kurikulum AS f ON b.id_matakuliah_kurikulum = f.id AND f.status = 'AKTIF'" +
+            "INNER JOIN matakuliah AS g ON f.id_matakuliah = g.id AND g.status = 'AKTIF'" +
+            "INNER JOIN ruangan AS h ON b.id_ruangan = h.id AND h.status = 'AKTIF'" +
+            "INNER JOIN gedung AS i ON h.id_gedung = i.id AND i.status = 'AKTIF'" +
+            "INNER JOIN dosen AS j ON a.id_dosen = j.id AND j.status = 'AKTIF'" +
+            "INNER JOIN karyawan AS k ON j.id_karyawan = k.id AND k.status = 'AKTIF' " +
+            "LEFT JOIN (SELECT COUNT(id_jadwal) AS jumlahKehadiran, id_jadwal " +
+            "FROM presensi_dosen WHERE status = 'AKTIF' AND status_presensi = 'HADIR' GROUP BY id_jadwal) AS l ON b.id = l.id_jadwal", nativeQuery = true)
+    Page<RekapJadwalDosenDto> rekapJadwalDosen2(String tahunAkademik, Pageable pageable);
+
+
+    @Query(value = "SELECT b.id AS idJadwal, a.id_dosen AS idDosen, nama_karyawan AS namaDosen, nama_matakuliah AS namaMatakuliah, " +
+            "jumlah_sks AS sks, nama_prodi AS namaProdi, nama_kelas AS namaKelas, nama_hari AS namaHari, sesi, " +
+            "jam_mulai AS jamMulai, jam_selesai AS jamSelesai, nama_ruangan AS namaRuangan, nama_gedung AS namaGedung, " +
+            "COALESCE(jumlahKehadiran, 0) AS jumlahKehadiran " +
+            "FROM jadwal_dosen AS a " +
+            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id AND b.id_tahun_akademik = ?1 AND b.status = 'AKTIF' " +
+            "AND a.status_jadwal_dosen = 'PENGAMPU' " +
+            "INNER JOIN prodi AS c ON b.id_prodi = c.id AND c.status = 'AKTIF' " +
+            "INNER JOIN kelas AS d ON b.id_kelas = d.id AND d.status = 'AKTIF' " +
+            "INNER JOIN hari AS e ON b.id_hari = e.id AND e.status = 'AKTIF' " +
+            "INNER JOIN matakuliah_kurikulum AS f ON b.id_matakuliah_kurikulum = f.id AND f.status = 'AKTIF' " +
+            "INNER JOIN matakuliah AS g ON f.id_matakuliah = g.id AND g.status = 'AKTIF' " +
+            "INNER JOIN ruangan AS h ON b.id_ruangan = h.id AND h.status = 'AKTIF' " +
+            "INNER JOIN gedung AS i ON h.id_gedung = i.id AND i.status = 'AKTIF' " +
+            "INNER JOIN dosen AS j ON a.id_dosen = j.id AND j.status = 'AKTIF' " +
+            "INNER JOIN karyawan AS k ON j.id_karyawan = k.id AND k.status = 'AKTIF' " +
+            "LEFT JOIN ( " +
+            "SELECT COUNT(id_jadwal) AS jumlahKehadiran, id_jadwal " +
+            "FROM presensi_dosen " +
+            "WHERE status = 'AKTIF' AND status_presensi = 'HADIR' " +
+            "GROUP BY id_jadwal " +
+            ") AS l ON b.id = l.id_jadwal " +
+            "ORDER BY nama_karyawan, nama_matakuliah", nativeQuery = true)
+    List<Object[]> rekapJadwalDosen3(String tahunAkademik);
+
 
     @Query(value = "select c.id,d.nama_karyawan as nama,c.status_dosen as status,f.nama_matakuliah as matkul ,g.nama_kelas as kelas,group_concat(DAYOFMONTH(waktu_masuk))as tanggal,e.jumlah_sks as sks,count(a.id)as hadir from presensi_dosen as a inner join jadwal as b on a.id_jadwal=b.id inner join dosen as c on a.id_dosen=c.id inner join karyawan as d on c.id_karyawan=d.id inner join matakuliah_kurikulum as e on b.id_matakuliah_kurikulum=e.id inner join matakuliah as f on e.id_matakuliah=f.id inner join kelas as g on b.id_kelas = g.id where year(waktu_masuk)=?1 and month(waktu_masuk)=?2 and a.status='AKTIF' group by a.id_dosen,a.id_jadwal order by d.nama_karyawan", nativeQuery = true)
     List<RekapDosenDto> rekapDosen(Integer tahun,Integer bulan);
