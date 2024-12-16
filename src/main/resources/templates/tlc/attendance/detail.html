@@ -151,7 +151,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 mt-4">
+                                        <div class="col-md-12 mt-4" th:if="${not @environment.acceptsProfiles('production')}">
                                             <div class="card h-100 mb-4">
                                                 <div class="card-header pb-0 px-3">
                                                     <div class="row">
@@ -235,6 +235,19 @@
                                                 </div>
                                             </div>
                                             <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Jenis:</label>
+                                                        <select id="jenis" name="jenis" class="form-control">
+                                                            <option value="LISTENING">Listening</option>
+                                                            <option value="READING">Reading</option>
+                                                            <option value="WRITING">Writing</option>
+                                                            <option value="SPEAKING">Speaking</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                                     <div class="form-group" id="onlineLinkGroup" style="display:none;">
                                                         <label>Link Online:</label>
@@ -261,7 +274,7 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label>Sesi :</label>
-                                                        <select name="detai" id="detail" class="form-control">
+                                                        <select name="detail" id="detail" class="form-control">
                                                             <option th:each="data : ${sesi}"
                                                                     th:text="${data.jamMulai + ' - ' + data.jamSelesai}"
                                                                     th:value="${data.id}"></option>
@@ -280,9 +293,16 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <div class="form-group">
+                                                    <div class="form-group" id="div-button-tambah">
                                                         <button type="button" onclick="tambahJadwal()"
                                                                 class="btn btn-primary">Simpan
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12" style="display: none" id="div-button-update">
+                                                    <div class="form-group">
+                                                        <button type="button" onclick="tambahJadwal()"
+                                                                class="btn btn-primary">Update
                                                         </button>
                                                     </div>
                                                 </div>
@@ -598,6 +618,9 @@
 
 
         function openModalPresensi() {
+            document.getElementById("div-button-update").style.display = "none";
+            document.getElementById("div-button-tambah").style.display = "block";
+            $('#submitJadwal')[0].reset();
             $("#div-detail").slideUp("slow");
             document.getElementById("div-detail").style.display = "none";
             $("#div-form-jadwal").slideDown("slow");
@@ -616,17 +639,22 @@
         }
 
         function editModalPresensi() {
+            document.getElementById("div-button-tambah").style.display = "none";
+            document.getElementById("div-button-update").style.display = "block";
             $("#div-detail").slideUp("slow");
             document.getElementById("div-detail").style.display = "none";
             $("#div-form-jadwal").slideDown("slow");
             document.getElementById("div-form-jadwal").style.display = "block";
             const url = '/tlc/detail-presensi-dosen/' + $('#presensiId').val();
             $.getJSON(url, function (data) {
+                console.log(data.beritaAcara)
                 $('#id').val(data.id)
                 $('#pertemuan').val(data.pertemuan)
                 $('#dosen').val(data.dosen.id)
-                $('#detail').val(data.detailPertemuan.id)
-                $('#beritaAcara').val(data.detailPertemuan.beritaAcara)
+                $('#beritaAcara').val(data.beritaAcara)
+                $('#jenis').val(data.jenis)
+                $('#detail').val(data.detailJadwalBahasa.id)
+
 
             });
 
@@ -636,11 +664,13 @@
             var request = {};
             var token = $("input[name='_csrf']").val();
 
+            request["id"] = $("#id").val();
             request["jadwal"] = $("#jadwal").val();
             request["sesi"] = $("#detail").val();
             request["dosen"] = $("#dosen").val();
             request["pertemuan"] = $("#pertemuan").val();
             request["berita"] = $("#beritaAcara").val();
+            request["jenis"] = $("#jenis").val();
 
             $.ajax({
                 type: "POST",

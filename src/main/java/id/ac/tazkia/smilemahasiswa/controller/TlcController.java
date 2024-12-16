@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
@@ -448,7 +449,12 @@ public class TlcController {
             Integer pertemuan = 0;
             Optional<JadwalBahasa> optionalJadwalBahasa = jadwalBahasaDao.findById(id);
             if (optionalJadwalBahasa.isPresent()) {
-                PresensiDosenBahasa presensiDosenBahasa = new PresensiDosenBahasa();
+                PresensiDosenBahasa presensiDosenBahasa = null;
+                if (requestDto.getId() != null) {
+                    presensiDosenBahasa = presensiDosenBahasaDao.findById(requestDto.getId()).get();
+                } else {
+                    presensiDosenBahasa = new PresensiDosenBahasa();
+                }
                 presensiDosenBahasa.setJadwalBahasa(optionalJadwalBahasa.get());
 
                 Optional<Dosen> dosen = dosenDao.findById(requestDto.getDosen());
@@ -468,6 +474,7 @@ public class TlcController {
                 presensiDosenBahasa.setDetailJadwalBahasa(detailJadwalBahasaDao.findById(requestDto.getSesi()).get());
                 presensiDosenBahasa.setPertemuan(requestDto.getPertemuan());
                 presensiDosenBahasa.setBeritaAcara(requestDto.getBerita());
+                presensiDosenBahasa.setJenis(JenisTest.valueOf(requestDto.getJenis()));
                 presensiDosenBahasa.setWaktuMengajar(LocalDateTime.now().plusHours(7));
 
                 presensiDosenBahasaDao.save(presensiDosenBahasa);
