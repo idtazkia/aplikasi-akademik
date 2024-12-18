@@ -1059,6 +1059,10 @@ public class DashboardController {
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
 
         Tagihan tagihan = tagihanDao.findByStatusAndStatusTagihanAndMahasiswa(StatusRecord.AKTIF, StatusTagihan.DICICIL, mhs);
+        if (tagihan == null) {
+            tagihanService.fixMhsCicilan(mhs);
+            return "dashboard";
+        }
 
         model.addAttribute("namaTagihan", tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama());
         model.addAttribute("virtualAccount", virtualAccountDao.listVaCicilan(tagihan.getId()));

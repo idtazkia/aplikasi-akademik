@@ -517,6 +517,13 @@ public class TagihanService {
         krsDao.save(krs);
     }
 
+    public void fixMhsCicilan(Mahasiswa mhs){
+        User user = mhs.getUser();
+        Role role = roleDao.findById("mahasiswa").get();
+        user.setRole(role);
+        userDao.save(user);
+    }
+
     public void createTagihanTestInggris(PrediksiTest prediksiTest, Mahasiswa mahasiswa, TahunAkademik tahunAkademik, LocalDate tanggalJatuhTempo, String jenis){
 
         JenisTagihan jenisTagihan = null;
