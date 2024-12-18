@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.select2.BaseRequest;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
@@ -433,6 +434,28 @@ public class DashboardController {
             model.addAttribute("listEvent", eventDao.findByStatusAndSchedulePublishBeforeAndScheduleEndAfterOrderByScheduleStart(StatusRecord.AKTIF, LocalDateTime.now().plusHours(7), LocalDateTime.now().plusHours(7)));
         }
 
+        // Menampilkan IPK dan jumlah SKS & Dosen wali
+        model.addAttribute("dosenWali", mahasiswa.getDosen().getKaryawan().getNamaKaryawan());
+
+        model.addAttribute("totalSks", krsDetailDao.totalSks(mahasiswa));
+        model.addAttribute("totalSksSelesai", krsDetailDao.totalSksSelesai(mahasiswa));
+
+        List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+        listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+        int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+
+        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal ipk = BigDecimal.ZERO;
+        if (mutu != null) {
+            ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
+        }
+
+        model.addAttribute("ipk", ipk);
+        model.addAttribute("ip", krsDetailDao.ip(mahasiswa, ta));
+
         return "dashboard";
     }
 
@@ -576,6 +599,7 @@ public class DashboardController {
         mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
         mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
         mahasiswaDto.setIdUser(mahasiswa.getUser());
+        mahasiswaDto.setDosenWali(mahasiswa.getDosen().getKaryawan().getNamaKaryawan());
         if (mahasiswa.getIdProvinsi() != null) {
             BaseRequest provinsi = wilayahDao.getProvinsi(mahasiswa.getIdProvinsi());
             if (provinsi != null) {
