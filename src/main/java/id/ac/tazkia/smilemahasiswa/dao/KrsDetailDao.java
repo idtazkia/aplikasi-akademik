@@ -419,6 +419,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
         Long totalSks(Mahasiswa mahasiswa);
 
+        @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND a.id_tahun_akademik=?2 AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
+        Long totalSksPerSemester(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
         @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND a.finalisasi='FINAL' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
         Long totalSksSelesai(Mahasiswa mahasiswa);
 

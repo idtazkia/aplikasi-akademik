@@ -330,14 +330,15 @@
                                                         </div>
                                                         <br>
                                                         <div class="row">
-                                                            <div class="col-md-2">
-                                                                <button class="btn btn-primary">
-                                                                    <i class="notika-icon notika-draft"></i>
-                                                                </button>
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <div style="font-size: 10px;">SKS</div>
-                                                                <div><b th:text="${totalSksSelesai}"></b> telah dinilai dari <b th:text="${totalSks}"></b></div>
+<!--                                                            <div class="col-md-2">-->
+<!--                                                                <button class="btn btn-primary">-->
+<!--                                                                    <i class="notika-icon notika-draft"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+                                                            <div class="col-md-12">
+                                                                <div>Total SKS <b th:text="${totalSks}"></b></div>
+                                                                <div><b th:text="${totalSksSelesai}"></b> SKS telah ditempuh selama  <b th:text="${semesterSebelum}"></b> semester</div>
+                                                                <div><b th:text="${totalSksSemester}"></b> SKS sedang ditempuh di semester  <b th:text="${semesterSebelum + semesterSekarang}"></b></div>
                                                             </div>
                                                         </div>
 <!--                                                        <div class="row">-->

@@ -438,7 +438,11 @@ public class DashboardController {
         model.addAttribute("dosenWali", mahasiswa.getDosen().getKaryawan().getNamaKaryawan());
 
         model.addAttribute("totalSks", krsDetailDao.totalSks(mahasiswa));
+        model.addAttribute("totalSksSemester", krsDetailDao.totalSksPerSemester(mahasiswa, ta));
         model.addAttribute("totalSksSelesai", krsDetailDao.totalSksSelesai(mahasiswa));
+
+        model.addAttribute("semesterSebelum", krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId()));
+        model.addAttribute("semesterSekarang", krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId()));
 
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
         listTranskript.removeIf(e -> e.getGrade().equals("E"));
@@ -449,7 +453,7 @@ public class DashboardController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal ipk = BigDecimal.ZERO;
-        if (mutu != null) {
+        if (!listTranskript.isEmpty() && listTranskript != null) {
             ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
         }
 
