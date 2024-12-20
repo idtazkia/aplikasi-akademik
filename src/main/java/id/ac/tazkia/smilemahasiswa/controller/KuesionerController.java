@@ -275,7 +275,7 @@ public class KuesionerController {
             return "kuesioner/toefl/view";
         } else {
             List<PrediksiTest> validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.TIDAK_LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
-            if (validate != null) {
+            if (validate != null || validate.isEmpty()) {
                 return "redirect:list";
             } else {
                 return "kuesioner/toefl/view";
@@ -316,7 +316,7 @@ public class KuesionerController {
         List<PrediksiTest> prediksiTest = prediksiTestDao.findByMahasiswaAndStatusNotInOrderByUjianKeAsc(mahasiswa, Arrays.asList(StatusRecord.HAPUS));
 
         model.addAttribute("mahasiswa", mahasiswa);
-        PrediksiTest validate = (PrediksiTest) prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.IELTS);
+        List<PrediksiTest> validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.IELTS);
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.IELTS, true);
 
         if (enableFiture != null) {
@@ -843,7 +843,7 @@ public class KuesionerController {
             List<PrediksiTest> validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(
                     Arrays.asList(StatusRecord.HAPUS),
                     Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI, StatusUjian.TIDAK_LULUS), mahasiswa, JenisTest.IELTS);
-            if (validate != null) {
+            if (validate != null || validate.isEmpty()) {
                 return "redirect:list";
             } else {
                 return "kuesioner/ielts/view";
