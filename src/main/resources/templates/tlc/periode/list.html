@@ -358,6 +358,9 @@
             '<button type="button" class="btn btn-sm btn-info view">',
             '<i class="fas fa-eye view"></i> View',
             '</button>  &nbsp;',
+            '<button type="button" class="btn btn-sm btn-success kehadiran">',
+            '<i class="fas fa-eye view"></i> Kehadiran',
+            '</button>  &nbsp;',
             '<button type="button" class="btn btn-sm btn-primary edit">',
             '<i class="fas fa-edit edit"></i> Edit',
             '</button>  &nbsp;',
@@ -389,6 +392,8 @@
     window.jadwalEvent = {
         'click .view': function (e, value, row, index) {
             openMahasiswa(row);
+        },'click .kehadiran': function (e, value, row, index) {
+            window.location.href = '/tlc/attendance/detail?id=' + row.id;
         }, 'click .edit': function (e, value, row, index) {
             window.location.href = '/tlc/periode/edit?id=' + row.id;
         },
