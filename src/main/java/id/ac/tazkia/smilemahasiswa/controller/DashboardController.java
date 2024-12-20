@@ -956,6 +956,9 @@ public class DashboardController {
             model.addAttribute("jadwal", jadwal);
         }
 
+        model.addAttribute("listMhsDiWalikan", mahasiswaDao.listMahasiswaByDosenWali(user));
+        model.addAttribute("listEvent", eventDao.findByStatusOrderByScheduleStartDesc(StatusRecord.AKTIF));
+
         model.addAttribute("jmlSemuaKelas", sesiKuliahDao.jmlSemuaKelas(tahunAkademik));
 
         model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelasOntime(tahunAkademik,StatusPresensi.HADIR.toString()));

@@ -113,7 +113,8 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
     List<Object[]> listStatusMahasiswa(List<String> angkatan, String idTahunAkademik);
 
 
-
+    @Query("select m from Mahasiswa m where m.dosen.karyawan.idUser = :user and m.status='AKTIF' and m.statusAktif = 'AKTIF' order by m.angkatan, m.idProdi.namaProdi")
+    List<Mahasiswa> listMahasiswaByDosenWali(@Param("user") User user);
 
     @Query(value = "select if(coalesce(sum(jumlah_sks),0)=0,'NONAKTIF','AKTIF') as ada from krs as a\n" +
             "inner join krs_detail as b on a.id = b.id_krs and b.status = 'AKTIF'\n" +

@@ -270,17 +270,8 @@ public class KuesionerController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
 
-        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
-        if (totalTest < 1) {
-            return "kuesioner/toefl/view";
-        } else {
-            List<PrediksiTest> validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(Arrays.asList(StatusRecord.HAPUS), Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.TIDAK_LULUS, StatusUjian.DINILAI), mahasiswa, JenisTest.TOEFL);
-            if (validate != null || validate.isEmpty()) {
-                return "redirect:list";
-            } else {
-                return "kuesioner/toefl/view";
-            }
-        }
+        return "kuesioner/toefl/view";
+
     }
 
     @GetMapping("/kuesioner/toefl/list")
@@ -836,19 +827,7 @@ public class KuesionerController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
 
-        Integer totalTest = prediksiTestDao.countTotalUjian(mahasiswa);
-        if (totalTest < 1) {
-            return "kuesioner/ielts/view";
-        } else {
-            List<PrediksiTest> validate = prediksiTestDao.findByStatusNotInAndStatusUjianInAndMahasiswaAndJenisTest(
-                    Arrays.asList(StatusRecord.HAPUS),
-                    Arrays.asList(StatusUjian.WAITING, StatusUjian.LULUS, StatusUjian.DINILAI, StatusUjian.TIDAK_LULUS), mahasiswa, JenisTest.IELTS);
-            if (validate != null || validate.isEmpty()) {
-                return "redirect:list";
-            } else {
-                return "kuesioner/ielts/view";
-            }
-        }
+        return "kuesioner/ielts/view";
     }
 
     @GetMapping("/kuesioner/periodeUjian/list")

@@ -15,4 +15,7 @@ public interface EventDao extends PagingAndSortingRepository<Event, String>, Cru
     Page<Event> findByStatusOrderByScheduleStartDesc(StatusRecord statusRecord, Pageable pageable);
 
     List<Event> findByStatusAndSchedulePublishBeforeAndScheduleEndAfterOrderByScheduleStart(StatusRecord statusRecord, LocalDateTime mulaiPublish, LocalDateTime selesaiAcaca);
+
+    List<Event> findByStatusOrderByScheduleStartDesc(StatusRecord statusRecord);
+
 }
