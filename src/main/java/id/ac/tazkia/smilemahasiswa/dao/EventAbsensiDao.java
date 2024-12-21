@@ -18,7 +18,8 @@ public interface EventAbsensiDao extends PagingAndSortingRepository<EventAbsensi
 
     Page<EventAbsensi> findByStatusAndEventOrderByWaktuAbsenAsc(StatusRecord statusRecord, Event event, Pageable pageable);
 
-    @Query(value = "select ea.id, m.nim, m.nama, e.event_name, coalesce(ea.waktu_absen, '-') as waktu_absen, case when ea.id IS NOT NULL THEN 'HADIR' ELSE 'Tidak Hadir' END AS status_kehadiran from mahasiswa m inner join dosen d on m.id_dosen_wali=d.id cross join event e left join event_absensi ea on m.id=ea.id_mahasiswa and e.id=ea.id_event where m.status='AKTIF' and m.status_aktif='AKTIF' and e.id = ?1 and d.id=?2 order by m.nim", nativeQuery = true)
-    List<Object[]> listAbsensiEventDosenWali(String idEvent, String idDosen);
+    @Query(value = "select ea.id, m.nim, m.nama, e.event_name, case when ea.id IS NOT NULL THEN 'HADIR' ELSE 'Tidak Hadir' END AS status_kehadiran, ea.waktu_absen from mahasiswa m inner join dosen d on m.id_dosen_wali=d.id cross join event e left join event_absensi ea on m.id=ea.id_mahasiswa and e.id=ea.id_event where m.status='AKTIF' and m.status_aktif='AKTIF' and e.id = ?1 and d.id=?2 order by m.nim", nativeQuery = true,
+                    countQuery = "select count(m.id) from mahasiswa m inner join dosen d on m.id_dosen_wali=d.id cross join event e left join event_absensi ea on m.id=ea.id_mahasiswa and e.id=ea.id_event where m.status='AKTIF' and m.status_aktif='AKTIF' and e.id = ?1 and d.id=?2 order by m.nim")
+    Page<Object[]> listAbsensiEventDosenWali(String idEvent, String idDosen, Pageable page);
 
 }
