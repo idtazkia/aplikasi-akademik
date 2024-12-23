@@ -53,8 +53,8 @@ public class Seminar {
     private String fileBerita;
     private String fileKehadiran;
 
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd ")
+    @Column(columnDefinition = "DATETIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tanggalInput;
 
     @Enumerated(EnumType.STRING)
