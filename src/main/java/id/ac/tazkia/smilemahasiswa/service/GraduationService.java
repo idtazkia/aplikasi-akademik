@@ -47,6 +47,9 @@ public class GraduationService {
     @Value("${upload.seminar}")
     private String seminarFolder;
 
+    @Value("${upload.sidang}")
+    private String sidangFolder;
+
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
@@ -237,6 +240,63 @@ public class GraduationService {
         }
 
         String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + fileUpload;
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (fileUpload.toLowerCase().endsWith("jpeg")
+                    || fileUpload.toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (fileUpload.toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (fileUpload.toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+    }
+
+    public ResponseEntity<byte[]> getFileJurnalSidang(Sidang sidang, String file) throws Exception {
+
+        String fileUpload = null;
+
+        switch (file) {
+            case "jurnal":
+                fileUpload = sidang.getFileSidang();
+                break;
+
+            case "pendaftaran":
+                fileUpload = sidang.getFilePendaftaran();
+                break;
+
+            case "bimbingan":
+                fileUpload = sidang.getFileBimbingan();
+                break;
+
+            case "ktp":
+                fileUpload = sidang.getFileKtp();
+                break;
+
+            case "ijazah":
+                fileUpload = sidang.getFileIjazah();
+                break;
+
+            case "turnitin":
+                fileUpload = sidang.getFileTurnitin();
+                break;
+
+            default:
+                break;
+        }
+
+        String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
                 + File.separator + fileUpload;
 
         try {
