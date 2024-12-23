@@ -3112,6 +3112,17 @@ public class GraduationController {
         return graduationService.getFileJurnal(seminar, file);
     }
 
+    @GetMapping("/upload/{sidang}/file-jurnal-loa/{file}/")
+    public ResponseEntity<byte[]> getFileUploadSidangJurnal(@PathVariable Sidang sidang,
+                                                @PathVariable String file) throws Exception {
+        if (Integer.parseInt(sidang.getTahunAkademik().getKodeTahunAkademik()) >= Integer.parseInt("20241")) {
+            return graduationService.getFileJurnalSidang(sidang, file);
+        }else {
+            System.out.println("yeay");
+            return graduationService.getFileJurnal(sidang.getSeminar(), file);
+        }
+    }
+
     @GetMapping("/graduation/konversi-seminar")
     @ResponseBody
     public String konversiSeminar() {

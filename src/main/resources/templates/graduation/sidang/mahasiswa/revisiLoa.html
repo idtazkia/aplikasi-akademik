@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisi</title>
+    <style type="text/css">
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-success{
+            background-color: #5cb85c;
+            border-radius: 10px;
+        }
+
+        .bd-warning{
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-warning:hover{
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-danger{
+            background-color: #d9534f;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body onload="myFunction()">
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Pendaftaran Sidang</h2>
+                                        <p>Semangat, Semoga Lancar!! 💙</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="bounceIn">
+            <div class="row">
+                <div class="col-md-4 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Form Download</h2>
+                            <hr>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dropdown">
+                                        <a th:href="@{/sample/form-jurnal}"
+                                           class="btn btn-info btn-sm">
+                                            Download Surat Permohonan Pernyataan Kelulusan
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Form</h2>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div>
+                                        <form th:action="@{/graduation/sidang/mahasiswa/revisiLoa (id = ${sidang.id})}" id="add-sempro" th:object="${sidang}"
+                                              method="post" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label>NIM</label>
+                                                <br>
+                                                <p th:text="${sidang.seminar.note.mahasiswa.nim}">11605557</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <br>
+                                                <p th:text="${sidang.seminar.note.mahasiswa.nama}">Muhammad Rafizki</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Title</label>
+                                                <br>
+                                                <p th:text="${sidang.judulInggris}">
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis
+                                                    dolorum eos eum, expedita laboriosam minima necessitatibus odio quis
+                                                    rerum similique. At blanditiis dolorem eos error obcaecati, odit totam
+                                                    veniam voluptates.
+                                                </p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Artikel Jurnal & LOA</label>
+                                                <input type="file" required accept="application/pdf" name="jurnal"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Surat Permohonan Pernyataan Kelulusan</label>
+                                                <input type="file" required accept="application/pdf" name="pendaftaran"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Kartu Bimbingan</label>
+                                                <input type="file" required accept="application/pdf" name="kartu"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>KTP</label>
+                                                <input type="file" required accept="application/pdf" name="ktp"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Ijazah</label>
+                                                <input type="file" required accept="application/pdf" name="ijazah"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" id="btnSimpan" onclick="saveSempro()" class="btn btn-primary">Save</button>
+                                            </div>
+                                            <input type="hidden" name="id" th:field="*{id}">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $("#save").click(function(){
+        $("#save").hide();
+    });
+</script>
+</body>
+</html>
