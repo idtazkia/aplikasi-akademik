@@ -1299,4 +1299,50 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         KrsDetail findByKrsAndStatusKonversiAndStatusAndMatakuliahKurikulum(Krs krs, StatusRecord konversi, StatusRecord status, MatakuliahKurikulum matkur);
 
+        @Query(value = "SELECT \n" +
+                "    COALESCE((\n" +
+                "        SELECT \n" +
+                "            COUNT(a.id) AS jml_mangkir\n" +
+                "        FROM \n" +
+                "            presensi_mahasiswa AS a\n" +
+                "        INNER JOIN \n" +
+                "            sesi_kuliah AS b ON a.id_sesi_kuliah = b.id\n" +
+                "        INNER JOIN \n" +
+                "            presensi_dosen AS c ON b.id_presensi_dosen = c.id\n" +
+                "        WHERE \n" +
+                "            a.id_mahasiswa = ?1  \n" +
+                "            AND a.id_krs_detail = kd.id\n" +
+                "            AND a.status = 'AKTIF' \n" +
+                "            AND c.status = 'AKTIF' \n" +
+                "            AND a.status_presensi IN ('MANGKIR')\n" +
+                "    ), 0) + \n" +
+                "    COALESCE((\n" +
+                "        SELECT \n" +
+                "            COUNT(*)\n" +
+                "        FROM \n" +
+                "            sesi_kuliah AS b\n" +
+                "        INNER JOIN \n" +
+                "            presensi_dosen AS c ON b.id_presensi_dosen = c.id\n" +
+                "        WHERE \n" +
+                "            b.id_jadwal = kd.id_jadwal -- Menggunakan id_jadwal untuk hubungan\n" +
+                "            AND c.status = 'AKTIF'\n" +
+                "            AND NOT EXISTS (\n" +
+                "                SELECT 1 \n" +
+                "                FROM presensi_mahasiswa AS a \n" +
+                "                WHERE \n" +
+                "                    a.id_sesi_kuliah = b.id \n" +
+                "                    AND a.id_mahasiswa = ?1 \n" +
+                "            )\n" +
+                "    ), 0) AS total\n" +
+                "FROM \n" +
+                "    krs_detail AS kd\n" +
+                "INNER JOIN \n" +
+                "    matakuliah_kurikulum AS mk ON kd.id_matakuliah_kurikulum = mk.id\n" +
+                "INNER JOIN \n" +
+                "    matakuliah AS m ON mk.id_matakuliah = m.id\n" +
+                "WHERE \n" +
+                "    kd.id_mahasiswa = ?1 \n" +
+                "    AND kd.id_jadwal = ?2 \n" +
+                "    AND kd.status = 'AKTIF'", nativeQuery = true)
+        Integer totalMangkirMahasiswa(Mahasiswa mahasiswa, Jadwal jadwal);
 }

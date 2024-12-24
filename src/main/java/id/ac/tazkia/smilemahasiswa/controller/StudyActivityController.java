@@ -828,6 +828,7 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
+        model.addAttribute("totalMangkir", krsDetailDao.totalMangkirMahasiswa(mahasiswa, jadwal));
         model.addAttribute("detail", krsDetailDao.detailPresensi(mahasiswa,jadwal));
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mahasiswa);
