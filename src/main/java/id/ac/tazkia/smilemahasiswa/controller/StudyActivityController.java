@@ -902,7 +902,7 @@ public class StudyActivityController {
             }
 
             Long size = fileJawaban.getSize();
-            if (size > 1000000){
+            if (size > 1028000){
                 attributes.addFlashAttribute("failedSize", "Ukuran file terlalu besar");
                 return "redirect:/study/tugas?jadwalTugas="+jadwalTugas.getId();
             }
