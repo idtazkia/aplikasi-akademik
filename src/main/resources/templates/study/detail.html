@@ -127,7 +127,7 @@
                                                     </div>
                                                 </div>
                                                 <hr>
-                                                <span th:if="${data[5] != 16}">
+                                                <span th:if="${data[5] != 16 || data[5] == 16 && totalMangkir < 4}">
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <span th:text="${data[3]}"></span>
