@@ -20,11 +20,11 @@ public interface FileMagangDao extends PagingAndSortingRepository<FileMagang, St
 
     List<FileMagang> findByMahasiswaAndStatusInOrderByStatusDesc(Mahasiswa mahasiswa, List<StatusApprove> asList);
 
-    Page<FileMagang> findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadDesc(Prodi prodi,
+    Page<FileMagang> findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadAsc(Prodi prodi,
             List<StatusApprove> asList, TahunAkademik tahunAkademik,
             Pageable page);
 
-    Page<FileMagang> findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadDesc(Prodi prodi,
+    Page<FileMagang> findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadAsc(Prodi prodi,
             List<StatusApprove> asList, TahunAkademik tahunAkademik, MagangStatus magangStatus,
             Pageable page);
 

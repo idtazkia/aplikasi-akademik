@@ -2876,11 +2876,11 @@ public class GraduationController {
             if (status.equals("ALL")) {
                 model.addAttribute("selectedStatus", status);
                 model.addAttribute("list",
-                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadDesc(prodi,
+                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadAsc(prodi,
                                 Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik, pageable));
             } else {
                 model.addAttribute("list",
-                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadDesc(prodi,
+                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadAsc(prodi,
                                 Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik,
                                 MagangStatus.valueOf(status), pageable));
             }
