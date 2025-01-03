@@ -148,6 +148,7 @@
                                                 <th scope="col">Kelas</th>
                                                 <th scope="col">Ruangan</th>
                                                 <th scope="col">Dosen</th>
+                                                <th scope="col">Status</th>
                                                 <th class="col" colspan="2"></th>
                                             </tr>
                                         </thead>
@@ -155,7 +156,7 @@
                                             <tr th:each="data,row : ${listKrs}">
                                                 <td th:text="${(row.index + 1)}">1</td>
                                                 <td th:text="${data.jadwal.hari.namaHari}">Senin</td>
-                                                <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}">
+                                                <td th:text="${data?.jadwal?.jamMulai + ' - ' + data?.jadwal?.jamSelesai}">
                                                     13.00</td>
                                                 <td
                                                     th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">
@@ -163,7 +164,12 @@
                                                 <td th:text="${data.matakuliahKurikulum.jumlahSks}">Ini SKS</td>
                                                 <td th:text="${data.jadwal.kelas.namaKelas}">Ruang 1.3</td>
                                                 <td th:text="${data.jadwal.ruangan.namaRuangan}">Ruang 1.3</td>
-                                                <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Ini Lecture
+                                                <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Ini Lecture</td>
+                                                <td th:if="${data.statusKonversi != null}">
+                                                    <a href="#!" class="btn btn-sm btn-secondary" th:text="${data.statusKonversi}"></a>
+                                                </td>
+                                                <td th:if="${data.statusKonversi == null}">
+                                                    <a href="#!" class="btn btn-sm btn-info" th:text="${data.status}"></a>
                                                 </td>
                                                 <td>
                                                     <button type="button" th:id="${data.id}"
