@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.MahasiswaTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.KlasemenDosenIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.TotalSksDto;
@@ -1350,4 +1351,80 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "    AND kd.id_jadwal = ?2 \n" +
                 "    AND kd.status = 'AKTIF'", nativeQuery = true)
         Integer totalMangkirMahasiswa(Mahasiswa mahasiswa, Jadwal jadwal);
+
+        @Query(value = "WITH mangkir_counts AS (\n" +
+                "    SELECT \n" +
+                "        kd.id AS id_krs_detail,\n" +
+                "        COUNT(CASE \n" +
+                "                WHEN pm.id IS NULL OR pm.status_presensi = 'MANGKIR' THEN 1 \n" +
+                "                ELSE NULL \n" +
+                "             END) AS total_mangkir,\n" +
+                "        MAX(sk.pertemuan_ke) AS pertemuan_ke\n" +
+                "    FROM \n" +
+                "        krs_detail AS kd\n" +
+                "    INNER JOIN \n" +
+                "        sesi_kuliah AS sk ON sk.id_jadwal = kd.id_jadwal\n" +
+                "    LEFT JOIN \n" +
+                "        presensi_mahasiswa AS pm ON pm.id_sesi_kuliah = sk.id AND pm.id_krs_detail = kd.id\n" +
+                "    WHERE \n" +
+                "        kd.id_jadwal = ?1 \n" +
+                "        AND kd.status = 'AKTIF'\n" +
+                "    GROUP BY \n" +
+                "        kd.id\n" +
+                "),\n" +
+                "task_status AS (\n" +
+                "    SELECT \n" +
+                "        kd.id AS id_krs_detail,\n" +
+                "        jtj.id AS id_tugas_jawaban,\n" +
+                "        jtj.nilai,\n" +
+                "        jtj.waktu_pengumpulan AS waktuPengumpulan,\n" +
+                "        jtj.nama_file\n" +
+                "    FROM \n" +
+                "        krs_detail AS kd\n" +
+                "    INNER JOIN \n" +
+                "        sesi_kuliah AS sk ON sk.id_jadwal = kd.id_jadwal\n" +
+                "    INNER JOIN \n" +
+                "        jadwal_tugas AS jt ON jt.id_sesi_kuliah = sk.id\n" +
+                "    LEFT JOIN \n" +
+                "        jadwal_tugas_jawaban AS jtj ON jtj.id_jadwal_tugas = jt.id AND jtj.id_mahasiswa = kd.id_mahasiswa\n" +
+                "    WHERE \n" +
+                "        kd.id_jadwal = ?1 \n" +
+                "        AND kd.status = 'AKTIF'\n" +
+                "        AND jtj.status = 'AKTIF'\n" +
+                "        AND jt.id = ?2 \n" +
+                ")\n" +
+                "SELECT \n" +
+                "    m.nim,\n" +
+                "    m.nama AS nama ,\n" +
+                "    COALESCE(mc.total_mangkir, 0) AS mangkir,\n" +
+                "    COALESCE(ts.id_tugas_jawaban, 'Tidak Ada') AS id,\n" +
+                "    COALESCE(ts.nilai, 'Belum Dinilai') AS nilai,\n" +
+                "    COALESCE(ts.waktuPengumpulan, 'Belum Mengumpulkan') AS waktu,\n" +
+                "    COALESCE(ts.nama_file, 'Tidak Ada File') AS file,\n" +
+                "    CASE \n" +
+                "        WHEN COALESCE(mc.total_mangkir, 0) >= 4 THEN 'Tidak Bisa Ikut'\n" +
+                "        WHEN ts.id_tugas_jawaban IS NULL THEN 'Belum Mengumpulkan'\n" +
+                "        ELSE 'OK'\n" +
+                "    END AS status\n" +
+                "FROM \n" +
+                "    krs_detail AS kd\n" +
+                "INNER JOIN \n" +
+                "    mahasiswa AS m ON kd.id_mahasiswa = m.id\n" +
+                "LEFT JOIN \n" +
+                "    mangkir_counts AS mc ON kd.id = mc.id_krs_detail\n" +
+                "LEFT JOIN \n" +
+                "    task_status AS ts ON kd.id = ts.id_krs_detail\n" +
+                "WHERE \n" +
+                "    kd.id_jadwal = ?1 \n" +
+                "    AND kd.status = 'AKTIF'\n" +
+                "ORDER BY \n" +
+                "    CASE \n" +
+                "        WHEN mc.pertemuan_ke = 16 THEN 1\n" +
+                "        WHEN COALESCE(mc.total_mangkir, 0) >= 4 THEN 3\n" +
+                "        WHEN ts.id_tugas_jawaban IS NULL THEN 2\n" +
+                "        ELSE 1\n" +
+                "    END,\n" +
+                "    ts.waktuPengumpulan desc\n",
+                nativeQuery = true)
+        List<MahasiswaTugasDto> listMahahasiswaTugas(Jadwal jadwal, JadwalTugas jadwalTugas);
 }

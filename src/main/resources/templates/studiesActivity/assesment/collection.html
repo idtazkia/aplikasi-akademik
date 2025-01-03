@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
@@ -89,17 +88,45 @@
                                 <tbody>
                                 <tr th:each="data,row : ${tugasmahasiswa}">
                                     <td th:text="${(row.index + 1)}">1</td>
-                                    <td th:text="${data.mahasiswa.nim}">Basic Econometrics   </td>
-                                    <td th:text="${data.mahasiswa.nama}">Aam Slamet Rusydiana  </td>
-                                    <td ><a target="_blank" th:text="${data.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${data.id})}"></a></td>
-                                    <td class="text-nowrap" style="min-width: 100px;">
-                                        <div class="input-group">
-                                            <input type="number" th:name="${'jawab-'+data.id}" max="100" th:value="${data.nilai}" class="form-control" style="width: 50px;">
-                                            <span class="input-group-text">/100</span>
-                                        </div>
-                                    </td>
-                                    <td th:text="${#temporals.format(data.waktuPengumpulan, 'dd - MMM - yyyy')}"></td>
-                                    <td><a class="btn btn-info btn-sm" th:href="@{/studiesActivity/assesment/detail(jawaban=${data.id})}"><i class="fa fa-eye"></i> Detail</a></td>
+                                    <td th:text="${data.nim}">Basic Econometrics   </td>
+                                    <td th:text="${data.nama}">Aam Slamet Rusydiana  </td>
+                                    <span th:if="${data.status ==  'OK'}">
+                                        <td>
+                                            <a th:if="${data.file == 'Tidak Ada File'}"  th:text="${data.file}" ></a>
+                                            <a th:if="${data.file != 'Tidak Ada File'}" target="_blank" th:text="${data.file}" th:href="@{/collection/{jawaban}/tugas(jawaban=${data.id})}"></a>
+                                        </td>
+                                        <td class="text-nowrap" style="min-width: 100px;">
+                                            <div class="input-group">
+                                                <input type="number" th:name="${'jawab-'+data.id}" max="100" th:value="${data.nilai}" class="form-control" style="width: 50px;">
+                                                <span class="input-group-text">/100</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${data.waktu}">Aam Slamet Rusydiana  </td>
+                                        <td><a class="btn btn-info btn-sm" th:href="@{/studiesActivity/assesment/detail(jawaban=${data.id})}"><i class="fa fa-eye"></i> Detail</a></td>
+                                    </span>
+
+                                    <span th:if="${data.status ==  'Belum Mengumpulkan' }">
+                                        <td colspan="4"><b>Belum mengumpulkan Tugas</b></td>
+                                    </span>
+
+                                    <span th:if="${data.mangkir >  3 && jadwaltugas.pertemuanKe == 16}">
+                                        <td colspan="4"><b>Tidak bisa mengikuti ujian karna mangkir lebih dari 3 kali</b></td>
+                                    </span>
+
+                                    <span th:if="${data.status ==  'Tidak Bisa Ikut' && jadwaltugas.pertemuanKe != 16 && data.waktu != 'Belum Mengumpulkan'}">
+                                        <td>
+                                            <a th:if="${data.file == 'Tidak Ada File'}"  th:text="${data.file}" ></a>
+                                            <a th:if="${data.file != 'Tidak Ada File'}" target="_blank" th:text="${data.file}" th:href="@{/collection/{jawaban}/tugas(jawaban=${data.id})}"></a>
+                                        </td>
+                                        <td class="text-nowrap" style="min-width: 100px;">
+                                            <div class="input-group">
+                                                <input type="number" th:name="${'jawab-'+data.id}" max="100" th:value="${data.nilai}" class="form-control" style="width: 50px;">
+                                                <span class="input-group-text">/100</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${data.waktu}">Aam Slamet Rusydiana  </td>
+                                        <td><a class="btn btn-info btn-sm" th:href="@{/studiesActivity/assesment/detail(jawaban=${data.id})}"><i class="fa fa-eye"></i> Detail</a></td>
+                                    </span>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(tugasmahasiswa)}">
                                     <td class="text-center" colspan="7">Belum ada yang mengumpulkan tugas.</td>
