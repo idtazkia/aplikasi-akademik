@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller.setting;
 
-import id.ac.tazkia.smilemahasiswa.dao.EventAbsensiDao;
-import id.ac.tazkia.smilemahasiswa.dao.EventDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import net.coobird.thumbnailator.Thumbnails;
@@ -54,6 +51,9 @@ public class EventController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private DosenDao dosenDao;
 
     @Autowired
     @Value("${upload.event}")
@@ -351,6 +351,20 @@ public class EventController {
             LOGGER.warn(err.getMessage(), err);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    // Dosen Wali
+    @GetMapping("/event/dosen")
+    public String halamanDosen(Model model, @RequestParam Event event, @PageableDefault(size = 10) Pageable page, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Dosen dosen = dosenDao.findByKaryawanIdUser(user);
+
+        model.addAttribute("event", event);
+        model.addAttribute("listMhs", eventAbsensiDao.listAbsensiEventDosenWali(event.getId(), dosen.getId(), page));
+
+        return "event/dosenWali";
+
     }
 
 }

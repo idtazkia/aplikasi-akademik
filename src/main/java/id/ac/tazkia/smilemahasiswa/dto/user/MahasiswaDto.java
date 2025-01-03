@@ -63,6 +63,7 @@ public class MahasiswaDto {
     private String kps;
     private String nomorKps;
     private String ukuranBaju;
+    private String dosenWali;
 
     private String ayah;
     private String namaAyah;

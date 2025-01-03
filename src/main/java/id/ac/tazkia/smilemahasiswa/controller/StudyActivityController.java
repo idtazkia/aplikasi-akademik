@@ -828,6 +828,7 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
+        model.addAttribute("totalMangkir", krsDetailDao.totalMangkirMahasiswa(mahasiswa, jadwal));
         model.addAttribute("detail", krsDetailDao.detailPresensi(mahasiswa,jadwal));
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -901,7 +902,7 @@ public class StudyActivityController {
             }
 
             Long size = fileJawaban.getSize();
-            if (size > 1000000){
+            if (size > 1028000){
                 attributes.addFlashAttribute("failedSize", "Ukuran file terlalu besar");
                 return "redirect:/study/tugas?jadwalTugas="+jadwalTugas.getId();
             }

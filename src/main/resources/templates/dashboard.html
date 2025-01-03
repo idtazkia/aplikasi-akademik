@@ -12,6 +12,28 @@
     </style>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .btn-bar-chart {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ipk-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ipk-label {
+            font-size: 10px;
+            line-height: 1;
+        }
+
+        .ipk-value {
+            font-weight: bold;
+            line-height: 1;
+        }
+    </style>
 </head>
 <body>
 <section layout:fragment="main" class="content">
@@ -273,33 +295,59 @@
                                             <div class="ongoing-task-inner notika-shadow mg-t-30">
                                                 <div class="realtime-ctn">
                                                     <div class="realtime-title ongoing-hd-wd">
-                                                        <h2>Miss Attendence</h2>
+                                                        <h2>Keterangan</h2>
                                                     </div>
                                                 </div>
                                                 <div class="skill-content-3 ongoing-tsk">
                                                     <div class="skill">
-                                                        <a href="">
-                                                            <div class="progress" th:each="data : ${persentase}">
-                                                                <div class="lead-content">
-                                                                    <p th:text="${data[0]}">Matematika</p><br>
-                                                                </div>
-                                                                <div th:if="${data[1] == 1}"
-                                                                     class="progress-bar wow fadeInLeft"
-                                                                     data-progress="95%" style="width: 33%;"
-                                                                     data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                    <span th:text="${data[1]}">95 %</span></div>
-                                                                <div th:if="${data[1] == 2}"
-                                                                     class="progress-bar wow fadeInLeft"
-                                                                     data-progress="95%" style="width: 66%;"
-                                                                     data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                    <span th:text="${data[1]}">95 %</span></div>
-                                                                <div th:if="${data[1] > 3}"
-                                                                     class="progress-bar wow fadeInLeft"
-                                                                     data-progress="95%" style="width: 100%;"
-                                                                     data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                    <span>>3</span></div>
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <button class="btn btn-primary">
+                                                                    <i class="fa fa-user"></i>
+                                                                </button>
                                                             </div>
-                                                        </a>
+                                                            <div class="col-md-10">
+                                                                <div style="font-size: 10px;">Dosen Wali</div>
+                                                                <div><b th:text="${dosenWali}"></b></div>
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div  class="col-md-2">
+                                                                <button class="btn btn-primary"><i class="notika-icon notika-bar-chart"></i></button>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div style="font-size: 10px;">IPK</div>
+                                                                <div><b th:text="${ipk}"></b></div>
+                                                            </div>
+                                                            <div  class="col-md-2">
+                                                                <button class="btn btn-primary"><i class="notika-icon notika-bar-chart"></i></button>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div style="font-size: 10px;">IPS</div>
+                                                                <div><b th:text="${ip?.ipk}"></b></div>
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+<!--                                                            <div class="col-md-2">-->
+<!--                                                                <button class="btn btn-primary">-->
+<!--                                                                    <i class="notika-icon notika-draft"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+                                                            <div class="col-md-12">
+                                                                <div>Total SKS <b th:text="${totalSks}"></b></div>
+                                                                <div><b th:text="${totalSksSelesai}"></b> SKS telah ditempuh selama  <b th:text="${semesterSebelum}"></b> semester</div>
+                                                                <div><b th:text="${totalSksSemester}"></b> SKS sedang ditempuh di semester  <b th:text="${semesterSebelum + semesterSekarang}"></b></div>
+                                                            </div>
+                                                        </div>
+<!--                                                        <div class="row">-->
+<!--                                                            <div class="line-chart-area">-->
+<!--                                                                <div class="line-chart-wp chart-display-nn">-->
+<!--                                                                    <canvas height="40vh" width="30vw" id="chartsipk"></canvas>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -749,6 +797,61 @@
 </body>
 </html>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    $(function (){
+
+        var ctx = document.getElementById("chartsipk");
+        var chartsipk = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["1", "2", "3", "4", "5", "6", "7", "8"],
+                datasets: [{
+                    label: 'IP',
+                    fill: false,
+                    backgroundColor: '#00c292',
+                    borderColor: '#00c292',
+                    data: [3.12, 3.56, 3.32]
+                }]
+            },
+            options: {
+                responsive: true,
+                title:{
+                    display:true,
+                    text:'Grafik Indeks Prestasi Semester'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Semester'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'IP'
+                        },
+                        ticks: {
+                            suggestedMin: 1,
+                            suggestedMax: 4,
+                        }
+                    }]
+                }
+            }
+        });
+
+    });
+</script>
 <script>
 
     $(function () {

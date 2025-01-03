@@ -1421,7 +1421,7 @@ public class SidangService {
         String nidnDosen = null;
         String jabatan = null;
         String kdProdi = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
+        if (sidang.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(kdProdi)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 nama = karyawan.getNamaKaryawan();
@@ -1790,7 +1790,7 @@ public class SidangService {
         String namaKps = null;
         String nidnKps = null;
         String prd = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0) {
+        if (sidang.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
             if ("MBS".equals(prd)) {
                 Karyawan karyawan = karyawanDao.findById("thubaz").get();
                 namaKps = karyawan.getNamaKaryawan();
@@ -1854,7 +1854,7 @@ public class SidangService {
 
     public Sidang createSidangJurnal(Seminar seminar){
         Sidang sidang = new Sidang();
-        sidang.setTanggalInput(LocalDate.now());
+        sidang.setTanggalInput(LocalDateTime.now());
         sidang.setSeminar(seminar);
         sidang.setTahunAkademik(seminar.getTahunAkademik());
         sidang.setAkademik(StatusApprove.APPROVED);

@@ -125,8 +125,8 @@
                             </li>
                             <li><a data-toggle="collapse" data-target="#democrou" href="#">TLC</a>
                                 <ul id="tlc" class="collapse dropdown-header-top">
-                                    <li><a th:href="@{/kuesioner/toefl/view}">TOEFL</a></li>
-                                    <li><a th:href="@{/kuesioner/ielts/view}">IELTS</a></li>
+                                    <li><a th:href="@{/kuesioner/toefl/list}">TOEFL</a></li>
+                                    <li><a th:href="@{/kuesioner/ielts/list}">IELTS</a></li>
                                 </ul>
                             </li>
                             <li><a data-toggle="collapse" data-target="#demodepart" th:href="@{/graduation/register}">Graduation</a>
@@ -173,8 +173,8 @@
                     </div>
                     <div id="menuTLC" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
-                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/toefl/view}">TOEFL</a></li>
-                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/ielts/view}">IELTS</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/toefl/list}">TOEFL</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/kuesioner/ielts/list}">IELTS</a></li>
                         </ul>
                     </div>
                     <div id="Tables" class="tab-pane notika-tab-menu-bg animated flipInX">
@@ -275,6 +275,9 @@
 <script th:src="@{/js/knob/jquery.knob.js}"></script>
 <script th:src="@{/js/knob/jquery.appear.js}"></script>
 <script th:src="@{/js/knob/knob-active.js}"></script>
+
+<script th:src="@{/js/charts/Chart.js}"></script>
+<script th:src="@{/js/charts/line-chart.js}"></script>
 <!--  wave JS
     ============================================ -->
 <script th:src="@{/js/wave/waves.min.js}"></script>

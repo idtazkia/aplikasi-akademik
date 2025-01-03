@@ -872,19 +872,19 @@
                                             <div class="dropdown-menu"
                                                  th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}">
                                                 <a class="dropdown-item"
-                                                   th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'jurnal'})}"
+                                                   th:href="@{/upload/{sidang}/file-jurnal-loa/{file}/(sidang=${data.id},file=${'jurnal'})}"
                                                    target="_blank">Artikel Jurnal & LOA</a>
                                                 <a class="dropdown-item"
-                                                   th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'pendaftaran'})}"
+                                                   th:href="@{/upload/{sidang}/file-jurnal-loa/{file}/(sidang=${data.id},file=${'pendaftaran'})}"
                                                    target="_blank">Permohonan Pernyataan Kelulusan</a>
                                                 <a class="dropdown-item"
-                                                   th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'bimbingan'})}"
+                                                   th:href="@{/upload/{sidang}/file-jurnal-loa/{file}/(sidang=${data.id},file=${'bimbingan'})}"
                                                    target="_blank">Kartu Bimbingan</a>
                                                 <a class="dropdown-item"
-                                                   th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'ktp'})}"
+                                                   th:href="@{/upload/{sidang}/file-jurnal-loa/{file}/(sidang=${data.id},file=${'ktp'})}"
                                                    target="_blank">KTP</a>
                                                 <a class="dropdown-item"
-                                                   th:href="@{/upload/{seminar}/file-jurnal/{file}/(seminar=${data.seminar.id},file=${'ijazah'})}"
+                                                   th:href="@{/upload/{sidang}/file-jurnal-loa/{file}/(sidang=${data.id},file=${'ijazah'})}"
                                                    target="_blank">Ijazah</a>
                                             </div>
 
@@ -1253,8 +1253,24 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form
+                                                        <form   th:if="${data.seminar.note.jenis != data.seminar.note.jenis.JURNAL}"
                                                                 th:action="@{/graduation/sidang/admin/terima (id = ${data.id})}"
+                                                                method="post">
+                                                            <div class="form-group">
+                                                                        <textarea name="komentarAkademik"
+                                                                                  class="form-control"
+                                                                                  placeholder="Comment"
+                                                                                  id="" cols="30" rows="10"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success"
+                                                                        type="submit">Setujui
+                                                                </button>
+                                                            </div>
+                                                        </form>
+
+                                                        <form   th:if="${data.seminar.note.jenis == data.seminar.note.jenis.JURNAL}"
+                                                                th:action="@{/graduation/sidang/admin/terimaLoa (id = ${data.id})}"
                                                                 method="post">
                                                             <div class="form-group">
                                                                         <textarea name="komentarAkademik"

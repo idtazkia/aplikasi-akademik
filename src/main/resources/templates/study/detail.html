@@ -127,46 +127,59 @@
                                                     </div>
                                                 </div>
                                                 <hr>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <span th:text="${data[3]}"></span>
+                                                <span th:if="${data[5] != 16 || data[5] == 16 && totalMangkir < 4}">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <span th:text="${data[3]}"></span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <br>
-                                                <div class="tpgp-al-cl">
-                                                    <h4 th:if="${data[7] != null}">Link Pertemuan Online</h4>
-                                                    <ul th:if="${data[7] != null}" class="tpdg-ul-circle">
-                                                        <li>
-                                                            <a th:href="${data[7]}" target="_blank" th:text="${data[7]}"></a>
-                                                        </li>
-                                                    </ul>
                                                     <br>
-                                                    <h4>File Materi</h4>
-                                                    <ul class="tpdg-ul-circle" th:each="materi, row : ${materi}">
-                                                        <li th:if="${materi.sesiKuliah.id == data[4]}">
-                                                            <a th:href="@{/materi/{id}/sesi(id=${materi.id})}" target="_blank" th:text="${materi.namaFile}"></a>
-                                                        </li>
-                                                    </ul>
-                                                    <br>
-                                                    <h4 th:if="${data[6] != null}">Link Materi</h4>
-                                                    <ul th:if="${data[6] != null}" class="tpdg-ul-circle" th:each="link, row:${#strings.arraySplit(data[6], ',')}">
-                                                        <li>
-                                                            <a th:href="${link}" target="_blank" th:text="${link}"></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <hr>
-                                                <h4>Tugas</h4>
-                                                <!-- && tugas[7] <= now -->
-                                                <div th:each="tugas, row : ${tugas}" th:if="${tugas.getIdSesi() == data[4] && tugas.getWaktuMulai() <= now}" class="tpgp-al-cl">
-                                                    <div class="list-tugas">
-                                                        <h5 th:text="${'Judul Tugas : ' + tugas.getNamaTugas()}"></h5>
-                                                        <input type="hidden" class="waktu-mulai" th:value="${tugas.getWaktuMulai()}">
-                                                        <input type="hidden" class="tenggat-waktu" th:value="${tugas.getTenggatWaktu()}">
-                                                        <h5 class="message" style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada</h5>
-                                                        <a th:href="@{/study/tugas(jadwalTugas=${tugas.getId()})}" class="btn btn-info detail-button">Detail Tugas</a><br><br>
+                                                    <div class="tpgp-al-cl">
+                                                        <h4 th:if="${data[7] != null}">Link Pertemuan Online</h4>
+                                                        <ul th:if="${data[7] != null}" class="tpdg-ul-circle">
+                                                            <li>
+                                                                <a th:href="${data[7]}" target="_blank" th:text="${data[7]}"></a>
+                                                            </li>
+                                                        </ul>
+                                                        <br>
+                                                        <h4>File Materi</h4>
+                                                        <ul class="tpdg-ul-circle" th:each="materi, row : ${materi}">
+                                                            <li th:if="${materi.sesiKuliah.id == data[4]}">
+                                                                <a th:href="@{/materi/{id}/sesi(id=${materi.id})}" target="_blank" th:text="${materi.namaFile}"></a>
+                                                            </li>
+                                                        </ul>
+                                                        <br>
+                                                        <h4 th:if="${data[6] != null}">Link Materi</h4>
+                                                        <ul th:if="${data[6] != null}" class="tpdg-ul-circle" th:each="link, row:${#strings.arraySplit(data[6], ',')}">
+                                                            <li>
+                                                                <a th:href="${link}" target="_blank" th:text="${link}"></a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </div>
+                                                         <hr>
+                                                        <h4>Tugas</h4>
+                                                            <!-- && tugas[7] <= now -->
+                                                        <div th:each="tugas, row : ${tugas}" th:if="${tugas.getIdSesi() == data[4] && tugas.getWaktuMulai() <= now}" class="tpgp-al-cl">
+                                                            <div class="list-tugas">
+                                                                <h5 th:text="${'Judul Tugas : ' + tugas.getNamaTugas()}"></h5>
+                                                                <input type="hidden" class="waktu-mulai" th:value="${tugas.getWaktuMulai()}">
+                                                                <input type="hidden" class="tenggat-waktu" th:value="${tugas.getTenggatWaktu()}">
+                                                                <h5 class="message" style="color: red;">Pengumpulan tugas paling telat di kumpulkan pada</h5>
+                                                                <a th:href="@{/study/tugas(jadwalTugas=${tugas.getId()})}" class="btn btn-info detail-button">Detail Tugas</a><br><br>
+                                                            </div>
+                                                        </div>
+                                                </span>
+
+                                                <span th:if="${data[5] == 16 && totalMangkir >= 4}">
+                                                    <hr>
+                                                    <h4>Pemberitahuan</h4>
+                                                    <div  class="tpgp-al-cl">
+                                                        <div>
+                                                            <h5 class="message" style="color: red;">Anda tidak dapat mengikuti UAS karna telah mangkir lebih dari 3 kali</h5>
+                                                        </div>
+                                                    </div>
+                                                </span>
+
                                                 <script>
                                                     document.addEventListener('DOMContentLoaded', function (){
                                                         function getTimeRemaining(targetDate) {

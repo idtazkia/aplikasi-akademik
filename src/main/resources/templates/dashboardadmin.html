@@ -220,7 +220,7 @@
                         </div>
                     </div>
 
-                    <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                    <div th:if="${!#lists.isEmpty(listCutiDosenWali)}" class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
                         <div class="col-md-12 col-xs-12">
                             <div class="card shadow">
                                 <div class="card-header">
@@ -298,7 +298,7 @@
                         </div>
                     </div>
 
-                    <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_KPS')">
+                    <div th:if="${!#lists.isEmpty(listCutiKps)}" class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_KPS')">
                         <div class="col-md-12 col-xs-12">
                             <div class="card shadow">
                                 <div class="card-header">
@@ -369,6 +369,90 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(listMhsDiWalikan)}" class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h6 class="text-uppercase ls-1 mb-1">List</h6>
+                                            <h2 class=" mb-0">Wali Mahasiswa</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="data-table-1" class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nim</th>
+                                                <th>Nama</th>
+                                                <th>Angkatan</th>
+                                                <th>Prodi</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row : ${listMhsDiWalikan}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td th:text="${data.nim}"></td>
+                                                <td th:text="${data.nama}"></td>
+                                                <td th:text="${data.angkatan}"></td>
+                                                <td th:text="${data.idProdi.namaProdi}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+
+                    <div th:if="${!#lists.isEmpty(listMhsDiWalikan)}" class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h6 class="text-uppercase ls-1 mb-1">List</h6>
+                                            <h2 class=" mb-0">Absensi Event Mahasiswa</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Event</th>
+                                                <th>Tahun Akademik</th>
+                                                <th>Jadwal</th></th>
+                                                <th>Tanggal Publis</th>
+                                                <th>Absen</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="event, row : ${listEvent}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td th:text="${event.eventName}"></td>
+                                                <td th:text="${event.tahunAkademik.namaTahunAkademik}"></td>
+                                                <td th:text="${#temporals.format(event.scheduleStart, 'dd-MMM-yyyy HH:mm:ss') + ' s/d ' + #temporals.format(event.scheduleEnd, 'dd-MMM-yyyy HH:mm:ss')}"></td>
+                                                <td th:text="${event.schedulePublish}"></td>
+                                                <td class="align-middle p-0">
+                                                    <a class="btn btn-sm btn-info" title="Detail" th:href="@{/event/dosen(event = ${event.id})}" >
+                                                        <i class="fa fa-eye"></i> Detail
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

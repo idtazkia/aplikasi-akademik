@@ -104,7 +104,7 @@ public class ApiService {
                     t.setZahirExport(AkuntansiExport.SENT);
                     tagihanDao.save(t);
                 }else{
-                    log.info("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
+                    log.debug("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
                 }
             }
         }
@@ -127,7 +127,7 @@ public class ApiService {
                     t.setZahirExport(AkuntansiExport.DELETED);
                     tagihanDao.save(t);
                 }else{
-                    log.info("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
+                    log.debug("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
                 }
             }
         }
@@ -178,7 +178,7 @@ public class ApiService {
                         p.setZahirExport(AkuntansiExport.SENT);
                         pembayaranDao.save(p);
                     }else{
-                        log.info("Kode pembayaran tidak di temukan! {} {} {} {}", p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama(), p.getTagihan().getNilaiJenisTagihan().getProdi().getNamaProdi(), p.getTagihan().getNilaiJenisTagihan().getProgram().getNamaProgram(), p.getTagihan().getNilaiJenisTagihan().getAngkatan());
+                        log.debug("Kode pembayaran tidak di temukan! {} {} {} {}", p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama(), p.getTagihan().getNilaiJenisTagihan().getProdi().getNamaProdi(), p.getTagihan().getNilaiJenisTagihan().getProgram().getNamaProgram(), p.getTagihan().getNilaiJenisTagihan().getAngkatan());
                     }
                 }
             }

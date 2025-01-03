@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -652,7 +653,7 @@ public class SidangController {
         } else {
             sidang.setFileSidang(sidang.getFileSidang());
         }
-        sidang.setTanggalInput(LocalDate.now());
+        sidang.setTanggalInput(LocalDateTime.now().plusHours(7));
         sidang.setStatusSidang(StatusApprove.WAITING);
         sidang.setAkademik(StatusApprove.WAITING);
         sidang.setPublish(StatusRecord.NONAKTIF);
@@ -876,7 +877,7 @@ public class SidangController {
         } else {
             sidang.setFileSidang(sidang.getFileSidang());
         }
-        sidang.setTanggalInput(LocalDate.now());
+        sidang.setTanggalInput(LocalDateTime.now());
         sidang.setStatusSidang(StatusApprove.WAITING);
         sidang.setAkademik(StatusApprove.WAITING);
         sidang.setPublish(StatusRecord.NONAKTIF);
@@ -1097,7 +1098,7 @@ public class SidangController {
             sidang.setFilePerbaikan(sidang.getFilePerbaikan());
         }
 
-        sidang.setTanggalInput(LocalDate.now());
+        sidang.setTanggalInput(LocalDateTime.now());
         sidang.setStatusSidang(StatusApprove.WAITING);
         sidang.setAkademik(StatusApprove.WAITING);
         sidang.setPublish(StatusRecord.NONAKTIF);
@@ -1336,6 +1337,18 @@ public class SidangController {
     public String terimaSidang(@RequestParam(name = "id", value = "id") Sidang sidang,
                                @RequestParam(required = false) String komentarAkademik) {
         sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setKomentarAkademik(komentarAkademik);
+        sidangDao.save(sidang);
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
+                + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/sidang/admin/terimaLoa")
+    public String terimaSidangJurnal(@RequestParam(name = "id", value = "id") Sidang sidang,
+                               @RequestParam(required = false) String komentarAkademik) {
+        sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setStatusSidang(StatusApprove.APPROVED);
+        sidang.setJamMulai(LocalTime.now().plusHours(7));
         sidang.setKomentarAkademik(komentarAkademik);
         sidangDao.save(sidang);
         return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId() + "&prodi="
@@ -2397,6 +2410,387 @@ public class SidangController {
         sidangService.suratTugasSidang(sidang, response);
 
         return "dashboardadmin";
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/loa")
+    public String pendaftaranLoa(@RequestParam(name = "id", value = "id", required = false) Seminar seminar,
+                                    Model model, Authentication authentication) {
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String jenjang = mahasiswa.getIdProdi().getIdJenjang().getId();
+
+
+        if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+            return "redirect:../../seminar/nilai?id=" + seminar.getId();
+        } else {
+            model.addAttribute("seminar", seminar);
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+            KrsDetail krsDetail = null;
+
+
+            if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupLoa())
+                    && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getTutupLoa())) {
+                return "redirect:info";
+            } else {
+                TahunAkademik ta = null;
+                TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+                if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+                    String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),
+                            kode);
+                } else {
+                    if (LocalDate.now().isEqual(tahunAkademik.getTanggalMulai()) || LocalDate.now().isAfter(tahunAkademik.getTanggalMulai())) {
+                        ta = tahunAkademik;
+                    } else {
+                        int last = tahunAkademik.getKodeTahunAkademik().length();
+                        String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                        if (lastKode.equals("1")) {
+                            Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                            String kode = String.valueOf(tahun) + "2";
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        } else {
+                            String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                            ta = tahunAkademikDao
+                                    .findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+                        }
+
+                    }
+                }
+
+                return "graduation/sidang/mahasiswa/loa";
+            }
+        }
+    }
+
+    @PostMapping("/graduation/sidang/mahasiswa/loa")
+    public String prosesLOA(@Valid Sidang sidang,
+                                         BindingResult error, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
+                                         MultipartFile ktp, MultipartFile ijazah, @RequestParam(required = false) MultipartFile berita,
+                                         Authentication currentUser) throws Exception {
+        User user = currentUserService.currentUser(currentUser);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (!kartu.isEmpty() || kartu != null) {
+            String namaFile = kartu.getName();
+            String jenisFile = kartu.getContentType();
+            String namaAsli = kartu.getOriginalFilename();
+            Long ukuran = kartu.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kartu.transferTo(tujuan);
+
+            sidang.setFileBimbingan(idFile + "." + extension);
+
+        } else {
+            sidang.setFileBimbingan(sidang.getFileBimbingan());
+        }
+
+        if (!ktp.isEmpty() || ktp != null) {
+            String namaAsli = ktp.getOriginalFilename();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ktp.transferTo(tujuan);
+
+            sidang.setFileKtp(idFile + "." + extension);
+
+        } else {
+            sidang.setFileKtp(sidang.getFileKtp());
+        }
+
+        if (!jurnal.isEmpty() || jurnal != null) {
+            String namaFile = jurnal.getName();
+            String jenisFile = jurnal.getContentType();
+            String namaAsli = jurnal.getOriginalFilename();
+            Long ukuran = jurnal.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            jurnal.transferTo(tujuan);
+
+            sidang.setFileSidang(idFile + "." + extension);
+
+        } else {
+            sidang.setFileSidang(sidang.getFileSidang());
+        }
+
+        if (!pendaftaran.isEmpty() || pendaftaran != null) {
+            String namaFile = pendaftaran.getName();
+            String jenisFile = pendaftaran.getContentType();
+            String namaAsli = pendaftaran.getOriginalFilename();
+            Long ukuran = pendaftaran.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            pendaftaran.transferTo(tujuan);
+
+            sidang.setFilePendaftaran(idFile + "." + extension);
+
+        } else {
+            sidang.setFilePendaftaran(sidang.getFilePendaftaran());
+        }
+
+        if (!ijazah.isEmpty() || ijazah != null) {
+            String namaFile = ijazah.getName();
+            String jenisFile = ijazah.getContentType();
+            String namaAsli = ijazah.getOriginalFilename();
+            Long ukuran = ijazah.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ijazah.transferTo(tujuan);
+
+            sidang.setFileIjazah(idFile + "." + extension);
+
+        } else {
+            sidang.setFileIjazah(sidang.getFileIjazah());
+        }
+
+
+        sidang.setTanggalInput(LocalDateTime.now().plusHours(7));
+        sidang.setStatusSidang(StatusApprove.WAITING);
+        sidang.setPublish(StatusRecord.NONAKTIF);
+        sidang.setJudulInggris(sidang.getSeminar().getNote().getJudulInggris());
+        sidang.setJudulTugasAkhir(sidang.getSeminar().getNote().getJudulInggris());
+        sidang.setAkademik(StatusApprove.WAITING);
+        TahunAkademik ta = null;
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0, 4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS), kode);
+        } else {
+            ta = tahunAkademik;
+        }
+        sidang.setTahunAkademik(ta);
+        sidangDao.save(sidang);
+
+        return "redirect:list?id=" + sidang.getSeminar().getId();
+
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/revisiLoa")
+    public void revisiSidangLoa(@RequestParam(name = "id", value = "id", required = false) Sidang sidang, Model model,
+                             Authentication authentication) {
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String jenjang = mahasiswa.getIdProdi().getIdJenjang().getId();
+
+        model.addAttribute("sidang", sidang);
+    }
+
+    @PostMapping("/graduation/sidang/mahasiswa/revisiLoa")
+    public String prosesRevisiSidangLoa(@RequestParam(name = "id", value = "id", required = false) Sidang sidang, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
+                                      MultipartFile ktp, MultipartFile ijazah, Authentication currentUser) throws Exception {
+        User user = currentUserService.currentUser(currentUser);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (!kartu.isEmpty() || kartu != null) {
+            String namaFile = kartu.getName();
+            String jenisFile = kartu.getContentType();
+            String namaAsli = kartu.getOriginalFilename();
+            Long ukuran = kartu.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kartu.transferTo(tujuan);
+
+            sidang.setFileBimbingan(idFile + "." + extension);
+
+        } else {
+            sidang.setFileBimbingan(sidang.getFileBimbingan());
+        }
+
+        if (!ktp.isEmpty() || ktp != null) {
+            String namaAsli = ktp.getOriginalFilename();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ktp.transferTo(tujuan);
+
+            sidang.setFileKtp(idFile + "." + extension);
+
+        } else {
+            sidang.setFileKtp(sidang.getFileKtp());
+        }
+
+        if (!jurnal.isEmpty() || jurnal != null) {
+            String namaFile = jurnal.getName();
+            String jenisFile = jurnal.getContentType();
+            String namaAsli = jurnal.getOriginalFilename();
+            Long ukuran = jurnal.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            jurnal.transferTo(tujuan);
+
+            sidang.setFileSidang(idFile + "." + extension);
+
+        } else {
+            sidang.setFileSidang(sidang.getFileSidang());
+        }
+
+        if (!pendaftaran.isEmpty() || pendaftaran != null) {
+            String namaFile = pendaftaran.getName();
+            String jenisFile = pendaftaran.getContentType();
+            String namaAsli = pendaftaran.getOriginalFilename();
+            Long ukuran = pendaftaran.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            pendaftaran.transferTo(tujuan);
+
+            sidang.setFilePendaftaran(idFile + "." + extension);
+
+        } else {
+            sidang.setFilePendaftaran(sidang.getFilePendaftaran());
+        }
+
+        if (!ijazah.isEmpty() || ijazah != null) {
+            String namaFile = ijazah.getName();
+            String jenisFile = ijazah.getContentType();
+            String namaAsli = ijazah.getOriginalFilename();
+            Long ukuran = ijazah.getSize();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            ijazah.transferTo(tujuan);
+
+            sidang.setFileIjazah(idFile + "." + extension);
+
+        } else {
+            sidang.setFileIjazah(sidang.getFileIjazah());
+        }
+
+        sidangDao.save(sidang);
+
+        return "redirect:list?id=" + sidang.getSeminar().getId();
+
     }
 
 }

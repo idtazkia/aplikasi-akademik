@@ -43,38 +43,43 @@
             <div class="col">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <div class="card-body">
-                            <form method="get">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Tahun Akademik</label>
-                                            <select name="tahunAkademik"class="form-control">
-                                                <option th:each="data : ${tahunAkademik}"
-                                                        th:text="${data.namaTahunAkademik}"
-                                                        th:selected="(${data} == *{selectedTahun})"
-                                                        th:value="${data.id}"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Prodi</label>
-                                            <select name="prodi"class="form-control">
-                                                 <option th:each="data : ${prodi}"
-                                                        th:text="${data.namaProdi}"
-                                                        th:selected="(${data} == *{selectedProdi})"
-                                                        th:value="${data.id}"></option>
-                                            </select>
-                                        </div>
-                                    </div>
+                        <div class="row align-items-center">
+                            <div class="col text-right">
 
-                                    <div class="col-md-12 text-center">
-                                        <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik"class="form-control">
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:value="${data.id}"></option>
+                                        </select>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Prodi</label>
+                                        <select name="prodi"class="form-control">
+                                            <option th:each="data : ${prodi}"
+                                                    th:text="${data.namaProdi}"
+                                                    th:selected="(${data} == *{selectedProdi})"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="alert alert-warning" th:if="${questionNull != null}">
                         <center>

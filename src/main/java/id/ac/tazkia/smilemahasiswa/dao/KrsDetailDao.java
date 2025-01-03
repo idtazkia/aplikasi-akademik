@@ -422,6 +422,12 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
         Long totalSks(Mahasiswa mahasiswa);
 
+        @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND a.id_tahun_akademik=?2 AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
+        Long totalSksPerSemester(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
+        @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND a.finalisasi='FINAL' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
+        Long totalSksSelesai(Mahasiswa mahasiswa);
+
         @Query(value = "select coalesce(sum(jumlah_sks),0.00)as jumlah_sks from\n" +
                         "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
                         "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n"
@@ -1296,4 +1302,50 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         KrsDetail findByKrsAndStatusKonversiAndStatusAndMatakuliahKurikulum(Krs krs, StatusRecord konversi, StatusRecord status, MatakuliahKurikulum matkur);
 
+        @Query(value = "SELECT \n" +
+                "    COALESCE((\n" +
+                "        SELECT \n" +
+                "            COUNT(a.id) AS jml_mangkir\n" +
+                "        FROM \n" +
+                "            presensi_mahasiswa AS a\n" +
+                "        INNER JOIN \n" +
+                "            sesi_kuliah AS b ON a.id_sesi_kuliah = b.id\n" +
+                "        INNER JOIN \n" +
+                "            presensi_dosen AS c ON b.id_presensi_dosen = c.id\n" +
+                "        WHERE \n" +
+                "            a.id_mahasiswa = ?1  \n" +
+                "            AND a.id_krs_detail = kd.id\n" +
+                "            AND a.status = 'AKTIF' \n" +
+                "            AND c.status = 'AKTIF' \n" +
+                "            AND a.status_presensi IN ('MANGKIR')\n" +
+                "    ), 0) + \n" +
+                "    COALESCE((\n" +
+                "        SELECT \n" +
+                "            COUNT(*)\n" +
+                "        FROM \n" +
+                "            sesi_kuliah AS b\n" +
+                "        INNER JOIN \n" +
+                "            presensi_dosen AS c ON b.id_presensi_dosen = c.id\n" +
+                "        WHERE \n" +
+                "            b.id_jadwal = kd.id_jadwal -- Menggunakan id_jadwal untuk hubungan\n" +
+                "            AND c.status = 'AKTIF'\n" +
+                "            AND NOT EXISTS (\n" +
+                "                SELECT 1 \n" +
+                "                FROM presensi_mahasiswa AS a \n" +
+                "                WHERE \n" +
+                "                    a.id_sesi_kuliah = b.id \n" +
+                "                    AND a.id_mahasiswa = ?1 \n" +
+                "            )\n" +
+                "    ), 0) AS total\n" +
+                "FROM \n" +
+                "    krs_detail AS kd\n" +
+                "INNER JOIN \n" +
+                "    matakuliah_kurikulum AS mk ON kd.id_matakuliah_kurikulum = mk.id\n" +
+                "INNER JOIN \n" +
+                "    matakuliah AS m ON mk.id_matakuliah = m.id\n" +
+                "WHERE \n" +
+                "    kd.id_mahasiswa = ?1 \n" +
+                "    AND kd.id_jadwal = ?2 \n" +
+                "    AND kd.status = 'AKTIF'", nativeQuery = true)
+        Integer totalMangkirMahasiswa(Mahasiswa mahasiswa, Jadwal jadwal);
 }

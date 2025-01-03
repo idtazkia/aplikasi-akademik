@@ -2876,11 +2876,11 @@ public class GraduationController {
             if (status.equals("ALL")) {
                 model.addAttribute("selectedStatus", status);
                 model.addAttribute("list",
-                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDesc(prodi,
+                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadAsc(prodi,
                                 Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik, pageable));
             } else {
                 model.addAttribute("list",
-                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDesc(prodi,
+                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadAsc(prodi,
                                 Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik,
                                 MagangStatus.valueOf(status), pageable));
             }
@@ -3110,6 +3110,17 @@ public class GraduationController {
     public ResponseEntity<byte[]> getFileUpload(@PathVariable Seminar seminar,
                                                 @PathVariable String file) throws Exception {
         return graduationService.getFileJurnal(seminar, file);
+    }
+
+    @GetMapping("/upload/{sidang}/file-jurnal-loa/{file}/")
+    public ResponseEntity<byte[]> getFileUploadSidangJurnal(@PathVariable Sidang sidang,
+                                                @PathVariable String file) throws Exception {
+        if (Integer.parseInt(sidang.getTahunAkademik().getKodeTahunAkademik()) >= Integer.parseInt("20241")) {
+            return graduationService.getFileJurnalSidang(sidang, file);
+        }else {
+            System.out.println("yeay");
+            return graduationService.getFileJurnal(sidang.getSeminar(), file);
+        }
     }
 
     @GetMapping("/graduation/konversi-seminar")
