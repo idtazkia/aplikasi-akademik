@@ -306,7 +306,8 @@ public class ApiController {
         Jadwal j = oj.get();
         List<ApiMahasiswaDto> apiMahasiswaDtos = new ArrayList<>();
 
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(j,StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+//        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(j,StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademikAndKrsStatus(j,StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF);
         for (KrsDetail kd : krsDetail){
             ApiMahasiswaDto api = new ApiMahasiswaDto();
             api.setJumlah(krsDetail.size());

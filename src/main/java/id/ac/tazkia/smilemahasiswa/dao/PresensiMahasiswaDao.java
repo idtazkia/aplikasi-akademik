@@ -14,6 +14,7 @@ import id.ac.tazkia.smilemahasiswa.dto.attendance.DetailPresensiDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MahasiswaMangkirTigaDto;
 
+import javax.transaction.Status;
 import javax.transaction.Transactional;
 
 public interface PresensiMahasiswaDao extends PagingAndSortingRepository<PresensiMahasiswa, String> {
@@ -22,6 +23,8 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
         List<PresensiMahasiswa> findBySesiKuliah(SesiKuliah sesiKuliah);
 
         PresensiMahasiswa findByMahasiswaAndSesiKuliahAndStatus(Mahasiswa m, SesiKuliah sesiKuliah, StatusRecord aktif);
+
+        PresensiMahasiswa findByMahasiswaAndSesiKuliahAndStatusAndKrsDetailKrsStatus(Mahasiswa m, SesiKuliah sesiKuliah, StatusRecord aktif, StatusRecord statusRecord);
 
         @Query(value = "select count(a.id)as jml_mangkir from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah = b.id inner join presensi_dosen as c on b.id_presensi_dosen = c.id where a.id_mahasiswa=?1 and a.id_krs_detail=?2 and a.status='AKTIF' and c.status='AKTIF' and a.status_presensi in ('MANGKIR','TERLAMBAT')", nativeQuery = true)
         Long jumlahMangkir(Mahasiswa mahasiswa, KrsDetail krsDetail);

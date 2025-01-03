@@ -229,6 +229,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         List<KrsDetail> findByJadwalAndStatusAndKrsTahunAkademik(Jadwal j, StatusRecord aktif, TahunAkademik byStatus);
 
+        List<KrsDetail> findByJadwalAndStatusAndKrsTahunAkademikAndKrsStatus(Jadwal j, StatusRecord aktif, TahunAkademik byStatus, StatusRecord statusRecord);
+
+
         List<KrsDetail> findByJadwalAndStatusOrderByMahasiswaNamaAsc(Jadwal j, StatusRecord aktif);
 
         List<KrsDetail> findByJadwalAndStatusOrderByMahasiswaNimAsc(Jadwal j, StatusRecord aktif);
