@@ -52,6 +52,7 @@ public class NilaiJenisTagihan {
 
     private String kodeTagihan;
 
-    private String kodePembayaran;
+    private String kodePembayaranYys;
+    private String kodePembayaranInst;
 
 }

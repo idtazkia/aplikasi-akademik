@@ -54,37 +54,43 @@ public class ApiService {
                 .block();
     }
 
-    public void sendTagihan(SendTagihanDto tagihan) throws JsonProcessingException {
+    public boolean sendTagihan(SendTagihanDto tagihan) throws JsonProcessingException {
 
         String request = objectMapper.writeValueAsString(tagihan);
         log.debug("request: {}", request);
 
         try {
-            webClient.post()
+            SendTagihanDto resposne = webClient.post()
                     .uri(baseAkuntansi + "journal")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(SendTagihanDto.class)
                     .block();
+
+            return resposne != null;
         }catch (Exception e){
             log.error(e.getMessage());
+            return false;
         }
     }
 
-    public void sendPembayaran(SendPembayaranDto pembayaran) throws JsonProcessingException{
+    public boolean sendPembayaran(SendPembayaranDto pembayaran) throws JsonProcessingException{
         String request = objectMapper.writeValueAsString(pembayaran);
         log.debug("request: {}", request);
         try {
-            webClient.post()
+             SendPembayaranDto response = webClient.post()
                     .uri(baseAkuntansi + "journal-array")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(SendPembayaranDto.class)
                     .block();
+
+             return response != null;
         }catch (Exception e){
             log.error(e.getMessage());
+            return false;
         }
     }
 
@@ -99,10 +105,12 @@ public class ApiService {
                     tagihanDto.setDateTransaction(String.valueOf(t.getTanggalPembuatan()));
                     tagihanDto.setDescription("Tagihan " + t.getNilaiJenisTagihan().getJenisTagihan().getNama() + " a.n " + t.getMahasiswa().getNama() + " " + t.getMahasiswa().getNim());
                     tagihanDto.setAmounts(t.getNilaiTagihanAsli());
-                    sendTagihan(tagihanDto);
-
-                    t.setZahirExport(AkuntansiExport.SENT);
-                    tagihanDao.save(t);
+                    if (sendTagihan(tagihanDto)) {
+                        t.setZahirExport(AkuntansiExport.SENT);
+                        tagihanDao.save(t);
+                    }else{
+                        log.error("Gagal mengirim ke Akunting");
+                    }
                 }else{
                     log.debug("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
                 }
@@ -122,10 +130,12 @@ public class ApiService {
                     tagihanDto.setDescription("Pembalik tagihan " + t.getNilaiJenisTagihan().getJenisTagihan().getNama() + " a.n " + t.getMahasiswa().getNama() + " " + t.getMahasiswa().getNim());
                     tagihanDto.setType("reverse");
                     tagihanDto.setAmounts(t.getNilaiTagihanAsli());
-                    sendTagihan(tagihanDto);
-
-                    t.setZahirExport(AkuntansiExport.DELETED);
-                    tagihanDao.save(t);
+                    if (sendTagihan(tagihanDto)) {
+                        t.setZahirExport(AkuntansiExport.DELETED);
+                        tagihanDao.save(t);
+                    }else{
+                        log.error("Gagal mengupdate ke akunting");
+                    }
                 }else{
                     log.debug("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
                 }
@@ -139,44 +149,42 @@ public class ApiService {
         if(!cekPembayaran.isEmpty()){
             for (Pembayaran p : cekPembayaran){
                 if (p.getTagihan().getZahirExport() == AkuntansiExport.SENT){
-                    if (p.getTagihan().getNilaiJenisTagihan().getKodePembayaran() != null) {
-                        SendPembayaranDto pembayaranDto = new SendPembayaranDto();
-                        pembayaranDto.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaran());
-                        pembayaranDto.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
-                        pembayaranDto.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                    if (p.getTagihan().getNilaiJenisTagihan().getKodePembayaranYys() != null && p.getTagihan().getNilaiJenisTagihan().getKodePembayaranInst() != null) {
+                        SendPembayaranDto pembayaranDtoYys = new SendPembayaranDto();
+                        pembayaranDtoYys.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranYys());
+                        pembayaranDtoYys.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
+                        pembayaranDtoYys.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
                         if (p.getTipePengiriman() != null) {
-                            ArrayList<BigDecimal> pembayaran = new ArrayList<>();
-                            switch (p.getTipePengiriman()){
-                                case MANUAL:
-                                    pembayaran.add(p.getAmount());
-                                    pembayaran.add(p.getAmount());
-                                    pembayaran.add(BigDecimal.ZERO);
-                                    pembayaranDto.setAmounts(pembayaran);
-                                    break;
-                                case VIRTUAL_ACCOUNT:
-                                    pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                                    pembayaran.add(p.getAmount());
-                                    pembayaran.add(new BigDecimal(2000));
-                                    pembayaranDto.setAmounts(pembayaran);
-                                    break;
-                                default:
-                                    pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                                    pembayaran.add(p.getAmount());
-                                    pembayaran.add(new BigDecimal(2000));
-                                    pembayaranDto.setAmounts(pembayaran);
-                                    break;
-                            }
+                            pembayaranDtoYys.setAmounts(setPembayaranAkunting(p));
                         }else{
                             ArrayList<BigDecimal> pembayaran = new ArrayList<>();
                             pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
                             pembayaran.add(p.getAmount());
                             pembayaran.add(new BigDecimal(2000));
-                            pembayaranDto.setAmounts(pembayaran);
+                            pembayaranDtoYys.setAmounts(pembayaran);
                         }
-                        sendPembayaran(pembayaranDto);
 
-                        p.setZahirExport(AkuntansiExport.SENT);
-                        pembayaranDao.save(p);
+                        SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
+                        pembayaranDtoInst.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranInst());
+                        pembayaranDtoInst.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
+                        pembayaranDtoInst.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                        if (p.getTipePengiriman() != null) {
+                            pembayaranDtoInst.setAmounts(setPembayaranAkunting(p));
+                        }else{
+                            ArrayList<BigDecimal> pembayaran = new ArrayList<>();
+                            pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
+                            pembayaran.add(p.getAmount());
+                            pembayaran.add(new BigDecimal(2000));
+                            pembayaranDtoInst.setAmounts(pembayaran);
+                        }
+
+                        if (sendPembayaran(pembayaranDtoYys) && sendPembayaran(pembayaranDtoInst)) {
+                            p.setZahirExport(AkuntansiExport.SENT);
+                            pembayaranDao.save(p);
+                            log.info("Pembayaran berhasil dikirim ke akunting");
+                        }else{
+                            log.error("Gagal mengirim ke akunting");
+                        }
                     }else{
                         log.debug("Kode pembayaran tidak di temukan! {} {} {} {}", p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama(), p.getTagihan().getNilaiJenisTagihan().getProdi().getNamaProdi(), p.getTagihan().getNilaiJenisTagihan().getProgram().getNamaProgram(), p.getTagihan().getNilaiJenisTagihan().getAngkatan());
                     }
@@ -184,4 +192,30 @@ public class ApiService {
             }
         }
     }
+
+    private ArrayList<BigDecimal> setPembayaranAkunting(Pembayaran p){
+
+        ArrayList<BigDecimal> pembayaran = new ArrayList<>();
+
+        switch (p.getTipePengiriman()){
+            case MANUAL:
+                pembayaran.add(p.getAmount());
+                pembayaran.add(p.getAmount());
+                pembayaran.add(BigDecimal.ZERO);
+                break;
+            case VIRTUAL_ACCOUNT:
+                pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
+                pembayaran.add(p.getAmount());
+                pembayaran.add(new BigDecimal(2000));
+                break;
+            default:
+                pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
+                pembayaran.add(p.getAmount());
+                pembayaran.add(new BigDecimal(2000));
+                break;
+        }
+
+        return pembayaran;
+    }
+
 }
