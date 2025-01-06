@@ -106,7 +106,8 @@
                                 <th>Generation</th>
                                 <th>Value</th>
                                 <th>Kode Tagihan</th>
-                                <th>Kode Pembayaran</th>
+                                <th>Kode Pembayaran YYS</th>
+                                <th>Kode Pembayaran INST</th>
                                 <th>Action</th>
                                 <th></th>
                             </tr>
@@ -130,7 +131,8 @@
                                 <td class="text-center" th:text="${data.angkatan}"></td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilai, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
                                 <td th:text="${data?.kodeTagihan}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${data?.kodePembayaran}">BANGUN DAN SEMANGAT</td>
+                                <td th:text="${data?.kodePembayaranYys}">BANGUN DAN SEMANGAT</td>
+                                <td th:text="${data?.kodePembayaranInst}">BANGUN DAN SEMANGAT</td>
                                 <td>
                                     <a th:href="@{/studentBill/valueType/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
 

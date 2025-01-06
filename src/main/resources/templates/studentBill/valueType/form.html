@@ -115,8 +115,18 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Kode Jurnal Pembayaran</label>
-                                <select name="" required class="form-control js-example-placeholder-single" th:field="*{kodePembayaran}">
+                                <label>Kode Jurnal Pembayaran Yayasan</label>
+                                <select name="" required class="form-control js-example-placeholder-single" th:field="*{kodePembayaranYys}">
+                                    <option value=""></option>
+                                    <option th:each="data : ${template}"
+                                            th:text="${data.code + ' - ' + data.name}"
+                                            th:value="${data.code}">STEI TAZKIA</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kode Jurnal Pembayaran IAI Tazkia</label>
+                                <select name="" required class="form-control js-example-placeholder-single" th:field="*{kodePembayaranInst}">
                                     <option value=""></option>
                                     <option th:each="data : ${template}"
                                             th:text="${data.code + ' - ' + data.name}"
