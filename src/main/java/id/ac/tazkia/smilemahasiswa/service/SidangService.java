@@ -822,32 +822,28 @@ public class SidangService {
         String nidnDosen = null;
         String jabatan = null;
         String kdProdi = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (seminar.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
-            if ("MBS".equals(kdProdi)) {
-                Karyawan karyawan = karyawanDao.findById("thubaz").get();
-                nama = karyawan.getNamaKaryawan();
-                nidnDosen = karyawan.getNidn();
-                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
-            } else if ("TIP".equals(kdProdi)) {
-                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
-                nama = karyawan.getNamaKaryawan();
-                nidnDosen = karyawan.getNidn();
-                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
-            } else if ("MES".equals(kdProdi)) {
-                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
-                nama = karyawan.getNamaKaryawan();
-                nidnDosen = karyawan.getNidn();
-                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
-            } else {
-                nama = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
-                nidnDosen = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+        Karyawan karyawan;
+        if (seminar.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06T00:00:00")) <= 0) {
+            switch (kdProdi) {
+                case "MBS":
+                    karyawan = karyawanDao.findById("thubaz").get();
+                    break;
+                case "TIP":
+                    karyawan = karyawanDao.findById("AsnanPur").get();
+                    break;
+                case "MES":
+                    karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
+                    break;
+                default:
+                    karyawan = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan();
+                    break;
             }
         } else {
-            nama = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
-            nidnDosen = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-            jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+            karyawan = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan();
         }
+        nama = karyawan.getNamaKaryawan();
+        nidnDosen = karyawan.getNidn();
+        jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
 
         PdfPCell cell;
         cell = new PdfPCell(new Phrase("Nama", font));
@@ -1192,32 +1188,11 @@ public class SidangService {
         String namaKps = null;
         String nidnKps = null;
         String prd = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (seminar.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
-            if ("MBS".equals(prd)) {
-                Karyawan karyawan = karyawanDao.findById("thubaz").get();
-                namaKps = karyawan.getNamaKaryawan();
-                nidnKps = karyawan.getNidn();
-                ttdKps = karyawan.getTandaTangan();
-            } else if ("TIP".equals(prd)) {
-                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
-                namaKps = karyawan.getNamaKaryawan();
-                nidnKps = karyawan.getNidn();
-                ttdKps = karyawan.getTandaTangan();
-            } else if ("MES".equals(prd)) {
-                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
-                namaKps = karyawan.getNamaKaryawan();
-                nidnKps = karyawan.getNidn();
-                ttdKps = karyawan.getTandaTangan();
-            } else {
-                namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
-                nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-                ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
-            }
-        } else {
-            namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
-            nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-            ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
-        }
+
+
+        namaKps = karyawan.getNamaKaryawan();
+        nidnKps = karyawan.getNidn();
+        ttdKps = karyawan.getTandaTangan();
 
         Image ttd = Image.getInstance(tandaTangan + File.separator + ttdKps);
         ttd.scaleToFit(100, 100);
@@ -1421,34 +1396,28 @@ public class SidangService {
         String nidnDosen = null;
         String jabatan = null;
         String kdProdi = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (sidang.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
-            if ("MBS".equals(kdProdi)) {
-                Karyawan karyawan = karyawanDao.findById("thubaz").get();
-                nama = karyawan.getNamaKaryawan();
-                nidnDosen = karyawan.getNidn();
-                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
-            } else if ("TIP".equals(kdProdi)) {
-                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
-                nama = karyawan.getNamaKaryawan();
-                nidnDosen = karyawan.getNidn();
-                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
-            } else if ("MES".equals(kdProdi)) {
-                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
-                nama = karyawan.getNamaKaryawan();
-                nidnDosen = karyawan.getNidn();
-                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
-            } else {
-                nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
-                        .getNamaKaryawan();
-                nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
-                        .getNidn();
-                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+        Karyawan karyawan;
+        if (sidang.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06T00:00:00")) <= 0) {
+            switch (kdProdi) {
+                case "MBS":
+                    karyawan = karyawanDao.findById("thubaz").get();
+                    break;
+                case "TIP":
+                    karyawan = karyawanDao.findById("AsnanPur").get();
+                    break;
+                case "MES":
+                    karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
+                    break;
+                default:
+                    karyawan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan();
+                    break;
             }
         } else {
-            nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
-            nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-            jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+            karyawan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan();
         }
+        nama = karyawan.getNamaKaryawan();
+        nidnDosen = karyawan.getNidn();
+        jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
 
         PdfPCell cell;
         cell = new PdfPCell(new Phrase("Nama", font));
@@ -1790,36 +1759,10 @@ public class SidangService {
         String namaKps = null;
         String nidnKps = null;
         String prd = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
-        if (sidang.getTanggalInput().compareTo(LocalDateTime.parse("2023-02-06")) <= 0) {
-            if ("MBS".equals(prd)) {
-                Karyawan karyawan = karyawanDao.findById("thubaz").get();
-                namaKps = karyawan.getNamaKaryawan();
-                nidnKps = karyawan.getNidn();
-                ttdKps = karyawan.getTandaTangan();
-            } else if ("TIP".equals(prd)) {
-                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
-                namaKps = karyawan.getNamaKaryawan();
-                nidnKps = karyawan.getNidn();
-                ttdKps = karyawan.getTandaTangan();
-            } else if ("MES".equals(prd)) {
-                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
-                namaKps = karyawan.getNamaKaryawan();
-                nidnKps = karyawan.getNidn();
-                ttdKps = karyawan.getTandaTangan();
-            } else {
-                namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
-                        .getNamaKaryawan();
-                nidnKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-                ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
-                        .getTandaTangan();
-            }
-        } else {
-            namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
-                    .getNamaKaryawan();
-            nidnKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
-            ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan()
-                    .getTandaTangan();
-        }
+        namaKps = karyawan.getNamaKaryawan();
+        nidnKps = karyawan.getNidn();
+        ttdKps = karyawan.getTandaTangan();
+
 
         Image ttd = Image.getInstance(tandaTangan + File.separator + ttdKps);
         ttd.scaleToFit(100, 100);
