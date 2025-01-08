@@ -4,7 +4,6 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -57,13 +56,7 @@ public class KhsService {
     }
 
 
-    public Page<RequestKonversi> getRequestList2(@PageableDefault(size = 10) Pageable pageable){
-        Page<RequestKonversi> getRequestList2 = requestKonversiDao.findByApprovalAndStatusOrderByCreatedDateAsc(StatusRecord.WAITING, StatusRecord.AKTIF,pageable);
-        return getRequestList2;
-
-    }
-
-    public void uploadFileKonversi(RequestKonversi requestKonversi, KrsDetail krsDetail, MultipartFile file, String lokasiUpload, Authentication authentication) throws IOException{
+    public void uploadFileKonversi(RequestKonversi request, KrsDetail krsDetail, MultipartFile file, String lokasiUpload) throws IOException{
 
 
         try {
@@ -72,12 +65,15 @@ public class KhsService {
                 return;
             }
 
-                User user = currentUserService.currentUser(authentication);
-                Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+                RequestKonversi requestKonversi;
+
+                if (requestKonversiDao.findByKrsDetailAndStatus(krsDetail,StatusRecord.AKTIF) == null){
+                    requestKonversi = new RequestKonversi();
+                }else {
+                    requestKonversi = requestKonversiDao.findByKrsDetailAndStatus(krsDetail,StatusRecord.AKTIF);
+                }
 
                 requestKonversi.setKrsDetail(krsDetail);
-                requestKonversi.setCreatedDate(LocalDateTime.now());
-                requestKonversi.setCreatedBy(mahasiswa.getEmailTazkia());
                 requestKonversi.setGradeLama(krsDetail.getGrade());
 
 
@@ -86,12 +82,6 @@ public class KhsService {
                 String namaAsli = file.getOriginalFilename();
                 Long ukuran = file.getSize();
 
-                log.debug("Nama File : {}", namaFile);
-                log.debug("Jenis File : {}", jenisFile);
-                log.debug("namaAsli : {}", namaAsli);
-                log.debug("Ukuran : {}", ukuran);
-
-                //memisahkan extensi
                 String extension = "";
 
                 int i = namaAsli.lastIndexOf('.');
@@ -105,10 +95,12 @@ public class KhsService {
 
                 requestKonversi.setFilename(idFile + '.' + extension);
                 requestKonversi.setNamaFile(file.getOriginalFilename());
+                requestKonversi.setDeskripsi(request.getDeskripsi());
+                requestKonversi.setJenisNilai(request.getJenisNilai());
+
 
                 File tujuan = new File(lokasiUpload + File.separator + requestKonversi.getFilename());
                 file.transferTo(tujuan);
-                log.debug("Document sudah dicopy ke : {}", tujuan.getAbsolutePath());
                 requestKonversiDao.save(requestKonversi);
 
 
@@ -125,8 +117,6 @@ public class KhsService {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         RequestKonversi requestKonversi1 = requestKonversiDao.findById(requestKonversi).get();
-        requestKonversi1.setDeletedDate(LocalDateTime.now());
-        requestKonversi1.setDeletedBy(mahasiswa.getEmailTazkia());
         requestKonversi1.setStatus(StatusRecord.HAPUS);
         requestKonversiDao.save(requestKonversi1);
     }

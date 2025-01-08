@@ -1,41 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
-  <title>Conversion Request</title>
+    <meta charset="UTF-8">
+    <title>Conversion Request</title>
 </head>
 <body>
 <section layout:fragment="main" class="content">
-  <div class="breadcomb-area">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 col-xs-12">
-          <div class="breadcomb-list">
+    <div class="breadcomb-area">
+        <div class="container">
             <div class="row">
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <div class="breadcomb-wp">
-                  <div class="breadcomb-icon">
-                    <i class="notika-icon notika-form"></i>
-                  </div>
-                  <div class="breadcomb-ctn">
-                    <h2>KHS List</h2>
-                    <p></p>
-                  </div>
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>KHS List</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 
 
-<!--belum masa tenggat-->
-<span th:if="${statusTenggat.statusTenggat == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).N}">
+    <span>
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-xs-12">
@@ -44,12 +42,12 @@
             <h2>Data KHS</h2>
           </div>
             <div class="row">
-              <div class="col-md-12" th:each="data,row : ${khs}">
-                <div class="shadow-sm border ps-3 pt-3 pe-3 pb-1 mb-3" >
-                  <b><p th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></p></b>
-                  <b><p th:text="${data.jadwal.dosen.karyawan.namaKaryawan}"></p></b>
+              <div class="col-md-12">
+                <div class="shadow-sm border ps-3 pt-3 pe-3 pb-1 mb-3">
+                  <b><p th:text="${krs.matakuliahKurikulum.matakuliah.namaMatakuliah}"></p></b>
+                  <b><p th:text="${krs.jadwal.dosen.karyawan.namaKaryawan}"></p></b>
                   <hr>
-                  <p>Your Grade Currently : <b><span th:text="${data.grade}"></span></b></p>
+                  <p>Your Grade Currently : <b><span th:text="${krs.grade}"></span></b></p>
 
                 </div>
               </div>
@@ -59,19 +57,18 @@
               <div class="col-md-12">
 
 <!--                data 1-->
-                <div class="card shadow-sm" th:if="${reqId == null}">
+                <div class="card shadow-sm">
 
-                  <form th:action="@{/studiesActivity/khs/requestKonversi(krsDetail = ${khs.id})}" enctype="multipart/form-data" th:object="${requestKonversi}" method="post">
+                  <form th:action="@{/studiesActivity/khs/requestKonversi(krsDetail = ${krs.id})}"
+                        enctype="multipart/form-data" method="post">
 
                     <div class="card-body">
                       <div class="row">
                         <div class="col-md-12">
-
-                          <input type="hidden" name="id" >
-                          <p><small class="text-primary"> Please fill this form to procced grade conversion request</small></p>
                           <div class="mb-3">
                             <label for="deskripsi" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control" id="deskripsi" name="deskripsi" placeholder="Add the description for the file" required>
+                            <input type="text" class="form-control" id="deskripsi" name="deskripsi"
+                                   placeholder="Add the description for the file" required>
                           </div>
                           <br>
                           <div class="mb-3">
@@ -96,57 +93,12 @@
                       <div class="col-md-12 text-end">
                         <button class="btn btn-primary"
                                 onclick="return confirm('Confirm your request.')">Apply Request</button>
-
-                        <a class="btn btn-secondary" th:href="@{/report/khs(tahunAkademik = ${khs.tahunAkademik.id})}">Back</a>
                       </div>
                     </div>
 
                   </form>
 
                 </div>
-
-<!--                data 2-->
-                <div class="card shadow-sm" th:if="${reqId != null}">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <input type="hidden" name="id" >
-
-                          <div class="mb-3">
-                            <label for="deskripsi" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control"  placeholder="You already uploaded a file" required disabled>
-                          </div>
-                          <br>
-                          <div class="mb-3">
-                            <label for="file" class="form-label">Evidence</label>
-                            <input class="form-control" type="file"  required disabled>
-                          </div>
-                          <br>
-                          <div class="mb-3">
-                            <label>Evidence Grade Type</label>
-                            <select name="jenisNilai" class="form-control" disabled>
-                              <option value=""></option>
-                              <option value="" selected disabled>-- Select One --</option>
-                              <option value="PRESTASI">PRESTASI</option>
-                              <option value="TAHFIZH">TAHFIZH</option>
-                            </select>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-
-                    <br><br>
-                    <div class="card-footer">
-                      <div class="col-md-12 col-xs-12">
-                        <div class="alert alert-warning">
-                          <b>If you want to reupload file, pelase remove the uploaded file first</b>
-                        </div>
-                      </div>
-                    </div>
-
-                </div>
-
               </div>
             </div>
 
@@ -160,52 +112,36 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-xs-12">
-        <div class="alert alert-info">
-          <b>Uploaded file is listed below</b>
-        </div>
-      </div>
-      <div class="col-md-12 col-xs-12">
         <div class="normal-table-list mg-t-30">
           <div class="basic-tb-hd">
             <h2>List uploaded file</h2>
           </div>
           <div class="bsc-tbl-st">
 
-            <div class="table-responsive" >
+            <div class="table-responsive">
               <p><small class="text-primary"> Click the name of the file to see the uploaded file</small></p>
               <table class="table table-striped sortable">
                 <tr>
                   <th>No</th>
                   <th>Approval Status</th>
-                  <th>Grade Status</th>
                   <th>Description</th>
                   <th>File</th>
                   <th>Grade Type</th>
-                  <th>Option</th>
+                  <th>Type</th>
+                  <th>File Upload</th>
                 </tr>
-                <tr th:each="data,row : ${listRequest}" >
-                  <td th:text="${(row.index + 1)}"></td>
-                  <td th:text="${data.approval}"></td>
-
-                  <td>
-                    <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).N}">Waiting</span>
-                    <span th:if="${data.finalization == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).Y}">Graded</span>
-                  </td>
-
-
-                  <td th:text="${data.deskripsi}"></td>
-                  <td >
-                    <a th:href="@{/khs/request/{requestKonversi}/(requestKonversi = ${data.id})}" target="_blank"  class="text-primary fst-italic small me-2" th:text="${data.namaFile}" >
-                    </a>
-                  </td>
-                  <td th:text="${data.jenisNilai}"></td>
-                  <td >
-                    <a th:href="@{/khs/request/delete(requestKonversi = ${data.id},krsDetail = ${data.krsDetail.id},jadwal = ${data.krsDetail.getJadwal().id})}" onclick="return confirm('Are you sure? ')" class="fa-solid fa-circle-xmark" style="color: #bb2d3b">Remove</a>
-                  </td>
-
+                <tr>
+                    <td>1</td>
+                    <td th:text="${file.approval}">Approved</td>
+                    <td th:text="${file.deskripsi}">TAHFIZH</td>
+                    <td><a href="#" target="_blank">File</a></td>
+                    <td th:if="${file.gradeBaru != null}" th:text="${file.gradeBaru}">Approved</td>
+                    <td th:if="${file.gradeBaru == null}">-</td>
+                    <td th:text="${file.jenisNilai}">TAHFIZH</td>
+                    <td>
+                        <a th:href="@{/khs/request/{requestKonversi}/(requestKonversi = ${file.id})}" target="_blank"  class="text-primary fst-italic small me-2" th:text="${file.namaFile}" ></a>
+                    </td>
                 </tr>
-
-
               </table>
             </div>
           </div>
@@ -214,86 +150,6 @@
     </div>
   </div>
 </span>
-
-<span th:if="${statusTenggat.statusTenggat == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).Y}">
-
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 col-xs-12">
-        <div class="normal-table-list mg-t-30">
-          <div class="basic-tb-hd">
-            <h2>Data KHS</h2>
-          </div>
-            <div class="row">
-              <div class="col-md-12" th:each="data,row : ${khs}">
-                <div class="shadow-sm border ps-3 pt-3 pe-3 pb-1 mb-3" >
-                  <b><p th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></p></b>
-                  <b><p th:text="${data.jadwal.dosen.karyawan.namaKaryawan}"></p></b>
-                  <hr>
-                  <p>Your Grade Currently : <b><span th:text="${data.grade}"></span></b></p>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-
-                <!-- disabled-->
-                <div class="card shadow-sm">
-
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <input type="hidden" name="id" >
-
-                          <div class="mb-3">
-                            <label for="deskripsi" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control"  placeholder="Temporary Disable" required disabled>
-                          </div>
-                          <br>
-                          <div class="mb-3">
-                            <label for="file" class="form-label">Evidence</label>
-                            <input class="form-control" type="file"  required disabled>
-                          </div>
-                          <br>
-                          <div class="mb-3">
-                            <label>Evidence Grade Type</label>
-                            <select name="jenisNilai" class="form-control" disabled>
-                              <option value=""></option>
-                              <option value="" selected disabled>-- Select One --</option>
-                              <option value="PRESTASI">PRESTASI</option>
-                              <option value="TAHFIZH">TAHFIZH</option>
-                            </select>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-
-                    <br><br>
-                    <div class="card-footer">
-                      <div class="col-md-12 col-xs-12">
-                        <div class="alert alert-warning">
-                          <b>Convertion Request Deadline Has Been Reached, Contact Academic Staff For Further Information</b>
-                        </div>
-                      </div>
-                    </div>
-
-                </div>
-
-              </div>
-            </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-</span>
-
-
-
 </section>
 </body>
 

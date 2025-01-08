@@ -1,7 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.konversi.RequestKonversiDto;
-import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MahasiswaMangkirTigaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,36 +21,22 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
     List <RequestKonversi> findByKrsDetailAndKrsDetailJadwalAndStatus(KrsDetail krsDetail, Jadwal jadwal, StatusRecord statusRecord);
 
 
-    Page <RequestKonversi> findByApprovalAndStatusOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable pageable);
-
-    Page <RequestKonversi> findByApprovalAndStatusAndJenisNilaiOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable pageable);
-
-    Page <RequestKonversi> findByApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3,String search, Pageable page);
+    Page <RequestKonversi> findByApprovalAndStatusOrderByCreatedTimeAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable pageable);
 
     Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2,StatusRecord statusRecord3, Pageable page);
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi,StatusRecord statusRecord1, StatusRecord statusRecord2,StatusRecord statusRecord3, String search, Pageable page);
+    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, String search, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
-
-    Page <RequestKonversi> findByApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
-
-
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord, StatusRecord finalization, Pageable page);
-
-    Page <RequestKonversi> findByStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(StatusRecord statusRecord, StatusRecord finalization,String search, Pageable page);
-
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndFinalizationAndKrsDetailMahasiswaNamaContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord, StatusRecord finalization,String search, Pageable page);
-
+    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaId(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3,Mahasiswa mahasiswa, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3,Mahasiswa mahasiswa,String search, Pageable page);
+    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Mahasiswa mahasiswa, String search, Pageable page);
 
     Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedDateAsc(Prodi prodi, StatusRecord statusRecord, String search, Pageable page);
+    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord, String search, Pageable page);
 
     @Modifying
     @Query(value = "update request_konversi set status_tenggat='Y' where status='AKTIF'", nativeQuery = true)

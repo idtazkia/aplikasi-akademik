@@ -2,13 +2,17 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class RequestKonversi {
+@SQLDelete(sql = "UPDATE request__konversi SET status = 'HAPUS' WHERE id=?")
+@Where(clause = "status = 'AKTIF'")
+public class RequestKonversi extends Auditable {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -27,16 +31,8 @@ public class RequestKonversi {
 
     private String namaFile;
 
-    private String createdBy;
-
-    private LocalDateTime createdDate;
-
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
-
-    private String deletedBy;
-
-    private LocalDateTime deletedDate;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord approval = StatusRecord.WAITING;
