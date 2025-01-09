@@ -833,7 +833,7 @@ public class PresensiService {
 
     public void updateNilaiPresensi(KrsDetail kd){
         Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(), StatusRecord.AKTIF, StatusPresensi.HADIR);
-        Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR, StatusPresensi.TERLAMBAT), StatusRecord.AKTIF, kd);
+        Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR), StatusRecord.AKTIF, kd);
 
         if (presensiDosen != null){
             kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen).multiply(kd.getJadwal().getBobotPresensi()).divide(new BigDecimal(100)));

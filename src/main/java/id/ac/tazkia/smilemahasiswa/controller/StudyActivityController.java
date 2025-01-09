@@ -884,7 +884,10 @@ public class StudyActivityController {
     }
 
     @PostMapping("/study/tugas")
-    public String saveTugas(@ModelAttribute @Valid JadwalTugasJawaban tugasJawaban, @RequestParam JadwalTugas jadwalTugas, @RequestParam Mahasiswa mahasiswa, MultipartFile fileJawaban, RedirectAttributes attributes) throws IOException {
+    public String saveTugas(@ModelAttribute @Valid JadwalTugasJawaban tugasJawaban, @RequestParam JadwalTugas jadwalTugas, Authentication authentication, MultipartFile fileJawaban, RedirectAttributes attributes) throws IOException {
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         if (fileJawaban != null) {
             String namaAsli = fileJawaban.getOriginalFilename();
