@@ -415,6 +415,10 @@
                                                 Setujui dan Penjadwalan
                                             </a>
 
+                                            <a th:href="@{/graduation/seminar/prodi/approved (id = ${data.id})}" class="btn btn-success btn-outline-success btn-sm" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.SCHEDULED}">
+                                                Penjadwalan Seminar
+                                            </a>
+
                                             <button type="button" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejectakademik' + data.id}" th:if="${data.status == data.status.APPROVED_AKADEMIK}">
                                                 Tolak
                                             </button>
