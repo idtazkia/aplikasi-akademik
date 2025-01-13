@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MengundurkanDiriDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
@@ -19,13 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.ObjectName;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MahasiswaController {
@@ -106,6 +106,8 @@ public class MahasiswaController {
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
+    @Autowired
+    private KrsDao krsDao;
 
 
     @ModelAttribute("penghasilan")
@@ -436,13 +438,32 @@ public class MahasiswaController {
         return "redirect:list?search="+ mahasiswa.getNama();
     }
 
-    @GetMapping("/mahasiswa/mengundurkandiri")
-    public String statusMengundurkanDiri(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+    @PostMapping("/mahasiswa/mengundurkandiri")
+    @Transactional
+    public String statusMengundurkanDiri(@Valid MengundurkanDiriDto mengundurkanDiriDto, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa =mengundurkanDiriDto.getMahasiswa();
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("MENGUNDURKAN_DIRI");
+        mahasiswa.setTanggalMengundurkanDiri(mengundurkanDiriDto.getTanggalMengundurkanDiri());
+        mahasiswa.setTahunAkademikMengundurkanDiri(mengundurkanDiriDto.getTahunAkademik());
         mahasiswaDao.save(mahasiswa);
+
+        krsDao.updateStatusKrsMengundurkanDiri(mahasiswa,mengundurkanDiriDto.getTahunAkademik().getKodeTahunAkademik());
         return "redirect:list?search="+ mahasiswa.getNama();
+    }
+
+    @GetMapping("/mahasiswa/tahun-aktif/{id}")
+    @ResponseBody
+    List<TahunAkademik> tahunAkademikList(@PathVariable String id){
+        Mahasiswa mahasiswa = mahasiswaDao.findById(id).get();
+        List<TahunAkademik> tahunAktif = krsDao.findByMahasiswaAndStatusOrderByTahunAkademikKodeTahunAkademik(mahasiswa, StatusRecord.AKTIF)
+                .stream()
+                .map(Krs::getTahunAkademik)
+                .distinct()
+                .collect(Collectors.toList());
+        return tahunAktif;
+
     }
 
     @GetMapping("/mahasiswa/lulus")

@@ -114,6 +114,14 @@ public class Mahasiswa {
     @NotNull
     private String statusAktif;
 
+    @ManyToOne
+    @JoinColumn(name = "id_tahun_mengundurkan_diri")
+    private TahunAkademik tahunAkademikMengundurkanDiri;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalMengundurkanDiri;
+
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 

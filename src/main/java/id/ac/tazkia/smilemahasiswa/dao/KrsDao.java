@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -231,5 +232,15 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
         @Query(value = "select m.id as id, m.nim as nim, m.nama as nama, p.nama_prodi as prodi from krs as k inner join mahasiswa as m on k.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where (m.nim like %?1% or m.nama like %?1%) and k.status = 'AKTIF' and k.id_tahun_akademik = ?2 order by m.nim asc",
                 nativeQuery = true)
         List<MahasiswaDto> cariMahasiswa(String search, String tahunAkademik);
+
+        @Modifying
+        @Query(value =  "UPDATE krs AS kd\n" +
+                "INNER JOIN tahun_akademik AS ta \n" +
+                "ON kd.id_tahun_akademik = ta.id\n" +
+                "SET kd.status = 'MENGUNDURKAN_DIRI'\n" +
+                "WHERE kd.id_mahasiswa = ?1 \n" +
+                "  AND kd.status = 'AKTIF'\n" +
+                "  AND ta.kode_tahun_akademik > ?2 ", nativeQuery = true)
+        void updateStatusKrsMengundurkanDiri(Mahasiswa mahasiswa, String kodeTahunAkademik);
 
 }

@@ -502,11 +502,11 @@
                                                                 <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
                                                                 <span class="btn-inner--text">KELUAR</span>
                                                             </a>
-                                                            <a th:href="@{/mahasiswa/mengundurkandiri(mahasiswa = ${data.id})}" class="btn btn-danger text-white btn-icon">
+                                                            <a onclick="undurFunction(this.id)" th:id="${'undur-'+data.id}" class="btn btn-danger text-white btn-icon">
                                                                 <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
                                                                 <span class="btn-inner--text">Mengundurkan Diri</span>
                                                             </a>
-                                                            <a onclick="myFunction()" class="btn btn-warning text-dark btn-icon">
+                                                            <a onclick="myFunction(this.id)" th:id="${data.id}" class="btn btn-warning text-dark btn-icon">
                                                                 <span class="btn-inner--icon"><i class="fas fa-hourglass-start"></i></span>
                                                                 <span class="btn-inner--text">Cuti</span>
                                                             </a>
@@ -517,9 +517,9 @@
                                                         </div>
                                                     </div>
 
-                                                    <div id="formCuti" class="card-header bg-transparent pb-5" style="display:none;">
+                                                    <div th:id="${'formCuti-' + data.id}" class="card-header bg-transparent pb-5" style="display:none;">
                                                         <div class="text-muted text-center mt-2 mb-3"><small>Form Cuti</small></div>
-                                                        <form name="cutiForm" th:action="@{/mahasiswa/cuti-approved}" method="post">
+                                                        <form th:id="${'simpanCuti-' + data.id}" th:action="@{/mahasiswa/cuti-approved}" method="post">
                                                             <div class="btn-wrapper text-center">
                                                                 <div class="form-group">
                                                                     <div class="row">
@@ -533,7 +533,7 @@
                                                                                             th:text="${data.namaTahunAkademik}"
                                                                                             th:value="${data.id}">STEI TAZKIA</option>
                                                                                 </select>
-                                                                                <input type="hidden" th:value="${data.id}" name="mahasiswa" class="form-control">
+                                                                                <input type="hidden" th:value="${data.id}" name="mahasiswa"  class="form-control">
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-6">
@@ -547,11 +547,53 @@
                                                             </div>
                                                         </form>
                                                         <center>
-                                                            <a href="javascript: document.cutiForm.submit()" class="btn btn-success text-white btn-icon">
+                                                            <a onclick="simpan(this.id)" th:id="${'simpan-'+ data.id}" class="btn btn-success text-white btn-icon">
                                                                 <span class="btn-inner--icon"><i class="fas fa-save"></i></span>
                                                                 <span class="btn-inner--text">Simpan</span>
                                                             </a>
-                                                            <a onclick="batal()" class="btn btn-danger text-white btn-icon">
+                                                            <a onclick="batal(this.id)" th:id="${'batal-'+ data.id}" class="btn btn-danger text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
+                                                                <span class="btn-inner--text">Batal</span>
+                                                            </a>
+                                                        </center>
+
+                                                    </div>
+
+                                                    <div th:id="${'formMengundurkanDiri-' + data.id}" class="card-header bg-transparent pb-5" style="display:none;">
+                                                        <div class="text-muted text-center mt-2 mb-3"><small>Form Mengundurkan Diri</small></div>
+                                                        <form th:id="${'undurForm-' + data.id}" th:action="@{/mahasiswa/mengundurkandiri}" method="post">
+                                                            <div class="btn-wrapper text-center">
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Tahun Akademik</label>
+                                                                                <select name="tahunAkademik" required class="form-control">
+                                                                                    <option value=""></option>
+                                                                                    <option th:each="data : ${tahunAkademik}"
+                                                                                            th:selected="(${data} == *{selectTahun})"
+                                                                                            th:text="${data.namaTahunAkademik}"
+                                                                                            th:value="${data.id}">STEI TAZKIA</option>
+                                                                                </select>
+                                                                                <input type="hidden" th:value="${data.id}" name="mahasiswa"  class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Tanggal Mengundurkan Diri</label>
+                                                                                <input type="date" class="form-control" name="tanggalMengundurkanDiri">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                        <center>
+                                                            <a onclick="simpanUndur(this.id)" th:id="${'undur-'+ data.id}" class="btn btn-success text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-save"></i></span>
+                                                                <span class="btn-inner--text">Simpan</span>
+                                                            </a>
+                                                            <a onclick="batal(this.id)" th:id="${'batal-'+ data.id}" class="btn btn-danger text-white btn-icon">
                                                                 <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
                                                                 <span class="btn-inner--text">Batal</span>
                                                             </a>
@@ -578,25 +620,66 @@
 </body>
 </html>
 <script>
-    function myFunction() {
-        var x = document.getElementById("formCuti");
+    $( document ).ready(function() {
+
+    });
+
+    function simpan(id) {
+        const formId = id.slice(7);
+        const formElement = document.getElementById(`simpanCuti-${formId}`);
+        if (formElement && formElement.tagName === 'FORM') {
+            formElement.submit();
+        } else {
+            console.error(`Element with ID formCuti-${formId} is not a form.`);
+        }
+    }
+
+    function simpanUndur(id) {
+        const formId = id.slice(6);
+        const formElement = document.getElementById(`undurForm-${formId}`);
+        if (formElement && formElement.tagName === 'FORM') {
+            formElement.submit();
+        } else {
+            console.error(`Element with ID formCuti-${formId} is not a form.`);
+        }
+    }
+
+    function myFunction(id) {
+        var x = document.getElementById("formCuti-"+id);
         var y = document.getElementById("formOpt");
+        var z = document.getElementById("formMengundurkanDiri-"+id);
         if (x.style.display === "none") {
             y.style.display = "none";
+            z.style.display = "none";
             x.style.display = "block";
         } else {
             x.style.display = "none";
             y.style.display = "block";
+            z.style.display = "block";
 
         }
     }
 
-    function batal() {
-        var x = document.getElementById("formCuti");
+    function undurFunction(id) {
+        idMahasiswa = id.slice(6);
+        var x = document.getElementById("formMengundurkanDiri-"+idMahasiswa);
         var y = document.getElementById("formOpt");
-        if (x.style.display === "block") {
+        var z = document.getElementById("formCuti-"+idMahasiswa);
+        if (x.style.display === "none") {
+            y.style.display = "none";
+            z.style.display = "none";
+            x.style.display = "block";
+        } else {
             x.style.display = "none";
             y.style.display = "block";
+            z.style.display = "block";
+
         }
+    }
+
+    function batal(id) {
+        document.getElementById("formCuti-"+id.slice(6)).style.display = "none";
+        document.getElementById("formMengundurkanDiri-"+id.slice(6)).style.display = "none";
+
     }
 </script>
