@@ -1721,6 +1721,11 @@ public class StudiesActivityController {
     @GetMapping("/collection/{jawaban}/tugas")
     public ResponseEntity<byte[]> lihatMateri(@PathVariable JadwalTugasJawaban jawaban){
         String folder = jawaban.getMahasiswa().getNim() + " - " + jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
+//        String folder = jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
+//                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+//                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
+//                "Pertemuan " + jawaban.getJadwalTugas().getPertemuanKe() + File.separator + jawaban.getMahasiswa().getNim() + " - " +
+//                jawaban.getMahasiswa().getNama();
         String lokasi = uploadJawaban + File.separator + folder + File.separator + jawaban.getFile();
         log.debug("lokasi file : {}" + lokasi);
         try {
@@ -2053,20 +2058,20 @@ public class StudiesActivityController {
 
     }
 
-    @GetMapping("/studiesActivity/assesment/uploadnilai")
-    public String upload(Model model, @RequestParam Jadwal jadwal) {
-
-        List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
-        model.addAttribute("jadwal", jadwal);
-        model.addAttribute("listTugas", listTugas);
-
-        if (jadwal.getFinalStatus().equals("FINAL")) {
-            return "redirect:weight?jadwal=" + jadwal.getId();
-
-        } else {
-            return "studiesActivity/assesment/uploadnilai";
-        }
-    }
+//    @GetMapping("/studiesActivity/assesment/uploadnilai")
+//    public String upload(Model model, @RequestParam Jadwal jadwal) {
+//
+//        List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
+//        model.addAttribute("jadwal", jadwal);
+//        model.addAttribute("listTugas", listTugas);
+//
+//        if (jadwal.getFinalStatus().equals("FINAL")) {
+//            return "redirect:weight?jadwal=" + jadwal.getId();
+//
+//        } else {
+//            return "studiesActivity/assesment/uploadnilai";
+//        }
+//    }
 
     @GetMapping("/studiesActivity/assesment/sds")
     public void sds(Model model, @RequestParam Jadwal jadwal) {
