@@ -305,7 +305,7 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/report/transcript")
-    public void checkTranscript(Authentication authentication, Model model) {
+    public String checkTranscript(Authentication authentication, Model model) {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -313,18 +313,29 @@ public class ReportMahasiswaController {
             model.addAttribute("matakuliah", matakuliahKurikulumDao.listMatkulSelection(mahasiswa));
         }
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
-        model.addAttribute("tahun", tahun);
-        model.addAttribute("ceklis", praKrsSpDao.cariKrsSp(mahasiswa, tahun));
-        model.addAttribute("total", praKrsSpDao.countSp(mahasiswa, tahun));
-        System.out.println(praKrsSpDao.countSp(mahasiswa, tahun));
-        //tampilsemua
-        model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
+        TahunAkademik tahunAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
-        model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
-        // delete request sp
-        model.addAttribute("hapusSp", praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa, StatusRecord.AKTIF, StatusApprove.WAITING, tahun));
+        List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa, tahunAktif, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
+
+        if (validasiEdom.isEmpty() || validasiEdom == null) {
+            model.addAttribute("tahun", tahun);
+            model.addAttribute("ceklis", praKrsSpDao.cariKrsSp(mahasiswa, tahun));
+            model.addAttribute("total", praKrsSpDao.countSp(mahasiswa, tahun));
+            System.out.println(praKrsSpDao.countSp(mahasiswa, tahun));
+            model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
+            model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+            model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
+            model.addAttribute("hapusSp", praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa, StatusRecord.AKTIF, StatusApprove.WAITING, tahun));
+
+            return "report/transcript";
+        } else {
+            if (LocalDate.now().isAfter(tahunAktif.getTanggalSelesaiNilai())) {
+                return "redirect:edom?tahunAkademik=" + tahunAktif.getId();
+            } else {
+                return "report/transcript";
+            }
+        }
 
     }
 
