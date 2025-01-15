@@ -478,9 +478,15 @@
             ].join('')
         }
         if (row.status == 'APPROVED'){
-            if (row.statusUjian == 'NOT_YET_SCHEDULED'){
+            if (row.statusUjian == 'NOT_YET_SCHEDULED' && data.statusTahfidz != 'HP'){
                 return [
                     '<div class="badge badge-warning">  Belum Dijadwalkan </div>'
+                ].join('')
+            }
+
+            if (row.statusUjian == 'NOT_YET_SCHEDULED' && data.statusTahfidz == 'HP'){
+                return [
+                    '<div class="badge badge-warning">  Menunggu Penilaian </div>'
                 ].join('')
             }
 
@@ -528,6 +534,18 @@
         }
 
         if(row.status == 'APPROVED') {
+            if (row.statusUjian == 'NOT_YET_SCHEDULED' && data.statusTahfidz != 'HP'){
+                return [
+                    '<button class="btn btn-sm btn-info" id="' + row.id + '" onclick="openPenjadwalan(this.id)" > Penjadwalan </button>',
+                ].join('')
+            }
+
+            if (row.statusUjian == 'NOT_YET_SCHEDULED' && data.statusTahfidz == 'HP'){
+                return [
+                    '<button class="btn btn-sm btn-info" id="' + row.id + '" onclick="openPenilaian(this.id)" > Penilaian </button>',
+                ].join('')
+            }
+
             if (row.statusUjian == 'NOT_YET_SCHEDULED'){
                 return [
                     '<button class="btn btn-sm btn-info" id="' + row.id + '" onclick="openPenjadwalan(this.id)" > Penjadwalan </button>',

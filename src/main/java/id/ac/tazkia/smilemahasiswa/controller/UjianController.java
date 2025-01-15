@@ -587,34 +587,34 @@ public class UjianController {
     @PostMapping("/penilaian/tahfidz/{id}")
     @ResponseBody
     public ResponseEntity<BaseResponse> penilaianTahfidz(@PathVariable String id, @RequestParam String nilai) {
-        UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(id).get();
+        UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(id).orElseThrow();
 
         BigDecimal nilaiUjian = new BigDecimal(nilai);
         ujianTahfidzKompre.setNilai(nilaiUjian);
-        if (ujianTahfidzKompre.getStatusTahfidz().equals("HP")){
-            if (nilaiUjian.compareTo(new BigDecimal(10)) >= 0) {
-                ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
-            } else {
-                ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
+
+        if ("HP".equals(ujianTahfidzKompre.getStatusTahfidz())) {
+            if (ujianTahfidzKompre.getRuangan() == null) {
+                ujianTahfidzKompre.setRuangan(ruanganDao.findById("01").orElseThrow());
             }
-        }else{
-            if (nilaiUjian.compareTo(new BigDecimal(70)) >= 0) {
-                ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
-            } else {
-                ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
+            if (ujianTahfidzKompre.getTanggalUjian() == null) {
+                ujianTahfidzKompre.setTanggalUjian(LocalDate.now());
             }
+            if (ujianTahfidzKompre.getPenguji() == null) {
+                ujianTahfidzKompre.setPenguji("-");
+            }
+            ujianTahfidzKompre.setStatusLulus(nilaiUjian.compareTo(new BigDecimal(10)) >= 0 ? StatusRecord.LULUS : StatusRecord.TIDAK_LULUS);
+        } else {
+            ujianTahfidzKompre.setStatusLulus(nilaiUjian.compareTo(new BigDecimal(70)) >= 0 ? StatusRecord.LULUS : StatusRecord.TIDAK_LULUS);
         }
+
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
-        // ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(),
-        // jenis, "APPROVED");
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponse.builder()
                         .code("200")
-                        .message("Ujian Tahfidz Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama()
-                                + " Berhasil Dinilai")
-
-                        .build());
+                        .message("Ujian Tahfidz Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Dinilai")
+                        .build()
+        );
     }
 
     @GetMapping("/formulir/{file}")
