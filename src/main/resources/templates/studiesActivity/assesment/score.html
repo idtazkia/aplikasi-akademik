@@ -229,7 +229,7 @@
                                                 <center><span th:with="nilaiKey=${data.mahasiswa.nim + '_' + tugas.id}"
                                                       th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
                                             </td>
-                                            <td th:if="${nilai.tugasList != null && !nilai.tugasList.isEmpty()}" ><center th:text="${data.nilaiTugas}"></center></td>
+                                            <td><center th:if="${nilai.tugasList != null && !nilai.tugasList.isEmpty()}" th:text="${data.nilaiTugas}"></center></td>
                                             <td th:each="uts :${nilai.utsList}">
                                                 <center><span th:with="nilaiKey=${data.mahasiswa.nim + '_' + uts.id}"
                                                           th:text="${nilai.nilaiMap.containsKey(nilaiKey) ? nilai.nilaiMap.get(nilaiKey) : '-'}"></span></center>
