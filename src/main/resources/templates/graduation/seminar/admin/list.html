@@ -221,7 +221,8 @@
                                                                                             <th>Ketua</th>
                                                                                             <th>Penguji</th>
                                                                                             <th>Pembimbing</th>
-                                                                                            <th th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">Pembimbing 2</th>
+                                                                                            <th th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '05' && data.note.mahasiswa.angkatan < '23'
+                                                                                            || data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '4f8e1779-4d46-4365-90df-996fab83b47c' && data.note.mahasiswa.angkatan < '21'}">Pembimbing 2</th>
                                                                                         </tr>
                                                                                         </thead>
 
@@ -282,8 +283,8 @@
                                                                                             <td align="center" th:text="${data.ka}">90.00</td>
                                                                                             <td align="center" th:text="${data.ua}">90.00</td>
                                                                                             <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pa2}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
+                                                                                            <td align="center" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '05' && data.note.mahasiswa.angkatan < '23'
+                                                                                            || data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '4f8e1779-4d46-4365-90df-996fab83b47c' && data.note.mahasiswa.angkatan < '21'}" th:text="${data.pa2}">90.00</td>
                                                                                         </tr>
 
                                                                                         <tr>
@@ -292,8 +293,8 @@
                                                                                             <td align="center" th:text="${data.kb}">90.00</td>
                                                                                             <td align="center" th:text="${data.ub}">90.00</td>
                                                                                             <td align="center" th:text="${data.pb}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pb2}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
+                                                                                            <td align="center" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '05' && data.note.mahasiswa.angkatan < '23'
+                                                                                            || data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '4f8e1779-4d46-4365-90df-996fab83b47c' && data.note.mahasiswa.angkatan < '21'}"th:text="${data.pb2}">90.00</td>
                                                                                         </tr>
 
                                                                                         <tr>
@@ -302,8 +303,8 @@
                                                                                             <td align="center" th:text="${data.kc}">90.00</td>
                                                                                             <td align="center" th:text="${data.uc}">90.00</td>
                                                                                             <td align="center" th:text="${data.pc}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pc2}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
+                                                                                            <td align="center" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '05' && data.note.mahasiswa.angkatan < '23'
+                                                                                            || data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '4f8e1779-4d46-4365-90df-996fab83b47c' && data.note.mahasiswa.angkatan < '21'}" th:text="${data.pc2}">90.00</td>
                                                                                         </tr>
 
                                                                                         <tr>
@@ -312,8 +313,8 @@
                                                                                             <td align="center" th:text="${data.kd}">90.00</td>
                                                                                             <td align="center" th:text="${data.ud}">90.00</td>
                                                                                             <td align="center" th:text="${data.pd}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pd2}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
+                                                                                            <td align="center" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '05' && data.note.mahasiswa.angkatan < '23'
+                                                                                            || data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '4f8e1779-4d46-4365-90df-996fab83b47c' && data.note.mahasiswa.angkatan < '21'}" th:text="${data.pd2}">90.00</td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td>5</td>
@@ -321,8 +322,8 @@
                                                                                             <td align="center" th:text="${data.ke}">90.00</td>
                                                                                             <td align="center" th:text="${data.ue}">90.00</td>
                                                                                             <td align="center" th:text="${data.pe}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 != null}" th:text="${data.pe2}">90.00</td>
-                                                                                            <td align="center" th:if="${data.note.dosen2 == null}">-</td>
+                                                                                            <td align="center" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '05' && data.note.mahasiswa.angkatan < '23'
+                                                                                            || data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.mahasiswa.idProdi.id == '4f8e1779-4d46-4365-90df-996fab83b47c' && data.note.mahasiswa.angkatan < '21'}" th:text="${data.pe2}">90.00</td>
                                                                                         </tr>
                                                                                         </tbody>
 
