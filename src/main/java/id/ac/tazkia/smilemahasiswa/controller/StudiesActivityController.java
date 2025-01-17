@@ -1545,9 +1545,17 @@ public class StudiesActivityController {
             jadwalTugas.setJenisPengiriman(tugasMateriService.setPengiriman(online, upload, presentasi, ujian));
         }
         jadwalTugas.setSesiKuliah(sesiKuliah);
-        if (!fileTugas.isEmpty()){
-            jadwalTugas.setFile(tugasMateriService.uploadFile(fileTugas, jadwalTugas));
-            jadwalTugas.setNamaFile(fileTugas.getOriginalFilename());
+        if (fileTugas != null && !fileTugas.isEmpty()){
+            try {
+                jadwalTugas.setFile(tugasMateriService.uploadFile(fileTugas, jadwalTugas));
+                jadwalTugas.setNamaFile(fileTugas.getOriginalFilename());
+            }catch (IOException e){
+                throw new  RuntimeException("Gagal memproses file", e);
+            }
+            log.info("File : {}", fileTugas);
+        }else{
+            jadwalTugas.setFile(null);
+            jadwalTugas.setNamaFile(null);
         }
         if (jadwalTugas.getWaktuMulai() == null) {
             jadwalTugas.setWaktuMulai(LocalDateTime.now());
@@ -1674,11 +1682,18 @@ public class StudiesActivityController {
             jadwalTugas.setJenisPengiriman(tugasMateriService.setPengiriman(online, upload, presentasi, ujian));
         }
         jadwalTugas.setSesiKuliah(sesiKuliah);
-        if (!fileTugas.isEmpty()){
-            jadwalTugas.setFile(tugasMateriService.uploadFile(fileTugas, jadwalTugas));
-            jadwalTugas.setNamaFile(fileTugas.getOriginalFilename());
+        if (fileTugas != null && !fileTugas.isEmpty()){
+            try {
+                jadwalTugas.setFile(tugasMateriService.uploadFile(fileTugas, jadwalTugas));
+                jadwalTugas.setNamaFile(fileTugas.getOriginalFilename());
+            }catch (IOException e){
+                throw new  RuntimeException("Gagal memproses file", e);
+            }
+            log.info("File : {}", fileTugas);
+        }else{
+            jadwalTugas.setFile(null);
+            jadwalTugas.setNamaFile(null);
         }
-        log.info("File : {}", fileTugas);
         jadwalTugasDao.save(jadwalTugas);
         tugasMateriService.saveBobotTugas(jadwalTugas.getSesiKuliah().getJadwal(), jadwalTugas);
         return "redirect:weight?jadwal=" + jadwalTugas.getSesiKuliah().getJadwal().getId();
@@ -1923,6 +1938,13 @@ public class StudiesActivityController {
                 krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal, StatusRecord.AKTIF)
                         .size());
         model.addAttribute("bobot", jadwalTugasDao.findBySesiKuliahJadwalAndStatusOrderByPertemuanKe(jadwal, StatusRecord.AKTIF));
+    }
+
+    @PostMapping("/studiesActivity/assesment/recalculate")
+    public String recalculateNilai(@RequestParam Jadwal jadwal){
+        scoreService.reCalculatingNilai(jadwal);
+
+        return "redirect:weight?jadwal="+jadwal.getId();
     }
 
     @PostMapping("/studiesActivity/assesment/weight")
