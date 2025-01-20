@@ -889,7 +889,7 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        if (fileJawaban != null) {
+        if (fileJawaban != null && !fileJawaban.isEmpty()) {
             String namaAsli = fileJawaban.getOriginalFilename();
             String extension = "";
 
@@ -912,6 +912,9 @@ public class StudyActivityController {
 
             tugasJawaban.setFile(tugasMateriService.uploadJawaban(fileJawaban, tugasJawaban));
             tugasJawaban.setNamaFile(fileJawaban.getOriginalFilename());
+        }else{
+            tugasJawaban.setFile(null);
+            tugasJawaban.setNamaFile(null);
         }
 
         List<JadwalTugasJawaban> cekSudahAda = tugasJawabanDao.findByJadwalTugasAndMahasiswa(jadwalTugas, mahasiswa);

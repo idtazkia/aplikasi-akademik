@@ -46,7 +46,7 @@
     </div>
 
     <div class="container-fluid mt--7">
-        <form method="post" th:action="@{/studiesActivity/assesment/tugas}" enctype="multipart/form-data">
+        <form id="form-tugas" method="post" th:action="@{/studiesActivity/assesment/tugas}" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6 col-sm-12 col-xs-12">
                     <div class="card shadow">
@@ -166,7 +166,7 @@
 
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" id="btn-save" onclick="saveTugas()" class="btn btn-primary">Save</button>
                             </div>
                         </div>
                     </div>
@@ -235,6 +235,13 @@
 
 </script>
 <script>
+
+    function saveTugas(){
+        $('#btn-save').removeClass('btn-primary').addClass('btn-warning').prop('disabled', true).html('Loading . . .');
+
+        $('#form-tugas').submit();
+    }
+
     function updateMaksBobot(){
         const select = document.getElementById('kategori');
         const bobot = document.getElementById('maksBobot');

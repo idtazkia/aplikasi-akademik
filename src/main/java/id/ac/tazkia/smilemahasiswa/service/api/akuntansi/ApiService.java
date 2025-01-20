@@ -158,9 +158,14 @@ public class ApiService {
                             pembayaranDtoYys.setAmounts(setPembayaranAkunting(p));
                         }else{
                             ArrayList<BigDecimal> pembayaran = new ArrayList<>();
-                            pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                            pembayaran.add(p.getAmount());
-                            pembayaran.add(new BigDecimal(2000));
+                            if (p.getAmount().compareTo(BigDecimal.ZERO) == 0){
+                                pembayaran.add(p.getAmount());
+                                pembayaran.add(p.getAmount());
+                            }else{
+                                pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
+                                pembayaran.add(new BigDecimal(2000));
+                                pembayaran.add(p.getAmount());
+                            }
                             pembayaranDtoYys.setAmounts(pembayaran);
                         }
 
@@ -172,9 +177,8 @@ public class ApiService {
                             pembayaranDtoInst.setAmounts(setPembayaranAkunting(p));
                         }else{
                             ArrayList<BigDecimal> pembayaran = new ArrayList<>();
-                            pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
                             pembayaran.add(p.getAmount());
-                            pembayaran.add(new BigDecimal(2000));
+                            pembayaran.add(p.getAmount());
                             pembayaranDtoInst.setAmounts(pembayaran);
                         }
 
@@ -200,18 +204,18 @@ public class ApiService {
         switch (p.getTipePengiriman()){
             case MANUAL:
                 pembayaran.add(p.getAmount());
-                pembayaran.add(p.getAmount());
                 pembayaran.add(BigDecimal.ZERO);
+                pembayaran.add(p.getAmount());
                 break;
             case VIRTUAL_ACCOUNT:
                 pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                pembayaran.add(p.getAmount());
                 pembayaran.add(new BigDecimal(2000));
+                pembayaran.add(p.getAmount());
                 break;
             default:
                 pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                pembayaran.add(p.getAmount());
                 pembayaran.add(new BigDecimal(2000));
+                pembayaran.add(p.getAmount());
                 break;
         }
 
