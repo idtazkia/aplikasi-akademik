@@ -153,9 +153,9 @@ public class ApiService {
                         SendPembayaranDto pembayaranDtoYys = new SendPembayaranDto();
                         pembayaranDtoYys.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranYys());
                         pembayaranDtoYys.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
-                        pembayaranDtoYys.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                        pembayaranDtoYys.setDescription("Pembayaran " + p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama() + " Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
                         if (p.getTipePengiriman() != null) {
-                            pembayaranDtoYys.setAmounts(setPembayaranAkunting(p));
+                            pembayaranDtoYys.setAmounts(setPembayaranAkunting(p, "YYSN"));
                         }else{
                             ArrayList<BigDecimal> pembayaran = new ArrayList<>();
                             if (p.getAmount().compareTo(BigDecimal.ZERO) == 0){
@@ -172,9 +172,9 @@ public class ApiService {
                         SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
                         pembayaranDtoInst.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranInst());
                         pembayaranDtoInst.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
-                        pembayaranDtoInst.setDescription("Pembayaran Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                        pembayaranDtoInst.setDescription("Pembayaran " + p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama() + " Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
                         if (p.getTipePengiriman() != null) {
-                            pembayaranDtoInst.setAmounts(setPembayaranAkunting(p));
+                            pembayaranDtoInst.setAmounts(setPembayaranAkunting(p, "INST"));
                         }else{
                             ArrayList<BigDecimal> pembayaran = new ArrayList<>();
                             pembayaran.add(p.getAmount());
@@ -197,28 +197,44 @@ public class ApiService {
         }
     }
 
-    private ArrayList<BigDecimal> setPembayaranAkunting(Pembayaran p){
+    private ArrayList<BigDecimal> setPembayaranAkunting(Pembayaran p, String untuk){
 
         ArrayList<BigDecimal> pembayaran = new ArrayList<>();
 
-        switch (p.getTipePengiriman()){
-            case MANUAL:
-                pembayaran.add(p.getAmount());
-                pembayaran.add(BigDecimal.ZERO);
-                pembayaran.add(p.getAmount());
-                break;
-            case VIRTUAL_ACCOUNT:
-                pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                pembayaran.add(new BigDecimal(2000));
-                pembayaran.add(p.getAmount());
-                break;
-            default:
-                pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
-                pembayaran.add(new BigDecimal(2000));
-                pembayaran.add(p.getAmount());
-                break;
+        if ("YYSN".equalsIgnoreCase(untuk)) {
+            switch (p.getTipePengiriman()){
+                case MANUAL:
+                    pembayaran.add(p.getAmount());
+                    pembayaran.add(BigDecimal.ZERO);
+                    pembayaran.add(p.getAmount());
+                    break;
+                case VIRTUAL_ACCOUNT:
+                    pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
+                    pembayaran.add(new BigDecimal(2000));
+                    pembayaran.add(p.getAmount());
+                    break;
+                default:
+                    pembayaran.add(p.getAmount().subtract(new BigDecimal(2000)));
+                    pembayaran.add(new BigDecimal(2000));
+                    pembayaran.add(p.getAmount());
+                    break;
+            }
+        }else{
+            switch (p.getTipePengiriman()){
+                case MANUAL:
+                    pembayaran.add(p.getAmount());
+                    pembayaran.add(p.getAmount());
+                    break;
+                case VIRTUAL_ACCOUNT:
+                    pembayaran.add(p.getAmount());
+                    pembayaran.add(p.getAmount());
+                    break;
+                default:
+                    pembayaran.add(p.getAmount());
+                    pembayaran.add(p.getAmount());
+                    break;
+            }
         }
-
         return pembayaran;
     }
 
