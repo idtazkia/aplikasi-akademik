@@ -269,6 +269,7 @@
                                                             <th>Time</th>
                                                             <th>Lecture</th>
                                                             <th>Room</th>
+                                                            <th>#</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -285,6 +286,13 @@
                                                                 13.00
                                                             </td>
                                                             <td th:text="${data.jadwal.ruangan.namaRuangan}">13.00</td>
+                                                            <td>
+                                                                <a th:href="@{/study/detail (id = ${data.jadwal.id})}">
+                                                                    <button type="button" class="btn btn-warning waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Detail">
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </button>
+                                                                </a>
+                                                            </td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
