@@ -46,10 +46,10 @@ public class ScoreService {
 
         KrsDetail krsDetail = krsDetailDao.findById(nilaiTugas.getKrsDetail().getId()).get();
         krsDetail.setNilaiTugas(sumNilaiTugas);
-//        krsDetail.setNilaiAkhir(sumNilaiTugas.add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiUas()));
+        krsDetail.setNilaiAkhir(sumNilaiTugas.add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiUas()));
         krsDetailDao.save(krsDetail);
 
-//        hitungNilaiAkhir(krsDetail);
+        hitungNilaiAkhir(krsDetail);
     }
 
     public void hitungNilaiUTS(NilaiTugas nilaiTugas) {
@@ -60,10 +60,10 @@ public class ScoreService {
         if (kd.isPresent()){
             KrsDetail krsDetail = kd.get();
             krsDetail.setNilaiUts(sumNilaiUtsAkhir);
-//            krsDetail.setNilaiAkhir(sumNilaiUtsAkhir.add(krsDetail.getNilaiTugas()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
+            krsDetail.setNilaiAkhir(sumNilaiUtsAkhir.add(krsDetail.getNilaiTugas()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
             krsDetailDao.save(krsDetail);
 
-//            hitungNilaiAkhir(krsDetail);
+            hitungNilaiAkhir(krsDetail);
         }
     }
 
