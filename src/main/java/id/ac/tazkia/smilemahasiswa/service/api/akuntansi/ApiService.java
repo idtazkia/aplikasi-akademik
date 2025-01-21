@@ -168,6 +168,7 @@ public class ApiService {
                             }
                             pembayaranDtoYys.setAmounts(pembayaran);
                         }
+                        log.info("Kirim pembayaran yayasan : {}", pembayaranDtoYys);
 
                         SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
                         pembayaranDtoInst.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranInst());
@@ -181,6 +182,7 @@ public class ApiService {
                             pembayaran.add(p.getAmount());
                             pembayaranDtoInst.setAmounts(pembayaran);
                         }
+                        log.info("Kirim pembayaran institut : {}", pembayaranDtoInst);
 
                         if (sendPembayaran(pembayaranDtoYys) && sendPembayaran(pembayaranDtoInst)) {
                             p.setZahirExport(AkuntansiExport.SENT);
@@ -219,21 +221,11 @@ public class ApiService {
                     pembayaran.add(p.getAmount());
                     break;
             }
+            log.info("Kirim tagihan yayasan : {}", pembayaran);
         }else{
-            switch (p.getTipePengiriman()){
-                case MANUAL:
-                    pembayaran.add(p.getAmount());
-                    pembayaran.add(p.getAmount());
-                    break;
-                case VIRTUAL_ACCOUNT:
-                    pembayaran.add(p.getAmount());
-                    pembayaran.add(p.getAmount());
-                    break;
-                default:
-                    pembayaran.add(p.getAmount());
-                    pembayaran.add(p.getAmount());
-                    break;
-            }
+            pembayaran.add(p.getAmount());
+            pembayaran.add(p.getAmount());
+            log.info("Kirim tagihan institut : {}", pembayaran);
         }
         return pembayaran;
     }
