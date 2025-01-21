@@ -50,7 +50,7 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
         @Query(value = "CAll getsemestertranskript(?1);", nativeQuery = true)
         List<Object[]> semesterTranskript(String idMahasiswa);
 
-        @Query(value = "select count(a.id) from krs as a inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and a.id_mahasiswa = ?1 and b.jenis != 'PENDEK'", nativeQuery = true)
+        @Query(value = "SELECT COUNT(DISTINCT a.id) AS total_krs FROM krs AS a INNER JOIN tahun_akademik AS b ON a.id_tahun_akademik = b.id INNER JOIN krs_detail AS kd ON a.id = kd.id_krs WHERE a.status = 'AKTIF' AND a.id_mahasiswa = ?1 AND b.jenis != 'PENDEK'", nativeQuery = true)
         Integer countSemester(String id);
 
         @Query(value = "SELECT id_jadwal, kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks,jam_mulai,jam_selesai, nama_hari, nama_karyawan, prasyarat, bobot_prasyarat, setara, ambil_sebelum,bobot_sebelum,ambil_prasyarat,bobot_ambil_prass, already FROM\n"
