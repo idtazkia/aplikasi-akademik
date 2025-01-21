@@ -17,7 +17,8 @@ import java.time.LocalDate;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 @Entity
-@Data
+@Getter
+@Setter
     public class Prodi {
 
         @Id
