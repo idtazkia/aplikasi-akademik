@@ -887,7 +887,7 @@ public class GraduationController {
                 }
             }
 
-            if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 21
+            if (Integer.parseInt(note.getMahasiswa().getAngkatan()) >= 23
                     && note.getMahasiswa().getIdProdi().getId().equals("05")) {
                 krsDetail = krsDetailDao.cariUjianPrososal(note.getMahasiswa(), ta);
 
@@ -2012,7 +2012,7 @@ public class GraduationController {
 
         }
 
-        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
+        if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 23
                 && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
             model.addAttribute("valid", "dosen2");
         }
