@@ -176,7 +176,7 @@ public class StudentBillController {
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
-        return prodiDao.findAll();
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @ModelAttribute("beasiswa")

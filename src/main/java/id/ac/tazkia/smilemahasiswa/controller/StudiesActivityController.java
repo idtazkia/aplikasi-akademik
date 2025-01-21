@@ -265,7 +265,7 @@ public class StudiesActivityController {
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
-        return prodiDao.findAll();
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @ModelAttribute("tahunAkademik")
@@ -6884,7 +6884,7 @@ public class StudiesActivityController {
 
         model.addAttribute("list", p1);
         model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("listProdi", prodiDao.findAll());
+        model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("listTahun",
                 tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
@@ -6924,7 +6924,7 @@ public class StudiesActivityController {
 
         // halaman approve
         model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("listProdi", prodiDao.findAll());
+        model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("listTahun",
                 tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
@@ -7134,7 +7134,7 @@ public class StudiesActivityController {
             model.addAttribute("jumlah", jumlah);
             model.addAttribute("maks", maks);
             model.addAttribute("listMahasiswa", matkul);
-            model.addAttribute("listProdi", prodiDao.findAll());
+            model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
             model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
             model.addAttribute("listTahun",
                     tahunAkademikDao.findByStatusNotInOrderByTahunDesc(

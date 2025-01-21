@@ -91,7 +91,7 @@ public class UjianController {
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
-        return prodiDao.findAll();
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @ModelAttribute("tahunAkademik")
