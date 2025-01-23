@@ -1657,7 +1657,7 @@ public class StudyActivityController {
                     t.setNilaiTagihan(t.getNilaiTagihan().add(total));
                     t.setNilaiTagihanAsli(t.getNilaiTagihan().add(total));
                     tagihanDao.save(t);
-                    tagihanService.editTagihan(t);
+                    tagihanService.editTagihan(t, t.getNomor());
                 }
             }
         }

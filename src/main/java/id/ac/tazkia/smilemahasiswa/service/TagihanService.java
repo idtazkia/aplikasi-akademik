@@ -205,7 +205,7 @@ public class TagihanService {
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
 
-    public void editTagihan(Tagihan tagihan) {
+    public void editTagihan(Tagihan tagihan, String nomorLama) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeBiaya())
                 .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
@@ -216,12 +216,12 @@ public class TagihanService {
                         + " a.n. " + tagihan.getMahasiswa().getNama())
                 .tanggalJatuhTempo(Date.from(tagihan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.REPLACE)
-                .nomorTagihanLama(tagihan.getNomor())
+                .nomorTagihanLama(nomorLama)
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
 
-    public void ubahJadiCicilan(RequestCicilan requestCicilan) {
+    public void ubahJadiCicilan(RequestCicilan requestCicilan, String nomorLama) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(requestCicilan.getTagihan().getNilaiJenisTagihan().getProdi().getKodeBiaya())
                 .jenisTagihan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getId())
@@ -232,7 +232,7 @@ public class TagihanService {
                         + " a.n. " +requestCicilan.getTagihan().getMahasiswa().getNama())
                 .tanggalJatuhTempo(Date.from(requestCicilan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.REPLACE)
-                .nomorTagihanLama(requestCicilan.getTagihan().getNomor())
+                .nomorTagihanLama(nomorLama)
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }

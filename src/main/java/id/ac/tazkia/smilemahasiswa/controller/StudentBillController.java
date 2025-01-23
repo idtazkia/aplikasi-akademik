@@ -937,7 +937,7 @@ public class StudentBillController {
                                         requestCicilanDao.save(requestCicilan);
                                         RequestCicilan cariSebelumnya = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan1, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
                                         if (cariSebelumnya.getTanggalJatuhTempo().isAfter(LocalDate.now()) || cariSebelumnya.getTanggalJatuhTempo().isEqual(LocalDate.now())) {
-                                            tagihanService.ubahJadiCicilan(requestCicilan);
+                                            tagihanService.ubahJadiCicilan(requestCicilan, tagihan1.getNomor());
                                         }else{
                                             tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
                                         }
@@ -946,7 +946,7 @@ public class StudentBillController {
                                     tagihanDao.save(tagihan);
                                 }else {
                                     if (tagihan1.getTanggalJatuhTempo().isAfter(LocalDate.now())) {
-                                        tagihanService.editTagihan(tagihan);
+                                        tagihanService.editTagihan(tagihan, tagihan1.getNomor());
                                     }else{
                                         tagihanService.requestCreateTagihan(tagihan);
                                     }
@@ -1402,7 +1402,7 @@ public class StudentBillController {
                     requestCicilanDao.save(requestCicilan);
                     RequestCicilan cariSebelumnya = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tgh, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
                     if (cariSebelumnya.getTanggalJatuhTempo().isAfter(LocalDate.now()) || cariSebelumnya.getTanggalJatuhTempo().isEqual(LocalDate.now())) {
-                        tagihanService.ubahJadiCicilan(requestCicilan);
+                        tagihanService.ubahJadiCicilan(requestCicilan, tgh.getNomor());
                     }else{
                         tagihanService.mengirimCicilanSelanjutnya(requestCicilan);
                     }
@@ -1411,7 +1411,7 @@ public class StudentBillController {
                 tagihanDao.save(t);
             }else {
                 if (tgh.getTanggalJatuhTempo().isAfter(LocalDate.now())) {
-                    tagihanService.editTagihan(t);
+                    tagihanService.editTagihan(t, tgh.getNomor());
                 }else{
                     tagihanService.requestCreateTagihan(t);
                 }
@@ -1519,7 +1519,7 @@ public class StudentBillController {
         tagihan.setNilaiTagihanAsli(nilaiTagihan);
         tagihanDao.save(tagihan);
         if (tagihan.getStatusTagihan() != StatusTagihan.LUNAS){
-            tagihanService.editTagihan(tagihan);
+            tagihanService.editTagihan(tagihan, tagihan.getNomor());
         }
 
         return "redirect:list?tahunAkademik="+tahun.getId()+"&nim="+tagihan.getMahasiswa().getNim();
@@ -2057,7 +2057,7 @@ public class StudentBillController {
             requestCicilan.setUserApprove(karyawan);
             requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
             requestCicilanDao.save(requestCicilan);
-            tagihanService.ubahJadiCicilan(requestCicilan);
+            tagihanService.ubahJadiCicilan(requestCicilan, bill.getNomor());
         }
 
         return "redirect:../requestCicilan/list";
@@ -2166,7 +2166,7 @@ public class StudentBillController {
         }else{
             rCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
             requestCicilanDao.save(rCicilan);
-            tagihanService.ubahJadiCicilan(rCicilan);
+            tagihanService.ubahJadiCicilan(rCicilan, t.getNomor());
             log.info("kirim cicilan selanjutnya : {}", rCicilan.getNilaiCicilan());
 
             if (usr.getRole().getId().equals("mahasiswanunggak")){
@@ -2251,7 +2251,7 @@ public class StudentBillController {
         requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
         requestCicilan.setKeterangan("PENGAJUAN PELUNASAN");
         requestCicilanDao.save(requestCicilan);
-        tagihanService.ubahJadiCicilan(requestCicilan);
+        tagihanService.ubahJadiCicilan(requestCicilan, tagihan.getNomor());
 
         return "redirect:../billAdmin/detail?tagihan="+tagihan.getId();
     }
@@ -2697,7 +2697,7 @@ public class StudentBillController {
         tagihan.setNilaiTagihan(new BigDecimal(nilai));
         tagihan.setStatusTagihan(StatusTagihan.PERINGANAN);
         tagihanDao.save(tagihan);
-        tagihanService.editTagihan(tagihan);
+        tagihanService.editTagihan(tagihan, tagihan.getNomor());
 
         return "redirect:../requestPeringanan/list";
     }
@@ -3368,7 +3368,7 @@ public class StudentBillController {
             t.setNilaiTagihan(new BigDecimal(newNilai));
             t.setKeterangan("Potongan "+t.getKeterangan());
             tagihanDao.save(t);
-            tagihanService.editTagihan(t);
+            tagihanService.editTagihan(t, t.getNomor());
 
         }
 
