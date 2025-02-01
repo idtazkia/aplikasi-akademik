@@ -103,4 +103,6 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
 
         Integer countByJadwalAndPertemuanNotAndLinkVideoIsNull(Jadwal jadwal, String notMulaiMengajar);
 
+        List<SesiKuliah> findByJadwal(Jadwal jadwal);
+
 }

@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -867,12 +868,18 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/materi/upload")
-    public String tambahMateriDiawal(@RequestParam String idSesi, @RequestParam String materi){
+    public String tambahMateriDiawal(@RequestParam String idSesi, @RequestParam String materi, RedirectAttributes attributes){
 
         SesiKuliah sesi = sesiKuliahDao.findById(idSesi).get();
         if (sesi != null) {
-            sesi.setLinkVideo(materi);
-            sesiKuliahDao.save(sesi);
+
+            try {
+                tugasMateriService.saveMateri(sesi, materi);
+            }catch (ValidationException e){
+                attributes.addFlashAttribute("pertemuanId", sesi.getId());
+                attributes.addFlashAttribute("duplicateLink", e.getMessage());
+                return "redirect:../detail?jadwal=" + sesi.getJadwal().getId();
+            }
         }
         return "redirect:../detail?jadwal=" + sesi.getJadwal().getId();
 
@@ -1674,6 +1681,8 @@ public class StudiesActivityController {
                                   @RequestParam(required = false) String online, @RequestParam(required = false) String upload,
                                   @RequestParam(required = false) String presentasi, @RequestParam(required = false) String ujian,
                                   RedirectAttributes attributes) throws IOException {
+
+        log.info("edit tugas : {}", jadwalTugas);
         SesiKuliah sesiKuliah = sesiKuliahDao.findByJadwalAndPertemuanKe(jadwalTugas.getSesiKuliah().getJadwal(), jadwalTugas.getPertemuanKe()).get();
         if (online == null && upload == null && presentasi == null && ujian == null) {
             attributes.addFlashAttribute("gagal", "Wajib pilih salah satu jenis pengiriman");
@@ -11291,7 +11300,7 @@ public class StudiesActivityController {
 
         int rowInfoNoAcred = 19;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
-        accreditation.createCell(2).setCellValue("No SK BAN - PT");
+        accreditation.createCell(2).setCellValue("Nomor Akreditasi ");
         accreditation.createCell(4).setCellValue(":");
         accreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getNoSk());
         accreditation.getCell(2).setCellStyle(styleData);
@@ -11300,7 +11309,7 @@ public class StudiesActivityController {
 
         int rowInfoDateAcred = 20;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
-        dateAccreditation.createCell(2).setCellValue("Tanggal SK BAN - PT ");
+        dateAccreditation.createCell(2).setCellValue("Tanggal SK Akreditasi ");
         dateAccreditation.createCell(4).setCellValue(":");
         if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1) {
             dateAccreditation.createCell(5)

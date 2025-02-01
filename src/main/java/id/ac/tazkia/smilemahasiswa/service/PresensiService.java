@@ -836,7 +836,7 @@ public class PresensiService {
         Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR), StatusRecord.AKTIF, kd);
 
         if (presensiDosen != null){
-            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen).multiply(kd.getJadwal().getBobotPresensi()).divide(new BigDecimal(100)));
+//            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen).multiply(kd.getJadwal().getBobotPresensi()).divide(new BigDecimal(100)));
             kd.setJumlahKehadiran(presensiMhs);
             krsDetailDao.save(kd);
         }

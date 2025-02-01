@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ValidationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +43,8 @@ public class TugasMateriService {
     @Autowired private NilaiTugasDao nilaiTugasDao;
 
     @Autowired private JadwalTugasJawabanDao tugasJawabanDao;
+
+    @Autowired private SesiKuliahDao sesiKuliahDao;
 
     @Autowired private ScoreService scoreService;
 
@@ -262,6 +266,11 @@ public class TugasMateriService {
         }
 
         String folder = tugasJawaban.getMahasiswa().getNim() + " - " + tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
+//        String folder = tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
+//                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+//                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
+//                "Pertemuan " + tugasJawaban.getJadwalTugas().getPertemuanKe() + File.separator + tugasJawaban.getMahasiswa().getNim() + " - " +
+//                tugasJawaban.getMahasiswa().getNama();
         String lokasi = uploadJawaban + File.separator + folder;
         String idFile = UUID.randomUUID().toString();
         String namaFile = idFile + '.' + extension;
@@ -308,12 +317,15 @@ public class TugasMateriService {
         List<Path> files = new ArrayList<>();
 
         List<JadwalTugasJawaban> list = tugasJawabanDao.findByJadwalTugasAndStatusOrderByWaktuPengumpulan(tugas, StatusRecord.AKTIF);
-        for (JadwalTugasJawaban jadwalTugas : list){
-            if (jadwalTugas.getFile() != null && !jadwalTugas.getFile().isEmpty()){
-                files.add(Paths.get(uploadJawaban + File.separator + jadwalTugas.getMahasiswa().getNim() + " - " +
-                        jadwalTugas.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + File.separator + jadwalTugas.getFile()));
-            }
-        }
+//        for (JadwalTugasJawaban jadwalTugas : list){
+//            if (jadwalTugas.getFile() != null && !jadwalTugas.getFile().isEmpty()){
+//                String folder = jadwalTugas.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
+//                        jadwalTugas.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+//                        jadwalTugas.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator + "Pertemuan " +
+//                        jadwalTugas.getJadwalTugas().getPertemuanKe() + File.separator + jadwalTugas.getMahasiswa().getNim() + " - " + jadwalTugas.getMahasiswa().getNama();
+//                files.add(Paths.get(uploadJawaban + File.separator + folder + File.separator + jadwalTugas.getFile()));
+//            }
+//        }
 
         response.setContentType("application/zip");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
@@ -377,7 +389,7 @@ public class TugasMateriService {
                 .collect(Collectors.toList());
 
         Map<String, BigDecimal> nilaiMap = new HashMap<>();
-        List<NilaiTugas> listNilai = nilaiTugasDao.findByBobotTugasIn(allTugas);
+        List<NilaiTugas> listNilai = nilaiTugasDao.findByBobotTugasInAndStatus(allTugas, StatusRecord.AKTIF);
 
         for (NilaiTugas nilai : listNilai){
             String key = nilai.getKrsDetail().getMahasiswa().getNim() + "_" + nilai.getBobotTugas().getId();
@@ -392,6 +404,73 @@ public class TugasMateriService {
 
         return result;
 
+    }
+
+    public class ValidationResult{
+        private boolean isValid;
+        @Getter
+        private String duplicateLink;
+        @Getter
+        private Integer pertemuanKe;
+
+        public ValidationResult(boolean isValid, String duplicateLink, Integer pertemuanKe) {
+            this.isValid = isValid;
+            this.duplicateLink = duplicateLink;
+            this.pertemuanKe = pertemuanKe;
+        }
+
+        public boolean isValid() {return isValid;}
+
+    }
+
+    public ValidationResult validasiLink(SesiKuliah sesiKuliah, String newLinks){
+        if (newLinks == null || newLinks.trim().isEmpty()) {
+            return new ValidationResult(true, null, null);
+        }
+
+        // Pisahkan link baru yang baru diinput menjadi array
+        String[] newLinksArray = newLinks.split(",");
+
+        // Ambil semua link existing dengan jadwal yang sama
+        List<SesiKuliah> existingMateri = sesiKuliahDao.findByJadwal(sesiKuliah.getJadwal());
+
+        // Cek setiap link baru
+        for (String newLink : newLinksArray){
+            String trimmedNewLink = newLink.trim();
+
+            // Cek di setuap materi yang sudah ada
+            for (SesiKuliah sk : existingMateri){
+                if (sk.getLinkVideo() != null) {
+                    // Pisahkan link exisiting menjadi array
+                    String[] existingLinks = sk.getLinkVideo().split(",");
+
+                    // Cek setiap link existing
+                    for (String existingLink : existingLinks){
+                        if(existingLink.trim().equals(trimmedNewLink.trim())){
+                            return new ValidationResult(false, trimmedNewLink, sk.getPertemuanKe());
+                        }
+                    }
+                }
+            }
+        }
+        return new ValidationResult(true, null, null);
+    }
+
+    public SesiKuliah saveMateri(SesiKuliah sesiKuliah, String newLinks){
+        ValidationResult validationResult = validasiLink(sesiKuliah, newLinks);
+
+        if (validationResult.isValid()) {
+            log.info("link masuk");
+            sesiKuliah.setLinkVideo(newLinks);
+            return sesiKuliahDao.save(sesiKuliah);
+        }else{
+            log.info("link duplicate");
+            throw new ValidationException(String.format(
+                    "Link '%s' sudah ada di materi pertemuan ke-%d",
+                    validationResult.getDuplicateLink(),
+                    validationResult.getPertemuanKe()
+            ));
+        }
     }
 
 }
