@@ -1157,7 +1157,6 @@ public class SidangController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("seminar", seminar);
-        System.out.println("asdasdsadsada");
         if (seminar.getStatusSempro().equals(StatusApprove.APPROVED) && seminar.getPublish().equals("AKTIF")
                 && seminar.getNilai().compareTo(new BigDecimal(70)) >= 0) {
             Sidang sidang = sidangDao.findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(seminar,
