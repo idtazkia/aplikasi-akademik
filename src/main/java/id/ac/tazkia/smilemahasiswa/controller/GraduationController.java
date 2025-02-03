@@ -767,20 +767,21 @@ public class GraduationController {
     public String sempro(Model model, @RequestParam(name = "id", value = "id", required = false) Note note) {
         if (note.getStatus() == StatusApprove.APPROVED) {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+
+            model.addAttribute("note", note);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
+
             if (note.getJenis() == StatusRecord.JURNAL) {
                 if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminarJurnal())
-                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminarJurnal())) {
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminarJurnal()) && waiting != null) {
                     return "redirect:seminar/info";
                 }
             } else {
                 if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminar())
-                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar())) {
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar()) && waiting != null) {
                     return "redirect:seminar/info";
                 }
             }
-
-            model.addAttribute("note", note);
-            Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
 
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);

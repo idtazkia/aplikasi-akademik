@@ -17,7 +17,8 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
     Seminar findByNoteAndStatusNotIn(Note note, List<StatusApprove> statusRecords);
     Seminar findByNoteAndStatus(Note note, StatusApprove statusRecords);
     @Query(value = "select s.* from seminar as s inner join note as n on s.id_note = n.id inner join mahasiswa as m on n.id_mahasiswa = m.id\n" +
-            "where s.id_tahun_akademik = ?1 and m.id_prodi = ?2 and s.status not in ('REJECTED', 'HAPUS')\n" +
+            "where s.id_tahun_akademik = ?1 and m.id_prodi = ?2 and s.status not in ('REJECTED', 'HAPUS')" +
+            " and s.jenis not in ('KONVERSI_JURNAL')\n" +
             "ORDER BY CASE s.status_sempro \n" +
             "WHEN 'WAITING' THEN 1\n" +
             "WHEN 'PENDING_SCHEDULED' THEN 2\n" +
