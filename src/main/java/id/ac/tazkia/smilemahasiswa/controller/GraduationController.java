@@ -773,12 +773,12 @@ public class GraduationController {
 
             if (note.getJenis() == StatusRecord.JURNAL) {
                 if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminarJurnal())
-                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminarJurnal()) && waiting != null) {
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminarJurnal()) && waiting == null) {
                     return "redirect:seminar/info";
                 }
             } else {
                 if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminar())
-                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar()) && waiting != null) {
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar()) && waiting == null) {
                     return "redirect:seminar/info";
                 }
             }
