@@ -1,9 +1,9 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.api.akunting.CicilanTagihanEmpatTahunDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.*;
 import id.ac.tazkia.smilemahasiswa.dto.prediksitest.RekapTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.apache.kafka.common.metrics.Stat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -11,8 +11,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> {
@@ -424,5 +422,51 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "left join\n" +
             "(select t.id_mahasiswa, t.nilai_tagihan, status_tagihan, jt.nama from tagihan t inner join nilai_jenis_tagihan njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan jt on njt.id_jenis_tagihan=jt.id and t.status not in('HAPUS') and jt.kode in('81','82'))bb on aa.idMhs=bb.id_mahasiswa order by nim", nativeQuery = true)
     List<RekapTagihanDto> downloadRekapTagihanPrediksiTest(String idPeriode);
+
+    @Query(value = "select * from\n" +
+            "(select c.id as idTagihan, d.id as idCicilan, 'UPS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan UP HP',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 11)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program = 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF'\n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN') and (d.zahir_export not in ('SENT') or d.zahir_export is null)\n" +
+            "union\n" +
+            "select c.id as idTagihan, d.id as idCicilan, 'UAS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan Asrama HP',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 41)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program = 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF'\n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)\n" +
+            "union\n" +
+            "select c.id as idTagihan, d.id as idCicilan, 'UKTS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan UKT HP ',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 47)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program = 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF' \n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)\n" +
+            "union\n" +
+            "select c.id as idTagihan, d.id as idCicilan, 'TAWS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan TA HP ',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 1)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program = 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF' \n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)) as a\n" +
+            "order by nim,keterangan", nativeQuery = true)
+    List<CicilanTagihanEmpatTahunDto> integrasiCicilanTagihanHP();
+
+    @Query(value = "select * from\n" +
+            "(select c.id as idTagihan, d.id as idCicilan, 'UPS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan UP HP',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 16)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program <> 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF'\n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN') and (d.zahir_export not in ('SENT') or d.zahir_export is null)\n" +
+            "union\n" +
+            "select c.id as idTagihan, d.id as idCicilan, 'UAS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan Asrama HP',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 15)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program <> 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF'\n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)\n" +
+            "union\n" +
+            "select c.id as idTagihan, d.id as idCicilan, 'UKTS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan UKT HP ',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 67)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program <> 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF' \n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)\n" +
+            "union\n" +
+            "select c.id as idTagihan, d.id as idCicilan, 'TAWS1-1' as kode_jurnal, d.zahir_export,b.nim, b.nama,d.tanggal_jatuh_tempo,concat('Cicilan TA HP ',b.nim,' ',b.nama) as keterangan ,round((nilai_cicilan * 2)/100,2) as nilai_cicilan from mahasiswa_cicilan as a\n" +
+            "inner join mahasiswa as b on a.id_mahasiswa = b.id and b.angkatan = '2022' and a.status = 'AKTIF' and b.id_program <> 'haf_si_prog' \n" +
+            "inner join tagihan as c on b.id = c.id_mahasiswa and c.status = 'AKTIF' \n" +
+            "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)) as a\n" +
+            "order by nim,keterangan", nativeQuery = true)
+    List<CicilanTagihanEmpatTahunDto> integrasiCicilanTagihanNonHP();
 
 }
