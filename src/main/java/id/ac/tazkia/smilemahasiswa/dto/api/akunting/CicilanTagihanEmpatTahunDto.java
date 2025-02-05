@@ -10,7 +10,7 @@ public interface CicilanTagihanEmpatTahunDto {
     String getIdTagihan();
     String getIdCicilan();
     String getKodeJurnal();
-    AkuntansiExport getZahirExport();
+    String getZahirExport();
     String getNim();
     String getNama();
     LocalDate getTanggalJatuhTempo();

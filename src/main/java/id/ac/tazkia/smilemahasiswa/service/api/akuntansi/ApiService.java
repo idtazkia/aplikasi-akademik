@@ -204,14 +204,13 @@ public class ApiService {
         List<CicilanTagihanEmpatTahunDto> cekCicilanHP = tagihanDao.integrasiCicilanTagihanHP();
         if (!cekCicilanHP.isEmpty()) {
             for (CicilanTagihanEmpatTahunDto cicilan : cekCicilanHP){
-                if (AkuntansiExport.NEW.equals(cicilan.getZahirExport())) {
-                    log.info(String.valueOf(cicilan));
+                if (AkuntansiExport.NEW.toString().equals(cicilan.getZahirExport())) {
                     SendTagihanDto tagihanDto = new SendTagihanDto();
                     tagihanDto.setCodeTemplate(cicilan.getKodeJurnal());
                     tagihanDto.setDateTransaction(String.valueOf(cicilan.getTanggalJatuhTempo()));
                     tagihanDto.setDescription(cicilan.getKeterangan());
                     tagihanDto.setAmounts(cicilan.getNilaiCicilan());
-                    log.info("Tagihan DTO HP: {}", tagihanDto);
+                    log.info("Mengirim cicilan tagihan HP : {}", tagihanDto);
 //                    if (sendTagihan(tagihanDto)) {
 //                        Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
 //                        if (cekTagihan.isPresent()) {
@@ -236,14 +235,13 @@ public class ApiService {
         List<CicilanTagihanEmpatTahunDto> cekCicilanNonHP = tagihanDao.integrasiCicilanTagihanNonHP();
         if (!cekCicilanNonHP.isEmpty()) {
             for (CicilanTagihanEmpatTahunDto cicilan : cekCicilanNonHP){
-                if (AkuntansiExport.NEW.equals(cicilan.getZahirExport())) {
-                    log.info(String.valueOf(cicilan));
+                if (AkuntansiExport.NEW.toString().equals(cicilan.getZahirExport())) {
                     SendTagihanDto tagihanDto = new SendTagihanDto();
                     tagihanDto.setCodeTemplate(cicilan.getKodeJurnal());
                     tagihanDto.setDateTransaction(String.valueOf(cicilan.getTanggalJatuhTempo()));
                     tagihanDto.setDescription(cicilan.getKeterangan());
                     tagihanDto.setAmounts(cicilan.getNilaiCicilan());
-                    log.info("Tagihan DTO NON-HP : {}", tagihanDto);
+                    log.info("Mengirim cicilan tagihan NON-HP : {}", tagihanDto);
 //                    if (sendTagihan(tagihanDto)) {
 //                        Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
 //                        if (cekTagihan.isPresent()) {
@@ -273,9 +271,8 @@ public class ApiService {
         if (!cekPembayaranCicilanHP.isEmpty()) {
             for (CicilanPembayaranEmpatTahunDto cicilanPembayaran : cekPembayaranCicilanHP){
                 if (AkuntansiExport.NEW.equals(cicilanPembayaran.getZahirExport())){
-                    log.info(String.valueOf(cicilanPembayaran));
                     SendPembayaranDto pembayaranDtoYys = new SendPembayaranDto();
-                    pembayaranDtoYys.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
+                    pembayaranDtoYys.setCodeTemplate("YYSN-KAS-MHS");
                     pembayaranDtoYys.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoYys.setDescription(cicilanPembayaran.getKeterangan());
                     if (cicilanPembayaran.getTipePengiriman() != null) {
@@ -295,7 +292,7 @@ public class ApiService {
                     log.info("Kirim pembayaran yayasan : {}", pembayaranDtoYys);
 //
                     SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
-                    pembayaranDtoInst.setCodeTemplate("YYSN-KAS-MHS");
+                    pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoInst.setDescription(cicilanPembayaran.getKeterangan());
                     if (cicilanPembayaran.getTipePengiriman() != null) {
