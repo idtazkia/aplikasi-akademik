@@ -323,7 +323,6 @@ public class ApiService {
         if (!cekPembayaranCicilanNonHP.isEmpty()) {
             for (CicilanPembayaranEmpatTahunDto cicilanPembayaran : cekPembayaranCicilanNonHP){
                 if (AkuntansiExport.NEW.equals(cicilanPembayaran.getZahirExport())){
-                    log.info(String.valueOf(cicilanPembayaran));
                     SendPembayaranDto pembayaranDtoYys = new SendPembayaranDto();
                     pembayaranDtoYys.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoYys.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
