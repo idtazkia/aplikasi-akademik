@@ -324,7 +324,7 @@ public class ApiService {
             for (CicilanPembayaranEmpatTahunDto cicilanPembayaran : cekPembayaranCicilanNonHP){
                 if (AkuntansiExport.NEW.equals(cicilanPembayaran.getZahirExport())){
                     SendPembayaranDto pembayaranDtoYys = new SendPembayaranDto();
-                    pembayaranDtoYys.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
+                    pembayaranDtoYys.setCodeTemplate("YYSN-KAS-MHS");
                     pembayaranDtoYys.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoYys.setDescription(cicilanPembayaran.getKeterangan());
                     if (cicilanPembayaran.getTipePengiriman() != null) {
@@ -344,7 +344,7 @@ public class ApiService {
                     log.info("Kirim pembayaran yayasan : {}", pembayaranDtoYys);
 
                     SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
-                    pembayaranDtoInst.setCodeTemplate("YYSN-KAS-MHS");
+                    pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoInst.setDescription(cicilanPembayaran.getKeterangan());
                     if (cicilanPembayaran.getTipePengiriman() != null) {
