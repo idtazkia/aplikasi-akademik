@@ -211,26 +211,26 @@ public class ApiService {
                     tagihanDto.setDescription(cicilan.getKeterangan());
                     tagihanDto.setAmounts(cicilan.getNilaiCicilan());
                     log.info("Mengirim cicilan tagihan HP : {}", tagihanDto);
-//                    if (sendTagihan(tagihanDto)) {
-//                        Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
-//                        if (cekTagihan.isPresent()) {
-//                            Tagihan tagihan = cekTagihan.get();
-//                            tagihan.setZahirExport(AkuntansiExport.SENT);
-//                            tagihanDao.save(tagihan);
-//                        }
-//                        Optional<RequestCicilan> cekRequest = requestCicilanDao.findById(cicilan.getIdCicilan());
-//                        if (cekRequest.isPresent()) {
-//                            RequestCicilan requestCicilan = cekRequest.get();
-//                            requestCicilan.setZahirExport(AkuntansiExport.SENT);
-//                            requestCicilanDao.save(requestCicilan);
-//                        }
-//                    }else{
-//                        log.error("Gagal mengirim ke Akunting");
-//                    }
+                    if (sendTagihan(tagihanDto)) {
+                        Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
+                        if (cekTagihan.isPresent()) {
+                            Tagihan tagihan = cekTagihan.get();
+                            tagihan.setZahirExport(AkuntansiExport.SENT);
+                            tagihanDao.save(tagihan);
+                        }
+                        Optional<RequestCicilan> cekRequest = requestCicilanDao.findById(cicilan.getIdCicilan());
+                        if (cekRequest.isPresent()) {
+                            RequestCicilan requestCicilan = cekRequest.get();
+                            requestCicilan.setZahirExport(AkuntansiExport.SENT);
+                            requestCicilanDao.save(requestCicilan);
+                        }
+                    }else{
+                        log.error("Gagal mengirim ke Akunting");
+                    }
                 }
             }
         }else{
-            log.info("Data cekCicilanHP Kosong!");
+            log.info("Tidak ada Data cekCicilanHP!");
         }
         List<CicilanTagihanEmpatTahunDto> cekCicilanNonHP = tagihanDao.integrasiCicilanTagihanNonHP();
         if (!cekCicilanNonHP.isEmpty()) {
@@ -242,26 +242,26 @@ public class ApiService {
                     tagihanDto.setDescription(cicilan.getKeterangan());
                     tagihanDto.setAmounts(cicilan.getNilaiCicilan());
                     log.info("Mengirim cicilan tagihan NON-HP : {}", tagihanDto);
-//                    if (sendTagihan(tagihanDto)) {
-//                        Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
-//                        if (cekTagihan.isPresent()) {
-//                            Tagihan tagihan = cekTagihan.get();
-//                            tagihan.setZahirExport(AkuntansiExport.SENT);
-//                            tagihanDao.save(tagihan);
-//                        }
-//                        Optional<RequestCicilan> cekRequest = requestCicilanDao.findById(cicilan.getIdCicilan());
-//                        if (cekRequest.isPresent()) {
-//                            RequestCicilan requestCicilan = cekRequest.get();
-//                            requestCicilan.setZahirExport(AkuntansiExport.SENT);
-//                            requestCicilanDao.save(requestCicilan);
-//                        }
-//                    }else{
-//                        log.error("Gagal mengirim ke Akunting");
-//                    }
+                    if (sendTagihan(tagihanDto)) {
+                        Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
+                        if (cekTagihan.isPresent()) {
+                            Tagihan tagihan = cekTagihan.get();
+                            tagihan.setZahirExport(AkuntansiExport.SENT);
+                            tagihanDao.save(tagihan);
+                        }
+                        Optional<RequestCicilan> cekRequest = requestCicilanDao.findById(cicilan.getIdCicilan());
+                        if (cekRequest.isPresent()) {
+                            RequestCicilan requestCicilan = cekRequest.get();
+                            requestCicilan.setZahirExport(AkuntansiExport.SENT);
+                            requestCicilanDao.save(requestCicilan);
+                        }
+                    }else{
+                        log.error("Gagal mengirim ke Akunting");
+                    }
                 }
             }
         }else{
-            log.info("Data cekCicilanNonHP Kosong!");
+            log.info("Tidak ada Data cekCicilanNonHP Kosong!");
         }
     }
 
@@ -290,7 +290,7 @@ public class ApiService {
                         pembayaranDtoYys.setAmounts(pembayaran);
                     }
                     log.info("Kirim pembayaran yayasan : {}", pembayaranDtoYys);
-//
+
                     SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
                     pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
@@ -304,18 +304,18 @@ public class ApiService {
                         pembayaranDtoInst.setAmounts(pembayaran);
                     }
                     log.info("Kirim pembayaran institut : {}", pembayaranDtoInst);
-//
-//                    if (sendPembayaran(pembayaranDtoYys) && sendPembayaran(pembayaranDtoInst)) {
-//                        Optional<Pembayaran> cekPembayaran = pembayaranDao.findById(cicilanPembayaran.getId());
-//                        if (cekPembayaran.isPresent()) {
-//                            Pembayaran p = cekPembayaran.get();
-//                            p.setZahirExport(AkuntansiExport.SENT);
-//                            pembayaranDao.save(p);
-//                        }
-//                        log.info("Pembayaran berhasil dikirim ke akunting");
-//                    }else{
-//                        log.error("Gagal mengirim ke akunting");
-//                    }
+
+                    if (sendPembayaran(pembayaranDtoYys) && sendPembayaran(pembayaranDtoInst)) {
+                        Optional<Pembayaran> cekPembayaran = pembayaranDao.findById(cicilanPembayaran.getId());
+                        if (cekPembayaran.isPresent()) {
+                            Pembayaran p = cekPembayaran.get();
+                            p.setZahirExport(AkuntansiExport.SENT);
+                            pembayaranDao.save(p);
+                        }
+                        log.info("Pembayaran berhasil dikirim ke akunting");
+                    }else{
+                        log.error("Gagal mengirim ke akunting");
+                    }
                 }
             }
         }
@@ -343,7 +343,7 @@ public class ApiService {
                         pembayaranDtoYys.setAmounts(pembayaran);
                     }
                     log.info("Kirim pembayaran yayasan : {}", pembayaranDtoYys);
-//
+
                     SendPembayaranDto pembayaranDtoInst = new SendPembayaranDto();
                     pembayaranDtoInst.setCodeTemplate("YYSN-KAS-MHS");
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
@@ -357,18 +357,18 @@ public class ApiService {
                         pembayaranDtoInst.setAmounts(pembayaran);
                     }
                     log.info("Kirim pembayaran institut : {}", pembayaranDtoInst);
-//
-//                    if (sendPembayaran(pembayaranDtoYys) && sendPembayaran(pembayaranDtoInst)) {
-//                        Optional<Pembayaran> cekPembayaran = pembayaranDao.findById(cicilanPembayaran.getId());
-//                        if (cekPembayaran.isPresent()) {
-//                            Pembayaran p = cekPembayaran.get();
-//                            p.setZahirExport(AkuntansiExport.SENT);
-//                            pembayaranDao.save(p);
-//                        }
-//                        log.info("Pembayaran berhasil dikirim ke akunting");
-//                    }else{
-//                        log.error("Gagal mengirim ke akunting");
-//                    }
+
+                    if (sendPembayaran(pembayaranDtoYys) && sendPembayaran(pembayaranDtoInst)) {
+                        Optional<Pembayaran> cekPembayaran = pembayaranDao.findById(cicilanPembayaran.getId());
+                        if (cekPembayaran.isPresent()) {
+                            Pembayaran p = cekPembayaran.get();
+                            p.setZahirExport(AkuntansiExport.SENT);
+                            pembayaranDao.save(p);
+                        }
+                        log.info("Pembayaran berhasil dikirim ke akunting");
+                    }else{
+                        log.error("Gagal mengirim ke akunting");
+                    }
                 }
             }
         }
