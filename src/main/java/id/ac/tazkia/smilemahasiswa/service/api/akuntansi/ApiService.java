@@ -28,6 +28,9 @@ import java.util.Optional;
 @Slf4j
 public class ApiService {
 
+    static final String ID_INSTITUT = "bed6a06c-afe9-4345-8b3f-ebe2cbb49a51";
+    static final String ID_YAYASAN = "8f1438e6-8c76-4219-9060-213ba926286b";
+
     @Value("${akuntansi.baseurl}") private String baseAkuntansi;
 
     @Autowired private ObjectMapper objectMapper;
@@ -153,6 +156,7 @@ public class ApiService {
                         pembayaranDtoYys.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranYys());
                         pembayaranDtoYys.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
                         pembayaranDtoYys.setDescription("Pembayaran " + p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama() + " Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                        pembayaranDtoYys.setInstitut(ID_YAYASAN);
                         if (p.getTipePengiriman() != null) {
                             pembayaranDtoYys.setAmounts(setPembayaranAkunting(p, "YYSN"));
                         }else{
@@ -173,6 +177,7 @@ public class ApiService {
                         pembayaranDtoInst.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranInst());
                         pembayaranDtoInst.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
                         pembayaranDtoInst.setDescription("Pembayaran " + p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama() + " Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
+                        pembayaranDtoInst.setInstitut(ID_INSTITUT);
                         if (p.getTipePengiriman() != null) {
                             pembayaranDtoInst.setAmounts(setPembayaranAkunting(p, "INST"));
                         }else{
@@ -275,6 +280,7 @@ public class ApiService {
                     pembayaranDtoYys.setCodeTemplate("YYSN-KAS-MHS");
                     pembayaranDtoYys.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoYys.setDescription(cicilanPembayaran.getKeterangan());
+                    pembayaranDtoYys.setInstitut(ID_YAYASAN);
                     if (cicilanPembayaran.getTipePengiriman() != null) {
                         pembayaranDtoYys.setAmounts(setPembayaranCicilanAkunting(cicilanPembayaran, "YYSN"));
                     }else{
@@ -295,6 +301,7 @@ public class ApiService {
                     pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoInst.setDescription(cicilanPembayaran.getKeterangan());
+                    pembayaranDtoInst.setInstitut(ID_INSTITUT);
                     if (cicilanPembayaran.getTipePengiriman() != null) {
                         pembayaranDtoInst.setAmounts(setPembayaranCicilanAkunting(cicilanPembayaran, "INST"));
                     }else{
@@ -327,6 +334,7 @@ public class ApiService {
                     pembayaranDtoYys.setCodeTemplate("YYSN-KAS-MHS");
                     pembayaranDtoYys.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoYys.setDescription(cicilanPembayaran.getKeterangan());
+                    pembayaranDtoYys.setInstitut(ID_YAYASAN);
                     if (cicilanPembayaran.getTipePengiriman() != null) {
                         pembayaranDtoYys.setAmounts(setPembayaranCicilanAkunting(cicilanPembayaran, "YYSN"));
                     }else{
@@ -347,6 +355,7 @@ public class ApiService {
                     pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoInst.setDescription(cicilanPembayaran.getKeterangan());
+                    pembayaranDtoInst.setInstitut(ID_INSTITUT);
                     if (cicilanPembayaran.getTipePengiriman() != null) {
                         pembayaranDtoInst.setAmounts(setPembayaranCicilanAkunting(cicilanPembayaran, "INST"));
                     }else{

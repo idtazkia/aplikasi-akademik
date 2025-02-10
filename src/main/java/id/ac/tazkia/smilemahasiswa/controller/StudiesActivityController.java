@@ -1744,12 +1744,12 @@ public class StudiesActivityController {
 
     @GetMapping("/collection/{jawaban}/tugas")
     public ResponseEntity<byte[]> lihatMateri(@PathVariable JadwalTugasJawaban jawaban){
-        String folder = jawaban.getMahasiswa().getNim() + " - " + jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
-//        String folder = jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
-//                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
-//                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
-//                "Pertemuan " + jawaban.getJadwalTugas().getPertemuanKe() + File.separator + jawaban.getMahasiswa().getNim() + " - " +
-//                jawaban.getMahasiswa().getNama();
+//        String folder = jawaban.getMahasiswa().getNim() + " - " + jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
+        String folder = jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
+                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
+                "Pertemuan " + jawaban.getJadwalTugas().getPertemuanKe() + File.separator + jawaban.getMahasiswa().getNim() + " - " +
+                jawaban.getMahasiswa().getNama();
         String lokasi = uploadJawaban + File.separator + folder + File.separator + jawaban.getFile();
         log.debug("lokasi file : {}" + lokasi);
         try {

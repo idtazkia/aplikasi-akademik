@@ -265,12 +265,12 @@ public class TugasMateriService {
             extension = namaAsli.substring(i + 1);
         }
 
-        String folder = tugasJawaban.getMahasiswa().getNim() + " - " + tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
-//        String folder = tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
-//                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
-//                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
-//                "Pertemuan " + tugasJawaban.getJadwalTugas().getPertemuanKe() + File.separator + tugasJawaban.getMahasiswa().getNim() + " - " +
-//                tugasJawaban.getMahasiswa().getNama();
+//        String folder = tugasJawaban.getMahasiswa().getNim() + " - " + tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
+        String folder = tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
+                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
+                "Pertemuan " + tugasJawaban.getJadwalTugas().getPertemuanKe() + File.separator + tugasJawaban.getMahasiswa().getNim() + " - " +
+                tugasJawaban.getMahasiswa().getNama();
         String lokasi = uploadJawaban + File.separator + folder;
         String idFile = UUID.randomUUID().toString();
         String namaFile = idFile + '.' + extension;

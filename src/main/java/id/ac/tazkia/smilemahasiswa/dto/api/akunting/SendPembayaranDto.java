@@ -10,7 +10,7 @@ public class SendPembayaranDto {
     private String codeTemplate;
     private String dateTransaction;
     private String description;
-    private String institut = "bed6a06c-afe9-4345-8b3f-ebe2cbb49a51";
+    private String institut;
     public String attachment;
     public String tags = "SMILE";
     public ArrayList<BigDecimal> amounts;
