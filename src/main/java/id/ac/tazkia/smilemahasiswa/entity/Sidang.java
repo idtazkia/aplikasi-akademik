@@ -45,8 +45,8 @@ public class Sidang {
     private String fileBerita;
     private String filePerbaikan;
 
-    @Column(columnDefinition = "DATETIME")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @Column(columnDefinition = "DATETIME")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tanggalInput;
 
     @ManyToOne
