@@ -369,6 +369,11 @@ public class RequestKonversiController {
     public ResponseEntity<BaseResponseDto> rejectedKonversi(@PathVariable String id){
         DetailPendaftaranKonversi detailPendaftaranKonversi = detailPendaftaranKonversiDao.findById(id).get();
         detailPendaftaranKonversiDao.delete(detailPendaftaranKonversi);
+        Integer totalSks = detailPendaftaranKonversiDao.sumTotalSks(detailPendaftaranKonversi.getPendaftaranRequestKonversi());
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = detailPendaftaranKonversi.getPendaftaranRequestKonversi();
+        pendaftaranRequestKonversi.setTotalSks(totalSks);
+        pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
     }
