@@ -28,6 +28,8 @@ public class Grade {
     @Min(0)
     private BigDecimal bobot;
 
+    private Integer nilai;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;

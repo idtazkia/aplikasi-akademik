@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.constant.Approval;
+import id.ac.tazkia.smilemahasiswa.dto.konversi.GetRequestKonversi;
 import id.ac.tazkia.smilemahasiswa.dto.konversi.RequestKonversiDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -10,7 +12,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKonversi,String> {
+public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKonversi, String> {
 
     List<RequestKonversi> findByStatus(StatusRecord statusRecord);
 
@@ -18,25 +20,26 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
 
     RequestKonversi findByKrsDetailAndStatus(KrsDetail krsDetail, StatusRecord statusRecord);
 
-    List <RequestKonversi> findByKrsDetailAndKrsDetailJadwalAndStatus(KrsDetail krsDetail, Jadwal jadwal, StatusRecord statusRecord);
+    List<RequestKonversi> findByKrsDetailAndKrsDetailJadwalAndStatus(KrsDetail krsDetail, Jadwal jadwal, StatusRecord statusRecord);
 
 
-    Page <RequestKonversi> findByApprovalAndStatusOrderByCreatedTimeAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable pageable);
+    Page<RequestKonversi> findByApprovalAndStatusOrderByCreatedTimeAsc(StatusRecord statusRecord1, StatusRecord statusRecord2, Pageable pageable);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2,StatusRecord statusRecord3, Pageable page);
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, String search, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, String search, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaId(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3,Mahasiswa mahasiswa, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord, String search, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Mahasiswa mahasiswa, String search, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaId(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Mahasiswa mahasiswa, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord1, StatusRecord statusRecord2, StatusRecord statusRecord3, Mahasiswa mahasiswa, String search, Pageable page);
 
-    Page <RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord, String search, Pageable page);
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord, Pageable page);
+
+    Page<RequestKonversi> findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(Prodi prodi, StatusRecord statusRecord, String search, Pageable page);
 
     @Modifying
     @Query(value = "update request_konversi set status_tenggat='Y' where status='AKTIF'", nativeQuery = true)
@@ -58,7 +61,7 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
             "where ma.id_prodi = ?1 and rk.status = 'AKTIF' and rk.approval = 'APPROVED' and rk.finalization = 'N'\n" +
             "group by kd.id_mahasiswa\n" +
             "order by ma.nama ASC", nativeQuery = true)
-    Page<RequestKonversiDto> listApprovalGroup(Prodi Prodi,Pageable pageable);
+    Page<RequestKonversiDto> listApprovalGroup(Prodi Prodi, Pageable pageable);
 
 
     @Query(value = "SELECT rk.id as id, kd.id as idKrsDetail, pd.id as idProdi, jd.id as idJadwal, pd.nama_prodi as namaProdi,kd.id_mahasiswa as idMahasiswa,\n" +
@@ -85,7 +88,12 @@ public interface RequestKonversiDao extends PagingAndSortingRepository<RequestKo
             "inner join prodi as pd on ma.id_prodi = pd.id\n" +
             "where ma.id_prodi = ?1 and rk.status = 'AKTIF' and rk.approval = 'APPROVED' and rk.finalization = 'N' \n" +
             "order by ma.nama ASC) as a", nativeQuery = true)
-    Page<RequestKonversiDto> listApprovalGroupDetail(Prodi Prodi, Pageable pageable);
+    Page<GetRequestKonversi> listApprovalGroupDetail(Prodi Prodi, Pageable pageable);
+
+    @Query(value = "select m.nim,m.nama, rk.jenis_nilai as jenis, pd.nama_prodi as prodi, rk.status as status, rk.approval as approval from request_konversi as rk inner join krs_detail as kd on rk.id_krs_detail = kd.id inner join mahasiswa as m on kd.id_mahasiswa = m.id inner join prodi as pd on m.id_prodi = pd.id where rk.status = 'AKTIF' and jenis_nilai = ?1 and m.id_prodi in (?2) and approval = ?3 and (m.nim like %?4% or m.nama like %?4%) group by kd.id_mahasiswa limit ?5 offset ?6",
+            countQuery = "select count(*) from request_konversi as rk inner join krs_detail as kd on rk.id_krs_detail = kd.id inner join mahasiswa as m on kd.id_mahasiswa = m.id inner join prodi as pd on m.id_prodi = pd.id where rk.status = 'AKTIF' and jenis_nilai = ?1 and m.id_prodi in (?2) and approval = ?3 and (m.nim like %?4% or m.nama like %?4%) group by kd.id_mahasiswa limit ?5 offset ?6",
+            nativeQuery = true)
+    List<GetRequestKonversi> listRequestKonversi(String jenisNilai, List<String> prodi, String approval, String search, Integer limit, Integer offset);
 
 
 }

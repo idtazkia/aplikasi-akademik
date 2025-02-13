@@ -14,6 +14,11 @@ public interface GradeDao extends PagingAndSortingRepository<Grade,String> {
 
     Grade findByNama(String nama);
 
+    Grade findByNilai(Integer nilai);
+
+    @Query(value = "select max(nilai) from grade", nativeQuery = true)
+    Integer maxNilai();
+
     @Query(value = "select nama as grade,bobot from grade where atas >= ?1 and bawah <= ?1 and status = 'AKTIF'", nativeQuery = true)
     GradeDto cariGradeNilai(BigDecimal nilaiAkhir);
 

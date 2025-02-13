@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
+import id.ac.tazkia.smilemahasiswa.constant.Approval;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
@@ -35,7 +36,7 @@ public class RequestKonversi extends Auditable {
     private StatusRecord status = StatusRecord.AKTIF;
 
     @Enumerated(EnumType.STRING)
-    private StatusRecord approval = StatusRecord.WAITING;
+    private Approval approval = Approval.WAITING;
 
     private String approvedBy;
 
@@ -58,13 +59,6 @@ public class RequestKonversi extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord jenisNilai;
-
-    @Enumerated(EnumType.STRING)
-    private StatusRecord statusTenggat = StatusRecord.N;
-
-    @ManyToOne
-    @JoinColumn(name = "id_request_konversi_tenggat")
-    private RequestKonversiTenggat requestKonversiTenggat;
 
     private String rejectReason;
 
