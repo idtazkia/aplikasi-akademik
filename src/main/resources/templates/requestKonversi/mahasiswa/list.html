@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Konversi</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Request Konversi</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-example-area">
+        <div class="container">
+            <form method="post" enctype="multipart/form-data" id="formSubmit" th:action="@{/request-konversi/proses}">
+                <div class="row" id="div-kategori">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-example-wrap mg-t-30">
+                            <div class="cmp-tb-hd cmp-int-hd">
+                                <h2>Request Form</h2>
+                            </div>
+                            <div class="form-example-int form-horizental">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                            <label class="hrzn-fm">Jenis Penghargaan</label>
+                                        </div>
+                                        <div class="col-lg-8 col-md-7 col-sm-7 col-xs-12">
+                                            <div class="nk-int-st">
+                                                <select name="jenis" class="form-control input-sm"
+                                                        onchange="fetchBentukPenghargaan(this.value)">
+                                                    <option value="-">-</option>
+                                                    <option value="AKADEMIK">Akademik</option>
+                                                    <option value="NON_AKADEMIK">Non Akademik</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-example-int form-horizental mg-t-15">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                            <label class="hrzn-fm">Bentuk Penghargaan</label>
+                                        </div>
+                                        <div class="col-lg-8 col-md-7 col-sm-7 col-xs-12">
+                                            <div class="nk-int-st">
+                                                <select name="bentuk" onchange="fetchKonfigurasiKonversi(this.value)"
+                                                        id="bentukPenghargaan" class="form-control input-sm">
+                                                    <option value="-">-</option>
+                                                </select>
+                                                <input type="hidden" id="sistem">
+                                                <input type="hidden" id="maksimalUpload">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="message-error" style="display: none" class="alert alert-danger" role="alert">Silahkan pilih jenis & bentuk yang
+                                sesuai.
+                            </div>
+                            <div class="form-example-int mg-t-15">
+                                <div class="row">
+                                    <center>
+                                        <button onclick="nextFile()" type="button"
+                                                class="btn btn-success notika-btn-success btn-sm">Upload Bukti
+                                        </button>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="div-file-upload" class="row" style="display: none">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div id="form-wrap-file" class="form-example-wrap mg-t-30">
+                            <div class="cmp-tb-hd cmp-int-hd">
+                                <h2>Upload File</h2>
+                            </div>
+                            <div class="form-example-int form-horizental mg-t-15">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-4" id="div-point">
+                                            <label>Poin</label>
+                                            <p id="point"><b>0</b></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Konversi SKS</label>
+                                            <p id="total-sks"><b>0</b></p>
+                                            <input type="hidden" name="totalSks" id="totalSksMahasiswa">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-3">
+                                <div class="row">
+                                    <button type="button" class="btn btn-success notika-btn-success btn-sm" onclick="tambahBukti()">Tambah
+                                        Bukti
+                                    </button>
+                                    <button class="btn btn-info notika-btn-info btn-sm" type="button" data-toggle="modal"
+                                            data-target="#detailPenilaianModal">Detail Penilaian
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="div-file" class="form-example-int form-horizental mg-t-15">
+                                <table class="table table-responsive">
+                                    <thead>
+                                    <tr>
+                                        <th>Kategori</th>
+                                        <th>File</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="file-table-body">
+                                    <tr id="default">
+                                        <td>
+                                            <select id="kategori-0" name="kategori" class="form-control"
+                                                    onchange="updatePoin(this)">
+                                                <option value="-">-</option>
+                                            </select>
+                                            <input type="hidden" name="poin-0" value="0">
+                                        </td>
+                                        <td>
+                                            <input id="file-1" type="file" class="form-control" name="file-1">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="message-err-simpan" class="tpgp-al-cl" style="display: none">
+                                <div>
+                                    <center>
+                                        <h5 class="message" style="color: red;">Silahkan pilih jenis & bentuk yang
+                                            sesuai</h5>
+                                    </center>
+                                </div>
+                            </div>
+                            <div class="form-example-int mg-t-15">
+                                <div class="row">
+                                    <div class="col-md-12 text-center" id="div-simpan" style="display: none">
+                                        <button onclick="backKategori()" type="button"
+                                                class="btn btn-danger notika-btn-danger btn-sm">Kembali
+                                        </button>
+                                        <button type="button" id="simpanData" onclick=""
+                                                class="btn btn-success notika-btn-success btn-sm"> Proses
+                                        </button>
+                                    </div>
+                                    <div class="col-md-12 text-center" id="div-kembali">
+                                        <button onclick="backKategori()" type="button"
+                                                class="btn btn-danger notika-btn-danger btn-sm">Kembali
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="detailPenilaianModal" tabindex="-1" role="dialog"
+                         aria-labelledby="detailPenilaianModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detailPenilaianModalLabel">Detail Penilaian</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-responsive">
+                                        <thead id="detailPenilaianTableHead">
+                                        </thead>
+                                        <tbody id="detailPenilaianTableBody">
+                                        </tbody>
+                                    </table>
+
+                                    <hr>
+                                    <table class="table table-responsive" id="sistemPenghargaan">
+                                        <thead id="sistemPenilaianTableHead">
+                                        <tr>
+                                            <th class="text-center">Nama</th>
+                                            <th class="text-center">Penghargaan SKS</th>
+                                            <th class="text-center">Opsi Nilai</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="sistemPenilaianTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<script>
+    document.getElementById('simpanData').addEventListener('click', function () {
+        const tableBody = document.getElementById('file-table-body');
+        if (!tableBody) {
+            console.error('Table body tidak ditemukan!');
+            return;
+        }
+
+        const rows = tableBody.querySelectorAll('tr');
+        let formData = new FormData();
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            const selectElement = row.querySelector('select');
+            const fileInputElement = row.querySelector('input[type="file"]');
+
+            if (!selectElement || !selectElement.value || selectElement.value === '-') {
+                alert(`Harap isi kategori di baris ${i + 1}.`);
+                return;
+            }
+
+            if (!fileInputElement || !fileInputElement.value) {
+                alert(`Harap unggah file pada baris ${i + 1}.`);
+                return;
+            }
+
+        }
+
+        $("#simpanData").removeClass("btn-primary");
+        $("#simpanData").addClass("btn-warning");
+        $("#simpanData").prop("disabled", true);
+        $("#simpanData").html("Loading...");
+        document.getElementById("formSubmit").submit();
+
+
+    });
+
+    function fetchBentukPenghargaan(jenis) {
+        if (jenis === '-') {
+            document.getElementById('bentukPenghargaan').innerHTML = '<option value="-">-</option>';
+            return;
+        }
+
+        fetch(`/api/request-konversi-mahasiswa/${jenis}`)
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('bentukPenghargaan');
+                select.innerHTML = '<option value="-">-</option>';
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.text = item.nama;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching bentuk penghargaan:', error));
+    }
+
+    function toggleProsesButton() {
+        const tableBody = document.getElementById('file-table-body');
+        const divSimpan = document.getElementById('div-simpan');
+        const divKembali = document.getElementById('div-kembali');
+
+        const rowCount = tableBody ? tableBody.rows.length : 0;
+
+        if (rowCount > 0){
+            divSimpan.style.display = 'block';
+            divKembali.style.display = 'none';
+        }else {
+            divSimpan.style.display = 'none';
+            divKembali.style.display = 'block';
+        }
+    }
+
+
+
+    async function fetchKonfigurasiKonversi(id) {
+        if (id === '-') {
+            // Reset table ketika value adalah '-'
+            const tableBody = document.getElementById('file-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = '';
+            }
+            // Sembunyikan div-point
+            const divPoint = document.getElementById('div-point');
+            if (divPoint) {
+                divPoint.style.display = 'none';
+            }
+            toggleProsesButton();
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/konfigurasi-konversi/${id}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            document.getElementById('sistem').value = data.sistem;
+            document.getElementById('maksimalUpload').value = data.maksimalUpload;
+
+            // Reset table ketika konfigurasi berubah
+            const tableBody = document.getElementById('file-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = '';
+            }
+
+            // Sembunyikan div-point jika sistem bukan POINT
+            const divPoint = document.getElementById('div-point');
+            if (divPoint) {
+                divPoint.style.display = data.sistem === 'POINT' ? 'block' : 'none';
+            }
+
+            toggleProsesButton(); // Update visibilitas tombol
+        } catch (error) {
+            console.error('Error fetching konfigurasi konversi:', error);
+        }
+    }
+
+
+    function createRowTemplate(rowCount, sistem) {
+        const baseTemplate = `
+        <td>
+            <select id="kategori-${rowCount}"
+                    name="kategori-${rowCount}"
+                    class="form-control"
+                    onchange="updatePoin(this)">
+                <option value="-">-</option>
+            </select>
+            ${sistem === 'POINT' ? `<input type="hidden" name="poin-${rowCount}" value="0">` : ''}
+        </td>
+        <td>
+            <input id="file-${rowCount}"
+                   type="file"
+                   class="form-control"
+                   name="file-${rowCount}"
+
+                   accept=".pdf,.jpg,.jpeg,.png">
+        </td>
+        <td>
+            <button class="btn btn-sm btn-danger"
+                    onclick="hapusBukti(this)"
+                    type="button">
+                Hapus
+            </button>
+        </td>
+    `;
+        return baseTemplate;
+    }
+
+    function tambahBukti() {
+        const tableBody = document.getElementById('file-table-body');
+        if (!tableBody) {
+            console.error('Table body tidak ditemukan!');
+            return;
+        }
+
+        // Validasi maksimal bukti jika input hidden maksimalUpload ada dan memiliki nilai
+        const maksimalUploadInput = document.getElementById('maksimalUpload');
+        if (maksimalUploadInput && maksimalUploadInput.value) {
+            const maksimalBukti = Number(maksimalUploadInput.value);
+            const currentBuktiCount = tableBody.rows.length;
+            if (currentBuktiCount >= maksimalBukti) {
+                alert(`Maksimal bukti yang dapat diupload adalah ${maksimalBukti}.`);
+                return; // Batalkan penambahan baris baru
+            }
+        }
+
+        const sistem = document.getElementById('sistem')?.value;
+        const rowCount = tableBody.rows.length;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = createRowTemplate(rowCount, sistem);
+        tableBody.appendChild(newRow);
+
+        const kategoriSelect = newRow.querySelector(`select[name="kategori-${rowCount}"]`);
+        if (kategoriSelect) {
+            fetchKategoriPenghargaan(kategoriSelect);
+        }
+
+        const fileInput = newRow.querySelector(`input[type="file"]`);
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    if (file.size > maxSize) {
+                        alert('Ukuran file terlalu besar. Maksimum 5MB.');
+                        this.value = ''; // Reset input file
+                    }
+                }
+            });
+        }
+
+        toggleProsesButton();
+    }
+
+
+
+    function resetTable() {
+        const tableBody = document.getElementById('file-table-body');
+        if (tableBody) {
+            tableBody.innerHTML = '';
+        }
+    }
+
+    function fetchKategoriPenghargaan(newSelect = null) {
+        const bentukPenghargaan = document.getElementById('bentukPenghargaan').value;
+        if (bentukPenghargaan === '-') {
+            return;
+        }
+
+        fetch(`/api/detail-request-konversi/${bentukPenghargaan}`)
+            .then(response => response.json())
+            .then(data => {
+                const selectElements = newSelect ? [newSelect] : document.querySelectorAll('select[name="kategori"]');
+                selectElements.forEach(select => {
+                    select.innerHTML = '<option value="-">-</option>';
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.text = item.nama + (item.level ? '-' + item.level : '');
+                        select.appendChild(option);
+                    });
+                });
+            })
+            .catch(error => console.error('Error fetching kategori penghargaan:', error));
+    }
+
+    function hapusBukti(button) {
+        const row = button.closest('tr');
+        const kategoriId = row.querySelector('select[name^="kategori"]').value;
+        row.remove();
+        updateTotalPoin();
+
+        toggleProsesButton()
+
+        if (kategoriId !== '-') {
+            fetch(`/api/detail-konversi/${kategoriId}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateTotalPoin();
+
+                    const point = parseInt(document.getElementById('point').innerText, 10);
+                    const bentukPenghargaan = document.getElementById('bentukPenghargaan').value;
+                    fetch(`/api/range-nilai/${bentukPenghargaan}?point=${point}`)
+                        .then(response => response.json())
+                        .then(rangeData => {
+                            document.getElementById('total-sks').innerHTML = `<b>${rangeData.sks}</b>`;
+                            document.getElementById('totalSksMahasiswa').value = `${rangeData.sks}`;
+                        })
+                        .catch(error => console.error('Error fetching range nilai:', error));
+                })
+                .catch(error => {
+                    console.error('Error fetching poin:', error);
+                    updateTotalPoin();
+                });
+        }
+    }
+
+    function nextFile() {
+        const selectElements = document.querySelectorAll('#div-kategori select');
+        for (const select of selectElements) {
+            if (select.value === '-') {
+                const messageError = document.getElementById('message-error');
+                messageError.style.display = 'block';
+                setTimeout(() => {
+                    messageError.style.display = 'none';
+                }, 2000);
+                return;
+            }
+        }
+
+        const sistem = document.getElementById('sistem').value;
+        if (sistem !== 'POINT') {
+            document.getElementById('div-point').style.display = 'none';
+        }
+        fetchKategoriPenghargaan();
+        $("#div-kategori").slideUp("slow");
+        document.getElementById('div-kategori').style.display = 'none';
+        $("#div-file-upload").slideDown("slow");
+        document.getElementById('div-file-upload').style.display = 'block';
+    }
+
+    function backKategori() {
+        $("#div-file-upload").slideUp("slow");
+        document.getElementById('div-file-upload').style.display = 'none';
+        $("#div-kategori").slideDown("slow");
+        document.getElementById('div-kategori').style.display = 'block';
+    }
+
+    function updatePoin(select) {
+        const row = select.closest('tr');
+        const hiddenPoinInput = row.querySelector(`input[name="poin-${select.id.split('-')[1]}"]`);
+        const kategoriId = select.value;
+        const sistem = document.getElementById('sistem').value;
+
+        if (kategoriId === '-') {
+            hiddenPoinInput.value = '0';
+            updateTotalPoin();
+            return;
+        }
+
+        if (sistem === 'POINT') {
+            fetch(`/api/detail-konversi/${kategoriId}`)
+                .then(response => response.json())
+                .then(data => {
+                    hiddenPoinInput.value = data.nilai;
+                    updateTotalPoin();
+
+                    const point = parseInt(document.getElementById('point').innerText, 10);
+                    const bentukPenghargaan = document.getElementById('bentukPenghargaan').value;
+                    fetch(`/api/range-nilai/${bentukPenghargaan}?point=${point}`)
+                        .then(response => response.json())
+                        .then(rangeData => {
+                            document.getElementById('total-sks').innerHTML = `<b>${rangeData.sks}</b>`;
+                            document.getElementById('totalSksMahasiswa').value = `${rangeData.sks}`;
+
+                        })
+                        .catch(error => console.error('Error fetching range nilai:', error));
+                })
+                .catch(error => {
+                    console.error('Error fetching poin:', error);
+                    hiddenPoinInput.value = '0';
+                    updateTotalPoin();
+                });
+        }else {
+            fetch(`/api/detail-konversi/${kategoriId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('total-sks').innerHTML = `<b>${data.nilai}</b>`;
+                    document.getElementById('totalSksMahasiswa').value = `${data.nilai}`;
+                })
+                .catch(error => {
+                });
+        }
+    }
+
+    function updateTotalPoin() {
+        const poinElements = document.querySelectorAll('input[name^="poin-"]');
+        let totalPoin = 0;
+        poinElements.forEach(poinElement => {
+            totalPoin += parseInt(poinElement.value, 10);
+        });
+        document.getElementById('point').innerHTML = `<b>${totalPoin}</b>`;
+    }
+
+    function fetchDetailPenilaian() {
+        const bentukPenghargaan = document.getElementById('bentukPenghargaan').value;
+        if (bentukPenghargaan === '-') {
+            return;
+        }
+        const sistem = document.getElementById('sistem');
+
+        if (sistem.value === 'POINT') {
+            fetch(`/api/detail-konfigurasi-konversi/${bentukPenghargaan}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableHead = document.getElementById('detailPenilaianTableHead');
+                    const tableBody = document.getElementById('detailPenilaianTableBody');
+
+                    // Clear existing data
+                    tableHead.innerHTML = '';
+                    tableBody.innerHTML = '';
+
+                    // Populate table head
+                    const headRow1 = document.createElement('tr');
+                    headRow1.innerHTML = `
+                <th rowspan="2" class="text-center align-middle">Nama</th>
+                <th colspan="5" class="text-center">Tingkat</th>
+            `;
+                    tableHead.appendChild(headRow1);
+
+                    const headRow2 = document.createElement('tr');
+                    headRow2.innerHTML = '';
+                    fetch(`/api/get-level-konversi/${bentukPenghargaan}`)
+                        .then(response => response.json())
+                        .then(levels => {
+                            levels.forEach(level => {
+                                const th = document.createElement('th');
+                                th.textContent = level;
+                                headRow2.appendChild(th);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching levels:', error));
+                    tableHead.appendChild(headRow2);
+
+                    // Populate table body
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td class="text-center">${item.nama}</td>
+                    ${item.level1 !== null ? `<td class="text-center">${item.level1}</td>` : ''}
+                    ${item.level2 !== null ? `<td class="text-center">${item.level2}</td>` : ''}
+                    ${item.level3 !== null ? `<td class="text-center">${item.level3}</td>` : ''}
+                    ${item.level4 !== null ? `<td class="text-center">${item.level4}</td>` : ''}
+                    ${item.level5 !== null ? `<td class="text-center">${item.level5}</td>` : ''}
+                `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching detail penilaian:', error));
+
+            fetch(`/api/sistem-penilaian/${bentukPenghargaan}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableHead = document.getElementById('sistemPenilaianTableHead');
+                    const tableBody = document.getElementById('sistemPenilaianTableBody');
+
+                    // Clear existing data
+                    tableBody.innerHTML = '';
+
+                    // Populate table body
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td class="text-center">${item.nama}</td>
+                    <td class="text-center">${item.sks}</td>
+                    <td class="text-center">${item.opsiNilai === 'PLUS' ? 'Grade +' + item.nilai : item.grade}</td>
+                `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching sistem penilaian:', error));
+        }
+
+        if (sistem.value === 'LEVEL') {
+            document.getElementById('sistemPenghargaan').style.display = 'none';
+            fetch(`/api/detail-konfigurasi-konversi/${bentukPenghargaan}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableHead = document.getElementById('detailPenilaianTableHead');
+                    const tableBody = document.getElementById('detailPenilaianTableBody');
+
+                    // Clear existing data
+                    tableHead.innerHTML = '';
+                    tableBody.innerHTML = '';
+
+                    // Populate table head
+                    const headRow1 = document.createElement('tr');
+                    headRow1.innerHTML = `
+            <th rowspan="2" class="text-center align-middle">Nama</th>
+            <th class="text-center">Tingkat</th>
+            <th class="text-center">Konversi SKS</th>
+            <th class="text-center">Nilai</th>
+        `;
+                    tableHead.appendChild(headRow1);
+
+                    fetch(`/api/detail-request-konversi/${bentukPenghargaan}`)
+                        .then(response => response.json())
+                        .then(levels => {
+                            data.forEach(item => {
+                                // Filter level yang sesuai dengan item.nama
+                                const relatedLevels = levels.filter(level => level.nama === item.nama);
+
+                                if (relatedLevels.length > 0) {
+                                    relatedLevels.forEach((level, index) => {
+                                        const row = document.createElement('tr');
+
+                                        if (index === 0) {
+                                            // Menambahkan Nama hanya pada row pertama dan memberikan rowspan
+                                            const tdNama = document.createElement('td');
+                                            tdNama.className = 'text-center align-middle';
+                                            tdNama.textContent = item.nama;
+                                            tdNama.rowSpan = relatedLevels.length;
+                                            row.appendChild(tdNama);
+                                        }
+
+                                        // Menambahkan data level, konversi SKS, dan nilai
+                                        row.innerHTML += `
+                                            <td class="text-center">${level.level}</td>
+                                            <td class="text-center">${level.nilai || '-'}</td>
+                                            <td class="text-center">${level.nilaiPlus === null ? level.nilaiGrade : '+'+level.nilaiPlus}</td>
+                                        `;
+
+                                        tableBody.appendChild(row);
+                                    });
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error fetching levels:', error));
+                })
+                .catch(error => console.error('Error fetching detail penilaian:', error));
+
+
+        }
+
+    }
+
+    $('#detailPenilaianModal').on('show.bs.modal', fetchDetailPenilaian);
+
+
+</script>

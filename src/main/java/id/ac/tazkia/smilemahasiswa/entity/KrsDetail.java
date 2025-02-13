@@ -123,8 +123,8 @@ public class KrsDetail extends Auditable {
     @JsonBackReference
     private BigDecimal nilaiUasFinal = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "krsDetail")
-    private List<NilaiTugas> nilaiTugasList = new ArrayList<>();
+//    @OneToMany(mappedBy = "krsDetail")
+//    private List<NilaiTugas> nilaiTugasList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private StatusRecord requestKonversi;

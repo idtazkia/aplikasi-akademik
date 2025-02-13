@@ -129,7 +129,7 @@ public class KhsService {
         RequestKonversi requestKonversi2 = requestKonversiDao.findById(requestKonversi).get();
         requestKonversi2.setApprovedDate(LocalDateTime.now());
         requestKonversi2.setApprovedBy(karyawan.getEmail());
-        requestKonversi2.setApproval(StatusRecord.APPROVED);
+//        requestKonversi2.setApproval(StatusRecord.APPROVED);
         requestKonversiDao.save(requestKonversi2);
 
 
@@ -143,7 +143,7 @@ public class KhsService {
         RequestKonversi requestKonversi3 = requestKonversiDao.findById(requestKonversi).get();
         requestKonversi3.setRejectedDate(LocalDateTime.now());
         requestKonversi3.setRejectedBy(karyawan.getEmail());
-        requestKonversi3.setApproval(StatusRecord.REJECTED);
+//        requestKonversi3.setApproval(StatusRecord.REJECTED);
         requestKonversiDao.save(requestKonversi3);
 
 

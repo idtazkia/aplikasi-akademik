@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Konversi</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Request Konversi</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-example-area">
+        <div class="container">
+            <div class="row">
+                <div class="row" id="div-kategori">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-example-wrap mg-t-30">
+                            <div class="cmp-tb-hd cmp-int-hd">
+                                <h2>Request Form</h2>
+                            </div>
+                            <div class="form-example-int form-horizental mg-t-15">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Jumlah SKS</label>
+                                            <p id="total-sks"><b id="sksCounter">0 / 14</b></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form method="post" th:action="@{/request-konversi/proses-matakuliah}">
+                                <table
+                                        id="table-jabatan"
+                                        data-filter-control="true"
+                                        data-flat="true"
+                                        data-page-size="100"
+                                        th:attr="data-url=@{/api/get-matakuiah-konversi/{sks}(sks=${pendaftaranRequestKonversi.totalSks})}"
+                                        data-side-pagination="client">
+                                </table>
+                                <input type="hidden" name="id" id="pendaftarId" th:value="${pendaftaranRequestKonversi.id}" />
+                                <input type="hidden" name="totalSks" id="totalSks" th:value="${pendaftaranRequestKonversi.totalSks}" />
+                                <input type="hidden" name="sistem" id="sistem" th:value="${pendaftaranRequestKonversi.konfigurasiKonversi.sistem}" />
+                                <br>
+                                <center>
+                                    <button class="btn btn-sm btn-success text-center" id="submitButton" disabled type="submit">Simpan</button>
+                                </center>
+                            </form>
+                        </div>
+                        <div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script>
+    var $tableJabatan = $('#table-jabatan');
+    // Variable to keep track of total selected SKS
+    var selectedSksTotal = 0;
+    var sksTotal = $('#totalSks').val();
+    $('#sksCounter').text(`${selectedSksTotal} / ${sksTotal} SKS`);
+
+    $(function () {
+        $tableJabatan.bootstrapTable({
+            columns: [{
+                field: 'matakuliah',
+                title: 'Matakuliah',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sks',
+                title: 'SKS',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'grade',
+                title: 'Grade',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'operate',
+                title: 'Aksi',
+                align: 'center',
+                formatter: operateFormatter
+            }],
+        });
+
+    });
+
+    function operateFormatter(value, row, index) {
+        return `<div class="form-check">
+                    <input class="form-check-input sks-checkbox"
+                           type="checkbox"
+                           id="checkbox-${row.id}"
+                           data-sks="${row.sks}"
+                           name="result-${index}"
+                           onchange="handleCheckboxChange(this, ${row.sks}, '${row.matakuliah}', '${row.id}')"
+                           ${selectedSksTotal + parseInt(row.sks) > parseInt($('#totalSks').val()) ? 'disabled' : ''}>
+                    <input type="hidden" name="krsdetail-${index}" value="${row.id}">
+                </div>`;
+    }
+
+    function handleCheckboxChange(checkbox, sks, matakuliah, krsDetailId) {
+        const totalAllowedSks = parseInt($('#totalSks').val());
+        const sksValue = parseInt(sks);
+
+        if (checkbox.checked) {
+            // Check if adding this SKS would exceed the total
+            if (selectedSksTotal + sksValue > totalAllowedSks) {
+                checkbox.checked = false;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Melebihi Batas SKS',
+                    text: `Total SKS tidak boleh melebihi ${totalAllowedSks} SKS`,
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            selectedSksTotal += sksValue;
+        } else {
+            selectedSksTotal -= sksValue;
+        }
+
+        // Update all checkboxes' disabled state
+        updateCheckboxesState(totalAllowedSks);
+
+        // Update counter display if you have one
+        updateSksCounter();
+        $('#submitButton').prop('disabled', selectedSksTotal === 0);
+
+    }
+
+    function updateCheckboxesState(totalAllowedSks) {
+        $('.sks-checkbox').each(function() {
+            const checkboxSks = parseInt($(this).data('sks'));
+            if (!this.checked) {
+                $(this).prop('disabled', selectedSksTotal + checkboxSks > totalAllowedSks);
+            }
+        });
+    }
+
+    function updateSksCounter() {
+        // Assuming you have an element to display the counter
+        const totalAllowedSks = parseInt($('#totalSks').val());
+        $('#sksCounter').text(`${selectedSksTotal}/${totalAllowedSks} SKS`);
+    }
+
+    // Function to reset all selections
+    function resetSelections() {
+        $('.sks-checkbox').prop('checked', false);
+        selectedSksTotal = 0;
+        updateCheckboxesState(parseInt($('#totalSks').val()));
+        updateSksCounter();
+    }
+</script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>

@@ -3,8 +3,6 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.MahasiswaTugasDto;
-import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiTugasDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.KlasemenDosenIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.TotalSksDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
@@ -12,6 +10,7 @@ import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptSementara;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.hibernate.sql.Update;
@@ -22,9 +21,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, String> {
@@ -362,6 +359,16 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id \n" +
                         "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
         List<Object[]> transkripSemesterWithoutWaiting(Mahasiswa mahasiswa, String semester);
+
+        @Query(value = "SELECT a.id as id,b.semester as semester, c.kode_matakuliah as kode, c.nama_matakuliah as matakuliah, b.jumlah_sks as sks,COALESCE(a.bobot,'waiting')AS bobot,\n"
+                +
+                "COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu \n" +
+                "FROM krs_detail AS a \n" +
+                "INNER JOIN jadwal AS g ON a.id_jadwal = g.id\n" +
+                "INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id \n" +
+                "INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id \n" +
+                "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND (b.jumlah_sks > 0 AND b.jumlah_sks <= ?2)  AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
+        List<TranskriptSementara> matakuliahKonversi(Mahasiswa mahasiswa, Integer sks);
 
         @Query(value = "SELECT c.nim,c.nama,d.nama_prodi,a.id_tahun_akademik,statusMhs AS STATUS,coalesce(e.sks_total,0) AS sks_semester,coalesce(e.ipk,0) AS ip_semester,\n"
                         +
