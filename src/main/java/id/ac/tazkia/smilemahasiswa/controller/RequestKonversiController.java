@@ -13,20 +13,17 @@ import id.ac.tazkia.smilemahasiswa.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -274,7 +271,7 @@ public class RequestKonversiController {
     public String prosesRequestKonversiMatakuliah(@RequestParam String sistem,@RequestParam String id,@RequestParam Map<String, String> params){
         PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.WAITING);
-        pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
+
         if (sistem.equals("POINT")){
             SistemPenilaianKonversi sistemPenilaianKonversi = sistemPenilaianKonversiDao.cekPenilaianKonversi(pendaftaranRequestKonversi.getKonfigurasiKonversi(),pendaftaranRequestKonversi.getTotalSks());
             for (int i = 0; params.containsKey("krsdetail-" + i); i++) {
@@ -302,7 +299,7 @@ public class RequestKonversiController {
             }
         }
 
-        if (sistem.equals("LEVEL")){
+        if (sistem.equals("LEVEL") || sistem.equals("ASSESMENT")){
             for (int i = 0; params.containsKey("krsdetail-" + i); i++) {
                 String result = params.get("result-" + i);
                 if (result != null){
@@ -328,6 +325,10 @@ public class RequestKonversiController {
                 }
             }
         }
+
+        Integer totalSks = detailPendaftaranKonversiDao.sumTotalSks(pendaftaranRequestKonversi);
+        pendaftaranRequestKonversi.setSksDiambil(totalSks);
+        pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
         return "redirect:mahasiswa/detail";
     }
@@ -365,6 +366,16 @@ public class RequestKonversiController {
                 .body(BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
     }
 
+    @PostMapping("/request-konversi-delete/{id}")
+    @Transactional
+    public String deleteKonversi(@PathVariable String id){
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
+        pendaftaranRequestKonversiDao.delete(pendaftaranRequestKonversi);
+        detailPendaftaranKonversiDao.deleteDetailPendaftaranKonversiByPendaftaran(pendaftaranRequestKonversi);
+
+        return "redirect:../request-konversi/mahasiswa/detail";
+    }
+
     @PostMapping("/api/delete-matakuliah-konversi/{id}")
     public ResponseEntity<BaseResponseDto> rejectedKonversi(@PathVariable String id){
         DetailPendaftaranKonversi detailPendaftaranKonversi = detailPendaftaranKonversiDao.findById(id).get();
@@ -387,6 +398,13 @@ public class RequestKonversiController {
         for (DetailPendaftaranKonversi detailPendaftaranKonversi : pendaftaranRequestKonversi.getDetailPendaftaranKonversiList()){
             detailPendaftaranKonversi.setStatus(Approval.APPROVED);
             detailPendaftaranKonversiDao.save(detailPendaftaranKonversi);
+            Grade grade = gradeDao.findByNama(detailPendaftaranKonversi.getGradeBaru());
+            KrsDetail krsDetail = detailPendaftaranKonversi.getKrsDetail();
+            krsDetail.setGrade(grade.getNama());
+            krsDetail.setBobot(grade.getBobot());
+            krsDetail.setNilaiAkhir(grade.getBawah());
+            krsDetail.setStatusKonversi(StatusRecord.REQEUST_KONVERSI);
+            krsDetailDao.save(krsDetail);
         }
 
         return ResponseEntity.status(HttpStatus.OK)

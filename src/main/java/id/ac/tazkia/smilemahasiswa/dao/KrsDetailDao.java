@@ -364,10 +364,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 +
                 "COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu \n" +
                 "FROM krs_detail AS a \n" +
+                "LEFT JOIN detail_pendaftaran_konversi as dpk on a.id = dpk.id_krs_detail \n" +
                 "INNER JOIN jadwal AS g ON a.id_jadwal = g.id\n" +
                 "INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id \n" +
                 "INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id \n" +
-                "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND (b.jumlah_sks > 0 AND b.jumlah_sks <= ?2)  AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
+                "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND (b.jumlah_sks > 0 AND b.jumlah_sks <= ?2) AND (dpk.id IS NULL OR dpk.status in ('HAPUS','REJECTED')) AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
         List<TranskriptSementara> matakuliahKonversi(Mahasiswa mahasiswa, Integer sks);
 
         @Query(value = "SELECT c.nim,c.nama,d.nama_prodi,a.id_tahun_akademik,statusMhs AS STATUS,coalesce(e.sks_total,0) AS sks_semester,coalesce(e.ipk,0) AS ip_semester,\n"

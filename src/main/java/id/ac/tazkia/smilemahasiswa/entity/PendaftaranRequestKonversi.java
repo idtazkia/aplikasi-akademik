@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import id.ac.tazkia.smilemahasiswa.constant.Approval;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Data
 @Where(clause = "status not in ('HAPUS')")
+@SQLDelete(sql = "UPDATE pendaftaran_request_konversi SET status = 'HAPUS' WHERE id = ?")
 public class PendaftaranRequestKonversi extends Auditable {
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -25,6 +27,8 @@ public class PendaftaranRequestKonversi extends Auditable {
     private Mahasiswa mahasiswa;
 
     private Integer totalSks = 0;
+
+    private Integer sksDiambil = 0;
 
     @ManyToOne
     @JoinColumn(name = "id_konfigurasi_konversi")

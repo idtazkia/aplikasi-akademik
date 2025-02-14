@@ -17,6 +17,6 @@ public interface PendaftaranRequestKonversiDao extends PagingAndSortingRepositor
             nativeQuery = true)
     List<GetRequestKonversi> listRequestKonversi(String search, List<String> prodi, List<String> status, Integer limit, Integer offset);
 
-    @Query(value = "select coalesce(0,sum((total_sks))) as sks from pendaftaran_request_konversi where id_mahasiswa = ?1 and status not in ('REJECTED', 'HAPUS')", nativeQuery = true)
+    @Query(value = "select coalesce(0,sum((sks_diambil))) as sks from pendaftaran_request_konversi where id_mahasiswa = ?1 and status not in ('REJECTED', 'HAPUS')", nativeQuery = true)
     Integer totalSksKonversi(Mahasiswa mahasiswa);
 }

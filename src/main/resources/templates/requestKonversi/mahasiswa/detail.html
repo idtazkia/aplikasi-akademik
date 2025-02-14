@@ -59,7 +59,7 @@
                                     <td th:text="${row.index + 1}">1</td>
                                     <td th:text="${konversi.mahasiswa.nim + ' - ' + konversi.mahasiswa.nama}">Alexandra</td>
                                     <td th:text="${konversi.getKonfigurasiKonversi().nama}">Christopher</td>
-                                    <td class="text-center" th:text="${konversi.totalSks}">@makinton</td>
+                                    <td class="text-center" th:text="${konversi.sksDiambil}">@makinton</td>
                                     <td>
                                         <span th:if="${konversi.status == konversi.status.WAITING}" class="alert alert-warning">Menunggu Approval Kemahasiswaan</span>
                                         <span th:if="${konversi.status == konversi.status.REJECTED_KEMAHASISWAAN || konversi.status == konversi.status.REJECTED_PRODI || konversi.status == konversi.status.REJECTED_TQC}" class="alert alert-danger">Pendaftaraan Ditolak</span>
@@ -67,7 +67,9 @@
                                         <span th:if="${konversi.status == konversi.status.APPROVED}" class="alert alert-success">Pendaftaran Diterima</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger">Hapus</button>
+                                        <form th:action="@{/request-konversi-delete/{id} (id = ${konversi.id})}" method="post">
+                                            <button class="btn btn-sm btn-danger">Hapus</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 </tbody>

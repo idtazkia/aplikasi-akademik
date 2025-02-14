@@ -32,7 +32,7 @@ public class KonfigurasiKonversi {
     private StatusRecord status = StatusRecord.AKTIF;
 
     public enum jenis{
-        AKADEMIK, NON_AKADEMIK
+        AKADEMIK, NON_AKADEMIK, TAHFIDZ
     }
 
     public enum sistem{
