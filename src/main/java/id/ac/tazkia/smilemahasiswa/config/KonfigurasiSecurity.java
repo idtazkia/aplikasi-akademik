@@ -88,6 +88,8 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_KPS", "VIEW_AKADEMIK2", "VIEW_AKADEMIK1")
                 .antMatchers("/studiesActivity/attendance/list")
                 .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2", "VIEW_AKADEMIK1")
+                .antMatchers("/studiesActivity/attendance/detail")
+                .hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2", "VIEW_AKADEMIK1")
                 .antMatchers("/studiesActivity/attendance/listdosen")
                 .hasAnyAuthority("VIEW_KPS", "VIEW_WAREK2", "VIEW_DOSEN", "VIEW_DOSEN_AKADEMIK")
                 .antMatchers("/studiesActivity/validation/list")
