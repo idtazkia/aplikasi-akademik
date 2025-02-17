@@ -266,8 +266,8 @@ public class TugasMateriService {
         }
 
 //        String folder = tugasJawaban.getMahasiswa().getNim() + " - " + tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
-        String folder = tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
-                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+        String folder = tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik().replace("/", "-") + File.separator +
+                tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah().replace("/", "-") + " - " +
                 tugasJawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
                 "Pertemuan " + tugasJawaban.getJadwalTugas().getPertemuanKe() + File.separator + tugasJawaban.getMahasiswa().getNim() + " - " +
                 tugasJawaban.getMahasiswa().getNama();

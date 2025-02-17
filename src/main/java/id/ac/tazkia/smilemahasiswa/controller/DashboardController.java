@@ -1068,7 +1068,8 @@ public class DashboardController {
         Tagihan tagihan = tagihanDao.findByStatusAndStatusTagihanAndMahasiswa(StatusRecord.AKTIF, StatusTagihan.DICICIL, mhs);
         if (tagihan == null) {
             tagihanService.fixMhsCicilan(mhs);
-            return "dashboard";
+            model.addAttribute("mhs", mhs);
+            return "redirect:dashboard";
         }
 
         model.addAttribute("namaTagihan", tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama());

@@ -1745,8 +1745,8 @@ public class StudiesActivityController {
     @GetMapping("/collection/{jawaban}/tugas")
     public ResponseEntity<byte[]> lihatMateri(@PathVariable JadwalTugasJawaban jawaban){
 //        String folder = jawaban.getMahasiswa().getNim() + " - " + jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
-        String folder = jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik() + File.separator +
-                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah() + " - " +
+        String folder = jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getTahunAkademik().getNamaTahunAkademik().replace("/", "-") + File.separator +
+                jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah().replace("/", "-") + " - " +
                 jawaban.getJadwalTugas().getSesiKuliah().getJadwal().getDosen().getKaryawan().getNamaKaryawan() + File.separator +
                 "Pertemuan " + jawaban.getJadwalTugas().getPertemuanKe() + File.separator + jawaban.getMahasiswa().getNim() + " - " +
                 jawaban.getMahasiswa().getNama();
@@ -1758,8 +1758,16 @@ public class StudiesActivityController {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (jawaban.getFile().toLowerCase().endsWith("png")){
                 headers.setContentType(MediaType.IMAGE_PNG);
-            } else if (jawaban.getFile().toLowerCase().endsWith("pdf")){
+            } else if (jawaban.getFile().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
+            } else if (jawaban.getFile().toLowerCase().endsWith("doc") || jawaban.getFile().toLowerCase().endsWith("docx")) {
+                headers.setContentType(MediaType.parseMediaType("application/msword"));
+            } else if (jawaban.getFile().toLowerCase().endsWith("xls") || jawaban.getFile().toLowerCase().endsWith("xlsx")) {
+                headers.setContentType(MediaType.parseMediaType("application/vnd.ms-excel"));
+            }else if (jawaban.getFile().toLowerCase().endsWith("ppt") || jawaban.getFile().toLowerCase().endsWith("pptx")){
+                headers.setContentType(MediaType.parseMediaType("application/vnd.ms-powerpoint"));
+            }else if (jawaban.getFile().toLowerCase().endsWith("txt")){
+                headers.setContentType(MediaType.TEXT_PLAIN);
             } else{
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             }
