@@ -183,6 +183,8 @@ public class Mahasiswa {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalDisahkan;
 
+    private String mbkmPermission;
+
     public String selectionText() {
         return "";
     }
