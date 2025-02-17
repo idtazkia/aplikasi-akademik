@@ -87,8 +87,8 @@
                                     data-show-refresh="true"
                                     data-flat="true"
                                     data-pagination="true"
-                                    data-ajax="ajaxRequestJadwal"
-                                    data-side-pagination="server">
+                                    th:attr="data-url=@{/tlc/jadwal-list/sadsad}"
+                                    data-side-pagination="client">
                             </table>
                         </div>
                     </div>
@@ -206,12 +206,47 @@
         });
 
     function openDetail(args) {
+        $(function () {
+            $tableDetail.bootstrapTable({
+                columns: [
+                    {
+                        field: 'namaJadwal',
+                        title: 'Matakuliah',
+                        align: 'center',
+                        valign: 'middle',
+                    },
+                    {
+                        field: 'namaKelas',
+                        title: 'Kelas',
+                        align: 'center',
+                        valign: 'middle',
+                    },
+                    {
+                        field: 'jenis',
+                        title: 'Jenis',
+                        align: 'center',
+                        valign: 'middle',
+                    },
+                    {
+                        field: 'operate',
+                        title: 'Item Operate',
+                        align: 'center',
+                        clickToSelect: false,
+                        events: window.jadwalEvent,
+                        formatter: jadwalFormatter()
+                    }
+                ]
+            })
+        })
+
         $("#div-mahasiswa").slideUp("slow");
         document.getElementById("div-mahasiswa").style.display = "none";
         $('#idjadwal').val('')
         document.getElementById("tambahLink").href = "";
         $('#idTahun').val(args.id)
-        $tableDetail.bootstrapTable('refresh')
+        $('#tableDetail').bootstrapTable('refresh', {
+            url: '/tlc/jadwal-list/' + args.id
+        });
         document.getElementById('div-judul').innerHTML = 'List Jadwal';
         $("#div-detail").slideDown("slow");
         document.getElementById("div-detail").style.display = "block";
@@ -287,39 +322,6 @@
         })
     })
 
-    $(function () {
-        $tableDetail.bootstrapTable({
-            columns: [
-                {
-                    field: 'namaJadwal',
-                    title: 'Matakuliah',
-                    align: 'center',
-                    valign: 'middle',
-                },
-                {
-                    field: 'namaKelas',
-                    title: 'Kelas',
-                    align: 'center',
-                    valign: 'middle',
-                },
-                {
-                    field: 'jenis',
-                    title: 'Jenis',
-                    align: 'center',
-                    valign: 'middle',
-                },
-                {
-                    field: 'operate',
-                    title: 'Item Operate',
-                    align: 'center',
-                    clickToSelect: false,
-                    events: window.jadwalEvent,
-                    formatter: jadwalFormatter()
-                }
-            ]
-        })
-    })
-
     function ajaxRequestJadwal(params) {
         if ($('#idTahun').val() != '') {
             var url = '/tlc/jadwal-list/' + $('#idTahun').val()
@@ -347,7 +349,7 @@
 
     function operateFormatter(value, row, index) {
         return [
-            '<button type="button" class="btn btn-sm btn-info view">',
+            '<button type="button" class="btn btn-sm btn-info view-jadwal">',
             '<i class="fas fa-eye view"></i> View',
             '</button>  &nbsp;',
         ].join('')
@@ -379,7 +381,7 @@
     }
 
     window.operateEvents = {
-        'click .view': function (e, value, row, index) {
+        'click .view-jadwal': function (e, value, row, index) {
             openDetail(row);
         }, 'click .edit': function (e, value, row, index) {
             openModal(row.id);
@@ -656,11 +658,4 @@
         $('#tambahModal').modal('hide');
         $('#mahasiswaList').val('').trigger('change')
     }
-
-    flatpickr(".time", {
-        mode: range,
-        enableTime: true,
-        dateFormat: "H:i",
-        time_24hr: true
-    });
 </script>

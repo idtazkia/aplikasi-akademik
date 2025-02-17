@@ -93,7 +93,7 @@ public class TlcController {
             model.addAttribute("sesi", detailJadwalBahasaDao.findByJadwalBahasa(jadwalBahasa.get()));
             model.addAttribute("jadwalBahasa", jadwalBahasa.get());
             return "tlc/attendance/detail";
-        }else {
+        } else {
 
             return "error/404";
         }
@@ -103,8 +103,8 @@ public class TlcController {
     @GetMapping("/tlc/periode/edit")
     public void editForm(Model model, @RequestParam String id) {
         model.addAttribute("ruangan", ruanganDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS,StatusRecord.NONAKTIF)));
-        if (StringUtils.hasText(id)){
+        model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF)));
+        if (StringUtils.hasText(id)) {
             JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
             DetailJadwalBahasa sesi1 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "1");
             DetailJadwalBahasa sesi2 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "2");
@@ -114,15 +114,15 @@ public class TlcController {
             model.addAttribute("jadwal", jadwalBahasa);
             model.addAttribute("sesi1", sesi1);
 
-            if (sesi2 != null){
+            if (sesi2 != null) {
                 model.addAttribute("sesi2", sesi2);
             }
 
-            if (sesi3 != null){
+            if (sesi3 != null) {
                 model.addAttribute("sesi3", sesi3);
             }
 
-            if (sesi4 != null){
+            if (sesi4 != null) {
                 model.addAttribute("sesi4", sesi4);
             }
 
@@ -150,7 +150,7 @@ public class TlcController {
         sesi1.setJamSelesai(jadwalBahasaRequest.getJamSelesaiSesi1());
         detailJadwalBahasaDao.save(sesi1);
 
-        if (sesi2 != null){
+        if (sesi2 != null) {
             if (jadwalBahasaRequest.getHariSesi2() != null) {
                 sesi2.setJadwalBahasa(jadwalBahasa);
                 sesi2.setHari(jadwalBahasaRequest.getHariSesi2());
@@ -159,10 +159,11 @@ public class TlcController {
                 sesi2.setJamMulai(jadwalBahasaRequest.getJamMulaiSesi2());
                 sesi2.setJamSelesai(jadwalBahasaRequest.getJamSelesaiSesi2());
                 detailJadwalBahasaDao.save(sesi2);
-            }{
+            }
+            {
                 detailJadwalBahasaDao.delete(sesi2);
             }
-        }else {
+        } else {
             if (jadwalBahasaRequest.getHariSesi2() != null) {
                 DetailJadwalBahasa newSesi2 = new DetailJadwalBahasa();
                 newSesi2.setJadwalBahasa(jadwalBahasa);
@@ -175,7 +176,7 @@ public class TlcController {
             }
         }
 
-        if (sesi3 != null){
+        if (sesi3 != null) {
             if (jadwalBahasaRequest.getHariSesi3() != null) {
                 sesi3.setJadwalBahasa(jadwalBahasa);
                 sesi3.setHari(jadwalBahasaRequest.getHariSesi3());
@@ -184,10 +185,11 @@ public class TlcController {
                 sesi3.setJamMulai(jadwalBahasaRequest.getJamMulaiSesi3());
                 sesi3.setJamSelesai(jadwalBahasaRequest.getJamSelesaiSesi3());
                 detailJadwalBahasaDao.save(sesi3);
-            }{
+            }
+            {
                 detailJadwalBahasaDao.delete(sesi3);
             }
-        }else {
+        } else {
             if (jadwalBahasaRequest.getHariSesi3() != null) {
                 DetailJadwalBahasa newSesi3 = new DetailJadwalBahasa();
                 newSesi3.setJadwalBahasa(jadwalBahasa);
@@ -200,7 +202,7 @@ public class TlcController {
             }
         }
 
-        if (sesi4 != null){
+        if (sesi4 != null) {
             if (jadwalBahasaRequest.getHariSesi4() != null) {
                 sesi4.setJadwalBahasa(jadwalBahasa);
                 sesi4.setHari(jadwalBahasaRequest.getHariSesi4());
@@ -209,10 +211,11 @@ public class TlcController {
                 sesi4.setJamMulai(jadwalBahasaRequest.getJamMulaiSesi4());
                 sesi4.setJamSelesai(jadwalBahasaRequest.getJamSelesaiSesi4());
                 detailJadwalBahasaDao.save(sesi4);
-            }{
+            }
+            {
                 detailJadwalBahasaDao.delete(sesi4);
             }
-        }else {
+        } else {
             if (jadwalBahasaRequest.getHariSesi4() != null) {
                 DetailJadwalBahasa newSesi4 = new DetailJadwalBahasa();
                 newSesi4.setJadwalBahasa(jadwalBahasa);
@@ -294,14 +297,14 @@ public class TlcController {
                                     @RequestParam(required = false) Integer offset,
                                     @RequestParam(required = false) Integer limit) {
 
-        if (search.isEmpty() ) {
+        if (search.isEmpty()) {
             List<PeriodeDto> tahunAkademiks = tahunAkademikDao.listTahunAkademik(limit, offset);
             DataPeriodeTlc response = new DataPeriodeTlc();
             response.setTotal(tahunAkademikDao.countTahunAkademik());
             response.setTotalNotFiltered(tahunAkademikDao.countTahunAkademik());
             response.setRows(tahunAkademiks);
             return response;
-        }else {
+        } else {
             List<PeriodeDto> tahunAkademiks = tahunAkademikDao.listTahunAkademikSearch(search, limit, offset);
             DataPeriodeTlc response = new DataPeriodeTlc();
             response.setTotal(tahunAkademikDao.listTahunAkademikSearch(search, Integer.MAX_VALUE, offset).size());
@@ -314,16 +317,16 @@ public class TlcController {
 
     @GetMapping("/tlc/jadwal-list/{tahun}")
     @ResponseBody
-    public DataJadwalBahasa listJadwal(@PathVariable String tahun) {
-        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+    public List<JadwalBahasa> listJadwal(@PathVariable String tahun,
+                                         @RequestParam(defaultValue = "0") int offset,
+                                         @RequestParam(defaultValue = "10") int limit) {
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).orElse(null);
 
-        DataJadwalBahasa response = new DataJadwalBahasa();
-        response.setTotal(jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF).size());
-        response.setTotalNotFiltered(jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF).size());
-        response.setRows(jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF));
-        return response;
+        List<JadwalBahasa> rows = jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF);
+        return rows;
 
     }
+
     @GetMapping("/tlc/jadwal-dosen-list/{tahun}")
     @ResponseBody
     public DataJadwalBahasa listJadwalDosen(Authentication authentication, @PathVariable String tahun) {
@@ -392,10 +395,10 @@ public class TlcController {
 
     @GetMapping("/select/mahasiswa")
     @ResponseBody
-    public List<MahasiswaDto> cariMahasiswa(@RequestParam String search, String tahun){
+    public List<MahasiswaDto> cariMahasiswa(@RequestParam String search, String tahun) {
 
 
-        return krsDao.cariMahasiswa(search,tahun);
+        return krsDao.cariMahasiswa(search, tahun);
     }
 
     @PostMapping(value = "/jadwal-mahasiswa-post/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -465,9 +468,9 @@ public class TlcController {
                             .body(new BaseResponseDto("404", "Dosen not found"));
                 }
 
-                if (presensiDosenBahasaDao.totalPertertemuan(optionalJadwalBahasa.get()) <= 0){
+                if (presensiDosenBahasaDao.totalPertertemuan(optionalJadwalBahasa.get()) <= 0) {
                     pertemuan = 1;
-                }else {
+                } else {
                     pertemuan = presensiDosenBahasaDao.totalPertertemuan(optionalJadwalBahasa.get()) + 1;
                 }
                 presensiDosenBahasa.setPertemuanKe(pertemuan);
@@ -507,8 +510,8 @@ public class TlcController {
             }
 
 
-            PresensiMahasiswaBahasa presensiMahasiswaBahasa = presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(optionalMahasiswa.get(),optionalPresensiDosenBahasa.get());
-            if (presensiMahasiswaBahasa ==  null) {
+            PresensiMahasiswaBahasa presensiMahasiswaBahasa = presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(optionalMahasiswa.get(), optionalPresensiDosenBahasa.get());
+            if (presensiMahasiswaBahasa == null) {
                 presensiMahasiswaBahasa = new PresensiMahasiswaBahasa();
                 presensiMahasiswaBahasa.setMahasiswa(optionalMahasiswa.get());
                 presensiMahasiswaBahasa.setPresensiDosenBahasa(optionalPresensiDosenBahasa.get());
