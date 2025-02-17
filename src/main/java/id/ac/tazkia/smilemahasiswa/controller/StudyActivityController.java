@@ -729,12 +729,15 @@ public class StudyActivityController {
     public String listMBKM(Model model, int totalSks, RedirectAttributes attributes, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
 
-        if (totalSks < 100) {
-            attributes.addFlashAttribute("minSks", "Tidak memenuhin syarat total sks");
-            return "redirect:krs";
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (mahasiswa.getMbkmPermission() == null) {
+            if (totalSks < 100) {
+                attributes.addFlashAttribute("minSks", "Tidak memenuhin syarat total sks");
+                return "redirect:krs";
+            }
         }
 
-        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahun, StatusRecord.AKTIF);
         Long totalSksExist = matakuliahMbkmDao.jumlahSksMbkm(StatusRecord.AKTIF, krs);
