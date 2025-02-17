@@ -113,7 +113,13 @@
                             <li>
                                 <a data-toggle="collapse" data-target="#Charts" th:href="@{/dashboard}">Home</a>
                             </li>
-                            <li><a data-toggle="collapse" data-target="#demoevent" th:href="@{/study/comingsoon}">Study Activities</a>
+                            <li><a data-toggle="collapse" data-target="#StudyMenu" href="#">Study Activities</a>
+                                <ul id="StudyMenu" class="collapse dropdown-header-top">
+                                    <li><a th:href="@{/study/comingsoon}">KRS</a></li>
+                                    <li><a th:href="@{/request-konversi/mahasiswa/detail}">Request Konversi</a></li>
+
+                                </ul>
+                            </li>
                             </li>
                             <li><a th:href="@{/studentBill/bill/list}"> Student Bill</a></li>
                             <li><a data-toggle="collapse" data-target="#democrou" href="#">Report</a>
@@ -154,7 +160,7 @@
                     <li class="active"><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home</a>
                     </li>
                     </li>
-                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/study/comingsoon}"><i class="fa fa-user"></i> Study Activites</a></li>
+                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a  data-toggle="tab" href="#Study"><i class="fa fa-user"></i> Study Activites</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/studentBill/bill/list}"> Student Bill</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#Charts"><i class="fa fa-bar-chart"></i> Report</a>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#menuTLC"><i class="fa fa-pencil"></i> TLC</a>
@@ -165,6 +171,12 @@
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/dokumen/mahasiswa}"><i class="fa fa-archive"></i> Documents</a></li>
                 </ul>
                 <div class="tab-content custom-menu-content">
+                    <div id="Study" class="tab-pane notika-tab-menu-bg animated flipInX">
+                        <ul class="notika-main-menu-dropdown">
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/study/comingsoon}">KRS</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/request-konversi/mahasiswa/detail}">Requset Konversi</a></li>
+                        </ul>
+                    </div>
                     <div id="Charts" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/khs}">KHS</a></li>
