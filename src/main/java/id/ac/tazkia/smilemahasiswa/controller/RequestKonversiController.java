@@ -124,13 +124,13 @@ public class RequestKonversiController {
 
         switch (jenis.toLowerCase()) {
             case "tqc":
-                data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi, Arrays.asList(Approval.WAITING.name()), limit, offset);
+                data = pendaftaranRequestKonversiDao.listRequestKonversiTqc(search, prodi, Arrays.asList(Approval.WAITING.name()), limit, offset);
                 break;
             case "kps":
                 data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi, Arrays.asList(Approval.APPROVED_KEMAHASISWAAN.name()), limit, offset);
                 break;
             case "kemahasiswaan":
-                data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi, Arrays.asList(Approval.WAITING.name()), limit, offset);
+                data = pendaftaranRequestKonversiDao.listRequestKonversiKemahasiswaan(search, prodi, Arrays.asList(Approval.WAITING.name()), limit, offset);
                 break;
             case "admin":
                 data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi, Arrays.asList(Approval.WAITING.name(), Approval.APPROVED_KEMAHASISWAAN.name(),Approval.APPROVED_TQC.name(),Approval.APPROVED.name()), limit, offset);
