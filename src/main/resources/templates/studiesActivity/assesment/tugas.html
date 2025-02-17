@@ -115,7 +115,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Nama Tugas :</label>
-                                        <input type="text" name="namaTugas" class="form-control">
+                                        <input type="text" name="namaTugas" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Deskripsi :</label>
@@ -160,7 +160,7 @@
                                     </div>
                                     <div id="upFile" class="form-group">
                                         <label>Maksimal file yang bisa di upload : </label>
-                                        <input type="number" min="2" name="maksFileUpload" class="form-control">
+                                        <input type="number" min="2" max="10" name="maksFileUpload" class="form-control">
                                     </div>
                                 </div>
 
@@ -209,14 +209,17 @@
                 $("#question").hide();
             }
         });
-        $("#uploadfile").click(function (){
-            if ($(this).is(":checked")){
+        $("#uploadfile").on('change', function (){
+            var isChecked = $(this).prop('checked');
+            if (isChecked){
                 $("#upFile").show();
+                $("input[name='maksFileUpload']").attr('required', 'required');
             }else{
                 $("#upFile").hide();
+                $("input[name='maksFileUpload']").removeAttr('required');
             }
         });
-    })
+    });
 
     // tinymce
     tinymce.init({
@@ -237,9 +240,14 @@
 <script>
 
     function saveTugas(){
-        $('#btn-save').removeClass('btn-primary').addClass('btn-warning').prop('disabled', true).html('Loading . . .');
+        const form = $('#form-tugas');
+        if (form.checkValidity()){
+            $('#btn-save').removeClass('btn-primary').addClass('btn-warning').prop('disabled', true).html('Loading . . .');
 
-        $('#form-tugas').submit();
+            form.submit();
+        }else {
+            form.reportValidity();
+        }
     }
 
     function updateMaksBobot(){
