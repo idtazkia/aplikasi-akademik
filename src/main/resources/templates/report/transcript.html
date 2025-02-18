@@ -247,7 +247,11 @@
 
                                 <h3 th:if="${dataSemester[3] != 'PENDEK'}"  class="mb-0" th:text="${dataSemester[2] + ' ( Semester ' + (row.index + 1) + ')'}">Semester<b> 1</b></h3>
                             </div>
-                            <table class="table align-items-center table-flush">
+                            <div class="alert text-center alert-danger" role="alert" th:if="${dataSemester[4] == 'UNDONE'}">
+                                EDOM belum diisi silahkan isi EDOM terlebih dahulu klik disini untuk mengisi <strong><a
+                                    th:href="@{/report/edom (tahunAkademik = ${dataSemester[5]})}">Link EDOM</a></strong>
+                            </div>
+                            <table class="table align-items-center table-flush"  th:if="${dataSemester[4] == 'DONE'}">
                                 <thead class="thead-light">
                                 <tr>
                                     <th>Kode MK</th>
