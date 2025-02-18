@@ -73,7 +73,14 @@ public class TlcController {
     private KaryawanDao karyawanDao;
 
     @GetMapping("/tlc/periode/list")
-    public void periodeList(Model model) {
+    public void periodeList(Model model, @RequestParam(required = false) String tahun) {
+        model.addAttribute("periodeList", tahunAkademikDao.listSemuaTahunAkademik());
+        if (StringUtils.hasText(tahun)){
+            TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+            model.addAttribute("selectedTahun", tahun);
+            List<JadwalBahasa> jadwalBahasa = jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik,StatusRecord.AKTIF);
+            model.addAttribute("listJadwal", jadwalBahasa);
+        }
     }
 
     @GetMapping("/tlc/dosen/list")
@@ -542,6 +549,15 @@ public class TlcController {
                             .responseMessage(e.getLocalizedMessage())
                             .build());
         }
+    }
+
+    @GetMapping("/tlc/periode/delete")
+    public String deleteJadwalBahasa(@RequestParam String id) {
+       JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
+       jadwalBahasa.setStatus(StatusRecord.HAPUS);
+       jadwalBahasaDao.save(jadwalBahasa);
+
+       return "redirect:list?tahun=" + jadwalBahasa.getTahunAkademik().getId();
     }
 
 }

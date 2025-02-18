@@ -41,7 +41,7 @@
 
         <!-- Table -->
         <div class="row">
-            <div class="col-md-5 col-xs-12">
+            <div class="col-md-12 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
@@ -53,15 +53,94 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Periode</label>
+                                    <select name="tahun" id="periodeJadwal" required class="form-control">
+                                        <option value="" selected disabled>-- Select One --</option>
+                                        <option th:each="periode : ${periodeList}" th:text="${periode.tahun}"
+                                                th:selected="(${periode.id} == *{selectedTahun})"
+                                                th:value="${periode.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 10px; padding-bottom: 20px;">
+                                <div class="col-md-12" style="text-align: center;">
+                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>
+                                        Cari</button>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="table-responsive">
-                            <table
-                                    id="table-jabatan"
-                                    data-filter-control="true"
-                                    data-search="true"
-                                    data-show-refresh="true"
-                                    data-pagination="true"
-                                    data-side-pagination="server"
-                                    data-ajax="ajaxRequestPeriode">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Matakuliah</th>
+                                    <th>Kelas</th>
+                                    <th>Jenis</th>
+                                    <th>#</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listJadwal}">
+                                    <td th:text="${(row.index + 1)}"></td>
+                                    <td th:text="${data.namaJadwal}"></td>
+                                    <td th:text="${data.namaKelas}"></td>
+                                    <td th:text="${data.jenis}"></td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
+                                                data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">Lihat File
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="javascript:void(0)" th:data-jadwal="${data.id}" onclick="openModalAdd(this)" >Tambah Mahasiswa</a>
+                                            <a class="dropdown-item" href="javascript:void(0)"  data-toggle="modal" th:data-target="${'#modal-mahasiswa-' + data.id}">Lihat Mahasiswa</a>
+                                            <a class="dropdown-item" th:href="@{/tlc/attendance/detail (id = ${data.id})}">Kehadiran</a>
+                                            <a class="dropdown-item" th:href="@{/tlc/periode/edit (id = ${data.id})}">Edit</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" th:id="${data.id}" onclick="deleteJadwal(this.id)">Hapus</a>
+                                        </div>
+<!--                                        <button class="btn btn-sm btn-primary" th:data-jadwal="${data.id}" onclick="openModalAdd(this)" >Tambah Mahasiswa</button>-->
+<!--                                        <button class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="${'#modal-mahasiswa-' + data.id}" >Lihat Mahasiswa</button>-->
+<!--                                        <a th:href="@{/tlc/attendance/detail (id = ${data.id})}" class="btn btn-sm btn-info">Kehadiran</a>-->
+<!--                                        <a th:href="@{/tlc/periode/edit (id = ${data.id})}" class="btn btn-sm btn-warning">Edit</a>-->
+<!--                                        <form action="">-->
+<!--                                        <button class="btn btn-sm btn-danger" th:id="${data.id}" onclick="deleteJadwal(this.id)">Hapus</button>-->
+<!--                                        </form>-->
+                                        <div class="modal fade" th:id="${'modal-mahasiswa-'+data.id}"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">List Mahasiswa</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>NIM</th>
+                                                                <th>Nama</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="mahasiswa : ${data.mahasiswas}">
+                                                                <td th:text="${mahasiswa.nim}">asdasd</td>
+                                                                <td th:text="${mahasiswa.nama}"></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -178,12 +257,12 @@
     $("#mahasiswaList").select2(
         {
             dropdownParent: $('#tambahModal'),
-            placeholder: 'Cari Dosen',
+            placeholder: 'Cari Mahasiswa',
             multiple: 'true',
             minimumInputLength: 3,
             ajax: {
                 url: function (params) {
-                    return '/select/mahasiswa?search=' + params.term + '&tahun=' + $('#idTahun').val();
+                    return '/select/mahasiswa?search=' + params.term + '&tahun=' + $('#periodeJadwal').val();
                 },
                 dataType: 'json',
                 type: "GET",
@@ -266,7 +345,9 @@
     var $tableJabatan = $('#table-jabatan')
     var $tableMahasiswa = $('#tableMahasiswa')
 
-    function openModalAdd(row) {
+    function openModalAdd(args) {
+        console.log(args.getAttribute('data-jadwal'))
+        document.getElementById("idjadwal").value = args.getAttribute('data-jadwal')
         $("#tambahModal").modal({
             show: true,
             backdrop: 'static'
@@ -283,14 +364,14 @@
                     valign: 'middle',
                     sortable: true
                 },
-             {
-                field: 'operate',
-                title: 'Item Operate',
-                align: 'center',
-                clickToSelect: false,
-                events: window.operateEvents,
-                formatter: operateFormatter
-            }]
+                {
+                    field: 'operate',
+                    title: 'Item Operate',
+                    align: 'center',
+                    clickToSelect: false,
+                    events: window.operateEvents,
+                    formatter: operateFormatter
+                }]
         })
     })
 
@@ -521,55 +602,24 @@
         }
     }
 
-    function deleteJabatan(id) {
+    function deleteJadwal(id) {
         var token = $("input[name='_csrf']").val();
-        var url = "/jabatan-delete/" + id;
+        var url = "/tlc/periode/delete?id=" + id;
 
         Swal.fire({
-            title: 'Anda Yakin Menghapus?',
-            text: "Data Akan terhapus secara permanen!",
-            icon: 'warning',
+            title: "Apakah Anda yakin?",
+            text: "Data ini akan dihapus secara permanen!",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus Data!'
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal"
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: url,
-                    contentType: "application/json;charset=UTF-8",
-                    headers: {"X-CSRF-TOKEN": token},
-                    method: 'post',
-                    dataType: 'JSON',
-                    data: JSON.stringify({
-                        "id": id
-                    }), success: function (result) {
-
-                        if (result.code == '302') {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Data Gagal Dihapus ',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                        } else {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'Data Sudah Terupdate ',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                            $tableJabatan.bootstrapTable('refresh')
-                        }
-                    },
-                    error: function (result) {
-                        alert('error');
-                    }
-                })
+                window.location.href = "/tlc/periode/delete?id=" + id;
             }
-        })
+        });
     }
 
     function closeModal() {

@@ -76,6 +76,8 @@ public class SettingController {
 
     @Autowired
     private KrsDetailDao krsDetailDao;
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
 
 //    Attribute
 
@@ -364,8 +366,11 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
     }
 
     @GetMapping("/setting/edomquestion/list")
-    public void listEdom(Model model){
-        model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusOrderByNomor(StatusRecord.AKTIF));
+    public void listEdom(Model model, @RequestParam(required = false) TahunAkademik tahun){
+        if (tahun == null){
+            tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        }
+        model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahun));
     }
 
     @GetMapping("/setting/beasiswa/list")
