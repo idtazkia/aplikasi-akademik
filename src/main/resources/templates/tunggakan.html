@@ -100,6 +100,51 @@
 <body>
 <div class="main-content">
     <div class="container-fluid">
+        <div class="row mt-5">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-8 col-xs-12">
+                <div class="card-style">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 text-center">
+                            <b class="card-title" style="font-size: 30px;">
+                                Jadwal Perkuliahan
+                            </b>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Matakuliah</th>
+                                    <th>Hari</th>
+                                    <th>Sesi</th>
+                                    <th>Dosen</th>
+                                    <th>Ruangan</th>
+                                </tr>
+                                <tr th:each="data,row : ${krsdetail}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">
+                                        Senin
+                                    </td>
+                                    <td th:text="${data.jadwal.hari.namaHari}"></td>
+                                    <td th:text="${data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">
+                                        Matematika
+                                    </td>
+                                    <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">
+                                        13.00
+                                    </td>
+                                    <td th:text="${data.jadwal.ruangan.namaRuangan}">13.00</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row" style="margin: 40px;">
             <div class="col-md-3 col-xs-12">
 
@@ -184,13 +229,6 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <form name="f" th:action="@{/studentBill/bill/list}" method="get">
-                                <button class="col-sm-12 btn btn-primary btn-block" type="submit">LIHAT SEMUA TAGIHAN</button>
-                            </form>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

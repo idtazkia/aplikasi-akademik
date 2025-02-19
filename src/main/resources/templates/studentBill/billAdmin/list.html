@@ -225,8 +225,13 @@
                                                                    th:text="${data.statusTagihan}">
                                                                 </a>
 
-                                                                <a type="button" class="btn btn-warning ger btn-sm" href="#!"
+                                                                <a type="button" class="btn btn-warning btn-sm" href="#!"
                                                                    th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
+                                                                   th:text="${data.statusTagihan}">
+                                                                </a>
+
+                                                                <a type="button" class="btn btn-danger btn-sm" href="#!"
+                                                                   th:if="${data.statusTagihan.NUNGGAK} == ${data.statusTagihan}"
                                                                    th:text="${data.statusTagihan}">
                                                                 </a>
 

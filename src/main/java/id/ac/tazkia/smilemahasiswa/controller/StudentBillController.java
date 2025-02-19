@@ -3226,10 +3226,10 @@ public class StudentBillController {
     }
 
 
-    @Scheduled(cron = "0 00 20 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 02 * * *", zone = "Asia/Jakarta")
     public void akumulasiTagihan(){
 
-        List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(3));
+        List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().minusDays(1));
         for (RequestCicilan cariMahasiswa : setDashboardMhs){
             if ("AKTIF".equalsIgnoreCase(cariMahasiswa.getTagihan().getMahasiswa().getStatusAktif()) || "CUTI".equalsIgnoreCase(cariMahasiswa.getTagihan().getMahasiswa().getStatusAktif())){
                 Role role = roleDao.findById("mahasiswanunggak").get();
@@ -3243,7 +3243,7 @@ public class StudentBillController {
             }
         }
 
-        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
+        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().minusDays(1));
         for (RequestCicilan cariCicilanHariIni : requestCicilan){
 
             if ("AKTIF".equalsIgnoreCase(cariCicilanHariIni.getTagihan().getMahasiswa().getStatusAktif()) || "CUTI".equalsIgnoreCase(cariCicilanHariIni.getTagihan().getMahasiswa().getStatusAktif())){
@@ -3253,11 +3253,6 @@ public class StudentBillController {
                 requestCicilanDao.save(cariCicilanHariIni);
 
                 log.info("Update status cicilan : {}", cariCicilanHariIni);
-
-                Role role = roleDao.findById("mahasiswa").get();
-                User usr = cariCicilanHariIni.getTagihan().getMahasiswa().getUser();
-                usr.setRole(role);
-                userDao.save(usr);
 
                 RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
                 if (cicilanSelanjutnya != null){
@@ -3273,11 +3268,12 @@ public class StudentBillController {
                     log.info("Tidak ada cicilan selanjutnya!");
                     cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
                     requestCicilanDao.save(cariCicilanHariIni);
-//                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
-//                userBlock.setActive(false);
-//                userDao.save(userBlock);
-//                log.info("block smile untuk user {}", userBlock);
                 }
+
+                Tagihan tagihan = cariCicilanHariIni.getTagihan();
+                tagihan.setStatusTagihan(StatusTagihan.NUNGGAK);
+                tagihanDao.save(tagihan);
+                log.info("Setting nunggak ", tagihan.getKeterangan());
 
             }else{
                 log.info("Proses Akumulasi Tagihan Mahasiswa Keluar!!!");

@@ -270,7 +270,7 @@ public class TagihanService {
     }
 
     public void kirimCicilanJatuhTempo(HapusTagihanResponse hapusTagihanResponse){
-        Tagihan tagihan = tagihanDao.findByNomorAndStatusTagihan(hapusTagihanResponse.getNomorTagihan(), StatusTagihan.DICICIL);
+        Tagihan tagihan = tagihanDao.findByNomorAndStatusTagihanIn(hapusTagihanResponse.getNomorTagihan(), Arrays.asList(StatusTagihan.DICICIL, StatusTagihan.NUNGGAK));
         if (tagihan != null) {
             RequestCicilan rc = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
             if (rc != null) {
@@ -460,7 +460,7 @@ public class TagihanService {
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
 
-        if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL){
+        if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL || tagihan.getStatusTagihan() == StatusTagihan.NUNGGAK){
 
             RequestCicilan cicilanLunas = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
             if (cicilanLunas != null) {
@@ -474,6 +474,10 @@ public class TagihanService {
                     usr.setRole(role);
                     userDao.save(usr);
                 }
+
+                Tagihan t = cicilanLunas.getTagihan();
+                t.setStatusTagihan(StatusTagihan.DICICIL);
+                tagihanDao.save(t);
 
             }
 

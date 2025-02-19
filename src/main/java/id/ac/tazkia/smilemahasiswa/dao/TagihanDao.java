@@ -34,7 +34,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Tagihan findByNomor(String nomor);
 
-    Tagihan findByNomorAndStatusTagihan(String nomor, StatusTagihan statusTagihan);
+    Tagihan findByNomorAndStatusTagihanIn(String nomor, List<StatusTagihan> statusTagihan);
 
     List<Tagihan> findByStatusAndZahirExport(StatusRecord status, AkuntansiExport akuntansiExport);
 

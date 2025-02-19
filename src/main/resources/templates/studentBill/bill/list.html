@@ -68,6 +68,7 @@
                                         <div th:if="${data.Status} == 'NONAKTIF'" th:text="${data.Status}" class="btn btn-danger btn-sm"></div>
                                         <div th:if="${data.Status} == 'LUNAS'" th:text="${data.Status}" class="btn btn-success btn-sm"></div>
                                         <div th:if="${data.Status} == 'DICICIL'" th:text="${data.Status}" class="btn btn-warning btn-sm"></div>
+                                        <div th:if="${data.Status} == 'NUNGGAK'" th:text="${data.Status}" class="btn btn-danger btn-sm"></div>
                                         <div th:if="${data.Status} == 'DITANGGUHKAN'" th:text="${data.Status}" class="btn nk-deep-orange btn-sm" style="color: white;"></div>
                                     </td>
                                     <!-- <td><a class="btn btn-primary pull-right" th:href="@{/studentBill/requestPenangguhan/date(id = ${data.getId()})}">Request Penangguhan</a></td>-->

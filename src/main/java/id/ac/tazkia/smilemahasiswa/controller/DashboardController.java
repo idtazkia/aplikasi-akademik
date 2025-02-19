@@ -1065,7 +1065,8 @@ public class DashboardController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
 
-        Tagihan tagihan = tagihanDao.findByStatusAndStatusTagihanAndMahasiswa(StatusRecord.AKTIF, StatusTagihan.DICICIL, mhs);
+        // Keuangan
+        Tagihan tagihan = tagihanDao.findByStatusAndStatusTagihanAndMahasiswa(StatusRecord.AKTIF, StatusTagihan.NUNGGAK, mhs);
         if (tagihan == null) {
             tagihanService.fixMhsCicilan(mhs);
             model.addAttribute("mhs", mhs);
@@ -1075,6 +1076,13 @@ public class DashboardController {
         model.addAttribute("namaTagihan", tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama());
         model.addAttribute("virtualAccount", virtualAccountDao.listVaCicilan(tagihan.getId()));
         model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
+
+        // Akademik
+        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        Krs k = krsDao.findByTahunAkademikAndMahasiswaAndStatus(ta, mhs, StatusRecord.AKTIF);
+
+        model.addAttribute("krsdetail", krsDetailDao.findByMahasiswaAndKrsAndStatus(mhs, k, StatusRecord.AKTIF));
 
         return "tunggakan";
     }
