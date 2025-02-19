@@ -47,6 +47,7 @@ public class Sidang {
 
 //    @Column(columnDefinition = "DATETIME")
 //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime tanggalInput;
 
     @ManyToOne
