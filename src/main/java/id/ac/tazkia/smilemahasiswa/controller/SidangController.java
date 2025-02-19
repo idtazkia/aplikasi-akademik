@@ -271,7 +271,7 @@ public class SidangController {
                     }
                 }
 
-                if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
+                if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 23
                         && seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
                     krsDetail = krsDetailDao.cariUjianTesis(seminar.getNote().getMahasiswa(), ta);
 
@@ -1870,7 +1870,7 @@ public class SidangController {
                 KrsDetail cariThesis = null;
 
 
-                if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
+                if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 23
                         && sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
                     cariThesis = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);
 
@@ -1895,7 +1895,7 @@ public class SidangController {
 
                     }
                     if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
-                        if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 21
+                        if (Integer.parseInt(sidang.getSeminar().getNote().getMahasiswa().getAngkatan()) >= 23
                                 && sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId().equals("05")) {
                             KrsDetail proposal = krsDetailDao.cariUjianPrososal(sidang.getSeminar().getNote().getMahasiswa(), ta);
                             KrsDetail thesis = krsDetailDao.cariUjianTesis(sidang.getSeminar().getNote().getMahasiswa(), ta);

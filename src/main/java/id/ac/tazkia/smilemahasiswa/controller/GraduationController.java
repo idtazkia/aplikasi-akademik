@@ -1996,6 +1996,21 @@ public class GraduationController {
         return "redirect:detail?seminar=" + seminar.getId();
     }
 
+    @PostMapping("/graduation/seminar/updatescore")
+    public String updatePublish(Model model, Authentication authentication, @RequestParam Seminar seminar,
+                                @Valid SeminarDto seminarDto) {
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        model.addAttribute("dosen", dosen);
+
+        sidangService.updatePublish(seminar, seminarDto);
+
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+                + seminar.getNote().getMahasiswa().getIdProdi().getId();
+
+    }
+
     @GetMapping("/graduation/seminar/score")
     public void nilaiProdi(Model model, @RequestParam Seminar seminar, @RequestParam(required = false) String kosong,
                            Authentication authentication) {
@@ -2031,21 +2046,6 @@ public class GraduationController {
         }
         model.addAttribute("dosen", dosen);
         model.addAttribute("seminar", seminar);
-
-    }
-
-    @PostMapping("/graduation/seminar/updatescore")
-    public String updatePublish(Model model, Authentication authentication, @RequestParam Seminar seminar,
-                                @Valid SeminarDto seminarDto) {
-        User user = currentUserService.currentUser(authentication);
-        Karyawan karyawan = karyawanDao.findByIdUser(user);
-        Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        model.addAttribute("dosen", dosen);
-
-        sidangService.updatePublish(seminar, seminarDto);
-
-        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
-                + seminar.getNote().getMahasiswa().getIdProdi().getId();
 
     }
 
@@ -2796,7 +2796,7 @@ public class GraduationController {
             TahunAkademik tahunAkademik = graduationService.cekTahunAkademik(seminar.getTahunAkademik());
             KrsDetail krsDetail = krsDetailDao.cariUjianPrososal(seminar.getNote().getMahasiswa(), tahunAkademik);
 
-            if (Integer.parseInt(angkatan) >= 21
+            if (Integer.parseInt(angkatan) >= 23
                     && prodi.getId().equals("05")) {
 
                 Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);

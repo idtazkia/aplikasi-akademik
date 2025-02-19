@@ -167,11 +167,11 @@ public class SidangService {
             Prodi prodi = seminar.getNote().getMahasiswa().getIdProdi();
             String angkatan = seminar.getNote().getMahasiswa().getAngkatan();
 
-            if (Integer.parseInt(angkatan) >= 21
+            if (Integer.parseInt(angkatan) >= 23
                     && prodi.getId().equals("05")) {
 
                 updateNilaiPasca(seminar, seminarDto);
-            } else if (Integer.parseInt(angkatan) >= 03
+            } else if (Integer.parseInt(angkatan) >= 21
                     && prodi.getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
                 updateNilaiPasca(seminar, seminarDto);
 
