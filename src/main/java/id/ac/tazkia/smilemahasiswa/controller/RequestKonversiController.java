@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,8 @@ public class RequestKonversiController {
     private GradeDao gradeDao;
     @Autowired
     private DetailPendaftaranKonversiDao detailPendaftaranKonversiDao;
+    @Autowired
+    private RequestKonversiTenggatDao requestKonversiTenggatDao;
 
 
     @ModelAttribute("prodi")
@@ -97,7 +100,7 @@ public class RequestKonversiController {
 
     @GetMapping("/request-konversi/admin")
     public String listRequestKonversiAdmin(Model model) {
-
+        model.addAttribute("tanggalKonversi", requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF));
 
         return "requestKonversi/admin/list";
     }
@@ -416,6 +419,16 @@ public class RequestKonversiController {
         String lokasiUpload = uploadFolder + File.separator + pendaftaranRequestKonversi.getMahasiswa().getNim() + File.separator + pendaftaranRequestKonversi.getKonfigurasiKonversi().getNama() + File.separator + pendaftaranRequestKonversi.getFiles().get(0).getFile();
         String filename = pendaftaranRequestKonversi.getFiles().get(0).getFile();
         return fileService.tampilkanFile(filename, lokasiUpload);
+    }
+
+    @PostMapping("/request-konversi/update-tanggal")
+    public String updateTanggalKonversi(@RequestParam String tanggalAwal, @RequestParam String tanggalAkhir){
+        RequestKonversiTenggat requestKonversiTenggat = requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF);
+        requestKonversiTenggat.setTanggalAwal(LocalDate.parse(tanggalAwal));
+        requestKonversiTenggat.setTanggalAkhir(LocalDate.parse(tanggalAkhir));
+        requestKonversiTenggatDao.save(requestKonversiTenggat);
+
+        return "redirect:admin";
     }
 }
 
