@@ -62,4 +62,6 @@ import java.time.LocalDate;
         @NotNull
         private String kodeSpmb;
 
+        private String kodePddikti;
+
 }

@@ -60,6 +60,7 @@
                                 <th scope="col">Fakultas</th>
                                 <th scope="col">Jenjang</th>
                                 <th scope="col">Program Studi</th>
+                                <th scope="col">Kode PDDIKTI</th>
                                 <th scope="col">Keterangan</th>
                                 <th scope="col" width="30px"></th>
                                 <th scope="col" width="40px"></th>
@@ -83,6 +84,7 @@
                                        th:href="@{/setting/prody/form(id = ${data.id})}">
                                     </a>
                                 </td>
+                                <td th:text="${data.kodePddikti}">Kode Prodi PDDIKTI</td>
                                 <td th:text="${data.keterangan}">Name Prodi</td>
                                 <td>
                                     <form method="post" th:action="@{/setting/prody/delete(prodi = ${data.id})}">
