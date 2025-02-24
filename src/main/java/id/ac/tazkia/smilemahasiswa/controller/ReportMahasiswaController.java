@@ -303,7 +303,7 @@ public class ReportMahasiswaController {
             }
         }
 
-        return "redirect:khs";
+        return "redirect:khs?tahunAkademik=" + tahunAkademik.getId();
 
     }
 
