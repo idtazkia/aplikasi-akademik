@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
@@ -41,7 +40,7 @@
 
         <!-- Table -->
         <div class="row">
-            <div class="col-md-12 col-xs-12">
+            <div class="col-md-5 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
@@ -53,94 +52,15 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label>Periode</label>
-                                    <select name="tahun" id="periodeJadwal" required class="form-control">
-                                        <option value="" selected disabled>-- Select One --</option>
-                                        <option th:each="periode : ${periodeList}" th:text="${periode.tahun}"
-                                                th:selected="(${periode.id} == *{selectedTahun})"
-                                                th:value="${periode.id}"></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row" style="padding-top: 10px; padding-bottom: 20px;">
-                                <div class="col-md-12" style="text-align: center;">
-                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>
-                                        Cari</button>
-                                </div>
-                            </div>
-                        </form>
-
                         <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Matakuliah</th>
-                                    <th>Kelas</th>
-                                    <th>Jenis</th>
-                                    <th>#</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="data,row : ${listJadwal}">
-                                    <td th:text="${(row.index + 1)}"></td>
-                                    <td th:text="${data.namaJadwal}"></td>
-                                    <td th:text="${data.namaKelas}"></td>
-                                    <td th:text="${data.jenis}"></td>
-                                    <td>
-                                        <button type="button"
-                                                class="btn btn-info btn-outline-info btn-sm dropdown-toggle"
-                                                data-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false">Lihat File
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="javascript:void(0)" th:data-jadwal="${data.id}" onclick="openModalAdd(this)" >Tambah Mahasiswa</a>
-                                            <a class="dropdown-item" href="javascript:void(0)"  data-toggle="modal" th:data-target="${'#modal-mahasiswa-' + data.id}">Lihat Mahasiswa</a>
-                                            <a class="dropdown-item" th:href="@{/tlc/attendance/detail (id = ${data.id})}">Kehadiran</a>
-                                            <a class="dropdown-item" th:href="@{/tlc/periode/edit (id = ${data.id})}">Edit</a>
-                                            <a class="dropdown-item" href="javascript:void(0)" th:id="${data.id}" onclick="deleteJadwal(this.id)">Hapus</a>
-                                        </div>
-<!--                                        <button class="btn btn-sm btn-primary" th:data-jadwal="${data.id}" onclick="openModalAdd(this)" >Tambah Mahasiswa</button>-->
-<!--                                        <button class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="${'#modal-mahasiswa-' + data.id}" >Lihat Mahasiswa</button>-->
-<!--                                        <a th:href="@{/tlc/attendance/detail (id = ${data.id})}" class="btn btn-sm btn-info">Kehadiran</a>-->
-<!--                                        <a th:href="@{/tlc/periode/edit (id = ${data.id})}" class="btn btn-sm btn-warning">Edit</a>-->
-<!--                                        <form action="">-->
-<!--                                        <button class="btn btn-sm btn-danger" th:id="${data.id}" onclick="deleteJadwal(this.id)">Hapus</button>-->
-<!--                                        </form>-->
-                                        <div class="modal fade" th:id="${'modal-mahasiswa-'+data.id}"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">List Mahasiswa</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <table class="table table-striped">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>NIM</th>
-                                                                <th>Nama</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <tr th:each="mahasiswa : ${data.mahasiswas}">
-                                                                <td th:text="${mahasiswa.nim}">asdasd</td>
-                                                                <td th:text="${mahasiswa.nama}"></td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
+                            <table
+                                    id="table-jabatan"
+                                    data-filter-control="true"
+                                    data-search="true"
+                                    data-show-refresh="true"
+                                    data-pagination="true"
+                                    data-side-pagination="server"
+                                    data-ajax="ajaxRequestPeriode">
                             </table>
                         </div>
                     </div>
@@ -166,15 +86,16 @@
                                     data-show-refresh="true"
                                     data-flat="true"
                                     data-pagination="true"
-                                    th:attr="data-url=@{/tlc/jadwal-list/sadsad}"
-                                    data-side-pagination="client">
+                                    data-ajax="ajaxRequestJadwal"
+                                    data-side-pagination="server">
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal fade" id="tambahModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="tambahModal" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -188,7 +109,8 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label>Mahasiswa</label>
-                                                    <select id="mahasiswaList" name="dosen" style="width: 100%!important;"
+                                                    <select id="mahasiswaList" name="dosen"
+                                                            style="width: 100%!important;"
                                                             class="js-example-basic-multiple js-states form-control js-data-example-ajax">
                                                     </select>
                                                     <div class="invalid-feedback">
@@ -200,8 +122,11 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button class="btn btn-success" type="button" onclick="tambahMahasiswa()">Simpan</button>
-                                        <button onclick="closeModalAdd()" type="button" class="btn btn-danger">Tutup</button>
+                                        <button class="btn btn-success" type="button" onclick="tambahMahasiswa()">
+                                            Simpan
+                                        </button>
+                                        <button onclick="closeModalAdd()" type="button" class="btn btn-danger">Tutup
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -216,9 +141,10 @@
                     <div class="card-header border-0">
                         <h3 class="mb-0"></h3>
                         <div class="col text-right">
-                            <button onclick="openModalAdd()"  class="btn btn-sm btn-default"><i
+                            <button onclick="openModalAdd()" class="btn btn-sm btn-default"><i
                                     class="fas fa-plus-circle"></i>
-                                Tambah Mahasiswa</button>
+                                Tambah Mahasiswa
+                            </button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -257,12 +183,12 @@
     $("#mahasiswaList").select2(
         {
             dropdownParent: $('#tambahModal'),
-            placeholder: 'Cari Mahasiswa',
+            placeholder: 'Cari Dosen',
             multiple: 'true',
             minimumInputLength: 3,
             ajax: {
                 url: function (params) {
-                    return '/select/mahasiswa?search=' + params.term + '&tahun=' + $('#periodeJadwal').val();
+                    return '/select/mahasiswa?search=' + params.term + '&tahun=' + $('#idTahun').val();
                 },
                 dataType: 'json',
                 type: "GET",
@@ -273,8 +199,8 @@
                     };
                 },
                 processResults: function (data) {
-                    for(var i = 0; i < data.length; i++){
-                        data[i]={id:data[i].id,text:data[i].nim + ' - ' + data[i].nama,value:data[i].id}
+                    for (var i = 0; i < data.length; i++) {
+                        data[i] = {id: data[i].id, text: data[i].nim + ' - ' + data[i].nama, value: data[i].id}
                     }
                     return {
                         results: data
@@ -285,47 +211,12 @@
         });
 
     function openDetail(args) {
-        $(function () {
-            $tableDetail.bootstrapTable({
-                columns: [
-                    {
-                        field: 'namaJadwal',
-                        title: 'Matakuliah',
-                        align: 'center',
-                        valign: 'middle',
-                    },
-                    {
-                        field: 'namaKelas',
-                        title: 'Kelas',
-                        align: 'center',
-                        valign: 'middle',
-                    },
-                    {
-                        field: 'jenis',
-                        title: 'Jenis',
-                        align: 'center',
-                        valign: 'middle',
-                    },
-                    {
-                        field: 'operate',
-                        title: 'Item Operate',
-                        align: 'center',
-                        clickToSelect: false,
-                        events: window.jadwalEvent,
-                        formatter: jadwalFormatter()
-                    }
-                ]
-            })
-        })
-
         $("#div-mahasiswa").slideUp("slow");
         document.getElementById("div-mahasiswa").style.display = "none";
         $('#idjadwal').val('')
         document.getElementById("tambahLink").href = "";
         $('#idTahun').val(args.id)
-        $('#tableDetail').bootstrapTable('refresh', {
-            url: '/tlc/jadwal-list/' + args.id
-        });
+        $tableDetail.bootstrapTable('refresh')
         document.getElementById('div-judul').innerHTML = 'List Jadwal';
         $("#div-detail").slideDown("slow");
         document.getElementById("div-detail").style.display = "block";
@@ -345,9 +236,7 @@
     var $tableJabatan = $('#table-jabatan')
     var $tableMahasiswa = $('#tableMahasiswa')
 
-    function openModalAdd(args) {
-        console.log(args.getAttribute('data-jadwal'))
-        document.getElementById("idjadwal").value = args.getAttribute('data-jadwal')
+    function openModalAdd(row) {
         $("#tambahModal").modal({
             show: true,
             backdrop: 'static'
@@ -403,6 +292,39 @@
         })
     })
 
+    $(function () {
+        $tableDetail.bootstrapTable({
+            columns: [
+                {
+                    field: 'nama',
+                    title: 'Matakuliah',
+                    align: 'center',
+                    valign: 'middle',
+                },
+                {
+                    field: 'kelas',
+                    title: 'Kelas',
+                    align: 'center',
+                    valign: 'middle',
+                },
+                {
+                    field: 'jenis',
+                    title: 'Jenis',
+                    align: 'center',
+                    valign: 'middle',
+                },
+                {
+                    field: 'operate',
+                    title: 'Item Operate',
+                    align: 'center',
+                    clickToSelect: false,
+                    events: window.jadwalEvent,
+                    formatter: jadwalFormatter()
+                }
+            ]
+        })
+    })
+
     function ajaxRequestJadwal(params) {
         if ($('#idTahun').val() != '') {
             var url = '/tlc/jadwal-list/' + $('#idTahun').val()
@@ -430,7 +352,7 @@
 
     function operateFormatter(value, row, index) {
         return [
-            '<button type="button" class="btn btn-sm btn-info view-jadwal">',
+            '<button type="button" class="btn btn-sm btn-info view">',
             '<i class="fas fa-eye view"></i> View',
             '</button>  &nbsp;',
         ].join('')
@@ -462,7 +384,7 @@
     }
 
     window.operateEvents = {
-        'click .view-jadwal': function (e, value, row, index) {
+        'click .view': function (e, value, row, index) {
             openDetail(row);
         }, 'click .edit': function (e, value, row, index) {
             openModal(row.id);
@@ -475,7 +397,7 @@
     window.jadwalEvent = {
         'click .view': function (e, value, row, index) {
             openMahasiswa(row);
-        },'click .kehadiran': function (e, value, row, index) {
+        }, 'click .kehadiran': function (e, value, row, index) {
             window.location.href = '/tlc/attendance/detail?id=' + row.id;
         }, 'click .edit': function (e, value, row, index) {
             window.location.href = '/tlc/periode/edit?id=' + row.id;
@@ -602,24 +524,55 @@
         }
     }
 
-    function deleteJadwal(id) {
+    function deleteJabatan(id) {
         var token = $("input[name='_csrf']").val();
-        var url = "/tlc/periode/delete?id=" + id;
+        var url = "/jabatan-delete/" + id;
 
         Swal.fire({
-            title: "Apakah Anda yakin?",
-            text: "Data ini akan dihapus secara permanen!",
-            icon: "warning",
+            title: 'Anda Yakin Menghapus?',
+            text: "Data Akan terhapus secara permanen!",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Ya, hapus!",
-            cancelButtonText: "Batal"
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus Data!'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "/tlc/periode/delete?id=" + id;
+                $.ajax({
+                    url: url,
+                    contentType: "application/json;charset=UTF-8",
+                    headers: {"X-CSRF-TOKEN": token},
+                    method: 'post',
+                    dataType: 'JSON',
+                    data: JSON.stringify({
+                        "id": id
+                    }), success: function (result) {
+
+                        if (result.code == '302') {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Data Gagal Dihapus ',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Data Sudah Terupdate ',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            $tableJabatan.bootstrapTable('refresh')
+                        }
+                    },
+                    error: function (result) {
+                        alert('error');
+                    }
+                })
             }
-        });
+        })
     }
 
     function closeModal() {
@@ -651,11 +604,11 @@
             type: "POST",
             contentType: "application/json",
             headers: {"X-CSRF-TOKEN": token},
-            url: "/jadwal-mahasiswa-post/"+$('#idjadwal').val()+"?mahasiswaList="+$("#mahasiswaList").val(),
+            url: "/jadwal-mahasiswa-post/" + $('#idjadwal').val() + "?mahasiswaList=" + $("#mahasiswaList").val(),
             dataType: 'json',
             cache: false,
             timeout: 600000,
-            success:function(result) {
+            success: function (result) {
                 $('#tambahModal').modal('hide');
                 $('#mahasiswaList').val('').trigger('change')
                 Swal.fire({
@@ -667,7 +620,7 @@
                 })
                 $tableDetail.bootstrapTable('refresh')
             },
-            error:function(result) {
+            error: function (result) {
             }
         });
     }
@@ -683,11 +636,11 @@
             type: "POST",
             contentType: "application/json",
             headers: {"X-CSRF-TOKEN": token},
-            url: "/jadwal-mahasiswa-post/"+$('#idJadwal').val()+"?mahasiswaList="+$("#mahasiswaList").val(),
+            url: "/jadwal-mahasiswa-post/" + $('#idJadwal').val() + "?mahasiswaList=" + $("#mahasiswaList").val(),
             dataType: 'json',
             cache: false,
             timeout: 600000,
-            success:function(result) {
+            success: function (result) {
                 $('#tambahModal').modal('hide');
                 $('#mahasiswaList').val('').trigger('change')
                 Swal.fire({
@@ -699,7 +652,7 @@
                 })
                 $tableDetail.bootstrapTable('refresh')
             },
-            error:function(result) {
+            error: function (result) {
             }
         });
     }
@@ -708,4 +661,11 @@
         $('#tambahModal').modal('hide');
         $('#mahasiswaList').val('').trigger('change')
     }
+
+    flatpickr(".time", {
+        mode: range,
+        enableTime: true,
+        dateFormat: "H:i",
+        time_24hr: true
+    });
 </script>
