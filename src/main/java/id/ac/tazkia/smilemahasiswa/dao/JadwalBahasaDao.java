@@ -1,10 +1,9 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import java.util.List;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalRequest;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.JadwalBahasa;
@@ -20,4 +19,9 @@ public interface JadwalBahasaDao extends PagingAndSortingRepository<JadwalBahasa
     @Query(value = "select id,nama_jadwal as nama, nama_kelas as kelas, jenis from jadwal_bahasa where id_tahun_akademik = ?1 and status = 'AKTIF'",
             nativeQuery = true)
     List<JadwalRequest> getJadwalBahasa(TahunAkademik tahunAkademik);
+
+    @Query(value = "select m.* from mahasiswa_jadwal_bahasa as mjb inner join jadwal_bahasa as jb on mjb.id_jadwal_bahasa = jb.id inner join mahasiswa as m on mjb.id_mahasiswa = m.id\n"
+                    + //
+                    "where mjb.id_jadwal_bahasa = ?1", nativeQuery = true)
+    List<JadwalMahasiswa> getJadwalMahasiswas(JadwalBahasa jadwalBahasa);
 }

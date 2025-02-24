@@ -1,13 +1,11 @@
 package id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal;
 
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import java.util.List;
 import lombok.Data;
-
-import java.util.Set;
 
 @Data
 public class DataMahasiswa {
     private Integer total;
     private Integer totalNotFiltered;
-    Set<Mahasiswa> rows;
+    List<JadwalMahasiswa> rows;
 }

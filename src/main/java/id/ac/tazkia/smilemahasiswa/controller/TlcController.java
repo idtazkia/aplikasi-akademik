@@ -40,10 +40,6 @@ import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.*;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.DataPresensiDosen;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.PresensiDosenBahasaDto;
-import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataJadwalBahasa;
-import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataMahasiswa;
-import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalBahasaRequest;
-import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.DataPeriodeTlc;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.PeriodeDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.DataPresensiMahasiswa;
@@ -374,11 +370,11 @@ public class TlcController {
     @ResponseBody
     public DataMahasiswa listMahasiswaJadwal(@PathVariable String id) {
         JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
-
+        List<JadwalMahasiswa> mahasiswas = jadwalBahasaDao.getJadwalMahasiswas(jadwalBahasa);
         DataMahasiswa response = new DataMahasiswa();
-        response.setTotal(jadwalBahasa.getMahasiswas().size());
-        response.setTotalNotFiltered(jadwalBahasa.getMahasiswas().size());
-        response.setRows(jadwalBahasa.getMahasiswas());
+        response.setTotal(mahasiswas.size());
+        response.setTotalNotFiltered(mahasiswas.size());
+        response.setRows(mahasiswas);
         return response;
 
     }
