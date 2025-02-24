@@ -1,15 +1,31 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
+import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.GenericGenerator;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class JadwalBahasa {
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -39,7 +55,6 @@ public class JadwalBahasa {
             inverseJoinColumns = @JoinColumn(name = "id_mahasiswa"))
     @OrderBy
     private Set<Mahasiswa> mahasiswas = new HashSet<>();
-
 
     @NotNull
     @Enumerated(EnumType.STRING)

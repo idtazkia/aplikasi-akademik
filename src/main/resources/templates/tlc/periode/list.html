@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
@@ -94,8 +95,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="tambahModal" role="dialog" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
+            <div class="modal fade" id="tambahModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -109,8 +109,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label>Mahasiswa</label>
-                                                    <select id="mahasiswaList" name="dosen"
-                                                            style="width: 100%!important;"
+                                                    <select id="mahasiswaList" name="dosen" style="width: 100%!important;"
                                                             class="js-example-basic-multiple js-states form-control js-data-example-ajax">
                                                     </select>
                                                     <div class="invalid-feedback">
@@ -122,11 +121,8 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button class="btn btn-success" type="button" onclick="tambahMahasiswa()">
-                                            Simpan
-                                        </button>
-                                        <button onclick="closeModalAdd()" type="button" class="btn btn-danger">Tutup
-                                        </button>
+                                        <button class="btn btn-success" type="button" onclick="tambahMahasiswa()">Simpan</button>
+                                        <button onclick="closeModalAdd()" type="button" class="btn btn-danger">Tutup</button>
                                     </div>
                                 </div>
                             </form>
@@ -141,10 +137,9 @@
                     <div class="card-header border-0">
                         <h3 class="mb-0"></h3>
                         <div class="col text-right">
-                            <button onclick="openModalAdd()" class="btn btn-sm btn-default"><i
+                            <button onclick="openModalAdd()"  class="btn btn-sm btn-default"><i
                                     class="fas fa-plus-circle"></i>
-                                Tambah Mahasiswa
-                            </button>
+                                Tambah Mahasiswa</button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -199,8 +194,8 @@
                     };
                 },
                 processResults: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = {id: data[i].id, text: data[i].nim + ' - ' + data[i].nama, value: data[i].id}
+                    for(var i = 0; i < data.length; i++){
+                        data[i]={id:data[i].id,text:data[i].nim + ' - ' + data[i].nama,value:data[i].id}
                     }
                     return {
                         results: data
@@ -397,7 +392,7 @@
     window.jadwalEvent = {
         'click .view': function (e, value, row, index) {
             openMahasiswa(row);
-        }, 'click .kehadiran': function (e, value, row, index) {
+        },'click .kehadiran': function (e, value, row, index) {
             window.location.href = '/tlc/attendance/detail?id=' + row.id;
         }, 'click .edit': function (e, value, row, index) {
             window.location.href = '/tlc/periode/edit?id=' + row.id;
@@ -414,7 +409,7 @@
             window.location.href = '/tlc/periode/edit?id=' + row.id;
         },
         'click .delete': function (e, value, row, index) {
-            deleteJabatan(row.id);
+            deleteMahasiswa(row.id, row.jadwal);
         }
     }
 
@@ -524,9 +519,9 @@
         }
     }
 
-    function deleteJabatan(id) {
+    function deleteMahasiswa(id, jadwal) {
         var token = $("input[name='_csrf']").val();
-        var url = "/jabatan-delete/" + id;
+        var url = "/tlc/periode/delete-mahasiswa/" + jadwal + "/" + id;
 
         Swal.fire({
             title: 'Anda Yakin Menghapus?',
@@ -542,37 +537,34 @@
                     url: url,
                     contentType: "application/json;charset=UTF-8",
                     headers: {"X-CSRF-TOKEN": token},
-                    method: 'post',
+                    method: 'POST',
                     dataType: 'JSON',
-                    data: JSON.stringify({
-                        "id": id
-                    }), success: function (result) {
-
+                    success: function (result) {
                         if (result.code == '302') {
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'error',
-                                title: 'Data Gagal Dihapus ',
+                                title: 'Data Gagal Dihapus',
                                 showConfirmButton: false,
                                 timer: 2000
-                            })
+                            });
                         } else {
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
-                                title: 'Data Sudah Terupdate ',
+                                title: 'Data Berhasil Dihapus',
                                 showConfirmButton: false,
                                 timer: 2000
-                            })
-                            $tableJabatan.bootstrapTable('refresh')
+                            });
+                            $tableMahasiswa.bootstrapTable('refresh');
                         }
                     },
                     error: function (result) {
                         alert('error');
                     }
-                })
+                });
             }
-        })
+        });
     }
 
     function closeModal() {
@@ -604,11 +596,11 @@
             type: "POST",
             contentType: "application/json",
             headers: {"X-CSRF-TOKEN": token},
-            url: "/jadwal-mahasiswa-post/" + $('#idjadwal').val() + "?mahasiswaList=" + $("#mahasiswaList").val(),
+            url: "/jadwal-mahasiswa-post/"+$('#idjadwal').val()+"?mahasiswaList="+$("#mahasiswaList").val(),
             dataType: 'json',
             cache: false,
             timeout: 600000,
-            success: function (result) {
+            success:function(result) {
                 $('#tambahModal').modal('hide');
                 $('#mahasiswaList').val('').trigger('change')
                 Swal.fire({
@@ -618,9 +610,9 @@
                     showConfirmButton: false,
                     timer: 2000
                 })
-                $tableDetail.bootstrapTable('refresh')
+                $tableMahasiswa.bootstrapTable('refresh')
             },
-            error: function (result) {
+            error:function(result) {
             }
         });
     }
@@ -636,11 +628,11 @@
             type: "POST",
             contentType: "application/json",
             headers: {"X-CSRF-TOKEN": token},
-            url: "/jadwal-mahasiswa-post/" + $('#idJadwal').val() + "?mahasiswaList=" + $("#mahasiswaList").val(),
+            url: "/jadwal-mahasiswa-post/"+$('#idJadwal').val()+"?mahasiswaList="+$("#mahasiswaList").val(),
             dataType: 'json',
             cache: false,
             timeout: 600000,
-            success: function (result) {
+            success:function(result) {
                 $('#tambahModal').modal('hide');
                 $('#mahasiswaList').val('').trigger('change')
                 Swal.fire({
@@ -652,7 +644,7 @@
                 })
                 $tableDetail.bootstrapTable('refresh')
             },
-            error: function (result) {
+            error:function(result) {
             }
         });
     }

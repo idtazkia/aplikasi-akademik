@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,9 +38,14 @@ import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
-import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.*;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.DataPresensiDosen;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.PresensiDosenBahasaDto;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataJadwalBahasa;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataMahasiswa;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalBahasaRequest;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalMahasiswa;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalRequest;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.DataPeriodeTlc;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.PeriodeDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.DataPresensiMahasiswa;
@@ -573,6 +579,45 @@ public class TlcController {
        jadwalBahasaDao.save(jadwalBahasa);
 
        return "redirect:list?tahun=" + jadwalBahasa.getTahunAkademik().getId();
+    }
+
+    @PostMapping("/tlc/periode/delete-mahasiswa/{jadwalId}/{mahasiswaId}")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<BaseResponseDto> deleteMahasiswaFromJadwal(@PathVariable String jadwalId,
+            @PathVariable String mahasiswaId) {
+        try {
+
+            Optional<JadwalBahasa> optionalJadwalBahasa = jadwalBahasaDao.findById(jadwalId);
+            if (optionalJadwalBahasa.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new BaseResponseDto("404", "Jadwal not found"));
+            }
+
+            Optional<Mahasiswa> optionalMahasiswa = mahasiswaDao.findById(mahasiswaId);
+            if (optionalMahasiswa.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new BaseResponseDto("404", "Mahasiswa not found"));
+            }
+
+            JadwalBahasa jadwalBahasa = optionalJadwalBahasa.get();
+            Mahasiswa mahasiswa = optionalMahasiswa.get();
+
+            if (jadwalBahasaDao.cekMahasiswaJadwal(jadwalBahasa, mahasiswa) != null) {
+                jadwalBahasa.getMahasiswas().remove(mahasiswa);
+                jadwalBahasaDao.save(jadwalBahasa);
+                return ResponseEntity.ok(
+                        new BaseResponseDto("00", "Mahasiswa successfully removed from Jadwal"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new BaseResponseDto("404", "Mahasiswa not found in Jadwal"));
+            }
+        } catch (Exception e) {
+            log.error("[DELETE MAHASISWA] - [ERROR] : Unable to delete mahasiswa from jadwal , {} ",
+                    e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BaseResponseDto("ERR500", e.getLocalizedMessage()));
+        }
     }
 
 }
