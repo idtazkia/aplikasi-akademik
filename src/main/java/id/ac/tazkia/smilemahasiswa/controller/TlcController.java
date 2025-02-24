@@ -1,9 +1,43 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
-import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dao.DetailJadwalBahasaDao;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalBahasaDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenBahasaDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenBahasaDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaBahasaDao;
+import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.*;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.DataPresensiDosen;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.PresensiDosenBahasaDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataJadwalBahasa;
@@ -15,27 +49,20 @@ import id.ac.tazkia.smilemahasiswa.dto.tlc.periode.PeriodeDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.DataPresensiMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.GetDataPresensiMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.presensi.KehadiranRequest;
-import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.entity.DetailJadwalBahasa;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.JadwalBahasa;
+import id.ac.tazkia.smilemahasiswa.entity.JadwalDosenBahasa;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiDosenBahasa;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiMahasiswaBahasa;
+import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -73,15 +100,7 @@ public class TlcController {
     private KaryawanDao karyawanDao;
 
     @GetMapping("/tlc/periode/list")
-    public void periodeList(Model model, @RequestParam(required = false) String tahun) {
-        model.addAttribute("periodeList", tahunAkademikDao.listSemuaTahunAkademik());
-        if (StringUtils.hasText(tahun)){
-            TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-            model.addAttribute("selectedTahun", tahun);
-            List<JadwalBahasa> jadwalBahasa = jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik,StatusRecord.AKTIF);
-            model.addAttribute("listJadwal", jadwalBahasa);
-        }
-    }
+    public void periodeList(Model model) {}
 
     @GetMapping("/tlc/dosen/list")
     public void jadwalDosenList(Model model) {
@@ -324,12 +343,12 @@ public class TlcController {
 
     @GetMapping("/tlc/jadwal-list/{tahun}")
     @ResponseBody
-    public List<JadwalBahasa> listJadwal(@PathVariable String tahun,
-                                         @RequestParam(defaultValue = "0") int offset,
+    public List<JadwalRequest> listJadwal(@PathVariable String tahun,
+                                                 @RequestParam(defaultValue = "0") int offset,
                                          @RequestParam(defaultValue = "10") int limit) {
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).orElse(null);
 
-        List<JadwalBahasa> rows = jadwalBahasaDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF);
+        List<JadwalRequest> rows = jadwalBahasaDao.getJadwalBahasa(tahunAkademik);
         return rows;
 
     }
