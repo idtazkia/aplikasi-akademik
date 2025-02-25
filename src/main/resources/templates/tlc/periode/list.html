@@ -398,7 +398,7 @@
             window.location.href = '/tlc/periode/edit?id=' + row.id;
         },
         'click .delete': function (e, value, row, index) {
-            deleteJabatan(row.id);
+            deleteJadwal(row.id);
         }
     }
 
@@ -560,6 +560,46 @@
                         }
                     },
                     error: function (result) {
+                        alert('error');
+                    }
+                });
+            }
+        });
+    }
+
+    function deleteJadwal(id) {
+        var token = $("input[name='_csrf']").val();
+        var url = "/tlc/jadwal/" + id;
+
+        Swal.fire({
+            title: 'Anda Yakin Menghapus?',
+            text: "Data Akan terhapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus Data!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    contentType: "application/json;charset=UTF-8",
+                    headers: {"X-CSRF-TOKEN": token},
+                    method: 'POST',
+                    dataType: 'JSON',
+                    success: function (result) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: result.code == '302' ? 'error' : 'success',
+                            title: result.code == '302' ? 'Data Gagal Dihapus' : 'Data Berhasil Dihapus',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                        if (result.code != '302') {
+                            $tableDetail.bootstrapTable('refresh');
+                        }
+                    },
+                    error: function () {
                         alert('error');
                     }
                 });

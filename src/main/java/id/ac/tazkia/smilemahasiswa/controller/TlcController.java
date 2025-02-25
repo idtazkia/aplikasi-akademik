@@ -572,15 +572,6 @@ public class TlcController {
         }
     }
 
-    @GetMapping("/tlc/periode/delete")
-    public String deleteJadwalBahasa(@RequestParam String id) {
-       JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
-       jadwalBahasa.setStatus(StatusRecord.HAPUS);
-       jadwalBahasaDao.save(jadwalBahasa);
-
-       return "redirect:list?tahun=" + jadwalBahasa.getTahunAkademik().getId();
-    }
-
     @PostMapping("/tlc/periode/delete-mahasiswa/{jadwalId}/{mahasiswaId}")
     @ResponseBody
     @Transactional
@@ -614,6 +605,31 @@ public class TlcController {
             }
         } catch (Exception e) {
             log.error("[DELETE MAHASISWA] - [ERROR] : Unable to delete mahasiswa from jadwal , {} ",
+                    e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BaseResponseDto("ERR500", e.getLocalizedMessage()));
+        }
+    }
+
+    @PostMapping("/tlc/jadwal/{id}")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<BaseResponseDto> deleteJadwalBahasa(@PathVariable String id) {
+        try {
+            Optional<JadwalBahasa> optionalJadwalBahasa = jadwalBahasaDao.findById(id);
+            if (optionalJadwalBahasa.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new BaseResponseDto("404", "Jadwal not found"));
+            }
+
+            JadwalBahasa jadwalBahasa = optionalJadwalBahasa.get();
+            jadwalBahasa.setStatus(StatusRecord.HAPUS);
+            jadwalBahasaDao.save(jadwalBahasa);
+
+            return ResponseEntity.ok(
+                    new BaseResponseDto("00", "Jadwal, dosen, and mahasiswa successfully deleted"));
+        } catch (Exception e) {
+            log.error("[DELETE JADWAL] - [ERROR] : Unable to delete jadwal bahasa , {} ",
                     e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseResponseDto("ERR500", e.getLocalizedMessage()));

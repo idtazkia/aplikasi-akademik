@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

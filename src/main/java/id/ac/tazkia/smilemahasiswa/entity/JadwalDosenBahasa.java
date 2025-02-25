@@ -1,11 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-import lombok.Data;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.*;
-import java.time.LocalTime;
+import lombok.Data;
 
 @Entity
 @Data
