@@ -153,6 +153,8 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/mahasiswa").hasAnyAuthority("VIEW_MAHASISWA_NUNGGAK")
                 .antMatchers("/study/comingsoon").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/study/krs").hasAnyAuthority("VIEW_MAHASISWA")
+                .antMatchers("/study/detail").hasAnyAuthority("VIEW_MAHASISWA")
+                .antMatchers("/study/tugas").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/du/form").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/request-konversi/admin").hasAnyAuthority("VIEW_SUPERUSER")
                 .antMatchers("/request-konversi/prodi").hasAnyAuthority("VIEW_KPS")

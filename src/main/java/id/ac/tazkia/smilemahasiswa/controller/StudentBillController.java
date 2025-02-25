@@ -2148,6 +2148,8 @@ public class StudentBillController {
                 usr.setRole(role);
                 userDao.save(usr);
             }
+        }else{
+            t.setStatusTagihan(StatusTagihan.DICICIL);
         }
         tagihanDao.save(t);
 

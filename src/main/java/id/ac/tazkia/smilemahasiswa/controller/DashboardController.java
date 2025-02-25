@@ -1075,7 +1075,7 @@ public class DashboardController {
 
         model.addAttribute("namaTagihan", tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama());
         model.addAttribute("virtualAccount", virtualAccountDao.listVaCicilan(tagihan.getId()));
-        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
+        model.addAttribute("request", requestCicilanDao.findByTagihanAndStatusNotInOrderByTanggalJatuhTempo(tagihan, Arrays.asList(StatusRecord.HAPUS)));
 
         // Akademik
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);

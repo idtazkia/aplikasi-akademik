@@ -671,4 +671,55 @@ public class TagihanService {
         }
     }
 
+    public void cretatTagihanHibahBuku(Mahasiswa mahasiswa, TahunAkademik tahunAkademik){
+
+        JenisTagihan jenisTagihan = jenisTagihanDao.findByKodeAndStatus("30", StatusRecord.AKTIF);
+
+        NilaiJenisTagihan cekJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
+                mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jenisTagihan);
+
+        if (cekJenisTagihan == null){
+            NilaiJenisTagihan jenisTagihanBaru = new NilaiJenisTagihan();
+            jenisTagihanBaru.setJenisTagihan(jenisTagihan);
+            jenisTagihanBaru.setNilai(jenisTagihan.getNilaiTagihan());
+            jenisTagihanBaru.setTahunAkademik(tahunAkademik);
+            jenisTagihanBaru.setProdi(mahasiswa.getIdProdi());
+            jenisTagihanBaru.setProgram(mahasiswa.getIdProgram());
+            jenisTagihanBaru.setAngkatan(mahasiswa.getAngkatan());
+            nilaiJenisTagihanDao.save(jenisTagihanBaru);
+
+            Tagihan tagihan = new Tagihan();
+            tagihan.setMahasiswa(mahasiswa);
+            tagihan.setNilaiJenisTagihan(jenisTagihanBaru);
+            tagihan.setKeterangan("Tagihan " + jenisTagihanBaru.getJenisTagihan().getNama()
+                    + " a.n. " + mahasiswa.getNama());
+            tagihan.setNilaiTagihan(jenisTagihanBaru.getNilai());
+            tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+            tagihan.setTanggalPembuatan(LocalDate.now());
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusMonths(8));
+            tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+            tagihan.setTahunAkademik(tahunAkademik);
+            tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+            tagihan.setStatus(StatusRecord.AKTIF);
+            tagihanDao.save(tagihan);
+            requestCreateTagihan(tagihan);
+        }else{
+            Tagihan tagihan = new Tagihan();
+            tagihan.setMahasiswa(mahasiswa);
+            tagihan.setNilaiJenisTagihan(cekJenisTagihan);
+            tagihan.setKeterangan("Tagihan " + cekJenisTagihan.getJenisTagihan().getNama()
+                    + " a.n. " + mahasiswa.getNama());
+            tagihan.setNilaiTagihan(cekJenisTagihan.getNilai());
+            tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+            tagihan.setTanggalPembuatan(LocalDate.now());
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusMonths(8));
+            tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+            tagihan.setTahunAkademik(tahunAkademik);
+            tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+            tagihan.setStatus(StatusRecord.AKTIF);
+            tagihanDao.save(tagihan);
+            requestCreateTagihan(tagihan);
+        }
+    }
+
 }
