@@ -1,8 +1,10 @@
 package id.ac.tazkia.smilemahasiswa.config;
 
-import id.ac.tazkia.smilemahasiswa.dao.UserDao;
-import id.ac.tazkia.smilemahasiswa.entity.Permission;
-import id.ac.tazkia.smilemahasiswa.entity.User;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,10 +17,9 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import id.ac.tazkia.smilemahasiswa.dao.UserDao;
+import id.ac.tazkia.smilemahasiswa.entity.Permission;
+import id.ac.tazkia.smilemahasiswa.entity.User;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -153,6 +154,9 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/study/comingsoon").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/study/krs").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/du/form").hasAnyAuthority("VIEW_MAHASISWA")
+                .antMatchers("/request-konversi/admin").hasAnyAuthority("VIEW_SUPERUSER")
+                .antMatchers("/request-konversi/prodi").hasAnyAuthority("VIEW_KPS")
+                .antMatchers("/request-konversi/kemahasiswaan").hasAnyAuthority("VIEW_KHS_ADMIN")
                 .antMatchers("/du/cuti/form").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/studentBill/bill/list").hasAnyAuthority("VIEW_MAHASISWA")
                 .antMatchers("/report/khs").hasAnyAuthority("VIEW_MAHASISWA")
