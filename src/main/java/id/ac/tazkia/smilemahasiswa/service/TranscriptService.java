@@ -61,13 +61,13 @@ public class TranscriptService {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Font tTrans = FontFactory.getFont(FontFactory.HELVETICA, 8);
 
-        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "Tazkia Univ.png");
         lTazkia.scaleToFit(60, 60);
         lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 45);
 
         document.add(lTazkia);
 
-        Paragraph tazkia = new Paragraph("INSTITUT AGAMA ISLAM TAZKIA", titleFont);
+        Paragraph tazkia = new Paragraph("UNIVERSITAS ISLAM TAZKIA", titleFont);
         tazkia.setAlignment(Element.ALIGN_CENTER);
         Paragraph nLine = new Paragraph("\n");
 
@@ -500,13 +500,13 @@ public class TranscriptService {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Font tTrans = FontFactory.getFont(FontFactory.HELVETICA, 8);
 
-        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "Tazkia Univ.png");
         lTazkia.scaleToFit(60, 60);
         lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 45);
 
         document.add(lTazkia);
 
-        Paragraph tazkia = new Paragraph("INSTITUT AGAMA ISLAM TAZKIA", titleFont);
+        Paragraph tazkia = new Paragraph("UNIVERSITAS ISLAM TAZKIA", titleFont);
         tazkia.setAlignment(Element.ALIGN_CENTER);
         Paragraph nLine = new Paragraph("\n");
 
@@ -938,13 +938,13 @@ public class TranscriptService {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Font tTrans = FontFactory.getFont(FontFactory.HELVETICA, 8);
 
-        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "Tazkia Univ.png");
         lTazkia.scaleToFit(60, 60);
         lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 45);
 
         document.add(lTazkia);
 
-        Paragraph tazkia = new Paragraph("INSTITUT AGAMA ISLAM TAZKIA", titleFont);
+        Paragraph tazkia = new Paragraph("TAZKIA ISLAMIC UNIVERSITY", titleFont);
         tazkia.setAlignment(Element.ALIGN_CENTER);
         Paragraph nLine = new Paragraph("\n");
 

@@ -179,7 +179,8 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "(select id,dosen, sum(if(statuss = 'AKTIF',1,0)) as total, sum(if(status = 'TERLAMBAT',1,0)) as terlambat,  sum(if(status = 'TEPAT_WAKTU',1,0)) as tepat_waktu from\n" +
             "(select id,nama_karyawan as dosen, rangewaktu,statuss, if(statuss = 'AKTIF',if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU'),'BELUM MULAI') as status from\n" +
             "(select d.id,e.nama_karyawan, c.jam_mulai,b.status as statuss, a.waktu_mulai as waktu_mulai, \n" +
-            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "CAST(TIMEDIFF(b.waktu_masuk,STR_TO_DATE(a.waktu_mulai, '%Y-%m-%d %T')) as CHAR) as rangewaktu, \n" +
+            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu2 \n" +
             "from sesi_kuliah as a\n" +
             "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
@@ -209,7 +210,8 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "(select id,dosen, count(dosen) as total, sum(if(status = 'TERLAMBAT',1,0)) as terlambat,  sum(if(status = 'TEPAT_WAKTU',1,0)) as tepat_waktu from\n" +
             "(select id,nama_karyawan as dosen, rangewaktu, if(rangewaktu > '00:15:00','TERLAMBAT','TEPAT_WAKTU') as status from\n" +
             "(select d.id,e.nama_karyawan, c.jam_mulai, a.waktu_mulai as waktu_mulai, \n" +
-            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu \n" +
+            "CAST(TIMEDIFF(b.waktu_masuk,STR_TO_DATE(a.waktu_mulai, '%Y-%m-%d %T')) as CHAR) as rangewaktu, \n" +
+            "TIMEDIFF(b.waktu_masuk,STR_TO_DATE(concat(date(b.waktu_masuk),' ',c.jam_mulai), '%Y-%m-%d %T')) as rangewaktu2 \n" +
             "from sesi_kuliah as a\n" +
             "inner join presensi_dosen as b on a.id_presensi_dosen = b.id\n" +
             "inner join jadwal as c on a.id_jadwal = c.id\n" +

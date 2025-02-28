@@ -782,8 +782,8 @@ public class SidangService {
         // img.setWidthPercentage(20);
         img.scaleToFit(140, 140);
         img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
-        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
-        lTazkia.scaleToFit(100, 100);
+        Image lTazkia = Image.getInstance(logo + File.separator + "Tazkia Univ.png");
+        lTazkia.scaleToFit(90, 90);
         lTazkia.setAbsolutePosition(20, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
         Paragraph newLine = new Paragraph("\n\n");
         document.add(img);
@@ -890,7 +890,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("Institut Agama Islam Tazkia", font));
+        cell = new PdfPCell(new Phrase("Universitas Islam Tazkia", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1355,8 +1355,8 @@ public class SidangService {
         // img.setWidthPercentage(20);
         img.scaleToFit(140, 140);
         img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
-        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
-        lTazkia.scaleToFit(100, 100);
+        Image lTazkia = Image.getInstance(logo + File.separator + "Tazkia Univ.png");
+        lTazkia.scaleToFit(90, 90);
         lTazkia.setAbsolutePosition(20, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
         Paragraph newLine = new Paragraph("\n\n");
         document.add(img);
@@ -1464,7 +1464,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase("Institut Agama Islam Tazkia", font));
+        cell = new PdfPCell(new Phrase("Universitas Islam Tazkia", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

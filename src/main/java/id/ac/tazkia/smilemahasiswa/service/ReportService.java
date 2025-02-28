@@ -34,6 +34,28 @@ public class ReportService {
     @Autowired
     private PresensiDosenDao presensiDosenDao;
 
+//    @Autowired
+//    private TahunAkademikDao tahunAkademikDao;
+//
+//    public String[] selectedYear(String[] selectYear) {
+//
+//        List<String> idList = Arrays.asList(selectYear);
+//
+//        List<TahunAkademik> tahunAkademikList = tahunAkademikDao.findByIdIn(idList);
+//
+//        tahunAkademikList.sort(Comparator.comparing(TahunAkademik::getKodeTahunAkademik));
+//
+//        String[] column = new String[2 + tahunAkademikList.size()];
+//        column[0] = "no";
+//        column[1] = "pertanyaan";
+//
+//        for (int i = 0; i < tahunAkademikList.size(); i++) {
+//            column[i + 2] = tahunAkademikList.get(i).getNamaTahunAkademik();
+//        }
+//
+//        return column;
+//    }
+
     public void downloadReport(Jadwal jadwal, HttpServletResponse response) throws IOException {
 
         String dosen = jadwalDosenDao.headerJadwal(jadwal.getId());
@@ -61,7 +83,7 @@ public class ReportService {
         Font titleFont = FontFactory.getFont(FontFactory.defaultEncoding, 10, Font.BOLD);
         Paragraph newLine = new Paragraph("\n");
 
-        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "Tazkia Univ.png");
         lTazkia.scaleToFit(80, 80);
         lTazkia.setAbsolutePosition(50, PageSize.A3.getHeight() - (lTazkia.getScaledHeight()) - 25);
         document.add(lTazkia);
@@ -72,7 +94,7 @@ public class ReportService {
         title1.setAlignment(Element.ALIGN_CENTER);
         document.add(title1);
 
-        Paragraph title2 = new Paragraph(new Phrase("TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS", titleFont));
+        Paragraph title2 = new Paragraph(new Phrase("TAZKIA ISLAMIC UNIVERSITY", titleFont));
         title2.setAlignment(Element.ALIGN_CENTER);
         document.add(title2);
 
@@ -343,7 +365,7 @@ public class ReportService {
         title4.setAlignment(Element.ALIGN_CENTER);
         document.add(title4);
 
-        Paragraph title5 = new Paragraph(new Phrase("TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS", titleFont));
+        Paragraph title5 = new Paragraph(new Phrase("TAZKIA ISLAMIC UNIVERSITY", titleFont));
         title5.setAlignment(Element.ALIGN_CENTER);
         document.add(title5);
 
@@ -522,7 +544,7 @@ public class ReportService {
         Font fontBold = FontFactory.getFont(FontFactory.defaultEncoding, 10, Font.BOLD);
         Font fontItalic = FontFactory.getFont(FontFactory.defaultEncoding, 10, Font.ITALIC);
 
-        Paragraph title7 = new Paragraph(new Phrase("INSTITUT TAZKIA", titleFont));
+        Paragraph title7 = new Paragraph(new Phrase("TAZKIA ISLAMIC UNIVERSITY", titleFont));
         title7.setAlignment(Element.ALIGN_CENTER);
         document.add(title7);
 
