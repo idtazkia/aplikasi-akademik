@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.dao.DetailJadwalBahasaDao;
 import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
@@ -468,8 +471,8 @@ public class TlcController {
 
     @PostMapping("/tlc/presensi-dosen/{id}")
     @ResponseBody
-    public ResponseEntity<BaseResponseDto> editInstitutionStatus(@PathVariable String id,
-                                                                 @RequestBody PresensiDosenBahasaDto requestDto,
+    public ResponseEntity<BaseResponseDto> createPresensiDosenBahasa(@PathVariable String id,
+                                                                         @RequestBody PresensiDosenBahasaDto requestDto,
                                                                  BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
@@ -480,12 +483,12 @@ public class TlcController {
             Integer pertemuan = 0;
             Optional<JadwalBahasa> optionalJadwalBahasa = jadwalBahasaDao.findById(id);
             if (optionalJadwalBahasa.isPresent()) {
-                PresensiDosenBahasa presensiDosenBahasa = null;
-                if (requestDto.getId() != null) {
-                    presensiDosenBahasa = presensiDosenBahasaDao.findById(requestDto.getId()).get();
-                } else {
-                    presensiDosenBahasa = new PresensiDosenBahasa();
-                }
+                PresensiDosenBahasa presensiDosenBahasa =
+                        requestDto.getId() != null && !requestDto.getId().isEmpty()
+                                ? presensiDosenBahasaDao.findById(requestDto.getId()).orElse(
+                                        new PresensiDosenBahasa())
+                                : new PresensiDosenBahasa();
+
                 presensiDosenBahasa.setJadwalBahasa(optionalJadwalBahasa.get());
 
                 Optional<Dosen> dosen = dosenDao.findById(requestDto.getDosen());
@@ -527,41 +530,32 @@ public class TlcController {
     @ResponseBody
     public ResponseEntity<BaseResponseDto> updateKehadiran(@RequestBody KehadiranRequest request) {
         try {
-            Optional<Mahasiswa> optionalMahasiswa = mahasiswaDao.findById(request.getMahasiswaId());
-            if (optionalMahasiswa.isEmpty()) {
-                log.info("Mahasiswa id {} not found", request.getMahasiswaId());
-            }
-
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(request.getMahasiswaId());
             Optional<PresensiDosenBahasa> optionalPresensiDosenBahasa = presensiDosenBahasaDao.findById(request.getPresensiId());
             if (optionalPresensiDosenBahasa.isEmpty()) {
                 log.info("Presensi id {} not found", request.getPresensiId());
             }
 
 
-            PresensiMahasiswaBahasa presensiMahasiswaBahasa = presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(optionalMahasiswa.get(), optionalPresensiDosenBahasa.get());
+            PresensiMahasiswaBahasa presensiMahasiswaBahasa = presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(mahasiswa, optionalPresensiDosenBahasa.get());
             if (presensiMahasiswaBahasa == null) {
                 presensiMahasiswaBahasa = new PresensiMahasiswaBahasa();
-                presensiMahasiswaBahasa.setMahasiswa(optionalMahasiswa.get());
+                presensiMahasiswaBahasa.setMahasiswa(mahasiswa);
                 presensiMahasiswaBahasa.setPresensiDosenBahasa(optionalPresensiDosenBahasa.get());
                 presensiMahasiswaBahasa.setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
                 presensiMahasiswaBahasa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
                 presensiMahasiswaBahasaDao.save(presensiMahasiswaBahasa);
-                return ResponseEntity.ok().body(
-                        BaseResponseDto.builder()
-                                .responseCode("00")
-                                .responseMessage("Kehadiran Berhasil Diproses")
-                                .data(presensiMahasiswaBahasa)
-                                .build());
             } else {
                 presensiMahasiswaBahasa.setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
                 presensiMahasiswaBahasaDao.save(presensiMahasiswaBahasa);
+            }
                 return ResponseEntity.ok().body(
                         BaseResponseDto.builder()
                                 .responseCode("00")
                                 .responseMessage("Kehadiran Berhasil Diproses")
                                 .data(presensiMahasiswaBahasa)
                                 .build());
-            }
+           
         } catch (Exception e) {
             log.error("[POST ATTENDANCE] - [ERROR] : Unable to Get data , {} ", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
