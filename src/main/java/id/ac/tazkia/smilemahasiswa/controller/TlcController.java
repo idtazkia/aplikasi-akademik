@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.dao.DetailJadwalBahasaDao;
 import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
@@ -42,6 +39,7 @@ import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.DataPresensiDosen;
+import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.GetDataPresensi;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.attendance.PresensiDosenBahasaDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataJadwalBahasa;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.DataMahasiswa;
@@ -451,7 +449,8 @@ public class TlcController {
     @ResponseBody
     public DataPresensiDosen listPresensiDosen(@PathVariable String id) {
         JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
-        List<PresensiDosenBahasa> presensiDosenBahasa = presensiDosenBahasaDao.findByJadwalBahasaAndStatusOrderByPertemuanKeAsc(jadwalBahasa, StatusRecord.AKTIF);
+        List<GetDataPresensi> presensiDosenBahasa =
+                presensiDosenBahasaDao.getDataPresensi(jadwalBahasa);
 
         DataPresensiDosen response = new DataPresensiDosen();
         response.setTotal(presensiDosenBahasa.size());
