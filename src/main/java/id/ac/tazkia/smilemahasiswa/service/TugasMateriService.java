@@ -428,29 +428,31 @@ public class TugasMateriService {
             return new ValidationResult(true, null, null);
         }
 
-        // Pisahkan link baru yang baru diinput menjadi array
-        String[] newLinksArray = newLinks.split(",");
+        // Buat variabel penamping link baru dan yang sudah ada serta pertemuannya
+        Set<String> existingLinkSet = new HashSet<>();
+        Map<String, Integer> linkToPertemuanMap = new HashMap<>();
 
         // Ambil semua link existing dengan jadwal yang sama
         List<SesiKuliah> existingMateri = sesiKuliahDao.findByJadwal(sesiKuliah.getJadwal());
 
-        // Cek setiap link baru
-        for (String newLink : newLinksArray){
-            String trimmedNewLink = newLink.trim();
-
-            // Cek di setuap materi yang sudah ada
-            for (SesiKuliah sk : existingMateri){
-                if (sk.getLinkVideo() != null) {
-                    // Pisahkan link exisiting menjadi array
-                    String[] existingLinks = sk.getLinkVideo().split(",");
-
-                    // Cek setiap link existing
-                    for (String existingLink : existingLinks){
-                        if(existingLink.trim().equals(trimmedNewLink.trim())){
-                            return new ValidationResult(false, trimmedNewLink, sk.getPertemuanKe());
-                        }
-                    }
+        // Cek di setiap materi yang sudah ada
+        for (SesiKuliah sk : existingMateri){
+            if (sk.getLinkVideo() != null && !sk.getId().equals(sesiKuliah.getId())){
+                String[] existingLinks = sk.getLinkVideo().split(",");
+                for (String existingLink : existingLinks){
+                    String trimmedExistingLink = existingLink.trim();
+                    existingLinkSet.add(trimmedExistingLink);
+                    linkToPertemuanMap.put(trimmedExistingLink, sk.getPertemuanKe());
                 }
+            }
+        }
+
+        // Cek setiap link baru
+        for (String newLink : newLinks.split(",")){
+            String trimmedNewLink = newLink.trim();
+            if (existingLinkSet.contains(trimmedNewLink)){
+                int pertemuanKe = linkToPertemuanMap.get(trimmedNewLink);
+                return new ValidationResult(false, trimmedNewLink, pertemuanKe);
             }
         }
         return new ValidationResult(true, null, null);
