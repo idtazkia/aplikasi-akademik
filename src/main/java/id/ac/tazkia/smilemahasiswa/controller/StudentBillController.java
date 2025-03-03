@@ -566,7 +566,7 @@ public class StudentBillController {
 
     @PostMapping("/studentBill/billAdmin/resendTagihan")
     public String resendTagihan(@RequestParam Tagihan tagihan){
-        if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL) {
+        if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL || tagihan.getStatusTagihan() == StatusTagihan.NUNGGAK) {
             RequestCicilan cicilan = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
             if (cicilan != null) {
                 tagihanService.mengirimCicilanSelanjutnya(cicilan);
