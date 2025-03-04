@@ -1,49 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import com.lowagie.text.DocumentException;
-import fr.opensagres.xdocreport.converter.ConverterTypeTo;
-import fr.opensagres.xdocreport.converter.Options;
-import fr.opensagres.xdocreport.core.document.DocumentKind;
-import fr.opensagres.xdocreport.document.IXDocReport;
-import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
-import fr.opensagres.xdocreport.template.IContext;
-import fr.opensagres.xdocreport.template.TemplateEngineKind;
-import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
-import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.PenjadwalanSeminarDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.entity.TugasAkhir.MenuTugasAkhir;
-import id.ac.tazkia.smilemahasiswa.service.*;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,6 +19,105 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.lowagie.text.DocumentException;
+import fr.opensagres.xdocreport.converter.ConverterTypeTo;
+import fr.opensagres.xdocreport.converter.Options;
+import fr.opensagres.xdocreport.core.document.DocumentKind;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import id.ac.tazkia.smilemahasiswa.constant.MagangStatus;
+import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.FileMagangDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.NoteDao;
+import id.ac.tazkia.smilemahasiswa.dao.PeriodeWisudaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
+import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
+import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dao.TagihanDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.UjianTahfidzKompreDao;
+import id.ac.tazkia.smilemahasiswa.dao.WisudaDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.PenjadwalanSeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.EnableFiture;
+import id.ac.tazkia.smilemahasiswa.entity.FileMagang;
+import id.ac.tazkia.smilemahasiswa.entity.Hari;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Note;
+import id.ac.tazkia.smilemahasiswa.entity.PeriodeWisuda;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Ruangan;
+import id.ac.tazkia.smilemahasiswa.entity.Seminar;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
+import id.ac.tazkia.smilemahasiswa.entity.TugasAkhir;
+import id.ac.tazkia.smilemahasiswa.entity.TugasAkhir.MenuTugasAkhir;
+import id.ac.tazkia.smilemahasiswa.entity.UjianTahfidzKompre;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.GraduationService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.SidangService;
 
 @Controller
 public class GraduationController {
@@ -1369,11 +1424,37 @@ public class GraduationController {
     }
 
     @PostMapping("/graduation/sempropasca")
-    public String prosesSeminarPasca(@Valid Seminar seminar, MultipartFile turnitin, MultipartFile coverNote,
-                                     BindingResult error, MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
-                                     Authentication currentUser, MultipartFile formulir) throws Exception {
+    public String prosesSeminarPasca(@Valid Seminar seminar, MultipartFile turnitin,
+            MultipartFile coverNote, MultipartFile bimbingan, BindingResult error,
+            MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
+            Authentication currentUser, MultipartFile formulir) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (bimbingan.getSize() > 0) {
+            String namaAsli = bimbingan.getOriginalFilename();
+
+            // memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            bimbingan.transferTo(tujuan);
+
+            seminar.setFileBimbinganPasca(idFile + "." + extension);
+
+        } else {
+            seminar.setFileBimbinganPasca(seminar.getFileBimbinganPasca());
+        }
 
         if (kartu.getSize() > 0) {
             String namaAsli = kartu.getOriginalFilename();
@@ -1394,10 +1475,10 @@ public class GraduationController {
             File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             kartu.transferTo(tujuan);
 
-            seminar.setFileBimbingan(idFile + "." + extension);
+            seminar.setFileKehadiran(idFile + "." + extension);
 
         } else {
-            seminar.setFileBimbingan(seminar.getFileBimbingan());
+            seminar.setFileKehadiran(seminar.getFileKehadiran());
         }
 
         if (formulir.getSize() > 0) {
@@ -1804,7 +1885,7 @@ public class GraduationController {
         try {
             HttpHeaders headers = new HttpHeaders();
             if (seminar.getFileBimbingan().toLowerCase().endsWith("jpeg")
-                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                    || seminar.getFileBimbingan().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileBimbingan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -1821,6 +1902,34 @@ public class GraduationController {
 
         }
 
+    }
+
+    @GetMapping("/upload/{seminar}/bimbinganpasca/")
+    public ResponseEntity<byte[]> fileBimbinganPasca(@PathVariable Seminar seminar, Model model)
+            throws Exception {
+        String lokasiFile =
+                seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                        + File.separator + seminar.getFileBimbinganPasca();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileBimbinganPasca().toLowerCase().endsWith("jpeg")
+                    || seminar.getFileBimbinganPasca().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileBimbinganPasca().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileBimbinganPasca().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/upload/{seminar}/covernote/")
