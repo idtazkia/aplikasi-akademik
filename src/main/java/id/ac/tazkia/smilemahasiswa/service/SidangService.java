@@ -738,7 +738,7 @@ public class SidangService {
                 newKode.setProdi(seminar.getNote().getMahasiswa().getIdProdi());
                 newKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(newKode);
-                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                kode = "No. " + newKode.getKodeString() + "-A/Tazkia-University/Prodi-"
                         + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
 
                 seminar.setKodeSuratTugas(kode);
@@ -752,7 +752,7 @@ public class SidangService {
                 addKode.setProdi(seminar.getNote().getMahasiswa().getIdProdi());
                 addKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(addKode);
-                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                kode = "No. " + addKode.getKodeString() + "-A/Tazkia-University/Prodi-"
                         + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
 
                 seminar.setKodeSuratTugas(kode);
@@ -1216,7 +1216,7 @@ public class SidangService {
         nidn.setFont(kodeFont);
         document.add(nidn);
 
-        Image footer = Image.getInstance(logo + File.separator + "footer.png");
+        Image footer = Image.getInstance(logo + File.separator + "Footer.jpg");
         footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
         footer.setAbsolutePosition(10, 10);
         document.add(footer);
@@ -1309,7 +1309,7 @@ public class SidangService {
                 newKode.setProdi(sidang.getSeminar().getNote().getMahasiswa().getIdProdi());
                 newKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(newKode);
-                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                kode = "No. " + newKode.getKodeString() + "-A/Tazkia-University/Prodi-"
                         + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/"
                         + tahun;
 
@@ -1324,7 +1324,7 @@ public class SidangService {
                 addKode.setProdi(sidang.getSeminar().getNote().getMahasiswa().getIdProdi());
                 addKode.setStatus(StatusRecord.AKTIF);
                 kodeSidangDao.save(addKode);
-                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-"
+                kode = "No. " + addKode.getKodeString() + "-A/Tazkia-University/Prodi-"
                         + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/"
                         + tahun;
 
@@ -1786,7 +1786,7 @@ public class SidangService {
         nidn.setFont(kodeFont);
         document.add(nidn);
 
-        Image footer = Image.getInstance(logo + File.separator + "footer.png");
+        Image footer = Image.getInstance(logo + File.separator + "Footer.jpg");
         footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
         footer.setAbsolutePosition(10, 10);
         document.add(footer);
