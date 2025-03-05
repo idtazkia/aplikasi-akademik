@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import id.ac.tazkia.smilemahasiswa.constant.JenisTest;
 import id.ac.tazkia.smilemahasiswa.dao.DetailJadwalBahasaDao;
 import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
@@ -106,11 +109,11 @@ public class TlcController {
     public void periodeList(Model model) {}
 
     @GetMapping("/tlc/dosen/list")
-    public void jadwalDosenList(Model model) {
-    }
+    public void jadwalDosenList(Model model) {}
 
     @GetMapping("/tlc/periode/form")
-    public void jadwalForm(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik) {
+    public void jadwalForm(Model model,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
         model.addAttribute("ruangan", ruanganDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("tahunAkademik", tahunAkademik);
     }
@@ -119,7 +122,8 @@ public class TlcController {
     public String detailAttendence(Model model, @RequestParam String id) {
         Optional<JadwalBahasa> jadwalBahasa = jadwalBahasaDao.findById(id);
         if (jadwalBahasa.isPresent()) {
-            model.addAttribute("sesi", detailJadwalBahasaDao.findByJadwalBahasa(jadwalBahasa.get()));
+            model.addAttribute("sesi",
+                    detailJadwalBahasaDao.findByJadwalBahasa(jadwalBahasa.get()));
             model.addAttribute("jadwalBahasa", jadwalBahasa.get());
             return "tlc/attendance/detail";
         } else {
@@ -132,13 +136,18 @@ public class TlcController {
     @GetMapping("/tlc/periode/edit")
     public void editForm(Model model, @RequestParam String id) {
         model.addAttribute("ruangan", ruanganDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF)));
+        model.addAttribute("listDosen", dosenDao
+                .findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS, StatusRecord.NONAKTIF)));
         if (StringUtils.hasText(id)) {
             JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
-            DetailJadwalBahasa sesi1 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "1");
-            DetailJadwalBahasa sesi2 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "2");
-            DetailJadwalBahasa sesi3 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "3");
-            DetailJadwalBahasa sesi4 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "4");
+            DetailJadwalBahasa sesi1 =
+                    detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "1");
+            DetailJadwalBahasa sesi2 =
+                    detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "2");
+            DetailJadwalBahasa sesi3 =
+                    detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "3");
+            DetailJadwalBahasa sesi4 =
+                    detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "4");
 
             model.addAttribute("jadwal", jadwalBahasa);
             model.addAttribute("sesi1", sesi1);
@@ -159,7 +168,8 @@ public class TlcController {
     }
 
     @PostMapping("/tlc/periode/edit")
-    public String editForm(@Valid JadwalBahasaRequest jadwalBahasaRequest, BindingResult bindingResult) {
+    public String editForm(@Valid JadwalBahasaRequest jadwalBahasaRequest,
+            BindingResult bindingResult) {
         JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(jadwalBahasaRequest.getId()).get();
         jadwalBahasa.setNamaJadwal(jadwalBahasaRequest.getJadwal());
         jadwalBahasa.setNamaKelas(jadwalBahasaRequest.getKelas());
@@ -167,10 +177,14 @@ public class TlcController {
         jadwalBahasa.setDosens(jadwalBahasaRequest.getDosen());
         jadwalBahasaDao.save(jadwalBahasa);
 
-        DetailJadwalBahasa sesi1 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "1");
-        DetailJadwalBahasa sesi2 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "2");
-        DetailJadwalBahasa sesi3 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "3");
-        DetailJadwalBahasa sesi4 = detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "4");
+        DetailJadwalBahasa sesi1 =
+                detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "1");
+        DetailJadwalBahasa sesi2 =
+                detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "2");
+        DetailJadwalBahasa sesi3 =
+                detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "3");
+        DetailJadwalBahasa sesi4 =
+                detailJadwalBahasaDao.findByJadwalBahasaAndSesi(jadwalBahasa, "4");
         sesi1.setJadwalBahasa(jadwalBahasa);
         sesi1.setHari(jadwalBahasaRequest.getHariSesi1());
         sesi1.setRuangan(jadwalBahasaRequest.getRuanganSesi1());
@@ -261,7 +275,8 @@ public class TlcController {
     }
 
     @PostMapping("/tlc/periode/form")
-    public String submitForm(@Valid JadwalBahasaRequest jadwalBahasaRequest, BindingResult bindingResult) {
+    public String submitForm(@Valid JadwalBahasaRequest jadwalBahasaRequest,
+            BindingResult bindingResult) {
         JadwalBahasa jadwalBahasa = new JadwalBahasa();
         jadwalBahasa.setNamaJadwal(jadwalBahasaRequest.getJadwal());
         jadwalBahasa.setNamaKelas(jadwalBahasaRequest.getKelas());
@@ -321,10 +336,10 @@ public class TlcController {
     @GetMapping("/tlc/periode-list")
     @ResponseBody
     public DataPeriodeTlc listKelas(@RequestParam(required = false) String search,
-                                    @RequestParam(required = false) String sort,
-                                    @RequestParam(required = false) String order,
-                                    @RequestParam(required = false) Integer offset,
-                                    @RequestParam(required = false) Integer limit) {
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
 
         if (search.isEmpty()) {
             List<PeriodeDto> tahunAkademiks = tahunAkademikDao.listTahunAkademik(limit, offset);
@@ -334,9 +349,11 @@ public class TlcController {
             response.setRows(tahunAkademiks);
             return response;
         } else {
-            List<PeriodeDto> tahunAkademiks = tahunAkademikDao.listTahunAkademikSearch(search, limit, offset);
+            List<PeriodeDto> tahunAkademiks =
+                    tahunAkademikDao.listTahunAkademikSearch(search, limit, offset);
             DataPeriodeTlc response = new DataPeriodeTlc();
-            response.setTotal(tahunAkademikDao.listTahunAkademikSearch(search, Integer.MAX_VALUE, offset).size());
+            response.setTotal(tahunAkademikDao
+                    .listTahunAkademikSearch(search, Integer.MAX_VALUE, offset).size());
             response.setTotalNotFiltered(tahunAkademiks.size());
             response.setRows(tahunAkademiks);
             return response;
@@ -347,8 +364,8 @@ public class TlcController {
     @GetMapping("/tlc/jadwal-list/{tahun}")
     @ResponseBody
     public List<JadwalRequest> listJadwal(@PathVariable String tahun,
-                                                 @RequestParam(defaultValue = "0") int offset,
-                                         @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).orElse(null);
 
         List<JadwalRequest> rows = jadwalBahasaDao.getJadwalBahasa(tahunAkademik);
@@ -358,7 +375,8 @@ public class TlcController {
 
     @GetMapping("/tlc/jadwal-dosen-list/{tahun}")
     @ResponseBody
-    public DataJadwalBahasa listJadwalDosen(Authentication authentication, @PathVariable String tahun) {
+    public DataJadwalBahasa listJadwalDosen(Authentication authentication,
+            @PathVariable String tahun) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -388,20 +406,23 @@ public class TlcController {
 
     @GetMapping("/tlc/presensi-mahasiswa/{id}")
     @ResponseBody
-    public DataPresensiMahasiswa listPresensiMahasiswa(@PathVariable String id, @RequestParam String presensiId) {
+    public DataPresensiMahasiswa listPresensiMahasiswa(@PathVariable String id,
+            @RequestParam String presensiId) {
         Optional<JadwalBahasa> jadwalBahasaOpt = jadwalBahasaDao.findById(id);
         if (!jadwalBahasaOpt.isPresent()) {
             return null;
         }
 
-        Optional<PresensiDosenBahasa> presensiDosenBahasaOpt = presensiDosenBahasaDao.findById(presensiId);
+        Optional<PresensiDosenBahasa> presensiDosenBahasaOpt =
+                presensiDosenBahasaDao.findById(presensiId);
         if (!presensiDosenBahasaOpt.isPresent()) {
             return null;
         }
 
         JadwalBahasa jadwalBahasa = jadwalBahasaOpt.get();
         PresensiDosenBahasa presensiDosenBahasa = presensiDosenBahasaOpt.get();
-        List<GetDataPresensiMahasiswa> presensi = presensiMahasiswaBahasaDao.listPresensiMahasiswa(jadwalBahasa, presensiDosenBahasa);
+        List<GetDataPresensiMahasiswa> presensi =
+                presensiMahasiswaBahasaDao.listPresensiMahasiswa(jadwalBahasa, presensiDosenBahasa);
 
         DataPresensiMahasiswa response = new DataPresensiMahasiswa();
         response.setTotal(presensi.size());
@@ -417,8 +438,7 @@ public class TlcController {
         JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
 
         return jadwalDosenBahasaDao.findByJadwalBahasa(jadwalBahasa).stream()
-                .map(JadwalDosenBahasa::getDosen)
-                .collect(Collectors.toList());
+                .map(JadwalDosenBahasa::getDosen).collect(Collectors.toList());
 
     }
 
@@ -433,7 +453,8 @@ public class TlcController {
     @PostMapping(value = "/jadwal-mahasiswa-post/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse simpanJabatanDosen(@PathVariable String id, @RequestParam Set<Mahasiswa> mahasiswaList) {
+    public BaseResponse simpanJabatanDosen(@PathVariable String id,
+            @RequestParam Set<Mahasiswa> mahasiswaList) {
         JadwalBahasa jadwalBahasa = jadwalBahasaDao.findById(id).get();
         jadwalBahasa.setMahasiswas(mahasiswaList);
         jadwalBahasaDao.save(jadwalBahasa);
@@ -471,12 +492,12 @@ public class TlcController {
     @PostMapping("/tlc/presensi-dosen/{id}")
     @ResponseBody
     public ResponseEntity<BaseResponseDto> createPresensiDosenBahasa(@PathVariable String id,
-                                                                         @RequestBody PresensiDosenBahasaDto requestDto,
-                                                                 BindingResult bindingResult) {
+            @RequestBody PresensiDosenBahasaDto requestDto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new BaseResponseDto("ERR01", "Invalid Request Body, " + bindingResult.getFieldError().getDefaultMessage()));
+                        .body(new BaseResponseDto("ERR01", "Invalid Request Body, "
+                                + bindingResult.getFieldError().getDefaultMessage()));
             }
 
             Integer pertemuan = 0;
@@ -501,10 +522,12 @@ public class TlcController {
                 if (presensiDosenBahasaDao.totalPertertemuan(optionalJadwalBahasa.get()) <= 0) {
                     pertemuan = 1;
                 } else {
-                    pertemuan = presensiDosenBahasaDao.totalPertertemuan(optionalJadwalBahasa.get()) + 1;
+                    pertemuan = presensiDosenBahasaDao.totalPertertemuan(optionalJadwalBahasa.get())
+                            + 1;
                 }
                 presensiDosenBahasa.setPertemuanKe(pertemuan);
-                presensiDosenBahasa.setDetailJadwalBahasa(detailJadwalBahasaDao.findById(requestDto.getSesi()).get());
+                presensiDosenBahasa.setDetailJadwalBahasa(
+                        detailJadwalBahasaDao.findById(requestDto.getSesi()).get());
                 presensiDosenBahasa.setPertemuan(requestDto.getPertemuan());
                 presensiDosenBahasa.setBeritaAcara(requestDto.getBerita());
                 presensiDosenBahasa.setJenis(JenisTest.valueOf(requestDto.getJenis()));
@@ -512,16 +535,18 @@ public class TlcController {
 
                 presensiDosenBahasaDao.save(presensiDosenBahasa);
 
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
+                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder()
+                        .responseCode("00").responseMessage("success").build());
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(BaseResponseDto.builder().responseCode("404").responseMessage("Jadwal not found").build());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseDto.builder()
+                        .responseCode("404").responseMessage("Jadwal not found").build());
             }
         } catch (Exception e) {
-            log.error("[SAVE - ATTENDANCE] - [ERROR] : Unable to save data , {} ", e.getMessage(), e);
+            log.error("[SAVE - ATTENDANCE] - [ERROR] : Unable to save data , {} ", e.getMessage(),
+                    e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponseDto.builder().responseCode("ERR500").responseMessage(e.getLocalizedMessage()).build());
+                    .body(BaseResponseDto.builder().responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage()).build());
         }
     }
 
@@ -530,38 +555,39 @@ public class TlcController {
     public ResponseEntity<BaseResponseDto> updateKehadiran(@RequestBody KehadiranRequest request) {
         try {
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(request.getMahasiswaId());
-            Optional<PresensiDosenBahasa> optionalPresensiDosenBahasa = presensiDosenBahasaDao.findById(request.getPresensiId());
+            Optional<PresensiDosenBahasa> optionalPresensiDosenBahasa =
+                    presensiDosenBahasaDao.findById(request.getPresensiId());
             if (optionalPresensiDosenBahasa.isEmpty()) {
                 log.info("Presensi id {} not found", request.getPresensiId());
             }
 
 
-            PresensiMahasiswaBahasa presensiMahasiswaBahasa = presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(mahasiswa, optionalPresensiDosenBahasa.get());
+            PresensiMahasiswaBahasa presensiMahasiswaBahasa =
+                    presensiMahasiswaBahasaDao.findByMahasiswaAndPresensiDosenBahasa(mahasiswa,
+                            optionalPresensiDosenBahasa.get());
             if (presensiMahasiswaBahasa == null) {
                 presensiMahasiswaBahasa = new PresensiMahasiswaBahasa();
                 presensiMahasiswaBahasa.setMahasiswa(mahasiswa);
                 presensiMahasiswaBahasa.setPresensiDosenBahasa(optionalPresensiDosenBahasa.get());
-                presensiMahasiswaBahasa.setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
+                presensiMahasiswaBahasa
+                        .setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
                 presensiMahasiswaBahasa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
                 presensiMahasiswaBahasaDao.save(presensiMahasiswaBahasa);
             } else {
-                presensiMahasiswaBahasa.setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
+                presensiMahasiswaBahasa
+                        .setStatusPresensi(StatusPresensi.valueOf(request.getKehadiran()));
                 presensiMahasiswaBahasaDao.save(presensiMahasiswaBahasa);
             }
-                return ResponseEntity.ok().body(
-                        BaseResponseDto.builder()
-                                .responseCode("00")
-                                .responseMessage("Kehadiran Berhasil Diproses")
-                                .data(presensiMahasiswaBahasa)
-                                .build());
-           
+            return ResponseEntity.ok()
+                    .body(BaseResponseDto.builder().responseCode("00")
+                            .responseMessage("Kehadiran Berhasil Diproses")
+                            .data(presensiMahasiswaBahasa).build());
+
         } catch (Exception e) {
             log.error("[POST ATTENDANCE] - [ERROR] : Unable to Get data , {} ", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    BaseResponseDto.builder()
-                            .responseCode("ERR500")
-                            .responseMessage(e.getLocalizedMessage())
-                            .build());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseDto.builder().responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage()).build());
         }
     }
 

@@ -15,8 +15,9 @@ import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 public interface JadwalBahasaDao extends PagingAndSortingRepository<JadwalBahasa, String> {
     List<JadwalBahasa> findByTahunAkademikAndStatus(TahunAkademik tahunAkademik, StatusRecord status);
 
-    @Query(value = "select jb.* from jadwal_bahasa as jb inner join jadwal_dosen_bahasa as jdh on jb.id = jdh.id_jadwal_bahasa where jb.status = 'AKTIF' and jdh.id_dosen = ?1 and jb.id_tahun_akademik = ?2", nativeQuery = true)
-    List<JadwalBahasa> findByDosen(Dosen dosen, TahunAkademik tahunAkademik);
+    @Query(value = "select jb.id as id, jb.nama_jadwal as nama, jb.nama_kelas as kelas, jb.jenis from jadwal_bahasa as jb inner join jadwal_dosen_bahasa as jdh on jb.id = jdh.id_jadwal_bahasa where jb.status = 'AKTIF' and jdh.id_dosen = ?1 and jb.id_tahun_akademik = ?2",
+            nativeQuery = true)
+    List<JadwalRequest> findByDosen(Dosen dosen, TahunAkademik tahunAkademik);
 
     @Query(value = "select id,nama_jadwal as nama, nama_kelas as kelas, jenis from jadwal_bahasa where id_tahun_akademik = ?1 and status = 'AKTIF'",
             nativeQuery = true)
