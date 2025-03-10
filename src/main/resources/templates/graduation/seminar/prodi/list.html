@@ -568,7 +568,7 @@
                                                                 </tr>
                                                                 </thead>
 
-                                                                <tbody class="text-95 text-secondary-d3" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.MAGANG || data.note.jenis == data.note.jenis.JURNAL}">
+                                                                <tbody class="text-95 text-secondary-d3" th:if="${data.note.jenis == data.note.jenis.SKRIPSI || data.note.jenis == data.note.jenis.MAGANG || data.note.jenis == data.note.jenis.JURNAL && data.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                                                                 <tr></tr>
                                                                 <tr>
                                                                     <td>1</td>
@@ -617,7 +617,7 @@
                                                                 </tr>
                                                                 </tbody>
 
-                                                                <tbody class="text-95 text-secondary-d3" th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                <tbody class="text-95 text-secondary-d3" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                                 <tr></tr>
                                                                 <tr>
                                                                     <td>1</td>
