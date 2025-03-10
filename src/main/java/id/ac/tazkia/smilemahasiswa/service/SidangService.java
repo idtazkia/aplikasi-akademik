@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.HijrahDate;
@@ -13,7 +12,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
-import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +34,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import id.ac.tazkia.smilemahasiswa.constant.StatusTugasAkhir;
 import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
 import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
 import id.ac.tazkia.smilemahasiswa.dao.HariDao;
@@ -91,7 +90,7 @@ public class SidangService {
 
     public Seminar updatePublish(Seminar seminar, SeminarDto seminarDto) {
         BeanUtils.copyProperties(seminarDto, seminar);
-        if (seminarDto.getJenis() == StatusRecord.SKRIPSI || seminarDto.getJenis() == StatusRecord.JURNAL) {
+        if ( seminarDto.getJenis() == StatusRecord.SKRIPSI || seminarDto.getJenis() == StatusRecord.JURNAL && seminar.getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
             BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa())
                     .divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
             BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb())
@@ -111,6 +110,7 @@ public class SidangService {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
@@ -146,6 +146,7 @@ public class SidangService {
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+            seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
             Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
             if (nilaiKosong == null) {
                 if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
@@ -163,7 +164,7 @@ public class SidangService {
             }
         }
 
-        if (seminarDto.getJenis() == StatusRecord.TESIS) {
+        if (seminarDto.getJenis() == StatusRecord.TESIS || seminarDto.getJenis() == StatusRecord.JURNAL && seminar.getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")) {
             Prodi prodi = seminar.getNote().getMahasiswa().getIdProdi();
             String angkatan = seminar.getNote().getMahasiswa().getAngkatan();
 
@@ -196,6 +197,7 @@ public class SidangService {
                 seminar.setNilaiC(nilaiC);
                 seminar.setNilaiD(nilaiD);
                 seminar.setNilaiE(nilaiE);
+                seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
                 seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
                 Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar, BigDecimal.ZERO);
                 if (nilaiKosong == null) {
