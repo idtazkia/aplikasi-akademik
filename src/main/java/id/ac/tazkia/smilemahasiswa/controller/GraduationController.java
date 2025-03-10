@@ -2115,7 +2115,7 @@ public class GraduationController {
 
         sidangService.updatePublish(seminar, seminarDto);
 
-        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
+        return "redirect:admin/list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
 
     }
