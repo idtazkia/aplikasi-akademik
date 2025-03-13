@@ -2,9 +2,11 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import groovy.util.logging.Slf4j;
 import id.ac.tazkia.smilemahasiswa.constant.Approval;
 import id.ac.tazkia.smilemahasiswa.dao.DetailKonfigurasiKonversiDao;
 import id.ac.tazkia.smilemahasiswa.dao.DetailPendaftaranKonversiDao;
@@ -57,6 +61,7 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.FileService;
 
 @Controller
+@Slf4j
 public class RequestKonversiController {
 
     @Value("${upload.request.konversi}")
@@ -90,23 +95,20 @@ public class RequestKonversiController {
     @Autowired
     private RequestKonversiTenggatDao requestKonversiTenggatDao;
 
-
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
         return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
-
     @GetMapping("/request-konversi2/{jenis}")
     public String listRequestKonversi(@PathVariable String jenis, Model model,
-            @RequestParam(required = false) String prodi,
-                    @RequestParam(required = false) String search,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String order,
-            @RequestParam(required = false) Integer offset,
-            @RequestParam(required = false) Integer limit, Pageable pageable) {
+                                      @RequestParam(required = false) String prodi,
+                                      @RequestParam(required = false) String search,
+                                      @RequestParam(required = false) String sort,
+                                      @RequestParam(required = false) String order,
+                                      @RequestParam(required = false) Integer offset,
+                                      @RequestParam(required = false) Integer limit, Pageable pageable) {
         model.addAttribute("jenis", jenis);
-
 
         return "requestKonversi/list";
     }
@@ -114,20 +116,17 @@ public class RequestKonversiController {
     @GetMapping("/request-konversi/kemahasiswaan")
     public String listRequestKonversiKemahasiswaan(Model model) {
 
-
         return "requestKonversi/kemahasiswaan/list";
     }
 
     @GetMapping("/request-konversi/tqc")
     public String listRequestKonversiTqc(Model model) {
 
-
         return "requestKonversi/tqc/list";
     }
 
     @GetMapping("/request-konversi/prodi")
     public String listRequestKonversiProdi(Model model) {
-
 
         return "requestKonversi/prodi/list";
     }
@@ -143,44 +142,47 @@ public class RequestKonversiController {
     @GetMapping("/api/get-data-konversi/{jenis}")
     @ResponseBody
     public DataRequestKonversi getDataKonversi(@PathVariable String jenis,
-                    @RequestParam(required = false) String prodiId,
-            @RequestParam(required = false, defaultValue = "") String search,
-            @RequestParam(required = false) Integer offset,
-            @RequestParam(required = false) Integer limit) {
+                                               @RequestParam(required = false) String prodiId,
+                                               @RequestParam(required = false, defaultValue = "") String search,
+                                               @RequestParam(required = false) Integer offset,
+                                               @RequestParam(required = false) Integer limit) {
 
-        List<String> prodi = !StringUtils.hasText(prodiId) || prodiId.equals("-") || prodiId == null
-                ? prodiDao.findByStatus(StatusRecord.AKTIF).stream().map(Prodi::getId)
-                        .collect(Collectors.toList())
+        List<String> prodi = !StringUtils.hasText(prodiId) || prodiId.equals("-")
+                || prodiId == null
+                ? prodiDao.findByStatus(StatusRecord.AKTIF).stream()
+                .map(Prodi::getId)
+                .collect(Collectors.toList())
                 : List.of(prodiId);
 
-        Map<String, List<String>> approvalMap = Map.of("tqc", List.of(Approval.WAITING.name()),
-                "kps", List.of(Approval.APPROVED_KEMAHASISWAAN.name()), "kemahasiswaan",
+        Map<String, List<String>> approvalMap = Map.of("tqc",
+                List.of(Approval.WAITING.name()), "kps",
+                List.of(Approval.APPROVED_KEMAHASISWAAN.name()), "kemahasiswaan",
                 List.of(Approval.WAITING.name()), "admin",
-                List.of(Approval.WAITING.name(), Approval.APPROVED_KEMAHASISWAAN.name(),
-                        Approval.APPROVED_TQC.name(), Approval.APPROVED.name()));
+                List.of(Approval.WAITING.name(),
+                        Approval.APPROVED_KEMAHASISWAAN.name(),
+                        Approval.APPROVED_TQC.name(),
+                        Approval.APPROVED.name()));
 
         List<GetRequestKonversi> data;
         switch (jenis.toLowerCase()) {
             case "kemahasiswaan":
-                data = pendaftaranRequestKonversiDao.listRequestKonversiKemahasiswaan(search, prodi,
-                        approvalMap.get(jenis.toLowerCase()), limit, offset);
+                data = pendaftaranRequestKonversiDao.listRequestKonversiKemahasiswaan(search, prodi, approvalMap.get(jenis.toLowerCase()), limit, offset);
                 break;
             case "tqc":
-                data = pendaftaranRequestKonversiDao.listRequestKonversiTqc(search, prodi,
-                        approvalMap.get(jenis.toLowerCase()), limit, offset);
+                data = pendaftaranRequestKonversiDao.listRequestKonversiTqc(search, prodi, approvalMap.get(jenis.toLowerCase()), limit, offset);
                 break;
             default:
                 if (approvalMap.containsKey(jenis.toLowerCase())) {
-                    data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi,
-                            approvalMap.get(jenis.toLowerCase()), limit, offset);
+                    data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi, approvalMap.get(jenis.toLowerCase()), limit, offset);
                 } else {
                     data = List.of();
                 }
                 break;
         }
 
-        List<GetRequestKonversi> dataNotFilter = pendaftaranRequestKonversiDao
-                .listRequestKonversiNotFilter(search, prodi, approvalMap.get(jenis.toLowerCase()));
+        List<GetRequestKonversi> dataNotFilter = pendaftaranRequestKonversiDao.listRequestKonversiNotFilter(
+                search,
+                prodi, approvalMap.get(jenis.toLowerCase()));
         DataRequestKonversi response = new DataRequestKonversi();
         response.setTotal(dataNotFilter.size());
         response.setTotalNotFiltered(dataNotFilter.size());
@@ -188,7 +190,6 @@ public class RequestKonversiController {
 
         return response;
     }
-
 
     @GetMapping("/api/request-konversi-mahasiswa/{jenis}")
     @ResponseBody
@@ -199,16 +200,16 @@ public class RequestKonversiController {
     @GetMapping("/api/request-detail-konversi-mahasiswa/{id}")
     @ResponseBody
     public List<DetailPendaftaranKonversi> getListDetailPendaftar(@PathVariable String id) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id)
+                .get();
         return pendaftaranRequestKonversi.getDetailPendaftaranKonversiList();
     }
 
     @GetMapping("/api/request-total-sks-mahasiswa/{id}")
     @ResponseBody
     public Integer getTotalSksMahasiswa(@PathVariable String id) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id)
+                .get();
 
         return pendaftaranRequestKonversiDao
                 .totalSksKonversi(pendaftaranRequestKonversi.getMahasiswa());
@@ -218,15 +219,17 @@ public class RequestKonversiController {
     @ResponseBody
     public List<DetailKonfigurasiKonversi> getListDetailKonversi(@PathVariable String bentuk) {
 
-        return detailKonfigurasiKonversiDao.findByKonfigurasiKonversiOrderByNumberAscLevelNumberAsc(
-                konfigurasiKonversiDao.findById(bentuk).get());
+        return detailKonfigurasiKonversiDao
+                .findByKonfigurasiKonversiOrderByNumberAscLevelNumberAsc(
+                        konfigurasiKonversiDao.findById(bentuk).get());
     }
 
     @GetMapping("/api/get-level-konversi/{bentuk}")
     @ResponseBody
     public List<String> getListLevelKonversi(@PathVariable String bentuk) {
 
-        return detailKonfigurasiKonversiDao.getLevel(konfigurasiKonversiDao.findById(bentuk).get());
+        return detailKonfigurasiKonversiDao
+                .getLevel(konfigurasiKonversiDao.findById(bentuk).get());
     }
 
     @GetMapping("/api/detail-konversi/{id}")
@@ -256,7 +259,8 @@ public class RequestKonversiController {
     public SistemPenilaianKonversi getRangeNilai(
             @PathVariable("idKonfigurasiKonversi") KonfigurasiKonversi konfigurasiKonversi,
             @RequestParam Integer point) {
-        return sistemPenilaianKonversiDao.findByPointBawahAndPointAtas(konfigurasiKonversi, point);
+        return sistemPenilaianKonversiDao.findByPointBawahAndPointAtas(konfigurasiKonversi,
+                point);
     }
 
     @GetMapping("/api/konfigurasi-konversi/{id}")
@@ -268,7 +272,7 @@ public class RequestKonversiController {
     @GetMapping("/api/get-matakuiah-konversi/{sks}")
     @ResponseBody
     public List<TranskriptSementara> getMatakuliahKonversi(@PathVariable("sks") Integer sks,
-            Authentication authentication) {
+                                                           Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         return krsDetailDao.matakuliahKonversi(mahasiswa, sks);
@@ -277,14 +281,13 @@ public class RequestKonversiController {
     @GetMapping("/request-konversi/mahasiswa/list")
     public String listRequestKonversiMahasiswa(Model model) {
 
-
         return "requestKonversi/mahasiswa/list";
     }
 
     @GetMapping("/request-konversi/mahasiswa/matakuliah/{id}")
     public String listMatakuliahKonversi(Model model, @PathVariable("id") String id) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id)
+                .get();
         model.addAttribute("pendaftaranRequestKonversi", pendaftaranRequestKonversi);
 
         return "requestKonversi/mahasiswa/matakuliah";
@@ -292,28 +295,27 @@ public class RequestKonversiController {
 
     @PostMapping("/request-konversi/proses")
     public String prosesRequestKonversi(@RequestParam("totalSks") Integer sks,
-            @RequestParam("bentuk") String bentuk, Authentication authentication,
-                    @RequestParam Map<String, String> params,
-            @RequestParam Map<String, MultipartFile> files) throws Exception {
+                                        @RequestParam("bentuk") String bentuk, Authentication authentication,
+                                        @RequestParam Map<String, String> params,
+                                        @RequestParam Map<String, MultipartFile> files) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-
         PendaftaranRequestKonversi pendaftaranRequestKonversi = new PendaftaranRequestKonversi();
         pendaftaranRequestKonversi.setMahasiswa(mahasiswa);
-        pendaftaranRequestKonversi
-                .setKonfigurasiKonversi(konfigurasiKonversiDao.findById(bentuk).get());
+        pendaftaranRequestKonversi.setKonfigurasiKonversi(
+                konfigurasiKonversiDao.findById(bentuk).get());
         pendaftaranRequestKonversi.setTotalSks(sks);
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
-        String lokasiUpload = uploadFolder + File.separator + mahasiswa.getNim() + File.separator
+        String lokasiUpload = uploadFolder + File.separator + mahasiswa.getNim()
+                + File.separator
                 + pendaftaranRequestKonversi.getKonfigurasiKonversi().getNama();
         for (int i = 0; params.containsKey("kategori-" + i); i++) {
             String kategori = params.get("kategori-" + i);
             MultipartFile file = files.get("file-" + i);
             String fileName = fileService.uploadFile(file, lokasiUpload);
-            DetailKonfigurasiKonversi detailKonfigurasiKonversi =
-                    detailKonfigurasiKonversiDao.findById(kategori).get();
+            DetailKonfigurasiKonversi detailKonfigurasiKonversi = detailKonfigurasiKonversiDao.findById(kategori).get();
             FilePendaftaranKonversi filePendaftaranKonversi = new FilePendaftaranKonversi();
             filePendaftaranKonversi.setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
             filePendaftaranKonversi.setDetailKonfigurasiKonversi(detailKonfigurasiKonversi);
@@ -327,43 +329,36 @@ public class RequestKonversiController {
 
     @PostMapping("/request-konversi/proses-matakuliah")
     public String prosesRequestKonversiMatakuliah(@RequestParam String sistem,
-            @RequestParam String id, @RequestParam Map<String, String> params) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+                                                  @RequestParam String id, @RequestParam Map<String, String> params) {
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.WAITING);
 
         if (sistem.equals("POINT")) {
             SistemPenilaianKonversi sistemPenilaianKonversi = sistemPenilaianKonversiDao
-                    .cekPenilaianKonversi(pendaftaranRequestKonversi.getKonfigurasiKonversi(),
-                            pendaftaranRequestKonversi.getTotalSks());
+                    .cekPenilaianKonversi(pendaftaranRequestKonversi.getKonfigurasiKonversi(), pendaftaranRequestKonversi.getTotalSks());
             for (int i = 0; params.containsKey("krsdetail-" + i); i++) {
                 String result = params.get("result-" + i);
                 if (result != null) {
                     String krsDetailId = params.get("krsdetail-" + i);
                     KrsDetail krsDetail = krsDetailDao.findById(krsDetailId).get();
-                    FilePendaftaranKonversi filePendaftaranKonversi = filePendaftaranKonversiDao
-                            .findByPendaftaranRequestKonversi(pendaftaranRequestKonversi);
+                    FilePendaftaranKonversi filePendaftaranKonversi = filePendaftaranKonversiDao.findByPendaftaranRequestKonversi(pendaftaranRequestKonversi);
 
-                    DetailPendaftaranKonversi detailPendaftaranKonversi =
-                            new DetailPendaftaranKonversi();
-                    detailPendaftaranKonversi
-                            .setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
+                    DetailPendaftaranKonversi detailPendaftaranKonversi = new DetailPendaftaranKonversi();
+                    detailPendaftaranKonversi.setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
                     detailPendaftaranKonversi.setKrsDetail(krsDetail);
                     detailPendaftaranKonversi.setGradeLama(krsDetail.getGrade());
-                    detailPendaftaranKonversi.setMatakuliah(
-                            krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur "
-                            + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
-                    if (sistemPenilaianKonversi.getOpsiNilai()
-                            .equals(SistemPenilaianKonversi.OpsiNilai.PLUS)) {
+                    detailPendaftaranKonversi.setMatakuliah(krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur " + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
+                    if (sistemPenilaianKonversi.getOpsiNilai().equals(
+                            SistemPenilaianKonversi.OpsiNilai.PLUS)) {
                         Grade grade = gradeDao.findByNama(krsDetail.getGrade());
                         int valueNilai = grade.getNilai() + sistemPenilaianKonversi.getNilai();
                         Grade maxGrade = gradeDao.findByNilai(gradeDao.maxNilai());
-                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama()
-                                : gradeDao.findByNilai(valueNilai).getNama();
+                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama() : gradeDao.findByNilai(valueNilai).getNama();
                         detailPendaftaranKonversi.setGradeBaru(newGrade);
                     }
-                    detailPendaftaranKonversiDao.save(detailPendaftaranKonversi);
+                    detailPendaftaranKonversiDao
+                            .save(detailPendaftaranKonversi);
                 }
             }
         }
@@ -375,36 +370,31 @@ public class RequestKonversiController {
                     String krsDetailId = params.get("krsdetail-" + i);
                     KrsDetail krsDetail = krsDetailDao.findById(krsDetailId).get();
                     FilePendaftaranKonversi filePendaftaranKonversi = filePendaftaranKonversiDao
-                            .findByPendaftaranRequestKonversi(pendaftaranRequestKonversi);
-                    DetailPendaftaranKonversi detailPendaftaranKonversi =
-                            new DetailPendaftaranKonversi();
+                            .findByPendaftaranRequestKonversi(
+                                    pendaftaranRequestKonversi);
+                    DetailPendaftaranKonversi detailPendaftaranKonversi = new DetailPendaftaranKonversi();
                     detailPendaftaranKonversi.setKrsDetail(krsDetail);
-                    detailPendaftaranKonversi
-                            .setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
-                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur "
-                            + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
+                    detailPendaftaranKonversi.setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
+                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur " + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
                     detailPendaftaranKonversi.setGradeLama(krsDetail.getGrade());
-                    detailPendaftaranKonversi.setMatakuliah(
-                            krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-                    if (filePendaftaranKonversi.getDetailKonfigurasiKonversi()
-                            .getNilaiGrade() == null) {
+                    detailPendaftaranKonversi.setMatakuliah(krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    if (filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiGrade() == null) {
                         Grade grade = gradeDao.findByNama(krsDetail.getGrade());
-                        int valueNilai = grade.getNilai()
-                                + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilai();
+                        int valueNilai = grade.getNilai() + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiPlus();
                         Grade maxGrade = gradeDao.findByNilai(gradeDao.maxNilai());
-                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama()
-                                : gradeDao.findByNilai(valueNilai).getNama();
+                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama() : gradeDao.findByNilai(valueNilai).getNama();
                         detailPendaftaranKonversi.setGradeBaru(newGrade);
                     } else {
-                        detailPendaftaranKonversi.setGradeBaru(filePendaftaranKonversi
-                                .getDetailKonfigurasiKonversi().getNilaiGrade());
+                        detailPendaftaranKonversi.setGradeBaru(filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiGrade());
                     }
-                    detailPendaftaranKonversiDao.save(detailPendaftaranKonversi);
+                    detailPendaftaranKonversiDao
+                            .save(detailPendaftaranKonversi);
                 }
             }
         }
 
-        Integer totalSks = detailPendaftaranKonversiDao.sumTotalSks(pendaftaranRequestKonversi);
+        Integer totalSks = detailPendaftaranKonversiDao
+                .sumTotalSks(pendaftaranRequestKonversi);
         pendaftaranRequestKonversi.setSksDiambil(totalSks);
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
@@ -415,73 +405,70 @@ public class RequestKonversiController {
     public String detailRequestKonversiMahasiswa(Model model, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        RequestKonversiTenggat requestKonversiTenggat = requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF);
+        LocalDateTime now = LocalDateTime.now().plusHours(7);
+        LocalDateTime mulai = requestKonversiTenggat.getTanggalAwal().atStartOfDay();
+        LocalDateTime selesai = requestKonversiTenggat.getTanggalAkhir().atStartOfDay();
 
-        List<PendaftaranRequestKonversi> pendaftaranRequestKonversiList =
-                pendaftaranRequestKonversiDao.findByMahasiswa(mahasiswa);
+        model.addAttribute("validasi", now.isAfter(mulai) && now.isBefore(selesai));
+
+        List<PendaftaranRequestKonversi> pendaftaranRequestKonversiList = pendaftaranRequestKonversiDao.findByMahasiswa(mahasiswa);
         model.addAttribute("listRequestKonversi", pendaftaranRequestKonversiList);
         return "requestKonversi/mahasiswa/detail";
     }
 
     @PostMapping("/api/approval-konversi/{id}")
     public ResponseEntity<BaseResponseDto> approvalKonversi(@PathVariable String id,
-            @RequestParam String approval) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+                                                            @RequestParam String approval) {
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.valueOf(approval));
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder()
+                .responseCode("00").responseMessage("success").build());
     }
 
     @PostMapping("/api/rejected-konversi/{id}")
     public ResponseEntity<BaseResponseDto> rejectedKonversi(@PathVariable String id,
-            @RequestParam String approval) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+                                                            @RequestParam String approval) {
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.valueOf(approval));
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
-        for (DetailPendaftaranKonversi detailPendaftaranKonversi : pendaftaranRequestKonversi
-                .getDetailPendaftaranKonversiList()) {
+        for (DetailPendaftaranKonversi detailPendaftaranKonversi : pendaftaranRequestKonversi.getDetailPendaftaranKonversiList()) {
             detailPendaftaranKonversi.setStatus(Approval.REJECTED);
             detailPendaftaranKonversiDao.save(detailPendaftaranKonversi);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(
-                BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder()
+                .responseCode("00").responseMessage("success").build());
     }
 
     @PostMapping("/request-konversi-delete/{id}")
     @Transactional
     public String deleteKonversi(@PathVariable String id) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversiDao.delete(pendaftaranRequestKonversi);
-        detailPendaftaranKonversiDao
-                .deleteDetailPendaftaranKonversiByPendaftaran(pendaftaranRequestKonversi);
+        detailPendaftaranKonversiDao.deleteDetailPendaftaranKonversiByPendaftaran(pendaftaranRequestKonversi);
 
         return "redirect:../request-konversi/mahasiswa/detail";
     }
 
     @PostMapping("/api/delete-matakuliah-konversi/{id}")
     public ResponseEntity<BaseResponseDto> rejectedKonversi(@PathVariable String id) {
-        DetailPendaftaranKonversi detailPendaftaranKonversi =
-                detailPendaftaranKonversiDao.findById(id).get();
+        DetailPendaftaranKonversi detailPendaftaranKonversi = detailPendaftaranKonversiDao.findById(id).get();
         detailPendaftaranKonversiDao.delete(detailPendaftaranKonversi);
-        Integer totalSks = detailPendaftaranKonversiDao
-                .sumTotalSks(detailPendaftaranKonversi.getPendaftaranRequestKonversi());
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                detailPendaftaranKonversi.getPendaftaranRequestKonversi();
+        Integer totalSks = detailPendaftaranKonversiDao.sumTotalSks(detailPendaftaranKonversi.getPendaftaranRequestKonversi());
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = detailPendaftaranKonversi.getPendaftaranRequestKonversi();
         pendaftaranRequestKonversi.setTotalSks(totalSks);
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder()
+                .responseCode("00").responseMessage("success").build());
     }
 
     @PostMapping("/api/approve-konversi/{id}")
     public ResponseEntity<BaseResponseDto> approveKonversi(@PathVariable String id) {
-        PendaftaranRequestKonversi pendaftaranRequestKonversi =
-                pendaftaranRequestKonversiDao.findById(id).get();
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id)
+                .get();
         pendaftaranRequestKonversi.setStatus(Approval.APPROVED);
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
@@ -498,8 +485,8 @@ public class RequestKonversiController {
             krsDetailDao.save(krsDetail);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                BaseResponseDto.builder().responseCode("00").responseMessage("success").build());
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDto.builder()
+                .responseCode("00").responseMessage("success").build());
     }
 
     @GetMapping("/upload/{id}/konversi/")
@@ -507,8 +494,10 @@ public class RequestKonversiController {
             @PathVariable(name = "id") PendaftaranRequestKonversi pendaftaranRequestKonversi)
             throws Exception {
         String lokasiUpload = uploadFolder + File.separator
-                + pendaftaranRequestKonversi.getMahasiswa().getNim() + File.separator
-                + pendaftaranRequestKonversi.getKonfigurasiKonversi().getNama() + File.separator
+                + pendaftaranRequestKonversi.getMahasiswa().getNim()
+                + File.separator
+                + pendaftaranRequestKonversi.getKonfigurasiKonversi().getNama()
+                + File.separator
                 + pendaftaranRequestKonversi.getFiles().get(0).getFile();
         String filename = pendaftaranRequestKonversi.getFiles().get(0).getFile();
         return fileService.tampilkanFile(filename, lokasiUpload);
@@ -516,9 +505,8 @@ public class RequestKonversiController {
 
     @PostMapping("/request-konversi/update-tanggal")
     public String updateTanggalKonversi(@RequestParam String tanggalAwal,
-            @RequestParam String tanggalAkhir) {
-        RequestKonversiTenggat requestKonversiTenggat =
-                requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF);
+                                        @RequestParam String tanggalAkhir) {
+        RequestKonversiTenggat requestKonversiTenggat = requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF);
         requestKonversiTenggat.setTanggalAwal(LocalDate.parse(tanggalAwal));
         requestKonversiTenggat.setTanggalAkhir(LocalDate.parse(tanggalAkhir));
         requestKonversiTenggatDao.save(requestKonversiTenggat);
@@ -526,5 +514,3 @@ public class RequestKonversiController {
         return "redirect:admin";
     }
 }
-
-

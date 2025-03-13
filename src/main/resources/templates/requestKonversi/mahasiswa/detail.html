@@ -1,85 +1,116 @@
-<!DOCTYPE html>
-<html lang="en"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Request Konversi</title>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
-</head>
-<body>
-<section layout:fragment="main" class="content">
-    <div class="breadcomb-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="breadcomb-list">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                <div class="breadcomb-wp">
-                                    <div class="breadcomb-icon">
-                                        <i class="notika-icon notika-form"></i>
-                                    </div>
-                                    <div class="breadcomb-ctn">
-                                        <h2>Request Konversi</h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!doctype html>
+<html
+	lang="en"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}"
+	xmlns:th="http://www.thymeleaf.org"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Request Konversi</title>
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+	</head>
+	<body>
+		<section layout:fragment="main" class="content">
+			<div class="breadcomb-area">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="breadcomb-list">
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<div class="breadcomb-wp">
+											<div class="breadcomb-icon">
+												<i class="notika-icon notika-form"></i>
+											</div>
+											<div class="breadcomb-ctn">
+												<h2>Request Konversi</h2>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-    <div class="normal-table-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="normal-table-list mg-t-30">
-                        <div class="basic-tb-hd">
-                            <h2>List Konversi</h2>
-                        </div>
-                        <div class="bsc-tbl-st">
-                            <a th:href="@{/request-konversi/mahasiswa/list}" class="btn btn-sm btn-primary">Tambah Data</a>
-                            <br>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Mahasiswa</th>
-                                    <th>Jenis Konversi</th>
-                                    <th>SKS Diambil</th>
-                                    <th>Status</th>
-                                    <th>#</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="konversi, row : ${listRequestKonversi}">
-                                    <td th:text="${row.index + 1}">1</td>
-                                    <td th:text="${konversi.mahasiswa.nim + ' - ' + konversi.mahasiswa.nama}">Alexandra</td>
-                                    <td th:text="${konversi.getKonfigurasiKonversi().nama}">Christopher</td>
-                                    <td class="text-center" th:text="${konversi.sksDiambil}">@makinton</td>
-                                    <td>
-                                        <span th:if="${konversi.status == konversi.status.WAITING}" class="alert alert-warning">Menunggu Approval Kemahasiswaan</span>
-                                        <span th:if="${konversi.status == konversi.status.REJECTED_KEMAHASISWAAN || konversi.status == konversi.status.REJECTED_PRODI || konversi.status == konversi.status.REJECTED_TQC}" class="alert alert-danger">Pendaftaraan Ditolak</span>
-                                        <span th:if="${konversi.status == konversi.status.APPROVED_KEMAHASISWAAN}" class="alert alert-info">Menunggu Approval KPS</span>
-                                        <span th:if="${konversi.status == konversi.status.APPROVED}" class="alert alert-success">Pendaftaran Diterima</span>
-                                    </td>
-                                    <td>
-                                        <form th:action="@{/request-konversi-delete/{id} (id = ${konversi.id})}" method="post">
-                                            <button class="btn btn-sm btn-danger">Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-</body>
+			<div class="normal-table-area">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="normal-table-list mg-t-30">
+								<div class="basic-tb-hd">
+									<h2>List Konversi</h2>
+								</div>
+								<div class="bsc-tbl-st">
+									<div class="alert alert-danger alert-mg-b-0" role="alert" th:if="${validasi == false}">
+										Pendaftaran Request Konversi Sudah Ditutup.
+									</div>
+									<a th:href="@{/request-konversi/mahasiswa/list}" class="btn btn-sm btn-primary" th:if="${validasi == true}">
+										Tambah Data</a
+									>
+									<br />
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th>No</th>
+												<th>Mahasiswa</th>
+												<th>Jenis Konversi</th>
+												<th>SKS Diambil</th>
+												<th>Status</th>
+												<th>#</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="konversi, row : ${listRequestKonversi}">
+												<td th:text="${row.index + 1}">1</td>
+												<td
+													th:text="${konversi.mahasiswa.nim + ' - ' + konversi.mahasiswa.nama}"
+												>
+													Alexandra
+												</td>
+												<td th:text="${konversi.getKonfigurasiKonversi().nama}">Christopher</td>
+												<td class="text-center" th:text="${konversi.sksDiambil}">@makinton</td>
+												<td>
+													<span
+														th:if="${konversi.status == konversi.status.WAITING}"
+														class="alert alert-warning"
+														>Menunggu Approval Kemahasiswaan</span
+													>
+													<span
+														th:if="${konversi.status == konversi.status.REJECTED_KEMAHASISWAAN || konversi.status == konversi.status.REJECTED_PRODI || konversi.status == konversi.status.REJECTED_TQC}"
+														class="alert alert-danger"
+														>Pendaftaraan Ditolak</span
+													>
+													<span
+														th:if="${konversi.status == konversi.status.APPROVED_KEMAHASISWAAN}"
+														class="alert alert-info"
+														>Menunggu Approval KPS</span
+													>
+													<span
+														th:if="${konversi.status == konversi.status.APPROVED}"
+														class="alert alert-success"
+														>Pendaftaran Diterima</span
+													>
+												</td>
+												<td>
+													<form
+														th:action="@{/request-konversi-delete/{id} (id = ${konversi.id})}"
+														method="post"
+													>
+														<button class="btn btn-sm btn-danger">Hapus</button>
+													</form>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
 </html>
