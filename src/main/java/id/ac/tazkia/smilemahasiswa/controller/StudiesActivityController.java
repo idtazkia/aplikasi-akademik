@@ -2883,7 +2883,7 @@ public class StudiesActivityController {
             row.createCell(1).setCellValue(kd.getKode());
             row.getCell(1).setCellStyle(styleDataKhs);
             row.createCell(2).setCellValue(kd.getMatakuliah());
-            row.getCell(2).setCellStyle(styleDataKhs);
+            row.getCell(2).setCellStyle(styleData);
             row.createCell(4).setCellValue(kd.getSks());
             row.getCell(4).setCellStyle(styleDataKhs);
             if (kd.getMatakuliah().equals("Student Dynamic Session")) {
