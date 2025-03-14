@@ -1,4 +1,4 @@
-package id.ac.tazkia.smilemahasiswa.dto.api;
+package id.ac.tazkia.smilemahasiswa.dto.api.akunting;
 
 import lombok.Data;
 

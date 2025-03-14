@@ -1,6 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.api.akunting.CicilanTagihanEmpatTahunDto;
+import id.ac.tazkia.smilemahasiswa.dto.api.akunting.DataTagihanAkunDto;
+import id.ac.tazkia.smilemahasiswa.dto.api.akunting.DataTagihanPerbulanTahunDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.*;
 import id.ac.tazkia.smilemahasiswa.dto.prediksitest.RekapTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -468,5 +470,83 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "inner join request_cicilan as d on c.id = d.id_tagihan and year(d.tanggal_jatuh_tempo) > '2023' and status_cicilan in ('LUNAS','CICILAN','SEDANG_DITAGIHKAN')and (d.zahir_export not in ('SENT') or d.zahir_export is null)) as a\n" +
             "order by nim,keterangan", nativeQuery = true)
     List<CicilanTagihanEmpatTahunDto> integrasiCicilanTagihanNonHP();
+
+    @Query(value = "SELECT \n" +
+            "    nim, \n" +
+            "    nama,\n" +
+            "    COALESCE(tagihan_jan, 0) AS tagihanJanuari, COALESCE(tagihan_feb, 0) AS tagihanFebruari, COALESCE(tagihan_mar, 0) AS tagihanMaret, COALESCE(tagihan_apr, 0) AS tagihanApril, \n" +
+            "    COALESCE(tagihan_mei, 0) AS tagihanMei, COALESCE(tagihan_jun, 0) AS tagihanJuni, COALESCE(tagihan_jul, 0) AS tagihanJuli, COALESCE(tagihan_agu, 0) AS tagihanAgustus, \n" +
+            "    COALESCE(tagihan_sep, 0) AS tagihanSeptember, COALESCE(tagihan_okt, 0) AS tagihanOktober, COALESCE(tagihan_nov, 0) AS tagihanNovember, COALESCE(tagihan_des, 0) AS tagihanDesember,\n" +
+            "    COALESCE(bayar_jan, 0) AS bayarJanuari, COALESCE(bayar_feb, 0) AS bayarFebruari, COALESCE(bayar_mar, 0) AS bayarMaret, COALESCE(bayar_apr, 0) AS bayarApril, \n" +
+            "    COALESCE(bayar_mei, 0) AS bayarMei, COALESCE(bayar_jun, 0) AS bayarJuni, COALESCE(bayar_jul, 0) AS bayarJuli, COALESCE(bayar_agu, 0) AS bayarAgustus, \n" +
+            "    COALESCE(bayar_sep, 0) AS bayarSeptember, COALESCE(bayar_okt, 0) AS bayarOktober, COALESCE(bayar_nov, 0) AS bayarNovember, COALESCE(bayar_des, 0) AS bayarDesember,\n" +
+            "    COALESCE(tagihan_total, 0) AS totalTagihan,\n" +
+            "    COALESCE(bayar_total, 0) AS totalBayar,\n" +
+            "    COALESCE(tagihan_total, 0) - COALESCE(bayar_total, 0) AS sisaTagihan\n" +
+            "FROM (\n" +
+            "    SELECT \n" +
+            "        c.id, c.nim, c.nama,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 1 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_jan,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 2 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_feb,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 3 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_mar,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 4 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_apr,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 5 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_mei,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 6 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_jun,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 7 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_jul,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 8 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_agu,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 9 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_sep,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 10 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_okt,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 11 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_nov,\n" +
+            "        SUM(CASE WHEN MONTH(b.tanggal_pembuatan) = 12 THEN b.nilai_tagihan_asli ELSE 0 END) AS tagihan_des,\n" +
+            "        SUM(b.nilai_tagihan) AS tagihan_total\n" +
+            "    FROM tagihan b\n" +
+            "    INNER JOIN mahasiswa c ON b.id_mahasiswa = c.id\n" +
+            "    INNER JOIN nilai_jenis_tagihan AS d ON b.id_nilai_jenis_tagihan = d.id\n" +
+            "    WHERE YEAR(b.tanggal_pembuatan) = ?1 AND b.status <> 'HAPUS' AND b.zahir_export = 'SENT' AND d.kode_tagihan IN (?2)\n" +
+            "    GROUP BY c.id, c.nim, c.nama\n" +
+            ") AS tagihan\n" +
+            "LEFT JOIN (\n" +
+            "    SELECT \n" +
+            "        c.id,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 1 THEN d.amount ELSE 0 END) AS bayar_jan,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 2 THEN d.amount ELSE 0 END) AS bayar_feb,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 3 THEN d.amount ELSE 0 END) AS bayar_mar,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 4 THEN d.amount ELSE 0 END) AS bayar_apr,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 5 THEN d.amount ELSE 0 END) AS bayar_mei,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 6 THEN d.amount ELSE 0 END) AS bayar_jun,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 7 THEN d.amount ELSE 0 END) AS bayar_jul,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 8 THEN d.amount ELSE 0 END) AS bayar_agu,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 9 THEN d.amount ELSE 0 END) AS bayar_sep,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 10 THEN d.amount ELSE 0 END) AS bayar_okt,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 11 THEN d.amount ELSE 0 END) AS bayar_nov,\n" +
+            "        SUM(CASE WHEN MONTH(d.waktu_bayar) = 12 THEN d.amount ELSE 0 END) AS bayar_des,\n" +
+            "        SUM(d.amount) AS bayar_total\n" +
+            "    FROM pembayaran d\n" +
+            "    INNER JOIN tagihan b ON d.id_tagihan = b.id\n" +
+            "    INNER JOIN mahasiswa c ON b.id_mahasiswa = c.id\n" +
+            "    INNER JOIN nilai_jenis_tagihan AS e ON b.id_nilai_jenis_tagihan = e.id\n" +
+            "    WHERE YEAR(d.waktu_bayar) = ?1 AND e.kode_tagihan IN (?2) AND d.zahir_export = 'SENT'\n" +
+            "    GROUP BY c.id\n" +
+            ") AS pembayaran ON tagihan.id = pembayaran.id\n" +
+            "ORDER BY nim", nativeQuery = true)
+    List<DataTagihanPerbulanTahunDto> getDataTagihanPembayaranPerKodeTemplatePerTahun(String tahun, List<String> kodeTemplate);
+
+    @Query(value = "select a.*, coalesce(b.dibayar,0) as dibayar, nilaiTagihan - coalesce(dibayar,0) as sisa from\n" +
+            "(select nim, c.nama,d.nama as jenisTagihan,b.kode_tagihan as kodeTagihan, sum(coalesce(nilai_tagihan_asli,0))as nilaiTagihan from tagihan as a\n" +
+            "inner join nilai_jenis_tagihan as b on a.id_nilai_jenis_tagihan = b.id and year(a.tanggal_pembuatan) = ?1\n" +
+            "and b.kode_tagihan IN (?2) and a.status <> 'HAPUS' and a.zahir_export = 'SENT'\n" +
+            "inner join mahasiswa as c on a.id_mahasiswa = c.id\n" +
+            "inner join jenis_tagihan as d on b.id_jenis_tagihan = d.id \n" +
+            "group by c.id,b.kode_tagihan) as a\n" +
+            "left join\n" +
+            "(select nim, c.nama,b.kode_tagihan, sum(coalesce(amount,0))as dibayar from tagihan as a\n" +
+            "inner join nilai_jenis_tagihan as b on a.id_nilai_jenis_tagihan = b.id and year(a.tanggal_pembuatan) = ?1\n" +
+            "and b.kode_tagihan IN (?2) and a.status <> 'HAPUS'\n" +
+            "inner join mahasiswa as c on a.id_mahasiswa = c.id\n" +
+            "inner join jenis_tagihan as d on b.id_jenis_tagihan = d.id \n" +
+            "inner join pembayaran as e on a.id = e.id_tagihan and e.status <> 'HAPUS' and e.zahir_export = 'SENT' and year(waktu_bayar) = ?1\n" +
+            "group by c.id,b.kode_tagihan)as b on a.nim = b.nim and a.kodeTagihan = b.kode_tagihan\n" +
+            "order by a.kodeTagihan, a.nim", nativeQuery = true)
+    List<DataTagihanAkunDto> getDataTagihanPerAkun(String tahun, List<String> kodeTemplate);
 
 }
