@@ -57,10 +57,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 @Controller @Slf4j
 public class StudentBillController {
@@ -2902,6 +2900,8 @@ public class StudentBillController {
             ctx.put("bank", pembayaran.getBank().getNama());
             ctx.put("jenisBiaya", pembayaran.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama());
             ctx.put("nilai", pembayaran.getAmount());
+            ctx.put("virtualAccount", pembayaran.getNomorRekening());
+            ctx.put("tglTagihan", pembayaran.getWaktuBayar().with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             ctx.put("tanggal", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
 
             response.setHeader("Content-Disposition", "attachment;filename=bukti_pembayaran_"+pembayaran.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()+".pdf");
