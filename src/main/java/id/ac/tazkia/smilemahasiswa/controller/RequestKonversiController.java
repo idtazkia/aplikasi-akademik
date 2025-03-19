@@ -1,12 +1,16 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import groovy.util.logging.Slf4j;
+import id.ac.tazkia.smilemahasiswa.constant.Approval;
+import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
+import id.ac.tazkia.smilemahasiswa.dto.konversi.DataRequestKonversi;
+import id.ac.tazkia.smilemahasiswa.dto.konversi.GetRequestKonversi;
+import id.ac.tazkia.smilemahasiswa.dto.requestkonversi.DetailKonfigurasiKonversiDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptSementara;
+import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -17,48 +21,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import groovy.util.logging.Slf4j;
-import id.ac.tazkia.smilemahasiswa.constant.Approval;
-import id.ac.tazkia.smilemahasiswa.dao.DetailKonfigurasiKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dao.DetailPendaftaranKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dao.FilePendaftaranKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dao.GradeDao;
-import id.ac.tazkia.smilemahasiswa.dao.KonfigurasiKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.PendaftaranRequestKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
-import id.ac.tazkia.smilemahasiswa.dao.RequestKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dao.RequestKonversiTenggatDao;
-import id.ac.tazkia.smilemahasiswa.dao.SistemPenilaianKonversiDao;
-import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
-import id.ac.tazkia.smilemahasiswa.dto.konversi.DataRequestKonversi;
-import id.ac.tazkia.smilemahasiswa.dto.konversi.GetRequestKonversi;
-import id.ac.tazkia.smilemahasiswa.dto.requestkonversi.DetailKonfigurasiKonversiDto;
-import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptSementara;
-import id.ac.tazkia.smilemahasiswa.entity.DetailKonfigurasiKonversi;
-import id.ac.tazkia.smilemahasiswa.entity.DetailPendaftaranKonversi;
-import id.ac.tazkia.smilemahasiswa.entity.FilePendaftaranKonversi;
-import id.ac.tazkia.smilemahasiswa.entity.Grade;
-import id.ac.tazkia.smilemahasiswa.entity.KonfigurasiKonversi;
-import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.PendaftaranRequestKonversi;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.RequestKonversiTenggat;
-import id.ac.tazkia.smilemahasiswa.entity.SistemPenilaianKonversi;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.User;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.FileService;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -154,11 +125,11 @@ public class RequestKonversiController {
                 .collect(Collectors.toList())
                 : List.of(prodiId);
 
-        Map<String, List<String>> approvalMap = Map.of("tqc",
-                List.of(Approval.WAITING.name()), "kps",
-                List.of(Approval.APPROVED_KEMAHASISWAAN.name()), "kemahasiswaan",
-                List.of(Approval.WAITING.name()), "admin",
-                List.of(Approval.WAITING.name(),
+        Map<String, List<String>> approvalMap = Map.of(
+                "tqc", List.of(Approval.WAITING.name()),
+                "kps", List.of(Approval.APPROVED_KEMAHASISWAAN.name(), Approval.APPROVED_TQC.name()),
+                "kemahasiswaan", List.of(Approval.WAITING.name()),
+                "admin", List.of(Approval.WAITING.name(),
                         Approval.APPROVED_KEMAHASISWAAN.name(),
                         Approval.APPROVED_TQC.name(),
                         Approval.APPROVED.name()));
