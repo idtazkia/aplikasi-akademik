@@ -1719,6 +1719,7 @@ public class StudiesActivityController {
 
     @GetMapping("/studiesActivity/assesment/collection")
     public void pengumpulanTugas(Model model, @RequestParam JadwalTugas jadwalTugas){
+        model.addAttribute("jadwal", jadwalTugas.getSesiKuliah().getJadwal());
         model.addAttribute("jadwaltugas", jadwalTugas);
         model.addAttribute("tugasmahasiswa", tugasJawabanDao.findByJadwalTugasAndStatusOrderByWaktuPengumpulan(jadwalTugas, StatusRecord.AKTIF));
     }

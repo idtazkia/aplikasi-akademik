@@ -91,7 +91,8 @@
                                     <td th:text="${data.mahasiswa.nim}">Basic Econometrics   </td>
                                     <td th:text="${data.mahasiswa.nama}">Aam Slamet Rusydiana  </td>
                                     <td ><a target="_blank" th:text="${data.namaFile}" th:href="@{/collection/{jawaban}/tugas(jawaban=${data.id})}"></a></td>
-                                    <td class="text-nowrap" style="min-width: 100px;">
+                                    <td th:if="${jadwal.finalStatus == 'FINAL'}" th:text="${data.nilai}"></td>
+                                    <td th:if="${jadwal.finalStatus != 'FINAL'}" class="text-nowrap" style="min-width: 100px;">
                                         <div class="input-group">
                                             <input type="number" th:name="${'jawab-'+data.id}" max="100" th:value="${data.nilai}" class="form-control" style="width: 50px;">
                                             <span class="input-group-text">/100</span>
@@ -108,7 +109,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 mt-3 mb-3">
-                                <button type="submit" id="btnSave" onclick="saveNilai()" class="btn btn-success center">Save</button>
+                                <button th:if="${jadwal.finalStatus != 'FINAL'}" type="submit" id="btnSave" onclick="saveNilai()" class="btn btn-success center">Save</button>
                             </div>
                         </div>
                     </form>

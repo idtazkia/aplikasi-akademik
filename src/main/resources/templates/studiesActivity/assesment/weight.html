@@ -173,12 +173,12 @@
                             Data sudah difinalisasi, Anda tidak dapat mengubah nilai
                         </div>
 
-                        <div class="card shadow" th:if="${jadwal.finalStatus != 'FINAL'}">
+                        <div class="card shadow" >
                             <div class="card-header border-0">
                                 <h3 class="mb-0">Bobot Penilaian</h3>
                             </div>
                             <div class="card-body">
-                                <div class="row">
+                                <div th:if="${jadwal.finalStatus != 'FINAL'}" class="row">
                                     <div class="col-md-6 col-xs-12">
                                         <div class="card shadow">
                                             <form id="myForm" th:action="@{/studiesActivity/assesment/weight}"
@@ -241,16 +241,13 @@
                                                 <input type="hidden" name="jadwal" th:value="${jadwal.id}">
                                             </form>
                                         </div>
-
                                     </div>
-
-
                                 </div>
                                 <div class="row" style="padding-top: 10px;">
                                     <div class="col-md-12 col-xs-12">
                                         <div class="card shadow">
                                             <div class="card-header border-0">
-                                                <div class="row">
+                                                <div th:if="${jadwal.finalStatus != 'FINAL'}" class="row">
                                                     <div class="col-md-1 col-sm-6 col-xs-12">
                                                         <a th:if="${jadwal.bobotTugas != 0 || jadwal.bobotUts != 0 || jadwal.bobotUas != 0}" th:href="@{/studiesActivity/assesment/tugas(jadwal=${jadwal.id})}" class="btn btn-warning btn-sm">
                                                             <i class="fas fa-plus-circle"></i> Buat tugas
@@ -304,8 +301,8 @@
                                                         <td>
 <!--                                                            <div class="badge badge-danger">Bobot harus di isi untuk menilai tugas</div>-->
                                                             <a th:if="${data.bobot != null}" th:href="@{/studiesActivity/assesment/collection (jadwalTugas = ${data.id})}" class="btn btn-info btn-sm"><i class="fas fa-list"></i></a>
-                                                            <a th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-editfas fa-edit"></i></a>
-                                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <a th:if="${jadwal.finalStatus != 'FINAL'}" th:href="@{/studiesActivity/assesment/edit (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-editfas fa-edit"></i></a>
+                                                            <button th:if="${jadwal.finalStatus != 'FINAL'}" type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
 
