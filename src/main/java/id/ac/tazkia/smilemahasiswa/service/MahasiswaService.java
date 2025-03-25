@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.ImportMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.JumlahSKSIPKDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
@@ -222,29 +223,24 @@ public class MahasiswaService {
         BaseResponse response = null;
         for (Mahasiswa mhs : mahasiswaAktif){
 
-            List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
-            listTranskript.removeIf(e -> e.getGrade().equals("E"));
+            JumlahSKSIPKDto ipsks = krsDetailDao.ipkSksTotal(mhs.getId());
+            System.out.println("sks " + mhs.getNim() + " : " + ipsks.getSKS());
 
-            int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
-            System.out.println("sks " + mhs.getNim() + " : " + sks);
+            Integer sksTotal = ipsks.getSKS();
+            BigDecimal ipk = ipsks.getIPK();
 
-            if (sks != 0) {
-                BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
-
+            if (sksTotal != 0) {
                 Ipk cek = ipkDao.findByMahasiswa(mhs);
                 if (cek == null) {
                     Ipk inputIpk = new Ipk();
                     inputIpk.setMahasiswa(mhs);
                     inputIpk.setIpk(ipk);
-                    inputIpk.setSksTotal(sks);
+                    inputIpk.setSksTotal(sksTotal);
                     ipkDao.save(inputIpk);
                 }else{
                     cek.setMahasiswa(mhs);
                     cek.setIpk(ipk);
-                    cek.setSksTotal(sks);
+                    cek.setSksTotal(sksTotal);
                     ipkDao.save(cek);
                 }
             }
@@ -261,35 +257,31 @@ public class MahasiswaService {
         Jenjang jenjang = jenjangDao.findById("01").get();
         List<Mahasiswa> mahasiswaAktif = mahasiswaDao.findByIdProdiIdJenjangAndStatusAndStatusAktifIn(jenjang, StatusRecord.AKTIF, Arrays.asList("AKTIF", "LULUS"));
         for (Mahasiswa mhs : mahasiswaAktif){
-
             if (mhs.getStatusAktif().equals("LULUS")){
                 log.info("status mahasiswa {} lulus", mhs.getNim());
                 if (Integer.parseInt(mhs.getAngkatan()) < 2015) {
                     log.info("Mahasiswa {} tidak generate ipk karna angkatan {}", mhs.getNim(), mhs.getAngkatan());
                 }else{
-                    List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
-                    listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
-                    int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
-                    log.info("sks {} : {}",mhs.getNim(), sks);
+                    JumlahSKSIPKDto ipsks = krsDetailDao.ipkSksTotal(mhs.getId());
+                    System.out.println("sks " + mhs.getNim() + " : " + ipsks.getSKS());
 
-                    if (sks != 0) {
-                        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    Integer sksTotal = ipsks.getSKS();
+                    BigDecimal ipk = ipsks.getIPK();
 
-                        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
+                    if (sksTotal != 0) {
 
                         Ipk cek = ipkDao.findByMahasiswa(mhs);
                         if (cek == null) {
                             Ipk inputIpk = new Ipk();
                             inputIpk.setMahasiswa(mhs);
                             inputIpk.setIpk(ipk);
-                            inputIpk.setSksTotal(sks);
+                            inputIpk.setSksTotal(sksTotal);
                             ipkDao.save(inputIpk);
                         }else{
                             cek.setMahasiswa(mhs);
                             cek.setIpk(ipk);
-                            cek.setSksTotal(sks);
+                            cek.setSksTotal(sksTotal);
                             ipkDao.save(cek);
                         }
                     }
@@ -309,29 +301,25 @@ public class MahasiswaService {
                 if (Integer.parseInt(mhs.getAngkatan()) < 10) {
                     log.info("Mahasiswa {} tidak generate ipk karna angkatan {}", mhs.getNim(), mhs.getAngkatan());
                 }else{
-                    List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mhs);
-                    listTranskript.removeIf(e -> e.getGrade().equals("E"));
+                    JumlahSKSIPKDto ipsks = krsDetailDao.ipkSksTotal(mhs.getId());
+                    log.info("sks {} : {}",mhs.getNim(), ipsks.getSKS());
 
-                    int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
-                    log.info("sks {} : {}",mhs.getNim(), sks);
+                    Integer sksTotal = ipsks.getSKS();
+                    BigDecimal ipk = ipsks.getIPK();
 
-                    if (sks != 0) {
-                        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                        BigDecimal ipk = mutu.divide(new BigDecimal(sks), 2, BigDecimal.ROUND_HALF_UP);
+                    if (sksTotal != 0) {
 
                         Ipk cek = ipkDao.findByMahasiswa(mhs);
                         if (cek == null) {
                             Ipk inputIpk = new Ipk();
                             inputIpk.setMahasiswa(mhs);
                             inputIpk.setIpk(ipk);
-                            inputIpk.setSksTotal(sks);
+                            inputIpk.setSksTotal(sksTotal);
                             ipkDao.save(inputIpk);
                         }else{
                             cek.setMahasiswa(mhs);
                             cek.setIpk(ipk);
-                            cek.setSksTotal(sks);
+                            cek.setSksTotal(sksTotal);
                             ipkDao.save(cek);
                         }
                     }

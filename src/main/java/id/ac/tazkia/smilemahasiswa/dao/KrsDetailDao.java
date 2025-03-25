@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.MahasiswaTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.TotalSksDto;
+import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.JumlahSKSIPKDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
@@ -1437,4 +1438,21 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "    ts.waktuPengumpulan desc\n",
                 nativeQuery = true)
         List<MahasiswaTugasDto> listMahahasiswaTugas(Jadwal jadwal, JadwalTugas jadwalTugas);
+
+        @Query(value = "select sum(sks) as SKS, round(sum(mutu)/sum(sks),2) as IPK from\n" +
+                "(select id_tahun_akademik as tahun,kode_matakuliah as kode,nama_matakuliah as matakuliah,nama_matakuliah_english as courses,jumlah_sks as sks,bobot,grade,mutu,semester\n" +
+                "from(select aa.*,coalesce(bb.bobot,0.00)as bobots \n" +
+                "\tfrom(select e.semester,b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik \n" +
+                "    from krs_detail as a inner join krs as b on a.id_krs = b.id \n" +
+                "    inner join tahun_akademik as c on b.id_tahun_akademik = c.id \n" +
+                "    inner join jadwal as d on a.id_jadwal = d.id \n" +
+                "    inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id \n" +
+                "    inner join matakuliah as f on e.id_matakuliah = f.id \n" +
+                "    where a.id_mahasiswa= ?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa \n" +
+                "    left join(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a \n" +
+                "    inner join jadwal as b on a.id_jadwal = b.id inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id \n" +
+                "    inner join matakuliah as d on c.id_matakuliah = d.id where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb \n" +
+                "    on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa where bobot > bobots order by semester, kode_matakuliah) as a", nativeQuery = true)
+        JumlahSKSIPKDto ipkSksTotal(String idMahasiswa);
+
 }
