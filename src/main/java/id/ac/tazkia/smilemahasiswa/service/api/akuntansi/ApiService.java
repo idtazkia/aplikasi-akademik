@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class ApiService {
 
     static final String ID_INSTITUT = "bed6a06c-afe9-4345-8b3f-ebe2cbb49a51";
     static final String ID_YAYASAN = "8f1438e6-8c76-4219-9060-213ba926286b";
+    static final List<String> tagihanTidakKirimAkunting = Arrays.asList("50", "81", "82");
 
     @Value("${akuntansi.baseurl}") private String baseAkuntansi;
 
@@ -101,20 +103,28 @@ public class ApiService {
         List<Tagihan> cekTagihan = tagihanDao.findByStatusAndZahirExport(StatusRecord.AKTIF, AkuntansiExport.NEW);
         if(!cekTagihan.isEmpty()){
             for (Tagihan t : cekTagihan){
-                if (t.getNilaiJenisTagihan().getKodeTagihan() != null) {
-                    SendTagihanDto tagihanDto = new SendTagihanDto();
-                    tagihanDto.setCodeTemplate(t.getNilaiJenisTagihan().getKodeTagihan());
-                    tagihanDto.setDateTransaction(String.valueOf(t.getTanggalPembuatan()));
-                    tagihanDto.setDescription("Tagihan " + t.getNilaiJenisTagihan().getJenisTagihan().getNama() + " a.n " + t.getMahasiswa().getNama() + " " + t.getMahasiswa().getNim());
-                    tagihanDto.setAmounts(t.getNilaiTagihanAsli());
-                    if (sendTagihan(tagihanDto)) {
+                if (tagihanTidakKirimAkunting.contains(t.getNilaiJenisTagihan().getJenisTagihan().getKode())){
+                    Pembayaran pembayaran = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, t);
+                    if (pembayaran != null){
                         t.setZahirExport(AkuntansiExport.SENT);
                         tagihanDao.save(t);
-                    }else{
-                        log.error("Gagal mengirim ke Akunting");
                     }
                 }else{
-                    log.debug("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
+                    if (t.getNilaiJenisTagihan().getKodeTagihan() != null) {
+                        SendTagihanDto tagihanDto = new SendTagihanDto();
+                        tagihanDto.setCodeTemplate(t.getNilaiJenisTagihan().getKodeTagihan());
+                        tagihanDto.setDateTransaction(String.valueOf(t.getTanggalPembuatan()));
+                        tagihanDto.setDescription("Tagihan " + t.getNilaiJenisTagihan().getJenisTagihan().getNama() + " a.n " + t.getMahasiswa().getNama() + " " + t.getMahasiswa().getNim());
+                        tagihanDto.setAmounts(t.getNilaiTagihanAsli());
+                        if (sendTagihan(tagihanDto)) {
+                            t.setZahirExport(AkuntansiExport.SENT);
+                            tagihanDao.save(t);
+                        }else{
+                            log.error("Gagal mengirim ke Akunting");
+                        }
+                    }else{
+                        log.debug("Kode tagihan tidak di temukan! {}, {}, {}, {}", t.getNilaiJenisTagihan().getJenisTagihan().getNama(), t.getNilaiJenisTagihan().getProdi().getNamaProdi(), t.getNilaiJenisTagihan().getProgram().getNamaProgram(), t.getNilaiJenisTagihan().getAngkatan());
+                    }
                 }
             }
         }
