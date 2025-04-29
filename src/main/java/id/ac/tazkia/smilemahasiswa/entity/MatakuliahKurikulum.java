@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,6 +22,7 @@ public class MatakuliahKurikulum {
 
     @ManyToOne
     @JoinColumn(name = "id_kurikulum")
+    @JsonBackReference
     private Kurikulum kurikulum;
 
     @ManyToOne
@@ -52,6 +54,7 @@ public class MatakuliahKurikulum {
 
     @ManyToOne
     @JoinColumn(name = "id_konsentrasi")
+    @JsonBackReference
     private Konsentrasi konsentrasi;
 
     private String silabus;

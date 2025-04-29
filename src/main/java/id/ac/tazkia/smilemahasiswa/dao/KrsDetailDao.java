@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.ListPenilaianMahasiswa;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.MahasiswaTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.TotalSksDto;
 import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.JumlahSKSIPKDto;
@@ -281,7 +282,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto (kd.mahasiswa.nim,kd.mahasiswa.nama,kd.mahasiswa.idProdi.namaProdi) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF' order by kd.mahasiswa.nim asc")
         List<StudentDto> cariJadwalMahasiswa(@Param("jadwal") Jadwal jadwal);
 
-        @Query(value = "SELECT ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id WHERE a.status='AKTIF' AND a.finalisasi ='FINAL' AND a.id_mahasiswa IS NOT NULL AND id_mahasiswa=?1", nativeQuery = true)
+        @Query(value = "SELECT ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id WHERE a.status='AKTIF' AND a.bobot IS NOT NULL AND a.finalisasi ='FINAL' AND a.id_mahasiswa IS NOT NULL AND id_mahasiswa=?1", nativeQuery = true)
         IpkDto ipk(Mahasiswa mahasiswa);
 
         @Query(value = "select round(sum(bobot*jumlah_sks)/sum(jumlah_sks),2) from (select semester,kode_matakuliah,nama_matakuliah,jumlah_sks,max(nilai_akhir),bobot,grade,bobot*jumlah_sks as mutu from ((select id_matakuliah,id_mahasiswa,max(nilai_akhir) as nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join jadwal as g on a.id_jadwal = g.id inner join matakuliah_kurikulum as b on g.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.jumlah_sks > 0  and bobot > 0 and a.status = 'AKTIF'  group by c.kode_matakuliah) union (select id_matakuliah,id_mahasiswa,nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and a.status='AKTIF' and jumlah_sks > 0))aa where grade <> 'E'  group by kode_matakuliah order by semester) t1", nativeQuery = true)
@@ -361,6 +362,16 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
         List<Object[]> transkripSemesterWithoutWaiting(Mahasiswa mahasiswa, String semester);
 
+        @Query(value = "SELECT b.semester, c.kode_matakuliah as kode, c.nama_matakuliah as matakuliah, b.jumlah_sks as sks,COALESCE(a.bobot,'waiting')AS bobot,\n"
+                        +
+                        "COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu \n" +
+                        "FROM krs_detail AS a \n" +
+                        "INNER JOIN jadwal AS g ON a.id_jadwal = g.id\n" +
+                        "INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id \n" +
+                        "INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id \n" +
+                        "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0  AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
+        List<TranskriptSementara> transkripSementaraFull(Mahasiswa mahasiswa);
+
         @Query(value = "SELECT a.id as id,b.semester as semester, c.kode_matakuliah as kode, c.nama_matakuliah as matakuliah, b.jumlah_sks as sks,COALESCE(a.bobot,'waiting')AS bobot,\n"
                 +
                 "COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu \n" +
@@ -433,7 +444,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         List<Object[]> cariIpsProdi(TahunAkademik tahunAkademik, String angkatan, String kodeTahunAkademik,
                         Prodi prodi);
 
-        @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
+        @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND bobot IS NOT NULL AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
         Long totalSks(Mahasiswa mahasiswa);
 
         @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND a.id_tahun_akademik=?2 AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
@@ -465,7 +476,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "order by kode_matakuliah", nativeQuery = true)
         BigDecimal totalSksAkhir(String mahasiswa);
 
-        @Query(value = "SELECT sum(b.jumlah_sks*a.bobot) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
+        @Query(value = "SELECT sum(b.jumlah_sks*a.bobot) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND a.bobot IS NOT NULL AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
         Long totalMutu(Mahasiswa mahasiswa);
 
         @Query(value = "select count(*) from krs_detail where status = 'AKTIF' and id_jadwal = ?1", nativeQuery = true)
@@ -1455,4 +1466,46 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                 "    on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa where bobot > bobots order by semester, kode_matakuliah) as a", nativeQuery = true)
         JumlahSKSIPKDto ipkSksTotal(String idMahasiswa);
 
+        @Query(value = "SELECT \n" +
+                "    z.mangkir, b.id_jadwal AS jadwal, e.id AS jawaban, nim, nama,\n" +
+                "    COALESCE(e.jawaban_teks, '-') AS teks, COALESCE(e.file, 'none') AS file,\n" +
+                "    COALESCE(e.nama_file, 'none') AS filename, COALESCE(nilai, 0) AS nilai,\n" +
+                "    COALESCE(waktu_pengumpulan, '-') AS waktu,\n" +
+                "    CASE \n" +
+                "        WHEN e.waktu_pengumpulan > a.tenggat_waktu THEN \n" +
+                "            CASE \n" +
+                "                WHEN TIMESTAMPDIFF(DAY, a.tenggat_waktu, e.waktu_pengumpulan) > 0 \n" +
+                "                THEN CONCAT('Telat ', TIMESTAMPDIFF(DAY, a.tenggat_waktu, e.waktu_pengumpulan), ' hari ', \n" +
+                "                            MOD(TIMESTAMPDIFF(HOUR, a.tenggat_waktu, e.waktu_pengumpulan), 24), ' jam') \n" +
+                "                WHEN TIMESTAMPDIFF(HOUR, a.tenggat_waktu, e.waktu_pengumpulan) > 0 \n" +
+                "                THEN CONCAT('Telat ', TIMESTAMPDIFF(HOUR, a.tenggat_waktu, e.waktu_pengumpulan), ' jam') \n" +
+                "                ELSE CONCAT('Telat ', TIMESTAMPDIFF(MINUTE, a.tenggat_waktu, e.waktu_pengumpulan), ' menit') \n" +
+                "            END \n" +
+                "        ELSE 'Ontime' \n" +
+                "    END AS telat\n" +
+                "FROM jadwal_tugas a\n" +
+                "JOIN sesi_kuliah b ON a.id_sesi_kuliah = b.id \n" +
+                "    AND a.id = ?1 AND a.status = 'AKTIF'\n" +
+                "JOIN krs_detail c ON b.id_jadwal = c.id_jadwal AND c.status = 'AKTIF'\n" +
+                "JOIN mahasiswa d ON c.id_mahasiswa = d.id\n" +
+                "LEFT JOIN jadwal_tugas_jawaban e ON a.id = e.id_jadwal_tugas \n" +
+                "    AND e.id_mahasiswa = c.id_mahasiswa AND e.status = 'AKTIF'\n" +
+                "LEFT JOIN (\n" +
+                "    SELECT b.id AS id_krs_detail, presdos - presensi AS mangkir \n" +
+                "    FROM (\n" +
+                "        SELECT id_jadwal, COUNT(id) AS presdos FROM presensi_dosen \n" +
+                "        WHERE id_jadwal = ?2 AND status_presensi <> 'MANGKIR' AND status = 'AKTIF'\n" +
+                "    ) a\n" +
+                "    LEFT JOIN (\n" +
+                "        SELECT COUNT(a.id) AS presensi, b.id, b.id_jadwal \n" +
+                "        FROM presensi_mahasiswa a \n" +
+                "        JOIN krs_detail b ON a.id_krs_detail = b.id \n" +
+                "            AND b.id_jadwal = ?2 AND a.status = 'AKTIF' \n" +
+                "            AND b.status = 'AKTIF' AND a.status_presensi NOT IN ('MANGKIR') \n" +
+                "        GROUP BY a.id_krs_detail\n" +
+                "    ) b ON a.id_jadwal = b.id_jadwal\n" +
+                ") z ON c.id = z.id_krs_detail\n" +
+                "ORDER BY nim;\n",
+                nativeQuery = true)
+        List<ListPenilaianMahasiswa> listMahasiswaTugas(JadwalTugas jadwalTugas, Jadwal jadwal);
 }

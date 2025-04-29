@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,6 +19,7 @@ public class Matakuliah {
 
     @ManyToOne
     @JoinColumn(name = "id_prodi")
+    @JsonBackReference
     private Prodi idProdi;
 
     private String kodeMatakuliah;

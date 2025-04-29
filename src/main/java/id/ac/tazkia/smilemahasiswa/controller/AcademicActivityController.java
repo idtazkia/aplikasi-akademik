@@ -4,15 +4,15 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponseDto;
 import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
+import id.ac.tazkia.smilemahasiswa.dto.konversi.RequestKonversiNilai;
 import id.ac.tazkia.smilemahasiswa.dto.ploting.DataPlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.ploting.ValidasiSesi;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
 import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
-import id.ac.tazkia.smilemahasiswa.service.PresensiService;
+import id.ac.tazkia.smilemahasiswa.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -50,6 +50,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+@Slf4j
 @Controller
 public class  AcademicActivityController {
 
@@ -158,6 +159,10 @@ public class  AcademicActivityController {
 
     @Value("classpath:/sample/jadwalUjian.xlsx")
     private Resource getContohExcelJadwalUjian;
+    @Autowired
+    private JadwalService jadwalService;
+    @Autowired
+    private KrsService krsService;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -360,6 +365,15 @@ public class  AcademicActivityController {
         List<Kurikulum> kurikulum = kurikulumDao.findByProdiAndStatusNotIn(prodi, Arrays.asList(StatusRecord.HAPUS));
 
         return kurikulum;
+
+    }
+
+    @GetMapping("/api/matakuliahkurikulum")
+    @ResponseBody
+    public List<MatakuliahKurikulum> matakuliahKurikulumList(@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) Kurikulum kurikulum){
+        List<MatakuliahKurikulum> matakuliahKurikulumList = matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemesterIn(Arrays.asList(StatusRecord.HAPUS),kurikulum, prodi, Arrays.asList(1,2,3,4,5,6,7,8,9));
+
+        return matakuliahKurikulumList;
 
     }
 
@@ -1659,11 +1673,10 @@ public class  AcademicActivityController {
 
         model.addAttribute("krsDetail", new KrsDetail());
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
-//        Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("mahasiswa", mhs);
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
 
     }
 
@@ -2232,5 +2245,58 @@ public class  AcademicActivityController {
         }
     }
 
+    @PostMapping("/api/create-jadwal-konversi")
+    @ResponseBody
+    public ResponseEntity<BaseResponseDto> createJadwalKonversi(@RequestBody RequestKonversiNilai request) {
+        try {
+            String mahasiswaId = request.getMahasiswa();
+            String matakuliahId = request.getMatakuliah();
+
+            if (mahasiswaId == null || matakuliahId == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponseDto.builder()
+                        .responseCode("ERR400")
+                        .responseMessage("Mahasiswa or Matakuliah ID not found")
+                        .build());
+            }
+
+            Mahasiswa mahasiswa = mahasiswaDao.findById(mahasiswaId).orElseThrow(() ->
+                    new IllegalArgumentException("Mahasiswa ID not found"));
+            MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(matakuliahId).orElseThrow(() ->
+                    new IllegalArgumentException("Matakuliah ID not found"));
+            Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(
+                    mahasiswa,
+                    tahunAkademikDao.findByStatus(StatusRecord.AKTIF),
+                    StatusRecord.AKTIF
+            );
+
+            if (krs == null) {
+                krs = krsService.createKrs(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            }
+
+            Jadwal jadwal = jadwalService.createJadwalKonversi(matakuliahKurikulum, mahasiswa.getIdProdi());
+            KrsDetail krsDetail=  krsService.createKrsDetailKonversi(krs, jadwal, request.getGrade());
+
+            Konversi konversi = new Konversi();
+            konversi.setKrsDetail(krsDetail);
+            konversi.setNamaMatakuliahLama(request.getMatakuliahLama());
+            konversi.setStatus(StatusRecord.AKTIF);
+            konversiDao.save(konversi);
+
+            return ResponseEntity.ok(BaseResponseDto.builder()
+                    .responseCode("200")
+                    .responseMessage("Konversi created successfully")
+                    .build());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponseDto.builder()
+                    .responseCode("ERR400")
+                    .responseMessage(e.getMessage())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDto.builder()
+                    .responseCode("ERR500")
+                    .responseMessage("Error: " + e.getMessage())
+                    .build());
+        }
+    }
 
 }
