@@ -52,7 +52,7 @@ import java.util.*;
 
 @Slf4j
 @Controller
-public class  AcademicActivityController {
+public class AcademicActivityController {
 
     @Value("${upload.silabus}")
     private String uploadFolder;
@@ -156,7 +156,6 @@ public class  AcademicActivityController {
     @Autowired
     private MahasiswaService mahasiswaService;
 
-
     @Value("classpath:/sample/jadwalUjian.xlsx")
     private Resource getContohExcelJadwalUjian;
     @Autowired
@@ -164,7 +163,7 @@ public class  AcademicActivityController {
     @Autowired
     private KrsService krsService;
 
-    //    Attribute
+    // Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
         return mahasiswaDao.cariAngkatan();
@@ -200,34 +199,34 @@ public class  AcademicActivityController {
         return hariDao.findAll();
     }
 
-    //    API
+    // API
     @GetMapping("/api/prodi")
     @ResponseBody
-    public Page<Prodi> cariProdi(@RequestParam(required = false) String search, Pageable page){
-        if(!StringUtils.hasText(search)) {
-            return prodiDao.findByStatus(StatusRecord.AKTIF,page);
+    public Page<Prodi> cariProdi(@RequestParam(required = false) String search, Pageable page) {
+        if (!StringUtils.hasText(search)) {
+            return prodiDao.findByStatus(StatusRecord.AKTIF, page);
         }
-        return prodiDao.findByStatusAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.AKTIF,search, page);
+        return prodiDao.findByStatusAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.AKTIF, search, page);
 
     }
 
     @GetMapping("/getdata/ploting")
     @ResponseBody
-    public RecordPloting getDataPloting(@RequestParam(required = false)TahunAkademik tahunAkademik,@RequestParam(required = false)List<String> kelas){
-
+    public RecordPloting getDataPloting(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) List<String> kelas) {
 
         RecordPloting response = new RecordPloting();
         if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
             List<ListPlotingDto> plotingGanjil = matakuliahKurikulumDao.plotingDosenGanjil(tahunAkademik, kelas);
-            List<ListPlotingDto> addGenap  = matakuliahKurikulumDao.addPlotingDosenGenap(tahunAkademik, kelas);
+            List<ListPlotingDto> addGenap = matakuliahKurikulumDao.addPlotingDosenGenap(tahunAkademik, kelas);
             response.setTotal(plotingGanjil.size());
             response.setTotalNotFiltered(plotingGanjil.size());
             plotingGanjil.addAll(addGenap);
             response.setRows(plotingGanjil);
         }
-        if (tahunAkademik.getJenis() == StatusRecord.GENAP){
+        if (tahunAkademik.getJenis() == StatusRecord.GENAP) {
             List<ListPlotingDto> plotinggenap = matakuliahKurikulumDao.plotingDosenGenap(tahunAkademik, kelas);
-            List<ListPlotingDto> addGanjil  = matakuliahKurikulumDao.addPlotingDosenGanjil(tahunAkademik, kelas);
+            List<ListPlotingDto> addGanjil = matakuliahKurikulumDao.addPlotingDosenGanjil(tahunAkademik, kelas);
             response.setTotal(plotinggenap.size());
             response.setTotalNotFiltered(plotinggenap.size());
             plotinggenap.addAll(addGanjil);
@@ -238,14 +237,14 @@ public class  AcademicActivityController {
 
     @GetMapping("/getdata-ploting")
     @ResponseBody
-    public List<ListPlotingDto> getDataPloting1(@RequestParam(required = false)TahunAkademik tahunAkademik,@RequestParam(required = false)List<String> kelas){
-
+    public List<ListPlotingDto> getDataPloting1(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) List<String> kelas) {
 
         if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
             List<ListPlotingDto> plotingGanjil = matakuliahKurikulumDao.plotingDosenGanjil(tahunAkademik, kelas);
             return plotingGanjil;
 
-        }else {
+        } else {
             List<ListPlotingDto> plotinggenap = matakuliahKurikulumDao.plotingDosenGenap(tahunAkademik, kelas);
             return plotinggenap;
 
@@ -254,37 +253,38 @@ public class  AcademicActivityController {
 
     @GetMapping("/select2/lecture")
     @ResponseBody
-    public List<SelectDosen> cariDosen(@RequestParam String search,TahunAkademik tahun){
+    public List<SelectDosen> cariDosen(@RequestParam String search, TahunAkademik tahun) {
 
-        return dosenDao.searchPlotingDosen(tahun,search);
+        return dosenDao.searchPlotingDosen(tahun, search);
     }
 
     @GetMapping("/lectures")
     @ResponseBody
-    public List<SelectDosen> cariDosen(@RequestParam String search){
+    public List<SelectDosen> cariDosen(@RequestParam String search) {
 
         return dosenDao.searchDosen(search);
     }
 
     @GetMapping("/select2/team/{id}")
     @ResponseBody
-    public List<SelectDosen> cariTeamTeaching(@PathVariable String id ,@RequestParam String search,TahunAkademik tahun){
+    public List<SelectDosen> cariTeamTeaching(@PathVariable String id, @RequestParam String search,
+            TahunAkademik tahun) {
 
-        return dosenDao.searchPlotingTeam(tahun,search,id);
+        return dosenDao.searchPlotingTeam(tahun, search, id);
     }
 
     @GetMapping("/detail/lecture")
     @ResponseBody
-    public SelectDosen detailDOsen(@RequestParam String search,@RequestParam TahunAkademik tahun){
+    public SelectDosen detailDOsen(@RequestParam String search, @RequestParam TahunAkademik tahun) {
 
-        return dosenDao.detailDosen(tahun,dosenDao.findById(search).get());
+        return dosenDao.detailDosen(tahun, dosenDao.findById(search).get());
     }
 
     @GetMapping("/detail-ploting")
     @ResponseBody
-    public DetailPlotinng detailPloting(@RequestParam String id){
+    public DetailPlotinng detailPloting(@RequestParam String id) {
         Optional<Jadwal> jadwal = jadwalDao.findById(id);
-        if (jadwal.isEmpty()){
+        if (jadwal.isEmpty()) {
             DetailPlotinng detailPlotinng = new DetailPlotinng();
             detailPlotinng.setId("-");
             detailPlotinng.setKodeMatakuliah("-");
@@ -297,7 +297,7 @@ public class  AcademicActivityController {
             detailPlotinng.setIdKelas("-");
             detailPlotinng.setValidasi(id);
             return detailPlotinng;
-        }else {
+        } else {
             DetailPlotinng detailPlotinng = new DetailPlotinng();
             detailPlotinng.setId(jadwal.get().getId());
             detailPlotinng.setKodeMatakuliah(jadwal.get().getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
@@ -308,7 +308,8 @@ public class  AcademicActivityController {
             detailPlotinng.setIdDosen(jadwal.get().getDosen().getId());
             detailPlotinng.setDosen(jadwal.get().getDosen().getKaryawan().getNamaKaryawan());
             detailPlotinng.setIdKelas(jadwal.get().getKelas().getId());
-            detailPlotinng.setValidasi(jadwal.get().getKelas().getNamaKelas()+"-"+jadwal.get().getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+            detailPlotinng.setValidasi(jadwal.get().getKelas().getNamaKelas() + "-"
+                    + jadwal.get().getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
             return detailPlotinng;
         }
 
@@ -316,7 +317,7 @@ public class  AcademicActivityController {
 
     @GetMapping("/delete/ploting")
     @ResponseBody
-    public Jadwal detailDOsen(@RequestParam Jadwal jadwal){
+    public Jadwal detailDOsen(@RequestParam Jadwal jadwal) {
         jadwal.setStatus(StatusRecord.HAPUS);
         jadwalDao.save(jadwal);
         return jadwal;
@@ -324,44 +325,43 @@ public class  AcademicActivityController {
 
     @GetMapping("/detail/matkur")
     @ResponseBody
-    public MatakuliahKurikulum detailMatkur(@RequestParam String search){
+    public MatakuliahKurikulum detailMatkur(@RequestParam String search) {
 
         return matakuliahKurikulumDao.findById(search).get();
     }
 
     @GetMapping("/search/ploting")
     @ResponseBody
-    public List<ListPlotingDto> searchPloting(@RequestParam TahunAkademik tahunAkademik,@RequestParam(required = false)List<String> kelas,@RequestParam(required = false)String search){
+    public List<ListPlotingDto> searchPloting(@RequestParam TahunAkademik tahunAkademik,
+            @RequestParam(required = false) List<String> kelas, @RequestParam(required = false) String search) {
 
-        if (tahunAkademik.getJenis() == StatusRecord.GANJIL){
-            return matakuliahKurikulumDao.searchPlotingGenap(tahunAkademik,kelas,search);
-        }else if (tahunAkademik.getJenis() == StatusRecord.GENAP){
-            return matakuliahKurikulumDao.searchPlotingGanjil(tahunAkademik,kelas,search);
-        }else {
-            return matakuliahKurikulumDao.searchPlotingPendek(tahunAkademik,kelas,search);
+        if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
+            return matakuliahKurikulumDao.searchPlotingGenap(tahunAkademik, kelas, search);
+        } else if (tahunAkademik.getJenis() == StatusRecord.GENAP) {
+            return matakuliahKurikulumDao.searchPlotingGanjil(tahunAkademik, kelas, search);
+        } else {
+            return matakuliahKurikulumDao.searchPlotingPendek(tahunAkademik, kelas, search);
         }
-
 
     }
 
-
     @GetMapping("/select2/course")
     @ResponseBody
-    public List<CourseDto> cariMatkul(@RequestParam String search){
+    public List<CourseDto> cariMatkul(@RequestParam String search) {
 
         return matakuliahDao.cariMatakuliah(search);
     }
 
     @GetMapping("/course/detail")
     @ResponseBody
-    public Matakuliah detailMatkul(@RequestParam String search){
+    public Matakuliah detailMatkul(@RequestParam String search) {
 
         return matakuliahDao.findById(search).get();
     }
 
     @GetMapping("/api/prodikurikulum")
     @ResponseBody
-    public List<Kurikulum> prodiList(@RequestParam(required = false) Prodi prodi){
+    public List<Kurikulum> prodiList(@RequestParam(required = false) Prodi prodi) {
         List<Kurikulum> kurikulum = kurikulumDao.findByProdiAndStatusNotIn(prodi, Arrays.asList(StatusRecord.HAPUS));
 
         return kurikulum;
@@ -370,8 +370,11 @@ public class  AcademicActivityController {
 
     @GetMapping("/api/matakuliahkurikulum")
     @ResponseBody
-    public List<MatakuliahKurikulum> matakuliahKurikulumList(@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) Kurikulum kurikulum){
-        List<MatakuliahKurikulum> matakuliahKurikulumList = matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemesterIn(Arrays.asList(StatusRecord.HAPUS),kurikulum, prodi, Arrays.asList(1,2,3,4,5,6,7,8,9));
+    public List<MatakuliahKurikulum> matakuliahKurikulumList(@RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) Kurikulum kurikulum) {
+        List<MatakuliahKurikulum> matakuliahKurikulumList = matakuliahKurikulumDao
+                .findByStatusNotInAndKurikulumAndKurikulumProdiAndSemesterIn(Arrays.asList(StatusRecord.HAPUS),
+                        kurikulum, prodi, Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
 
         return matakuliahKurikulumList;
 
@@ -379,51 +382,52 @@ public class  AcademicActivityController {
 
     @GetMapping("/api/matakuliah")
     @ResponseBody
-    public Page<Matakuliah> cariData(@RequestParam(required = false) String search, Pageable page){
-        if(!StringUtils.hasText(search)) {
+    public Page<Matakuliah> cariData(@RequestParam(required = false) String search, Pageable page) {
+        if (!StringUtils.hasText(search)) {
             return matakuliahDao.findAll(page);
         }
         return matakuliahDao.findByNamaMatakuliahContainingIgnoreCase(search, page);
 
     }
 
-    @GetMapping({"/api/kurikulum"})
+    @GetMapping({ "/api/kurikulum" })
     @ResponseBody
-    public List<Kurikulum> findByProdiAndName(@RequestParam(required = false) String namaProdi, @RequestParam String search,Pageable page){
-        if(!StringUtils.hasText(search)) {
+    public List<Kurikulum> findByProdiAndName(@RequestParam(required = false) String namaProdi,
+            @RequestParam String search, Pageable page) {
+        if (!StringUtils.hasText(search)) {
             return null;
         }
-        return kurikulumDao.findByStatusNotInAndProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(Arrays.asList(StatusRecord.HAPUS),prodiDao.findById(namaProdi).get(), search);
+        return kurikulumDao.findByStatusNotInAndProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(
+                Arrays.asList(StatusRecord.HAPUS), prodiDao.findById(namaProdi).get(), search);
     }
 
     @GetMapping("/api/sesi")
     @ResponseBody
-    public List<Sesi> cariSesi(@RequestParam(required = false) String idHari,@RequestParam(required = false) String kelas,
-                               @RequestParam(required = false) String idRuangan, @RequestParam(required = false) Integer sks,
-                               @RequestParam(required = false) String search, @RequestParam(required = false) String dosen){
+    public List<Sesi> cariSesi(@RequestParam(required = false) String idHari,
+            @RequestParam(required = false) String kelas,
+            @RequestParam(required = false) String idRuangan, @RequestParam(required = false) Integer sks,
+            @RequestParam(required = false) String search, @RequestParam(required = false) String dosen) {
         Ruangan ruangan = ruanganDao.findById(idRuangan).get();
         Kelas k = kelasDao.findById(kelas).get();
         Hari hari = hariDao.findById(idHari).get();
         Dosen d = dosenDao.findById(dosen).get();
-        List<SesiDto> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan,k,d);
+        List<SesiDto> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), hari, ruangan, k,
+                d);
         List<String> stringList = new ArrayList<>();
         for (SesiDto s : jadwal) {
             stringList.add(s.getSesi());
         }
 
-
-
-        if (jadwal == null || jadwal.isEmpty()){
+        if (jadwal == null || jadwal.isEmpty()) {
             return sesiDao.findBySks(sks);
-        }else {
+        } else {
             return sesiDao.findBySesiInAndSks(stringList, sks);
         }
     }
 
     @GetMapping("/api/waktu")
     @ResponseBody
-    public Sesi sesi(@RequestParam(required = false) String id){
-
+    public Sesi sesi(@RequestParam(required = false) String id) {
 
         return sesiDao.findById(id).get();
 
@@ -432,7 +436,7 @@ public class  AcademicActivityController {
     @GetMapping("/api/tahun")
     @ResponseBody
     public List<MatkulKonversiDto> tahun(@RequestParam(required = false) String idTahun,
-                                         @RequestParam(required = false) String idProdi) {
+            @RequestParam(required = false) String idProdi) {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
         Prodi p = prodiDao.findById(idProdi).get();
@@ -444,20 +448,20 @@ public class  AcademicActivityController {
     @GetMapping("/api/jadwal")
     @ResponseBody
     public KrsDetail krsDetail(@RequestParam(required = false) String id,
-                               @RequestParam(required = false) String idTahun,
-                               @RequestParam(required = false) String idMahasiswa){
+            @RequestParam(required = false) String idTahun,
+            @RequestParam(required = false) String idMahasiswa) {
 
         Jadwal jadwal = jadwalDao.findById(id).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
         Mahasiswa mhs = mahasiswaDao.findByNim(idMahasiswa);
-        KrsDetail krsDetail = krsDetailDao.findByJadwalAndTahunAkademikAndMahasiswaAndStatus(jadwal, tahunAkademik, mhs, StatusRecord.AKTIF);
+        KrsDetail krsDetail = krsDetailDao.findByJadwalAndTahunAkademikAndMahasiswaAndStatus(jadwal, tahunAkademik, mhs,
+                StatusRecord.AKTIF);
 
         return krsDetail;
 
     }
 
-
-//    Academic Year
+    // Academic Year
 
     @GetMapping("/academic/year/list")
     public void academicList(Model model, @PageableDefault(size = 10) Pageable page, String search) {
@@ -466,7 +470,9 @@ public class  AcademicActivityController {
         statusRecords.add(StatusRecord.NONAKTIF);
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", tahunAkademikDao.findByStatusInAndNamaTahunAkademikContainingIgnoreCaseOrderByKodeTahunAkademikDesc(statusRecords, search, page));
+            model.addAttribute("list",
+                    tahunAkademikDao.findByStatusInAndNamaTahunAkademikContainingIgnoreCaseOrderByKodeTahunAkademikDesc(
+                            statusRecords, search, page));
         } else {
             model.addAttribute("list", tahunAkademikDao.cariTahunAkademik(StatusRecord.HAPUS, page));
 
@@ -476,28 +482,29 @@ public class  AcademicActivityController {
     @GetMapping("/academic/year/form")
     public void academicForm(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("tahunAkademik", new TahunAkademik());
-        TahunAkademik tahunSebelum = tahunAkademikDao.findTopByStatusNotInOrderByKodeTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
+        TahunAkademik tahunSebelum = tahunAkademikDao
+                .findTopByStatusNotInOrderByKodeTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
 
         String kode;
         if (tahunSebelum.getJenis() == StatusRecord.PENDEK) {
             Integer ta = new Integer(tahunSebelum.getTahun());
             Integer t = ta + 1;
             kode = t + "1";
-        }else{
+        } else {
             Integer kd = new Integer(tahunSebelum.getKodeTahunAkademik());
             Integer k = kd + 1;
             kode = k.toString();
         }
 
-        Integer tahun = new Integer(kode.substring(0,4));
-        Integer next = tahun+1;
-        String kodeJenis = kode.substring(4,5);
+        Integer tahun = new Integer(kode.substring(0, 4));
+        Integer next = tahun + 1;
+        String kodeJenis = kode.substring(4, 5);
         String jenis = null;
-        if (kodeJenis.equals("1")){
+        if (kodeJenis.equals("1")) {
             jenis = "Ganjil";
         } else if (kodeJenis.equals("2")) {
             jenis = "Genap";
-        }else if (kodeJenis.equals("3")){
+        } else if (kodeJenis.equals("3")) {
             jenis = "Pendek";
         }
         String nama = tahun + "/" + next + " Semester " + jenis;
@@ -518,18 +525,18 @@ public class  AcademicActivityController {
 
     @PostMapping("/academic/year/form")
     public String prosesForm(@RequestParam String kodeTahunAkademik,
-                             @RequestParam String tanggalMulai, @RequestParam String tanggalMulaiKrs, @RequestParam String tanggalMulaiKuliah,
-                             @RequestParam String tanggalMulaiUts, @RequestParam String tanggalMulaiUas,
-                             @RequestParam String tanggalMulaiNilai, @RequestParam String namaTahunAkademik,
-                             @RequestParam String tanggalSelesai, @RequestParam String tanggalSelesaiKrs,
-                             @RequestParam String tanggalSelesaiKuliah, @RequestParam String tanggalSelesaiUts,
-                             @RequestParam String tanggalSelesaiUas, @RequestParam String tanggalSelesaiNilai,
-                             @RequestParam StatusRecord status, @RequestParam(required = false) String id){
+            @RequestParam String tanggalMulai, @RequestParam String tanggalMulaiKrs,
+            @RequestParam String tanggalMulaiKuliah,
+            @RequestParam String tanggalMulaiUts, @RequestParam String tanggalMulaiUas,
+            @RequestParam String tanggalMulaiNilai, @RequestParam String namaTahunAkademik,
+            @RequestParam String tanggalSelesai, @RequestParam String tanggalSelesaiKrs,
+            @RequestParam String tanggalSelesaiKuliah, @RequestParam String tanggalSelesaiUts,
+            @RequestParam String tanggalSelesaiUas, @RequestParam String tanggalSelesaiNilai,
+            @RequestParam StatusRecord status, @RequestParam(required = false) String id) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-
-        if (id != null){
+        if (id != null) {
             TahunAkademik tahunAkademik = tahunAkademikDao.findById(id).get();
             tahunAkademik.setKodeTahunAkademik(tahunAkademik.getKodeTahunAkademik());
             tahunAkademik.setTanggalMulai(LocalDate.parse(tanggalMulai, formatter));
@@ -552,7 +559,7 @@ public class  AcademicActivityController {
 
             List<TahunAkademikProdi> akademikProdi = tahunProdiDao.findByTahunAkademik(tahunAkademik);
 
-            if (akademikProdi != null){
+            if (akademikProdi != null) {
                 for (TahunAkademikProdi tahunProdi : akademikProdi) {
                     tahunProdi.setMulaiKuliah(tahunAkademik.getTanggalMulaiKuliah());
                     tahunProdi.setMulaiNilai(tahunAkademik.getTanggalMulaiNilai());
@@ -568,7 +575,7 @@ public class  AcademicActivityController {
                 }
             }
 
-            if(akademikProdi ==null||akademikProdi.isEmpty())
+            if (akademikProdi == null || akademikProdi.isEmpty())
 
             {
                 List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
@@ -592,20 +599,21 @@ public class  AcademicActivityController {
                 }
             }
 
-        }else {
+        } else {
             TahunAkademik tahunAkademik = new TahunAkademik();
             List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
 
-            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(
+                    StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
 
-            String tahun = kodeTahunAkademik.substring(0,4);
-            String kode = kodeTahunAkademik.substring(4,5);
+            String tahun = kodeTahunAkademik.substring(0, 4);
+            String kode = kodeTahunAkademik.substring(4, 5);
             StatusRecord jenis = null;
-            if (kode.equals("1")){
+            if (kode.equals("1")) {
                 jenis = StatusRecord.GANJIL;
             } else if (kode.equals("2")) {
                 jenis = StatusRecord.GENAP;
-            }else if (kode.equals("3")){
+            } else if (kode.equals("3")) {
                 jenis = StatusRecord.PENDEK;
             }
 
@@ -625,13 +633,13 @@ public class  AcademicActivityController {
             tahunAkademik.setTanggalSelesaiUts(LocalDate.parse(tanggalSelesaiUts, formatter));
             tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
             tahunAkademik.setTahun(tahun);
-            if (jenis == StatusRecord.PENDEK){
+            if (jenis == StatusRecord.PENDEK) {
                 tahunAkademik.setStatus(StatusRecord.PRAAKTIF);
-            }else{
+            } else {
                 tahunAkademik.setStatus(status);
             }
             tahunAkademikDao.save(tahunAkademik);
-            for (EdomQuestion question : edomQuestion){
+            for (EdomQuestion question : edomQuestion) {
                 EdomQuestion edomQues = new EdomQuestion();
                 edomQues.setStatus(StatusRecord.AKTIF);
                 edomQues.setBahasa(question.getBahasa());
@@ -641,7 +649,7 @@ public class  AcademicActivityController {
                 edomQuestionDao.save(edomQues);
             }
 
-            for (Prodi prodi : prodis){
+            for (Prodi prodi : prodis) {
                 TahunAkademikProdi tahunProdi = new TahunAkademikProdi();
                 tahunProdi.setMulaiKuliah(tahunAkademik.getTanggalMulaiKuliah());
                 tahunProdi.setMulaiNilai(tahunAkademik.getTanggalMulaiNilai());
@@ -672,11 +680,10 @@ public class  AcademicActivityController {
     }
 
     @PostMapping("/academic/year/active")
-    public String academicActive(@RequestParam TahunAkademik tahunAkademik){
+    public String academicActive(@RequestParam TahunAkademik tahunAkademik) {
         List<TahunAkademikProdi> tahunAkademikProdi = tahunProdiDao.findByStatus(StatusRecord.AKTIF);
 
-        for(
-                TahunAkademikProdi tahunProdi :tahunAkademikProdi)
+        for (TahunAkademikProdi tahunProdi : tahunAkademikProdi)
 
         {
             tahunProdi.setStatus(StatusRecord.NONAKTIF);
@@ -684,7 +691,7 @@ public class  AcademicActivityController {
         }
 
         TahunAkademik thnAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if(thnAkademik !=null)
+        if (thnAkademik != null)
 
         {
             thnAkademik.setStatus(StatusRecord.NONAKTIF);
@@ -697,7 +704,7 @@ public class  AcademicActivityController {
 
         TahunAkademik akademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         List<TahunAkademikProdi> akademikProdi = tahunProdiDao.findByTahunAkademik(akademik);
-        if(akademikProdi !=null)
+        if (akademikProdi != null)
 
         {
             for (TahunAkademikProdi tahun : akademikProdi) {
@@ -705,7 +712,7 @@ public class  AcademicActivityController {
                 tahunProdiDao.save(tahun);
             }
         }
-        if(akademikProdi ==null||akademikProdi.isEmpty())
+        if (akademikProdi == null || akademikProdi.isEmpty())
 
         {
             List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
@@ -729,13 +736,12 @@ public class  AcademicActivityController {
             }
         }
 
-
-        return"redirect:list";
+        return "redirect:list";
 
     }
 
     @GetMapping("/academic/prodi/list")
-    public void yearProdiList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik){
+    public void yearProdiList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik) {
         model.addAttribute("selectedTahun", tahunAkademik);
         if (tahunAkademik != null) {
             model.addAttribute("search", tahunAkademik);
@@ -745,43 +751,40 @@ public class  AcademicActivityController {
         model.addAttribute("listYearProdi", tahunProdiDao.listTahaunAkademikProdi());
     }
 
-
-//Curriculum
+    // Curriculum
 
     @GetMapping("/academic/curriculum/list")
-    public void curriculumList(Model model,@RequestParam(required = false) Prodi prodi,
-                               @PageableDefault(direction = Sort.Direction.DESC,sort = "tahunKurikulum") Pageable page){
+    public void curriculumList(Model model, @RequestParam(required = false) Prodi prodi,
+            @PageableDefault(direction = Sort.Direction.DESC, sort = "tahunKurikulum") Pageable page) {
         List<StatusRecord> statusRecords = new ArrayList<>();
         statusRecords.add(StatusRecord.AKTIF);
         statusRecords.add(StatusRecord.NONAKTIF);
-        model.addAttribute("prodi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("prodi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
-        if (prodi != null){
-            model.addAttribute("selected",prodi);
-            model.addAttribute("kurikulum",kurikulumDao.findByStatusInAndProdi(statusRecords,prodi));
+        if (prodi != null) {
+            model.addAttribute("selected", prodi);
+            model.addAttribute("kurikulum", kurikulumDao.findByStatusInAndProdi(statusRecords, prodi));
         }
     }
 
     @Transactional
     @PostMapping("/academic/curriculum/aktif")
-    public String aktifKurikulum(@RequestParam Kurikulum kurikulum){
+    public String aktifKurikulum(@RequestParam Kurikulum kurikulum) {
         kurikulumDao.nonaktifKurikulum(kurikulum.getProdi());
-
 
         kurikulum.setStatus(StatusRecord.AKTIF);
         kurikulumDao.save(kurikulum);
 
-        return "redirect:list?prodi="+kurikulum.getProdi().getId();
+        return "redirect:list?prodi=" + kurikulum.getProdi().getId();
     }
 
     @GetMapping("/academic/curriculum/form")
-    public void curriculumForm(Model model,@RequestParam(required = false, name = "id")
-            Kurikulum kurikulum){
-        model.addAttribute("prodi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+    public void curriculumForm(Model model, @RequestParam(required = false, name = "id") Kurikulum kurikulum) {
+        model.addAttribute("prodi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("kurikulum", new Kurikulum());
 
-        if (kurikulum != null){
-            model.addAttribute("kurikulum",kurikulum);
+        if (kurikulum != null) {
+            model.addAttribute("kurikulum", kurikulum);
         }
     }
 
@@ -790,56 +793,62 @@ public class  AcademicActivityController {
         kurikulum.setJumlahSesi(2);
         kurikulumDao.save(kurikulum);
 
-        return "redirect:list?prodi="+kurikulum.getProdi().getId();
+        return "redirect:list?prodi=" + kurikulum.getProdi().getId();
     }
-
 
     @PostMapping("/academic/curriculum/delete")
     public String deleteCurriculum(@Valid Kurikulum kurikulum) {
         kurikulum.setStatus(StatusRecord.HAPUS);
         kurikulumDao.save(kurikulum);
 
-        return "redirect:list?prodi="+kurikulum.getProdi().getId();
+        return "redirect:list?prodi=" + kurikulum.getProdi().getId();
     }
 
-//    Courses
-
+    // Courses
 
     @GetMapping("/academic/courses/list")
-    public void listCourses(Model model,@RequestParam(required = false) String search, Pageable pageable){
-        if (!StringUtils.isEmpty(search)){
+    public void listCourses(Model model, @RequestParam(required = false) String search, Pageable pageable) {
+        if (!StringUtils.isEmpty(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("courses", matakuliahDao.findByNamaMatakuliahContainingIgnoreCaseOrNamaMatakuliahEnglishContainingIgnoreCase(search,search,pageable));
-        }else {
-            model.addAttribute("courses", matakuliahDao.findByStatusNotInOrderByNamaMatakuliahAsc(Arrays.asList(StatusRecord.HAPUS),pageable));
+            model.addAttribute("courses",
+                    matakuliahDao.findByNamaMatakuliahContainingIgnoreCaseOrNamaMatakuliahEnglishContainingIgnoreCase(
+                            search, search, pageable));
+        } else {
+            model.addAttribute("courses", matakuliahDao
+                    .findByStatusNotInOrderByNamaMatakuliahAsc(Arrays.asList(StatusRecord.HAPUS), pageable));
         }
     }
 
     @GetMapping("/academic/courses/form")
-    public void formCourses(Model model,@RequestParam(required = false, name = "id")  Matakuliah matakuliah , Authentication authentication){
+    public void formCourses(Model model, @RequestParam(required = false, name = "id") Matakuliah matakuliah,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         model.addAttribute("user", user);
         model.addAttribute("courses", new Matakuliah());
 
-        if (matakuliah != null){
-            model.addAttribute("courses",matakuliah);
+        if (matakuliah != null) {
+            model.addAttribute("courses", matakuliah);
             Integer usedMatkul = matakuliahKurikulumDao.countByMatakuliahAndStatus(matakuliah, StatusRecord.AKTIF);
             if (usedMatkul != 0) {
-                model.addAttribute("used", "Tidak bisa di edit karena matakuliah sudah di gunakan di matakuliah kurikulum!");
+                model.addAttribute("used",
+                        "Tidak bisa di edit karena matakuliah sudah di gunakan di matakuliah kurikulum!");
             }
         }
     }
 
     @GetMapping("/academic/courses/detail")
-    public void detailCourses(Model model,@RequestParam(name = "id") Matakuliah matakuliah){
-        if (matakuliah != null){
+    public void detailCourses(Model model, @RequestParam(name = "id") Matakuliah matakuliah) {
+        if (matakuliah != null) {
             model.addAttribute("matakuliah", matakuliah);
-            model.addAttribute("listMatakuliah", mataKuliahSetaraDao.findByStatusAndMatakuliahOrStatusAndMatakuliahSetara(StatusRecord.AKTIF, matakuliah, StatusRecord.AKTIF, matakuliah));
+            model.addAttribute("listMatakuliah",
+                    mataKuliahSetaraDao.findByStatusAndMatakuliahOrStatusAndMatakuliahSetara(StatusRecord.AKTIF,
+                            matakuliah, StatusRecord.AKTIF, matakuliah));
         }
     }
 
     @PostMapping("/academic/courses/setara/delete")
-    public String deleteSetaraByMatakuliah(@RequestParam MatakuliahSetara matakuliahSetara, @RequestParam Matakuliah matakuliah, Authentication authentication){
+    public String deleteSetaraByMatakuliah(@RequestParam MatakuliahSetara matakuliahSetara,
+            @RequestParam Matakuliah matakuliah, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
 
         matakuliahSetara.setStatus(StatusRecord.HAPUS);
@@ -847,7 +856,7 @@ public class  AcademicActivityController {
         matakuliahSetara.setUserDelete(user.getUsername());
         mataKuliahSetaraDao.save(matakuliahSetara);
 
-        return "redirect:../detail?id="+matakuliah.getId();
+        return "redirect:../detail?id=" + matakuliah.getId();
     }
 
     @PostMapping("/academic/courses/form")
@@ -866,49 +875,65 @@ public class  AcademicActivityController {
         return "redirect:list?";
     }
 
-    //    Curriculum Courses
+    // Curriculum Courses
 
     @GetMapping("/academic/curriculumCourses/list")
     public void listCurriculumCourses(Model model, @RequestParam(required = false) Prodi prodi,
-                                      @RequestParam(required = false) Kurikulum kurikulum){
-        model.addAttribute("listProdi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+            @RequestParam(required = false) Kurikulum kurikulum) {
+        model.addAttribute("listProdi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listKurikulum", kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
-        if (prodi != null && kurikulum != null){
-            List<Kurikulum> k = kurikulumDao.findByProdiAndStatusNotInAndIdNotIn(prodi,Arrays.asList(StatusRecord.HAPUS),Arrays.asList(kurikulum.getId()));
+        if (prodi != null && kurikulum != null) {
+            List<Kurikulum> k = kurikulumDao.findByProdiAndStatusNotInAndIdNotIn(prodi,
+                    Arrays.asList(StatusRecord.HAPUS), Arrays.asList(kurikulum.getId()));
             model.addAttribute("kurikulum", k);
-            model.addAttribute("selected",prodi);
-            model.addAttribute("kurikulumSelected",kurikulum);
-            model.addAttribute("satu",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,1));
-            model.addAttribute("dua",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,2));
-            model.addAttribute("tiga",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,3));
-            model.addAttribute("empat",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,4));
-            model.addAttribute("lima",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,5));
-            model.addAttribute("enam",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,6));
-            model.addAttribute("tujuh",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,7));
-            model.addAttribute("delapan",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,8));
-            model.addAttribute("sembilan",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(Arrays.asList(StatusRecord.HAPUS),kurikulum,prodi,9));
+            model.addAttribute("selected", prodi);
+            model.addAttribute("kurikulumSelected", kurikulum);
+            model.addAttribute("satu", matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                    Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 1));
+            model.addAttribute("dua", matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                    Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 2));
+            model.addAttribute("tiga", matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                    Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 3));
+            model.addAttribute("empat",
+                    matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                            Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 4));
+            model.addAttribute("lima", matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                    Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 5));
+            model.addAttribute("enam", matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                    Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 6));
+            model.addAttribute("tujuh",
+                    matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                            Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 7));
+            model.addAttribute("delapan",
+                    matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                            Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 8));
+            model.addAttribute("sembilan",
+                    matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
+                            Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 9));
         }
     }
 
     @GetMapping("/academic/curriculumCourses/form")
-    public void formCurriculumCourses(@RequestParam(required = false) String prodi,@RequestParam(required = false) String kurikulum,
-                                      @RequestParam(required = false)String id, Model model){
+    public void formCurriculumCourses(@RequestParam(required = false) String prodi,
+            @RequestParam(required = false) String kurikulum,
+            @RequestParam(required = false) String id, Model model) {
 
         model.addAttribute("matakuliah", new MatakuliahKurikulum());
 
-        if (id != null){
+        if (id != null) {
             model.addAttribute("matakuliah", matakuliahKurikulumDao.findById(id).get());
-            model.addAttribute("prodi",prodiDao.findById(prodi).get());
-            model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
-        }else {
-            model.addAttribute("prodi",prodiDao.findById(prodi).get());
-            model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
+            model.addAttribute("prodi", prodiDao.findById(prodi).get());
+            model.addAttribute("kurikulum", kurikulumDao.findById(kurikulum).get());
+        } else {
+            model.addAttribute("prodi", prodiDao.findById(prodi).get());
+            model.addAttribute("kurikulum", kurikulumDao.findById(kurikulum).get());
         }
     }
 
     @PostMapping("/academic/curriculumCourses/form")
-    public String prosesCurriculumCourses(@ModelAttribute @Valid MatakuliahKurikulum matakuliahKurikulum, MultipartFile file)throws Exception{
+    public String prosesCurriculumCourses(@ModelAttribute @Valid MatakuliahKurikulum matakuliahKurikulum,
+            MultipartFile file) throws Exception {
         String namaFile = file.getName();
         String jenisFile = file.getContentType();
         String namaAsli = file.getOriginalFilename();
@@ -935,28 +960,31 @@ public class  AcademicActivityController {
 
         matakuliahKurikulumDao.save(matakuliahKurikulum);
 
-        return "redirect:list?prodi="+matakuliahKurikulum.getKurikulum().getProdi().getId()+"&kurikulum="+matakuliahKurikulum.getKurikulum().getId();
+        return "redirect:list?prodi=" + matakuliahKurikulum.getKurikulum().getProdi().getId() + "&kurikulum="
+                + matakuliahKurikulum.getKurikulum().getId();
     }
 
     @PostMapping("/academic/curriculumCourses/delete")
-    public String deleteCurriculumCourse(@RequestParam(value = "id", name = "id") MatakuliahKurikulum matakuliahKurikulum){
+    public String deleteCurriculumCourse(
+            @RequestParam(value = "id", name = "id") MatakuliahKurikulum matakuliahKurikulum) {
         Long jumlahMatakuliah = krsDetailDao.hitungMatakuliahKurikulum(matakuliahKurikulum);
-        if (jumlahMatakuliah == 0){
+        if (jumlahMatakuliah == 0) {
             matakuliahKurikulum.setStatus(StatusRecord.HAPUS);
             matakuliahKurikulumDao.save(matakuliahKurikulum);
         }
 
-
-        return "redirect:list?prodi="+matakuliahKurikulum.getKurikulum().getProdi().getId()+"&kurikulum="+matakuliahKurikulum.getKurikulum().getId();
+        return "redirect:list?prodi=" + matakuliahKurikulum.getKurikulum().getProdi().getId() + "&kurikulum="
+                + matakuliahKurikulum.getKurikulum().getId();
     }
 
     @PostMapping("/academic/curriculumCourses/copy")
     public String copyMatakuliah(@RequestParam(value = "id", name = "id") Kurikulum selectedKurikulum,
-                                 @RequestParam(value = "prodi", name = "prodi") Prodi prodi,
-                                 @RequestParam(value = "kurikulum", name = "kurikulum") Kurikulum kurikulum){
-        List<MatakuliahKurikulum> mk = matakuliahKurikulumDao.findByStatusAndKurikulumAndSemesterNotNull(StatusRecord.AKTIF,selectedKurikulum);
+            @RequestParam(value = "prodi", name = "prodi") Prodi prodi,
+            @RequestParam(value = "kurikulum", name = "kurikulum") Kurikulum kurikulum) {
+        List<MatakuliahKurikulum> mk = matakuliahKurikulumDao
+                .findByStatusAndKurikulumAndSemesterNotNull(StatusRecord.AKTIF, selectedKurikulum);
         System.out.println(mk.size());
-        for (MatakuliahKurikulum k : mk){
+        for (MatakuliahKurikulum k : mk) {
             Set<Program> programs = new HashSet<>();
             MatakuliahKurikulum mkKurikulum = new MatakuliahKurikulum();
             mkKurikulum.setSyaratTugasAkhir(k.getSyaratTugasAkhir());
@@ -973,22 +1001,25 @@ public class  AcademicActivityController {
             mkKurikulum.setSksMinimal(k.getSksMinimal());
             mkKurikulum.setWajib(k.getWajib());
             mkKurikulum.setKurikulum(kurikulum);
-            for (Program program : k.getPrograms()){
+            for (Program program : k.getPrograms()) {
                 programs.add(program);
             }
             mkKurikulum.setPrograms(programs);
             matakuliahKurikulumDao.save(mkKurikulum);
         }
-        return "redirect:list?prodi="+prodi.getId()+"&kurikulum="+kurikulum.getId();
+        return "redirect:list?prodi=" + prodi.getId() + "&kurikulum=" + kurikulum.getId();
     }
 
     @GetMapping("/academic/curriculumCourses/prasyarat")
-    public void formPrasyarat(Model model, @RequestParam(name = "id", value = "id") MatakuliahKurikulum matakuliahKurikulum,
-                              @RequestParam(required = false) String pras){
+    public void formPrasyarat(Model model,
+            @RequestParam(name = "id", value = "id") MatakuliahKurikulum matakuliahKurikulum,
+            @RequestParam(required = false) String pras) {
         model.addAttribute("pras", new Prasyarat());
         model.addAttribute("matakuliahKurikulum", matakuliahKurikulum);
-        List<MatakuliahKurikulum> mk = matakuliahKurikulumDao.findByStatusAndKurikulumAndSemesterNotNull(StatusRecord.AKTIF,matakuliahKurikulum.getKurikulum());
-        model.addAttribute("listPrasyarat", prasyaratDao.findByMatakuliahKurikulumAndStatus(matakuliahKurikulum,StatusRecord.AKTIF));
+        List<MatakuliahKurikulum> mk = matakuliahKurikulumDao
+                .findByStatusAndKurikulumAndSemesterNotNull(StatusRecord.AKTIF, matakuliahKurikulum.getKurikulum());
+        model.addAttribute("listPrasyarat",
+                prasyaratDao.findByMatakuliahKurikulumAndStatus(matakuliahKurikulum, StatusRecord.AKTIF));
         model.addAttribute("matakuliahPrasyarat", mk);
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
 
@@ -1010,36 +1041,40 @@ public class  AcademicActivityController {
     }
 
     @PostMapping("/academic/curriculumCourses/prasyarat/delete")
-    public String deletePras(@RequestParam(value = "id", name = "id") Prasyarat prasyarat){
+    public String deletePras(@RequestParam(value = "id", name = "id") Prasyarat prasyarat) {
 
         prasyarat.setStatus(StatusRecord.HAPUS);
         prasyaratDao.save(prasyarat);
-        return "redirect:../prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
+        return "redirect:../prasyarat?id=" + prasyarat.getMatakuliahKurikulum().getId();
     }
 
     @GetMapping("/academic/curriculumCourses/matakuliahSetara/list")
-    public void listMatakuliahSetara(Model model, @RequestParam(required = false) MatakuliahKurikulum matakuliahKurikulum,
-                                     String prodi, String kurikulum,@PageableDefault(size = Integer.MAX_VALUE) Pageable page){
+    public void listMatakuliahSetara(Model model,
+            @RequestParam(required = false) MatakuliahKurikulum matakuliahKurikulum,
+            String prodi, String kurikulum, @PageableDefault(size = Integer.MAX_VALUE) Pageable page) {
         model.addAttribute("kurikulum", kurikulum);
         model.addAttribute("prodi", prodi);
         model.addAttribute("setara", mataKuliahSetaraDao.pilihanSetara(matakuliahKurikulum.getMatakuliah()));
         model.addAttribute("matakuliahKurikulum", matakuliahKurikulumDao.findById(matakuliahKurikulum.getId()).get());
-        model.addAttribute("listMatakuliahSetara", mataKuliahSetaraDao.listMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId()));
-        model.addAttribute("listMatakuliah" , matakuliahDao.pilihMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId(), page));
+        model.addAttribute("listMatakuliahSetara",
+                mataKuliahSetaraDao.listMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId()));
+        model.addAttribute("listMatakuliah",
+                matakuliahDao.pilihMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId(), page));
 
     }
 
     @PostMapping("/academic/curriculumCourses/matakuliahSetara/proses")
-    public String prosesMatakuliahSetara(@RequestParam String defaultMatkul, @RequestParam(required = false) String[] listMatakuliah,
-                                         @RequestParam MatakuliahKurikulum matakuliahKurikulum, Authentication authentication){
+    public String prosesMatakuliahSetara(@RequestParam String defaultMatkul,
+            @RequestParam(required = false) String[] listMatakuliah,
+            @RequestParam MatakuliahKurikulum matakuliahKurikulum, Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         List<String> matakuliah = new ArrayList<>();
         matakuliah.addAll(Arrays.asList(listMatakuliah));
         matakuliah.add(defaultMatkul);
 
-        for (String m : matakuliah){
-            for (String setara : matakuliah){
+        for (String m : matakuliah) {
+            for (String setara : matakuliah) {
                 if (!m.equals(setara)) {
                     MatakuliahSetara matakuliahSetara = new MatakuliahSetara();
                     matakuliahSetara.setMatakuliah(matakuliahDao.findById(m).get());
@@ -1051,13 +1086,15 @@ public class  AcademicActivityController {
             }
         }
 
-
-        return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum.getId()+"&kurikulum="+matakuliahKurikulum.getKurikulum().getId()+"&prodi="+matakuliahKurikulum.getKurikulum().getProdi().getId();
+        return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum.getId() + "&kurikulum="
+                + matakuliahKurikulum.getKurikulum().getId() + "&prodi="
+                + matakuliahKurikulum.getKurikulum().getProdi().getId();
 
     }
 
     @PostMapping("/academic/curriculumCourses/matakuliahSetara/delete")
-    public String hapusMatakuliahSetara(@RequestParam MatakuliahSetara matakuliahSetara, @RequestParam String matakuliahKurikulum, Authentication authentication){
+    public String hapusMatakuliahSetara(@RequestParam MatakuliahSetara matakuliahSetara,
+            @RequestParam String matakuliahKurikulum, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
 
         matakuliahSetara.setStatus(StatusRecord.HAPUS);
@@ -1068,18 +1105,17 @@ public class  AcademicActivityController {
         return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum;
     }
 
-    //    Ploting
-
+    // Ploting
 
     @GetMapping("/academic/ploting/list")
-    public void listPloting(Model model, @RequestParam(required = false)String[] kelas,
-                            @RequestParam(required = false)TahunAkademik tahun){
+    public void listPloting(Model model, @RequestParam(required = false) String[] kelas,
+            @RequestParam(required = false) TahunAkademik tahun) {
 
-        model.addAttribute("listKelas",kelasDao.kelasPloting());
+        model.addAttribute("listKelas", kelasDao.kelasPloting());
         if (tahun != null) {
             List<String> kelasList = new ArrayList<>();
             List<Kelas> pilihanKelas = new ArrayList<>();
-            for (String s : kelas){
+            for (String s : kelas) {
                 Kelas k = kelasDao.findById(s).get();
                 kelasList.add(k.getId());
                 pilihanKelas.add(k);
@@ -1090,7 +1126,7 @@ public class  AcademicActivityController {
                 model.addAttribute("listPloting", plotingGanjil);
 
             }
-            if (tahun.getJenis() == StatusRecord.GENAP){
+            if (tahun.getJenis() == StatusRecord.GENAP) {
                 List<ListPlotingDto> plotinggenap = matakuliahKurikulumDao.plotingDosenGenap(tahun, kelasList);
                 model.addAttribute("listPloting", plotinggenap);
 
@@ -1100,13 +1136,12 @@ public class  AcademicActivityController {
             model.addAttribute("selectedKelas", kelasList);
             model.addAttribute("pilihanKelas", pilihanKelas);
 
-
         }
     }
 
     @PostMapping("/academic/ploting/save")
     @ResponseBody
-    public BaseResponse prosesPloting(@RequestBody PlotingDto plotingDto, @RequestParam TahunAkademik tahun){
+    public BaseResponse prosesPloting(@RequestBody PlotingDto plotingDto, @RequestParam TahunAkademik tahun) {
 
         if (plotingDto.getId() == null) {
             Jadwal jadwal = new Jadwal();
@@ -1137,7 +1172,7 @@ public class  AcademicActivityController {
             response.setMessage("Berhasil disimpan");
 
             return response;
-        }else {
+        } else {
             Jadwal jadwal = jadwalDao.findById(plotingDto.getId()).get();
             jadwal.setDosen(dosenDao.findById(plotingDto.getIdDosen()).get());
             jadwal.setAksesUas(dosenDao.findById(plotingDto.getIdDosen()).get());
@@ -1156,7 +1191,7 @@ public class  AcademicActivityController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/ploting-update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse simpanJadwal(@RequestBody JadwalRequest request){
+    public BaseResponse simpanJadwal(@RequestBody JadwalRequest request) {
         Jadwal jadwal = jadwalDao.findById(request.getId()).get();
         Sesi sesi = sesiDao.findById(request.getSesi()).get();
 
@@ -1176,7 +1211,8 @@ public class  AcademicActivityController {
         jadwalDosen.setDosen(jadwal.getDosen());
         jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.valueOf("PENGAMPU"));
         jadwalDosenDao.save(jadwalDosen);
-        String message = "Matakuliah  "+  jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " telah diploting";
+        String message = "Matakuliah  " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()
+                + " telah diploting";
 
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setId(jadwal.getId());
@@ -1187,59 +1223,68 @@ public class  AcademicActivityController {
 
     @PostMapping("/academic/ploting-team/save/{id}")
     @ResponseBody
-    public void prosesPloting(@PathVariable String id,@RequestParam String dosen){
+    public void prosesPloting(@PathVariable String id, @RequestParam String dosen) {
         Jadwal jadwal = jadwalDao.findById(id).get();
-        JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.TEAM);
-        if (jadwalDosen != null){
+        JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal, StatusJadwalDosen.TEAM);
+        if (jadwalDosen != null) {
             jadwalDosenDao.delete(jadwalDosen);
         }
-            JadwalDosen newJadwal = new JadwalDosen();
-            newJadwal.setJadwal(jadwal);
-            newJadwal.setStatusJadwalDosen(StatusJadwalDosen.TEAM);
-            newJadwal.setDosen(dosenDao.findById(dosen).get());
-            jadwalDosenDao.save(newJadwal);
+        JadwalDosen newJadwal = new JadwalDosen();
+        newJadwal.setJadwal(jadwal);
+        newJadwal.setStatusJadwalDosen(StatusJadwalDosen.TEAM);
+        newJadwal.setDosen(dosenDao.findById(dosen).get());
+        jadwalDosenDao.save(newJadwal);
 
     }
 
-    //    Schedule
-
+    // Schedule
 
     @GetMapping("/academic/schedule/list")
     public void listSchedule(Model model, @RequestParam(required = false) Prodi prodi,
-                             @RequestParam(required = false) TahunAkademik tahunAkademik,
-                             @RequestParam(required = false) Hari hari,
-                             @RequestParam(required = false) String bahasa){
-        model.addAttribute("selectedTahun",tahunAkademik);
+            @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Hari hari,
+            @RequestParam(required = false) String bahasa) {
+        model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedHari", hari);
-        model.addAttribute("selectedProdi",prodi);
+        model.addAttribute("selectedProdi", prodi);
         model.addAttribute("bahasa", bahasa);
 
-        if (prodi != null && tahunAkademik != null && hari != null){
-            model.addAttribute("jadwal", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hari));
-            model.addAttribute("ploting", jadwalDao.ploting(prodi,tahunAkademik));
+        if (prodi != null && tahunAkademik != null && hari != null) {
+            model.addAttribute("jadwal", jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hari));
+            model.addAttribute("ploting", jadwalDao.ploting(prodi, tahunAkademik));
         }
 
-
-        if (prodi != null && tahunAkademik != null && hari == null){
-            model.addAttribute("ploting", jadwalDao.ploting(prodi,tahunAkademik));
-            model.addAttribute("minggu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("0").get()));
-            model.addAttribute("senin", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("1").get()));
-            model.addAttribute("selasa", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("2").get()));
-            model.addAttribute("rabu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("3").get()));
-            model.addAttribute("kamis", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("4").get()));
-            model.addAttribute("jumat", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("5").get()));
-            model.addAttribute("sabtu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("6").get()));
+        if (prodi != null && tahunAkademik != null && hari == null) {
+            model.addAttribute("ploting", jadwalDao.ploting(prodi, tahunAkademik));
+            model.addAttribute("minggu",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("0").get()));
+            model.addAttribute("senin",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("1").get()));
+            model.addAttribute("selasa",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("2").get()));
+            model.addAttribute("rabu",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("3").get()));
+            model.addAttribute("kamis",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("4").get()));
+            model.addAttribute("jumat",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("5").get()));
+            model.addAttribute("sabtu",
+                    jadwalDao.schedule(prodi, StatusRecord.AKTIF, tahunAkademik, hariDao.findById("6").get()));
         }
     }
 
     @GetMapping("/academic/schedule/pindah")
-    public void listSchedule(@RequestParam(required = false) Jadwal dari,@RequestParam(required = false) Jadwal tujuan){
+    public void listSchedule(@RequestParam(required = false) Jadwal dari,
+            @RequestParam(required = false) Jadwal tujuan) {
         List<KrsDetail> krsDetail = krsDetailDao.cariJadwalPindah(dari);
         List<String> nama = new ArrayList<>();
         System.out.println(krsDetail.size());
-        for (KrsDetail kd : krsDetail){
-            if (krsDetailDao.findByJadwalAndStatus(dari,StatusRecord.AKTIF).size() > dari.getKapasitas() && krsDetailDao.findByJadwalAndStatus(tujuan,StatusRecord.AKTIF).size() < tujuan.getKapasitas()) {
-                if (krsDetailDao.findByTahunAkademikAndStatusAndJadwalHariAndJadwalSesiAndMahasiswa(dari.getTahunAkademik(), StatusRecord.AKTIF, tujuan.getHari(), tujuan.getSesi(), kd.getMahasiswa()) == null) {
+        for (KrsDetail kd : krsDetail) {
+            if (krsDetailDao.findByJadwalAndStatus(dari, StatusRecord.AKTIF).size() > dari.getKapasitas()
+                    && krsDetailDao.findByJadwalAndStatus(tujuan, StatusRecord.AKTIF).size() < tujuan.getKapasitas()) {
+                if (krsDetailDao.findByTahunAkademikAndStatusAndJadwalHariAndJadwalSesiAndMahasiswa(
+                        dari.getTahunAkademik(), StatusRecord.AKTIF, tujuan.getHari(), tujuan.getSesi(),
+                        kd.getMahasiswa()) == null) {
                     kd.setJadwal(tujuan);
                     kd.setMatakuliahKurikulum(tujuan.getMatakuliahKurikulum());
                     krsDetailDao.save(kd);
@@ -1253,46 +1298,47 @@ public class  AcademicActivityController {
     }
 
     @GetMapping("/academic/schedule/form")
-    public void scheduleForm(Model model,@RequestParam(name = "id", value = "id") Jadwal jadwal,@RequestParam(required = false) String plot){
-        if (plot != null){
-            model.addAttribute("plot",plot);
+    public void scheduleForm(Model model, @RequestParam(name = "id", value = "id") Jadwal jadwal,
+            @RequestParam(required = false) String plot) {
+        if (plot != null) {
+            model.addAttribute("plot", plot);
         }
 
-
-        model.addAttribute("jadwal",jadwal);
+        model.addAttribute("jadwal", jadwal);
         model.addAttribute("hari", hariDao.findAll());
     }
 
     @GetMapping("/academic/schedule/ploting")
-    public void plotingSchedule(Model model,@RequestParam(name = "id", value = "id") Prodi prodi,@RequestParam(name = "tahun", value = "tahun") TahunAkademik tahunAkademik){
-        model.addAttribute("selectedTahun",tahunAkademik);
-        model.addAttribute("selectedProdi",prodi);
-        model.addAttribute("ploting", jadwalDao.ploting(prodi,tahunAkademik));
+    public void plotingSchedule(Model model, @RequestParam(name = "id", value = "id") Prodi prodi,
+            @RequestParam(name = "tahun", value = "tahun") TahunAkademik tahunAkademik) {
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("ploting", jadwalDao.ploting(prodi, tahunAkademik));
         model.addAttribute("hari", hariDao.findAll());
 
     }
 
     @GetMapping("/akademik/detail-ploting-jadwal")
     @ResponseBody
-    public DataPloting detailPlotingJadwal( @RequestParam String tahun, @RequestParam(required = false) String search,
-                                              @RequestParam(required = false) String sort,
-                                              @RequestParam(required = false) String order,
-                                              @RequestParam(required = false) Integer offset,
-                                              @RequestParam(required = false) Integer limit){
+    public DataPloting detailPlotingJadwal(@RequestParam String tahun, @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
 
-        if (search.isEmpty() ) {
+        if (search.isEmpty()) {
             TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-            List<DataPlotingDto> jadwal = jadwalDao.detailJadwalKosongLimit(tahunAkademik,limit,offset);
+            List<DataPlotingDto> jadwal = jadwalDao.detailJadwalKosongLimit(tahunAkademik, limit, offset);
             DataPloting response = new DataPloting();
             response.setTotal(jadwalDao.detailJadwalKosong(tahunAkademik).size());
             response.setTotalNotFiltered(jadwalDao.detailJadwalKosong(tahunAkademik).size());
             response.setRows(jadwal);
             return response;
-        }else {
+        } else {
             TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-            List<DataPlotingDto> jadwal = jadwalDao.detailJadwalKosongSearchLimit(tahunAkademik,search,limit,offset);
+            List<DataPlotingDto> jadwal = jadwalDao.detailJadwalKosongSearchLimit(tahunAkademik, search, limit, offset);
             DataPloting response = new DataPloting();
-            response.setTotal(jadwalDao.detailJadwalKosongSearch(tahunAkademik,search).size());
+            response.setTotal(jadwalDao.detailJadwalKosongSearch(tahunAkademik, search).size());
             response.setTotalNotFiltered(jadwal.size());
             response.setRows(jadwal);
             return response;
@@ -1303,15 +1349,16 @@ public class  AcademicActivityController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/get-ruangan-list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<Ruangan> getDataRuangan(){
+    public Iterable<Ruangan> getDataRuangan() {
 
         return ruanganDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @GetMapping("/akademik/validasi-sesi/{id}")
     @ResponseBody
-    public List<ValidasiSesi> validasiSesi(@PathVariable String id, @RequestParam String tahun, @RequestParam String hari, @RequestParam Integer sks,
-                                           @RequestParam String ruangan, @RequestParam String kelas, @RequestParam String dosen){
+    public List<ValidasiSesi> validasiSesi(@PathVariable String id, @RequestParam String tahun,
+            @RequestParam String hari, @RequestParam Integer sks,
+            @RequestParam String ruangan, @RequestParam String kelas, @RequestParam String dosen) {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
         Hari h = hariDao.findById(hari).get();
@@ -1319,22 +1366,22 @@ public class  AcademicActivityController {
         Kelas k = kelasDao.findById(kelas).get();
         Dosen d = dosenDao.findById(dosen).get();
 
-
-        return jadwalDao.validateSesi(tahunAkademik,h,id,r,k,sks,d);
+        return jadwalDao.validateSesi(tahunAkademik, h, id, r, k, sks, d);
 
     }
 
     @PostMapping("/academic/schedule/ploting")
-    public String prosesPloting(HttpServletRequest request,@RequestParam(name = "id", value = "id") Prodi prodi,@RequestParam(name = "tahun", value = "tahun") TahunAkademik tahunAkademik){
-        List<PlotingDto> jadwal = jadwalDao.ploting(prodi,tahunAkademik);
-        for (PlotingDto j : jadwal){
-            String mulai = request.getParameter(j.getId()+"_mulai");
-            String selesai = request.getParameter(j.getId()+"_selesai");
-            String sesi = request.getParameter(j.getId()+"_isiSesi");
-            String ruangan = request.getParameter(j.getId()+"_roomisi");
-            String hari = request.getParameter(j.getId()+"_hariisi");
-            String idSesi = request.getParameter(j.getId()+"_sesii");
-            if (hari!= null && !hari.trim().isEmpty()){
+    public String prosesPloting(HttpServletRequest request, @RequestParam(name = "id", value = "id") Prodi prodi,
+            @RequestParam(name = "tahun", value = "tahun") TahunAkademik tahunAkademik) {
+        List<PlotingDto> jadwal = jadwalDao.ploting(prodi, tahunAkademik);
+        for (PlotingDto j : jadwal) {
+            String mulai = request.getParameter(j.getId() + "_mulai");
+            String selesai = request.getParameter(j.getId() + "_selesai");
+            String sesi = request.getParameter(j.getId() + "_isiSesi");
+            String ruangan = request.getParameter(j.getId() + "_roomisi");
+            String hari = request.getParameter(j.getId() + "_hariisi");
+            String idSesi = request.getParameter(j.getId() + "_sesii");
+            if (hari != null && !hari.trim().isEmpty()) {
                 Jadwal jdwl = jadwalDao.findById(j.getId()).get();
                 jdwl.setSesi(sesi);
                 jdwl.setJamMulai(LocalTime.parse(mulai));
@@ -1358,15 +1405,16 @@ public class  AcademicActivityController {
             }
         }
 
-        return "redirect:list?tahunAkademik="+tahunAkademik.getId()+"&prodi="+prodi.getId();
-
+        return "redirect:list?tahunAkademik=" + tahunAkademik.getId() + "&prodi=" + prodi.getId();
 
     }
 
     @GetMapping("/academic/schedule/download")
-    public void downloadJadwal(@RequestParam(required = false) TahunAkademik tahunAkademik, HttpServletResponse response) throws IOException {
+    public void downloadJadwal(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            HttpServletResponse response) throws IOException {
 
-        String[] columns = {"No", "Ruangan", "Hari", "Waktu", "Prodi", "Kode Matkul", "Matakuliah", "Sks Matkul", "Kelas", "Dosen", "Total Sks Dosen", "Jumlah Mahasiswa"};
+        String[] columns = { "No", "Ruangan", "Hari", "Waktu", "Prodi", "Kode Matkul", "Matakuliah", "Sks Matkul",
+                "Kelas", "Dosen", "Total Sks Dosen", "Jumlah Mahasiswa" };
 
         List<Object[]> listJadwal = jadwalDao.downloadJadwal(tahunAkademik);
 
@@ -1383,7 +1431,7 @@ public class  AcademicActivityController {
 
         Row headerRow = sheet.createRow(0);
 
-        for (int i = 0; i < columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
@@ -1392,12 +1440,12 @@ public class  AcademicActivityController {
         int rowNum = 1;
         int baris = 1;
 
-        for (Object[] list : listJadwal){
+        for (Object[] list : listJadwal) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list[3].toString());
             row.createCell(2).setCellValue(list[12].toString());
-            row.createCell(3).setCellValue(list[4].toString()+" - "+list[5].toString());
+            row.createCell(3).setCellValue(list[4].toString() + " - " + list[5].toString());
             row.createCell(4).setCellValue(list[6].toString());
             row.createCell(5).setCellValue(list[7].toString());
             row.createCell(6).setCellValue(list[8].toString());
@@ -1408,26 +1456,27 @@ public class  AcademicActivityController {
             row.createCell(11).setCellValue(list[14].toString());
         }
 
-        for (int i = 0; i < columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Jadwal_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=Rekap_Jadwal_" + tahunAkademik.getNamaTahunAkademik() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
     }
 
     @GetMapping("/academic/schedule/student")
-    public void studentSchedule(@RequestParam(value = "id", name = "id")Jadwal jadwal,Model model){
+    public void studentSchedule(@RequestParam(value = "id", name = "id") Jadwal jadwal, Model model) {
         model.addAttribute("student", krsDetailDao.cariJadwalMahasiswa(jadwal));
     }
 
     @PostMapping("/academic/schedule/form")
     public String prosesSchedule(Model model,
-                                 @ModelAttribute @Valid RequestJadwal request,
-                                 RedirectAttributes attributes)throws Exception{
+            @ModelAttribute @Valid RequestJadwal request,
+            RedirectAttributes attributes) throws Exception {
 
         Boolean cekEdit = Boolean.FALSE;
 
@@ -1439,7 +1488,8 @@ public class  AcademicActivityController {
             }
         }
 
-        List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
+        List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()), jadwal.getTahunAkademik(),
+                jadwal.getHari(), jadwal.getRuangan(), jadwal.getSesi(), StatusRecord.AKTIF);
 
         jadwal.setHari(request.getHari());
         jadwal.setAkses(request.getAkses());
@@ -1447,7 +1497,7 @@ public class  AcademicActivityController {
         jadwal.setDosen(request.getDosen());
         jadwal.setKapasitas(request.getKapasitas());
         jadwal.setFinalStatus("N");
-        if ( "WAITING".equals(jadwal.getFinalPloting()) || jadwal.getFinalPloting() == null) {
+        if ("WAITING".equals(jadwal.getFinalPloting()) || jadwal.getFinalPloting() == null) {
             jadwal.setFinalPloting("FINAL");
         }
         if (request.getSesii() != null) {
@@ -1457,8 +1507,7 @@ public class  AcademicActivityController {
         }
         jadwalDao.save(jadwal);
 
-
-        JadwalDosen jd = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.PENGAMPU);
+        JadwalDosen jd = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal, StatusJadwalDosen.PENGAMPU);
         if (jd == null) {
 
             JadwalDosen jadwalDosen = new JadwalDosen();
@@ -1466,22 +1515,23 @@ public class  AcademicActivityController {
             jadwalDosen.setJadwal(jadwal);
             jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
             jadwalDosenDao.save(jadwalDosen);
-        }else {
+        } else {
             jd.setDosen(jadwal.getDosen());
             jadwalDosenDao.save(jd);
         }
-        if (jadwal.getFinalPloting().equals("FINISHED")){
+        if (jadwal.getFinalPloting().equals("FINISHED")) {
             if (Boolean.TRUE.equals(cekEdit)) {
                 presensiService.updateSesi1(jadwal);
             }
         }
 
-        return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
+        return "redirect:list?tahunAkademik=" + jadwal.getTahunAkademik().getId() + "&prodi="
+                + jadwal.getProdi().getId();
 
     }
 
     @PostMapping("/academic/schedule/delete")
-    public String deleteSchedule(@RequestParam String jadwal){
+    public String deleteSchedule(@RequestParam String jadwal) {
 
         Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
 
@@ -1489,84 +1539,86 @@ public class  AcademicActivityController {
         jadwalDao.save(jadwal1);
 
         List<JadwalDosen> jadwalDosen = jadwalDosenDao.findByJadwal(jadwal1);
-        for (JadwalDosen jd : jadwalDosen){
+        for (JadwalDosen jd : jadwalDosen) {
             jadwalDosenDao.delete(jd);
         }
 
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal1,StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail){
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal1,
+                StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail) {
             kd.setStatus(StatusRecord.HAPUS);
             krsDetailDao.save(kd);
         }
 
-        return "redirect:list?tahunAkademik="+ jadwal1.getTahunAkademik().getId() +"&prodi="+jadwal1.getProdi().getId();
+        return "redirect:list?tahunAkademik=" + jadwal1.getTahunAkademik().getId() + "&prodi="
+                + jadwal1.getProdi().getId();
     }
 
     @GetMapping("/academic/schedule/team")
-    public void teamTeaching(Model model,@RequestParam Jadwal jadwal){
+    public void teamTeaching(Model model, @RequestParam Jadwal jadwal) {
 
-        model.addAttribute("jadwal",jadwalDosenDao.findByStatusJadwalDosenAndJadwal(StatusJadwalDosen.TEAM,jadwal));
-        model.addAttribute("data",jadwal);
+        model.addAttribute("jadwal", jadwalDosenDao.findByStatusJadwalDosenAndJadwal(StatusJadwalDosen.TEAM, jadwal));
+        model.addAttribute("data", jadwal);
         model.addAttribute("hari", hariDao.findAll());
     }
 
     @PostMapping("/academic/schedule/team")
-    public String prosesTeamTeaching(@Valid JadwalDosen jadwalDosen){
+    public String prosesTeamTeaching(@Valid JadwalDosen jadwalDosen) {
 
         jadwalDosenDao.save(jadwalDosen);
-        return "redirect:team?jadwal="+jadwalDosen.getJadwal().getId();
+        return "redirect:team?jadwal=" + jadwalDosen.getJadwal().getId();
     }
 
     @PostMapping("/academic/schedule/deleteTeam")
-    public String deleteTeamTeaching(@RequestParam JadwalDosen jadwalDosen){
+    public String deleteTeamTeaching(@RequestParam JadwalDosen jadwalDosen) {
 
         jadwalDosenDao.delete(jadwalDosen);
-        return "redirect:team?jadwal="+jadwalDosen.getJadwal().getId();
+        return "redirect:team?jadwal=" + jadwalDosen.getJadwal().getId();
     }
 
     @GetMapping("/academic/schedule/room")
-    public void roomSchedule(Model model, @RequestParam(required = false) Gedung gedung, @RequestParam(required = false) Hari hari){
+    public void roomSchedule(Model model, @RequestParam(required = false) Gedung gedung,
+            @RequestParam(required = false) Hari hari) {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         model.addAttribute("hari", hariDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("gedung", gedungDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("selectedHari", hari);
-        model.addAttribute("selectedGedung",gedung);
+        model.addAttribute("selectedGedung", gedung);
 
+        if (gedung != null && hari != null) {
 
-        if (gedung !=null && hari != null){
-
-            Iterable<Ruangan> ruangan = ruanganDao.findByStatusAndGedung(StatusRecord.AKTIF,gedung);
+            Iterable<Ruangan> ruangan = ruanganDao.findByStatusAndGedung(StatusRecord.AKTIF, gedung);
             List<RoomDto> sesi = new ArrayList<>();
-            for (Ruangan ruang1 : ruangan ){
+            for (Ruangan ruang1 : ruangan) {
 
                 RoomDto roomDto = new RoomDto();
                 roomDto.setId(ruang1.getId());
                 roomDto.setRuangan1(ruang1.getNamaRuangan());
 
-                List<Jadwal> jadwal1= jadwalDao.findByStatusAndTahunAkademikAndHariAndRuangan
-                        (StatusRecord.AKTIF,tahunAkademik,hari,ruang1);
+                List<Jadwal> jadwal1 = jadwalDao.findByStatusAndTahunAkademikAndHariAndRuangan(StatusRecord.AKTIF,
+                        tahunAkademik, hari, ruang1);
 
-                for (Jadwal j : jadwal1){
+                for (Jadwal j : jadwal1) {
 
-                    if (j.getSesi().equals("1")){
+                    if (j.getSesi().equals("1")) {
                         roomDto.setSesi1(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
                         roomDto.setDosen1(j.getDosen().getKaryawan().getNamaKaryawan());
                         roomDto.setKelas1(j.getKelas().getNamaKelas());
                     }
 
-                    if (j.getSesi().equals("2")){
+                    if (j.getSesi().equals("2")) {
                         roomDto.setSesi2(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
                         roomDto.setDosen2(j.getDosen().getKaryawan().getNamaKaryawan());
                         roomDto.setKelas2(j.getKelas().getNamaKelas());
                     }
 
-                    if (j.getSesi().equals("3")){
+                    if (j.getSesi().equals("3")) {
                         roomDto.setSesi3(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
                         roomDto.setDosen3(j.getDosen().getKaryawan().getNamaKaryawan());
                         roomDto.setKelas3(j.getKelas().getNamaKelas());
                     }
 
-                    if (j.getSesi().equals("4")){
+                    if (j.getSesi().equals("4")) {
                         roomDto.setSesi4(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
                         roomDto.setDosen4(j.getDosen().getKaryawan().getNamaKaryawan());
                         roomDto.setKelas4(j.getKelas().getNamaKelas());
@@ -1578,20 +1630,21 @@ public class  AcademicActivityController {
 
             }
 
-            model.addAttribute("jadwalRuang",sesi);
+            model.addAttribute("jadwalRuang", sesi);
 
         }
     }
 
     @GetMapping("/academic/schedule/krs")
-    public void addKrs(Model model,@RequestParam Jadwal jadwal){
+    public void addKrs(Model model, @RequestParam Jadwal jadwal) {
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("krs", krsDao.krsList(jadwal.getTahunAkademik(), jadwal));
     }
 
     @PostMapping("/academic/schedule/krs")
-    public String postKrs(@RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String[] data){
-        if (data != null){
+    public String postKrs(@RequestParam(required = false) Jadwal jadwal,
+            @RequestParam(required = false) String[] data) {
+        if (data != null) {
             for (String krs : data) {
                 Krs k = krsDao.findById(krs).get();
                 KrsDetail kd = new KrsDetail();
@@ -1616,35 +1669,35 @@ public class  AcademicActivityController {
             }
         }
 
-        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademik().getId()+"&prodi="+jadwal.getProdi().getId();
+        return "redirect:list?tahunAkademik=" + jadwal.getTahunAkademik().getId() + "&prodi="
+                + jadwal.getProdi().getId();
     }
 
-    //    Uts & Uas
+    // Uts & Uas
     @GetMapping("/academic/schedule/uts")
-    public void absenUts(@RequestParam Jadwal jadwal,Model model){
+    public void absenUts(@RequestParam Jadwal jadwal, Model model) {
 
-        model.addAttribute("tahun", jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0,10));
+        model.addAttribute("tahun", jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 10));
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("absen", krsDetailDao.absenUts(jadwal,jadwal.getTahunAkademik()));
+        model.addAttribute("absen", krsDetailDao.absenUts(jadwal, jadwal.getTahunAkademik()));
 
     }
 
     @GetMapping("/academic/schedule/uas")
-    public void absenUas(@RequestParam Jadwal jadwal,Model model){
+    public void absenUas(@RequestParam Jadwal jadwal, Model model) {
 
-        model.addAttribute("tahun", jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0,10));
+        model.addAttribute("tahun", jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 10));
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("absen", krsDetailDao.absenUas(jadwal,jadwal.getTahunAkademik()));
+        model.addAttribute("absen", krsDetailDao.absenUas(jadwal, jadwal.getTahunAkademik()));
 
     }
 
-
-// Conversion
+    // Conversion
 
     @GetMapping("/academic/conversion/list")
-    public void list(Model model, @RequestParam(required = false)String nim){
+    public void list(Model model, @RequestParam(required = false) String nim) {
 
-        if (nim != null){
+        if (nim != null) {
             Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
             model.addAttribute("nim", nim);
             model.addAttribute("list", krsDetailDao.listKrsDetail(dataMahasiswa.getId()));
@@ -1655,9 +1708,9 @@ public class  AcademicActivityController {
     }
 
     @GetMapping("/academic/equalization/list")
-    public void penyetaraanList(Model model, @RequestParam(required = false)String nim){
+    public void penyetaraanList(Model model, @RequestParam(required = false) String nim) {
 
-        if (nim != null){
+        if (nim != null) {
             Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
             model.addAttribute("nim", nim);
             model.addAttribute("list", krsDetailDao.listKrsDetailPenyetaraan(dataMahasiswa.getId()));
@@ -1669,7 +1722,7 @@ public class  AcademicActivityController {
 
     @GetMapping("/academic/conversion/form")
     public void form(Model model, @RequestParam(required = false) String nim,
-                     @RequestParam(required = false) Jadwal jadwal){
+            @RequestParam(required = false) Jadwal jadwal) {
 
         model.addAttribute("krsDetail", new KrsDetail());
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
@@ -1682,30 +1735,33 @@ public class  AcademicActivityController {
 
     @GetMapping("/academic/equalization/form")
     public void equalizationForm(Model model, @RequestParam(required = false) String nim,
-                     @RequestParam(required = false) Jadwal jadwal){
+            @RequestParam(required = false) Jadwal jadwal) {
 
         model.addAttribute("krsDetail", new KrsDetail());
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
-//        Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
+        // Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("mahasiswa", mhs);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("matakuliah", matakuliahDao.findByMahasiswaKurikulum(mhs));
-        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("tahunAkademik",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
     }
 
     @PostMapping("/academic/conversion/form")
     public String inputForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String ta,
-                            @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
-                            @RequestParam(required = false) String grade, RedirectAttributes attributes){
+            @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
+            @RequestParam(required = false) String grade, RedirectAttributes attributes) {
         int jumlahSks;
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
         Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
-        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
-        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
+                mhs.getIdProdi());
+        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal,
+                StatusRecord.AKTIF);
         if (krsDetail == null) {
             if (krs != null) {
                 KrsDetail kd = new KrsDetail();
@@ -1790,21 +1846,22 @@ public class  AcademicActivityController {
             return "redirect:form?nim=" + mhs.getNim() + "&jadwal=" + jadwal.getId();
         }
 
-
-        return "redirect:list?nim="+mhs.getNim();
+        return "redirect:list?nim=" + mhs.getNim();
 
     }
 
     @PostMapping("/academic/equalization/form")
-    public String inputPenyetaraanForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String matakuliah,
-                                       @RequestParam(required = false) String matakuliahLama,
-                                        @RequestParam(required = false) String grade, RedirectAttributes attributes){
+    public String inputPenyetaraanForm(@RequestParam(required = false) String nim,
+            @RequestParam(required = false) String matakuliah,
+            @RequestParam(required = false) String matakuliahLama,
+            @RequestParam(required = false) String grade, RedirectAttributes attributes) {
         int jumlahSks;
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
-        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik,
+                mhs.getIdProdi());
         Jadwal jadwal = new Jadwal();
         jadwal.setJumlahSesi(1);
         jadwal.setBobotUts(BigDecimal.ZERO);
@@ -1824,8 +1881,8 @@ public class  AcademicActivityController {
         jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
         jadwalDao.save(jadwal);
 
-
-        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
+        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal,
+                StatusRecord.AKTIF);
         if (krsDetail == null) {
             if (krs != null) {
                 KrsDetail kd = new KrsDetail();
@@ -1910,13 +1967,12 @@ public class  AcademicActivityController {
             return "redirect:form?nim=" + mhs.getNim() + "&jadwal=" + jadwal.getId();
         }
 
-
-        return "redirect:list?nim="+mhs.getNim();
+        return "redirect:list?nim=" + mhs.getNim();
 
     }
 
     @PostMapping("/academic/conversion/delete")
-    public String deleteConversion(@RequestParam(required = false) KrsDetail krsDetail){
+    public String deleteConversion(@RequestParam(required = false) KrsDetail krsDetail) {
 
         krsDetail.setStatus(StatusRecord.HAPUS);
         krsDetailDao.save(krsDetail);
@@ -1925,11 +1981,11 @@ public class  AcademicActivityController {
         konversi.setStatus(StatusRecord.HAPUS);
         konversiDao.save(konversi);
 
-        return "redirect:list?nim="+krsDetail.getMahasiswa().getNim();
+        return "redirect:list?nim=" + krsDetail.getMahasiswa().getNim();
     }
 
     @PostMapping("/academic/equalization/delete")
-    public String deleteEqualization(@RequestParam(required = false) KrsDetail krsDetail){
+    public String deleteEqualization(@RequestParam(required = false) KrsDetail krsDetail) {
 
         krsDetail.setStatus(StatusRecord.HAPUS);
         krsDetailDao.save(krsDetail);
@@ -1938,15 +1994,15 @@ public class  AcademicActivityController {
         konversi.setStatus(StatusRecord.HAPUS);
         konversiDao.save(konversi);
 
-        return "redirect:list?nim="+krsDetail.getMahasiswa().getNim();
+        return "redirect:list?nim=" + krsDetail.getMahasiswa().getNim();
     }
 
     @Transactional
     @Scheduled(cron = "0 00 21 * * *", zone = "Asia/Jakarta")
-    public void setFinal(){
+    public void setFinal() {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        if (LocalDate.now().compareTo(tahun.getTanggalSelesaiNilai().plusDays(1)) == 0){
+        if (LocalDate.now().compareTo(tahun.getTanggalSelesaiNilai().plusDays(1)) == 0) {
             krsDetailDao.updateFinalisasi(tahun.getId());
             jadwalDao.updateFinalStatus(tahun.getId());
             System.out.println("TerUpdate final.");
@@ -1956,14 +2012,13 @@ public class  AcademicActivityController {
     }
 
     @GetMapping("/jadwalUjian")
-    public void transkriptFormatExcel2 (HttpServletResponse response) throws IOException {
-
+    public void transkriptFormatExcel2(HttpServletResponse response) throws IOException {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         String jenis = null;
-        if (LocalDate.now().isAfter(tahunAkademik.getTanggalSelesaiUts())){
+        if (LocalDate.now().isAfter(tahunAkademik.getTanggalSelesaiUts())) {
             jenis = "UAS";
-        }else {
+        } else {
             jenis = "UTS";
         }
         System.out.println(jenis);
@@ -1973,14 +2028,13 @@ public class  AcademicActivityController {
         XSSFSheet sheet = workbook.getSheetAt(0);
         workbook.setSheetName(workbook.getSheetIndex(sheet), "Jadwal Uts");
 
-
         List<Object[]> jadwal = jadwalDao.cariJadwalUjian(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         List<Object[]> ruangan = ruanganDao.listNamaRuangan();
-        int rowDatajadwal = 5 ;
-        int rowRuangan = 1000 ;
+        int rowDatajadwal = 5;
+        int rowRuangan = 1000;
         int no = 1;
 
-        for (Object[] data : jadwal){
+        for (Object[] data : jadwal) {
             Row row = sheet.createRow(rowDatajadwal);
 
             row.createCell(0).setCellValue(no++);
@@ -1990,9 +2044,9 @@ public class  AcademicActivityController {
             row.createCell(4).setCellValue(data[3].toString());
             row.createCell(8).setCellValue(krsDetailDao.totalMahasiswaJadwal(data[6].toString()));
             row.createCell(9).setCellValue(data[4].toString());
-            if (jenis.equals("UTS")){
+            if (jenis.equals("UTS")) {
                 row.createCell(10).setCellValue(data[5].toString());
-            }else {
+            } else {
                 row.createCell(10).setCellValue(data[7].toString());
             }
             row.createCell(11).setCellValue(data[6].toString());
@@ -2000,7 +2054,7 @@ public class  AcademicActivityController {
 
         }
 
-        for (Object[] data : ruangan){
+        for (Object[] data : ruangan) {
             Row row = sheet.createRow(rowRuangan);
 
             row.createCell(7).setCellValue(data[0].toString());
@@ -2008,47 +2062,43 @@ public class  AcademicActivityController {
 
         }
 
-
-
-        String namaFile = "Jadwal Ujian" ;
+        String namaFile = "Jadwal Ujian";
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + namaFile + extentionX + "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
 
-
     @GetMapping("/getdata/jadwal-ujian")
     @ResponseBody
-    public TableJadwalUjian getDataJadwalUjian(@RequestParam(required = false)TahunAkademik tahunAkademik,@RequestParam(required = false) String jenis){
-
+    public TableJadwalUjian getDataJadwalUjian(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String jenis) {
 
         TableJadwalUjian response = new TableJadwalUjian();
-        response.setTotal(jadwalUjianDao.jadwalUjian(tahunAkademik,jenis).size());
-        response.setTotalNotFiltered(jadwalUjianDao.jadwalUjian(tahunAkademik,jenis).size());
-        List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjian(tahunAkademik,jenis);
+        response.setTotal(jadwalUjianDao.jadwalUjian(tahunAkademik, jenis).size());
+        response.setTotalNotFiltered(jadwalUjianDao.jadwalUjian(tahunAkademik, jenis).size());
+        List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjian(tahunAkademik, jenis);
         response.setRows(jadwalUjian);
 
         return response;
     }
 
     @GetMapping("/academic/schedule/ujian")
-    public void jadwalUjian(@RequestParam(required = false) TahunAkademik tahunAkademik,Model model,
-                            @RequestParam(required = false) String jenis,@RequestParam(required = false) String tanggal){
-        if (tahunAkademik != null){
-            if (tanggal == null || tanggal.equals("-")){
+    public void jadwalUjian(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model,
+            @RequestParam(required = false) String jenis, @RequestParam(required = false) String tanggal) {
+        if (tahunAkademik != null) {
+            if (tanggal == null || tanggal.equals("-")) {
                 List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjian(tahunAkademik, jenis);
                 model.addAttribute("listJadwal", jadwalUjian);
                 model.addAttribute("selectedTanggal", tanggal);
-            }else {
-                List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjianTanggal(tahunAkademik,jenis,tanggal);
+            } else {
+                List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjianTanggal(tahunAkademik, jenis, tanggal);
                 model.addAttribute("listJadwal", jadwalUjian);
                 model.addAttribute("selectedTanggal", tanggal);
 
-
             }
-            model.addAttribute("listTanggal", jadwalUjianDao.listTanggal(jenis,tahunAkademik));
+            model.addAttribute("listTanggal", jadwalUjianDao.listTanggal(jenis, tahunAkademik));
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedJenis", jenis);
 
@@ -2056,25 +2106,24 @@ public class  AcademicActivityController {
     }
 
     @PostMapping("/academic/schedule/uploadUjian")
-    public String listUjian(@RequestParam String jenis, MultipartFile file, RedirectAttributes attributes){
+    public String listUjian(@RequestParam String jenis, MultipartFile file, RedirectAttributes attributes) {
         List<BaseResponse> errors = new ArrayList<>();
         List<BaseResponse> success = new ArrayList<>();
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
 
-
             int row = 5;
             int jumlahJadwal = sheetPertama.getLastRowNum() - row;
-            for (int i = 0; i < jumlahJadwal;i++){
+            for (int i = 0; i < jumlahJadwal; i++) {
                 Row baris = sheetPertama.getRow(row + i);
 
                 if (baris == null) {
 
-                }else {
-                    if (baris.getCell(11) == null){
+                } else {
+                    if (baris.getCell(11) == null) {
 
-                    }else {
+                    } else {
                         String stringJadwal = baris.getCell(11).getStringCellValue();
                         Jadwal jadwal = jadwalDao.findById(stringJadwal).get();
                         if (jadwal == null) {
@@ -2086,25 +2135,31 @@ public class  AcademicActivityController {
                             Cell tanggal = baris.getCell(5);
 
                             if (tanggal != null) {
-                                Ruangan ruangan = ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF);
+                                Ruangan ruangan = ruanganDao.findByNamaRuanganAndStatus(
+                                        baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF);
                                 if (ruangan != null) {
                                     System.out.println(ruangan.getNamaRuangan());
                                     LocalDate localDate = LocalDate.parse(baris.getCell(5).getStringCellValue());
-                                    JadwalUjian ujian = jadwalUjianDao.findByJadwalAndStatusAndJenis(jadwal, StatusRecord.AKTIF, StatusRecord.valueOf(jenis));
+                                    JadwalUjian ujian = jadwalUjianDao.findByJadwalAndStatusAndJenis(jadwal,
+                                            StatusRecord.AKTIF, StatusRecord.valueOf(jenis));
                                     if (ujian == null) {
                                         JadwalUjian jadwalUjian = new JadwalUjian();
-                                        jadwalUjian.setJadwal(jadwalDao.findById(baris.getCell(11).getStringCellValue()).get());
+                                        jadwalUjian.setJadwal(
+                                                jadwalDao.findById(baris.getCell(11).getStringCellValue()).get());
                                         jadwalUjian.setTanggal(localDate);
                                         String jamMulai = baris.getCell(6).toString().substring(0, 5);
                                         String jamSelesai = baris.getCell(6).toString().substring(11 - 5);
                                         jadwalUjian.setJamMulai(LocalTime.parse(jamMulai.replace(".", ":")));
                                         jadwalUjian.setJamSelesai(LocalTime.parse(jamSelesai.replace(".", ":")));
-                                        jadwalUjian.setRuangan(ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF));
+                                        jadwalUjian.setRuangan(ruanganDao.findByNamaRuanganAndStatus(
+                                                baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF));
                                         jadwalUjian.setJenis(StatusRecord.valueOf(jenis));
                                         jadwalUjianDao.save(jadwalUjian);
 
                                         BaseResponse response = new BaseResponse();
-                                        response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                        response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( "
+                                                + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()
+                                                + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
                                         response.setMessage("Sukses");
                                         success.add(response);
                                     } else {
@@ -2113,27 +2168,33 @@ public class  AcademicActivityController {
                                         String jamSelesai = baris.getCell(6).toString().substring(11 - 5);
                                         ujian.setJamMulai(LocalTime.parse(jamMulai.replace(".", ":")));
                                         ujian.setJamMulai(LocalTime.parse(jamSelesai.replace(".", ":")));
-                                        ujian.setRuangan(ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF));
+                                        ujian.setRuangan(ruanganDao.findByNamaRuanganAndStatus(
+                                                baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF));
                                         ujian.setJenis(StatusRecord.valueOf(jenis));
                                         jadwalUjianDao.save(ujian);
 
                                         BaseResponse response = new BaseResponse();
-                                        response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                        response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( "
+                                                + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()
+                                                + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
                                         response.setMessage("Jadwal Ujian Terupdate");
                                         success.add(response);
                                     }
 
-
                                 } else {
                                     BaseResponse response = new BaseResponse();
-                                    response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                    response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( "
+                                            + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()
+                                            + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
                                     response.setMessage("Ruangan tidak ditemukan");
                                     errors.add(response);
                                 }
 
                             } else {
                                 BaseResponse response = new BaseResponse();
-                                response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( "
+                                        + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / "
+                                        + jadwal.getKelas().getNamaKelas() + " ) ");
                                 response.setMessage("Tanggal tidak ditemukan");
                                 errors.add(response);
                             }
@@ -2144,7 +2205,7 @@ public class  AcademicActivityController {
             }
 
         } catch (IOException e) {
-//            LOGGER.error(e.getMessage(), e);
+            // LOGGER.error(e.getMessage(), e);
         }
         attributes.addFlashAttribute("errors", errors);
         attributes.addFlashAttribute("success", success);
@@ -2152,9 +2213,9 @@ public class  AcademicActivityController {
         return "redirect:ujian";
     }
 
-
     @GetMapping("/analytics/dosen/list")
-    public void analitikDosen(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable pageable, String search, Authentication authentication) {
+    public void analitikDosen(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @PageableDefault(size = 10) Pageable pageable, String search, Authentication authentication) {
 
         TahunAkademik tahunAkademikAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
@@ -2163,30 +2224,33 @@ public class  AcademicActivityController {
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
         model.addAttribute("selectedTahun", tahunAkademik);
-        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("tahunAkademik",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         model.addAttribute("jmlDosen", dosenDao.countDosenByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("jmlSemuaKelas", sesiKuliahDao.jmlSemuaKelas(tahunAkademik));
 
-        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelasOntime(tahunAkademikAktif, StatusPresensi.HADIR.toString()));
+        model.addAttribute("jmlKelasOntime",
+                presensiDosenDao.jmlKelasOntime(tahunAkademikAktif, StatusPresensi.HADIR.toString()));
         model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelasTerlambat(tahunAkademikAktif));
 
         model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
         model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
 
-
         if (StringUtils.hasText(search) && tahunAkademik == null) {
             model.addAttribute("search", search);
-            model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademikAktif, search, pageable));
+            model.addAttribute("klasemenDosen",
+                    presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademikAktif, search, pageable));
             model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
             model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
-        } else if (StringUtils.hasText(search)){
+        } else if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademik, search, pageable));
+            model.addAttribute("klasemenDosen",
+                    presensiDosenDao.klasemenDosenByTahunDanSearch(tahunAkademik, search, pageable));
             model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
             model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
-        } else if (tahunAkademik != null){
+        } else if (tahunAkademik != null) {
             model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik, pageable));
             model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnline(tahunAkademik));
             model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
@@ -2196,8 +2260,10 @@ public class  AcademicActivityController {
             model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOffline(tahunAkademik));
         }
 
-//        model.addAttribute("listTotalSks", krsDetailDao.listTotalSks1(tahunAkademik));
-//        model.addAttribute("listTotalSks2", krsDetailDao.listTotalSks2(tahunAkademik,dosen));
+        // model.addAttribute("listTotalSks",
+        // krsDetailDao.listTotalSks1(tahunAkademik));
+        // model.addAttribute("listTotalSks2",
+        // krsDetailDao.listTotalSks2(tahunAkademik,dosen));
 
     }
 
@@ -2206,29 +2272,35 @@ public class  AcademicActivityController {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        model.addAttribute("jmlMhsA", krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik, StatusRecord.AKTIF));
+        model.addAttribute("jmlMhsA",
+                krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik, StatusRecord.AKTIF));
 
-//        model.addAttribute("jmlMahasiswaOntime", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.HADIR.toString()));
-//        model.addAttribute("jmlMahasiswaTerlambat", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
-//
-//        model.addAttribute("jmlSempro", seminarDao.jmlSempro("20192",StatusApprove.APPROVED.toString()));
-//
-//        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
+        // model.addAttribute("jmlMahasiswaOntime",
+        // presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.HADIR.toString()));
+        // model.addAttribute("jmlMahasiswaTerlambat",
+        // presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
+        //
+        // model.addAttribute("jmlSempro",
+        // seminarDao.jmlSempro("20192",StatusApprove.APPROVED.toString()));
+        //
+        // model.addAttribute("klasemenMahasiswa",
+        // presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
 
     }
 
     @GetMapping("/api/list-tahunakademik")
     @ResponseBody
-    public ResponseEntity<BaseResponseDto> getListTahunakademik(){
+    public ResponseEntity<BaseResponseDto> getListTahunakademik() {
         try {
-            List<TahunAkademik> tahunAkademik = tahunAkademikDao.findByStatusNotInOrderByKodeTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
-            if (tahunAkademik.isEmpty()){
+            List<TahunAkademik> tahunAkademik = tahunAkademikDao
+                    .findByStatusNotInOrderByKodeTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
+            if (tahunAkademik.isEmpty()) {
                 return ResponseEntity.ok().body(
                         BaseResponseDto.builder()
                                 .responseCode("200")
                                 .responseMessage("Data Kosong")
                                 .build());
-            }else {
+            } else {
                 return ResponseEntity.ok().body(
                         BaseResponseDto.builder()
                                 .responseCode("200")
@@ -2259,22 +2331,20 @@ public class  AcademicActivityController {
                         .build());
             }
 
-            Mahasiswa mahasiswa = mahasiswaDao.findById(mahasiswaId).orElseThrow(() ->
-                    new IllegalArgumentException("Mahasiswa ID not found"));
-            MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(matakuliahId).orElseThrow(() ->
-                    new IllegalArgumentException("Matakuliah ID not found"));
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(mahasiswaId);
+            MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(matakuliahId)
+                    .orElseThrow(() -> new IllegalArgumentException("Matakuliah ID not found"));
             Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(
                     mahasiswa,
                     tahunAkademikDao.findByStatus(StatusRecord.AKTIF),
-                    StatusRecord.AKTIF
-            );
+                    StatusRecord.AKTIF);
 
             if (krs == null) {
                 krs = krsService.createKrs(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             }
 
             Jadwal jadwal = jadwalService.createJadwalKonversi(matakuliahKurikulum, mahasiswa.getIdProdi());
-            KrsDetail krsDetail=  krsService.createKrsDetailKonversi(krs, jadwal, request.getGrade());
+            KrsDetail krsDetail = krsService.createKrsDetailKonversi(krs, jadwal, request.getGrade());
 
             Konversi konversi = new Konversi();
             konversi.setKrsDetail(krsDetail);
