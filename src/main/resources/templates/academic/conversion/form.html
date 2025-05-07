@@ -133,16 +133,29 @@
 									</div>
 								</div>
 
-								<div class="form-group">
-									<label>Nama matakuliah</label>
-									<select class="form-control js-example-placeholder-single" id="course"></select>
+								<div class="row">
+									<div class="col-md-6 col-xs-12">
+										<div class="form-group">
+											<label>Kode matakuliah lama</label>
+											<input type="text" name="kode" class="form-control" />
+										</div>
+									</div>
+									<div class="col-md-6 col-xs-12">
+										<div class="form-group">
+											<label>Nama matakuliah lama</label>
+											<input type="text" name="matakuliahLama" class="form-control" />
+										</div>
+									</div>
 								</div>
 
 								<div class="row">
 									<div class="col-md-6 col-xs-12">
 										<div class="form-group">
-											<label>Nama matakuliah lama</label>
-											<input type="text" name="matakuliahLama" class="form-control" />
+											<label>Nama matakuliah</label>
+											<select
+												class="form-control js-example-placeholder-single"
+												id="course"
+											></select>
 										</div>
 									</div>
 									<div class="col-md-6 col-xs-12">
@@ -226,9 +239,10 @@
 		const mahasiswa = $("#isiMahasiswa").val();
 		const matakuliahBaru = $("#course").val();
 		const matakuliahLama = $('input[name="matakuliahLama"]').val();
+		const kode = $('input[name="kode"]').val();
 		const grade = $('select[name="grade"]').val();
 
-		if (!prodi || !mahasiswa || !matakuliahBaru || !matakuliahLama || !grade) {
+		if (!prodi || !mahasiswa || !matakuliahBaru || !matakuliahLama || !grade || !kode) {
 			Swal.fire({
 				icon: "warning",
 				title: "Oops...",
@@ -242,6 +256,7 @@
 			mahasiswa: mahasiswa,
 			matakuliah: matakuliahBaru,
 			matakuliahLama: matakuliahLama,
+			kode: kode,
 			grade: grade,
 		};
 
@@ -262,8 +277,8 @@
 					$("#curriculum").val("").trigger("change");
 					$("#course").val("").trigger("change");
 					$('input[name="matakuliahLama"]').val("");
+					$('input[name="kode"]').val("");
 					$('select[name="grade"]').val("");
-					// window.location.href = '/academic/conversion/list?nim=' + mahasiswa;
 				}
 			},
 			error: function (xhr) {

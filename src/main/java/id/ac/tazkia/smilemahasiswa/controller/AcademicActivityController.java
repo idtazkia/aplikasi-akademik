@@ -2349,6 +2349,7 @@ public class AcademicActivityController {
             Konversi konversi = new Konversi();
             konversi.setKrsDetail(krsDetail);
             konversi.setNamaMatakuliahLama(request.getMatakuliahLama());
+            konversi.setKodeMatakuliahLama(request.getKode());
             konversi.setStatus(StatusRecord.AKTIF);
             konversiDao.save(konversi);
 
