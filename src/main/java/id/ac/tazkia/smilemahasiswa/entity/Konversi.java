@@ -20,6 +20,8 @@ public class Konversi {
 
     private String namaMatakuliahLama;
 
+    private String kodeMatakuliahLama;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
