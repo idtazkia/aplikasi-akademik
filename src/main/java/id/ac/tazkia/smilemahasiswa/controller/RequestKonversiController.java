@@ -73,12 +73,12 @@ public class RequestKonversiController {
 
     @GetMapping("/request-konversi2/{jenis}")
     public String listRequestKonversi(@PathVariable String jenis, Model model,
-                                      @RequestParam(required = false) String prodi,
-                                      @RequestParam(required = false) String search,
-                                      @RequestParam(required = false) String sort,
-                                      @RequestParam(required = false) String order,
-                                      @RequestParam(required = false) Integer offset,
-                                      @RequestParam(required = false) Integer limit, Pageable pageable) {
+            @RequestParam(required = false) String prodi,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit, Pageable pageable) {
         model.addAttribute("jenis", jenis);
 
         return "requestKonversi/list";
@@ -113,17 +113,17 @@ public class RequestKonversiController {
     @GetMapping("/api/get-data-konversi/{jenis}")
     @ResponseBody
     public DataRequestKonversi getDataKonversi(@PathVariable String jenis,
-                                               @RequestParam(required = false) String prodiId,
-                                               @RequestParam(required = false, defaultValue = "") String search,
-                                               @RequestParam(required = false) Integer offset,
-                                               @RequestParam(required = false) Integer limit) {
+            @RequestParam(required = false) String prodiId,
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
 
         List<String> prodi = !StringUtils.hasText(prodiId) || prodiId.equals("-")
                 || prodiId == null
-                ? prodiDao.findByStatus(StatusRecord.AKTIF).stream()
-                .map(Prodi::getId)
-                .collect(Collectors.toList())
-                : List.of(prodiId);
+                        ? prodiDao.findByStatus(StatusRecord.AKTIF).stream()
+                                .map(Prodi::getId)
+                                .collect(Collectors.toList())
+                        : List.of(prodiId);
 
         Map<String, List<String>> approvalMap = Map.of(
                 "tqc", List.of(Approval.WAITING.name()),
@@ -137,14 +137,17 @@ public class RequestKonversiController {
         List<GetRequestKonversi> data;
         switch (jenis.toLowerCase()) {
             case "kemahasiswaan":
-                data = pendaftaranRequestKonversiDao.listRequestKonversiKemahasiswaan(search, prodi, approvalMap.get(jenis.toLowerCase()), limit, offset);
+                data = pendaftaranRequestKonversiDao.listRequestKonversiKemahasiswaan(search, prodi,
+                        approvalMap.get(jenis.toLowerCase()), limit, offset);
                 break;
             case "tqc":
-                data = pendaftaranRequestKonversiDao.listRequestKonversiTqc(search, prodi, approvalMap.get(jenis.toLowerCase()), limit, offset);
+                data = pendaftaranRequestKonversiDao.listRequestKonversiTqc(search, prodi,
+                        approvalMap.get(jenis.toLowerCase()), limit, offset);
                 break;
             default:
                 if (approvalMap.containsKey(jenis.toLowerCase())) {
-                    data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi, approvalMap.get(jenis.toLowerCase()), limit, offset);
+                    data = pendaftaranRequestKonversiDao.listRequestKonversi(search, prodi,
+                            approvalMap.get(jenis.toLowerCase()), limit, offset);
                 } else {
                     data = List.of();
                 }
@@ -243,7 +246,7 @@ public class RequestKonversiController {
     @GetMapping("/api/get-matakuiah-konversi/{sks}")
     @ResponseBody
     public List<TranskriptSementara> getMatakuliahKonversi(@PathVariable("sks") Integer sks,
-                                                           Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         return krsDetailDao.matakuliahKonversi(mahasiswa, sks);
@@ -266,9 +269,9 @@ public class RequestKonversiController {
 
     @PostMapping("/request-konversi/proses")
     public String prosesRequestKonversi(@RequestParam("totalSks") Integer sks,
-                                        @RequestParam("bentuk") String bentuk, Authentication authentication,
-                                        @RequestParam Map<String, String> params,
-                                        @RequestParam Map<String, MultipartFile> files) throws Exception {
+            @RequestParam("bentuk") String bentuk, Authentication authentication,
+            @RequestParam Map<String, String> params,
+            @RequestParam Map<String, MultipartFile> files) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -300,32 +303,37 @@ public class RequestKonversiController {
 
     @PostMapping("/request-konversi/proses-matakuliah")
     public String prosesRequestKonversiMatakuliah(@RequestParam String sistem,
-                                                  @RequestParam String id, @RequestParam Map<String, String> params) {
+            @RequestParam String id, @RequestParam Map<String, String> params) {
         PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.WAITING);
 
         if (sistem.equals("POINT")) {
             SistemPenilaianKonversi sistemPenilaianKonversi = sistemPenilaianKonversiDao
-                    .cekPenilaianKonversi(pendaftaranRequestKonversi.getKonfigurasiKonversi(), pendaftaranRequestKonversi.getTotalSks());
+                    .cekPenilaianKonversi(pendaftaranRequestKonversi.getKonfigurasiKonversi(),
+                            pendaftaranRequestKonversi.getTotalSks());
             for (int i = 0; params.containsKey("krsdetail-" + i); i++) {
                 String result = params.get("result-" + i);
                 if (result != null) {
                     String krsDetailId = params.get("krsdetail-" + i);
                     KrsDetail krsDetail = krsDetailDao.findById(krsDetailId).get();
-                    FilePendaftaranKonversi filePendaftaranKonversi = filePendaftaranKonversiDao.findByPendaftaranRequestKonversi(pendaftaranRequestKonversi);
+                    FilePendaftaranKonversi filePendaftaranKonversi = filePendaftaranKonversiDao
+                            .findByPendaftaranRequestKonversi(pendaftaranRequestKonversi);
 
                     DetailPendaftaranKonversi detailPendaftaranKonversi = new DetailPendaftaranKonversi();
                     detailPendaftaranKonversi.setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
                     detailPendaftaranKonversi.setKrsDetail(krsDetail);
                     detailPendaftaranKonversi.setGradeLama(krsDetail.getGrade());
-                    detailPendaftaranKonversi.setMatakuliah(krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur " + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
+                    detailPendaftaranKonversi
+                            .setMatakuliah(krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur "
+                            + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
                     if (sistemPenilaianKonversi.getOpsiNilai().equals(
                             SistemPenilaianKonversi.OpsiNilai.PLUS)) {
                         Grade grade = gradeDao.findByNama(krsDetail.getGrade());
                         int valueNilai = grade.getNilai() + sistemPenilaianKonversi.getNilai();
                         Grade maxGrade = gradeDao.findByNilai(gradeDao.maxNilai());
-                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama() : gradeDao.findByNilai(valueNilai).getNama();
+                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama()
+                                : gradeDao.findByNilai(valueNilai).getNama();
                         detailPendaftaranKonversi.setGradeBaru(newGrade);
                     }
                     detailPendaftaranKonversiDao
@@ -346,17 +354,22 @@ public class RequestKonversiController {
                     DetailPendaftaranKonversi detailPendaftaranKonversi = new DetailPendaftaranKonversi();
                     detailPendaftaranKonversi.setKrsDetail(krsDetail);
                     detailPendaftaranKonversi.setPendaftaranRequestKonversi(pendaftaranRequestKonversi);
-                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur " + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
+                    detailPendaftaranKonversi.setKeterangan("Pendaftran Konversi Jalur "
+                            + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNama());
                     detailPendaftaranKonversi.setGradeLama(krsDetail.getGrade());
-                    detailPendaftaranKonversi.setMatakuliah(krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    detailPendaftaranKonversi
+                            .setMatakuliah(krsDetail.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
                     if (filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiGrade() == null) {
                         Grade grade = gradeDao.findByNama(krsDetail.getGrade());
-                        int valueNilai = grade.getNilai() + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiPlus();
+                        int valueNilai = grade.getNilai()
+                                + filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiPlus();
                         Grade maxGrade = gradeDao.findByNilai(gradeDao.maxNilai());
-                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama() : gradeDao.findByNilai(valueNilai).getNama();
+                        String newGrade = valueNilai > maxGrade.getNilai() ? maxGrade.getNama()
+                                : gradeDao.findByNilai(valueNilai).getNama();
                         detailPendaftaranKonversi.setGradeBaru(newGrade);
                     } else {
-                        detailPendaftaranKonversi.setGradeBaru(filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiGrade());
+                        detailPendaftaranKonversi
+                                .setGradeBaru(filePendaftaranKonversi.getDetailKonfigurasiKonversi().getNilaiGrade());
                     }
                     detailPendaftaranKonversiDao
                             .save(detailPendaftaranKonversi);
@@ -383,14 +396,15 @@ public class RequestKonversiController {
 
         model.addAttribute("validasi", now.isAfter(mulai) && now.isBefore(selesai));
 
-        List<PendaftaranRequestKonversi> pendaftaranRequestKonversiList = pendaftaranRequestKonversiDao.findByMahasiswa(mahasiswa);
+        List<PendaftaranRequestKonversi> pendaftaranRequestKonversiList = pendaftaranRequestKonversiDao
+                .findByMahasiswa(mahasiswa);
         model.addAttribute("listRequestKonversi", pendaftaranRequestKonversiList);
         return "requestKonversi/mahasiswa/detail";
     }
 
     @PostMapping("/api/approval-konversi/{id}")
     public ResponseEntity<BaseResponseDto> approvalKonversi(@PathVariable String id,
-                                                            @RequestParam String approval) {
+            @RequestParam String approval) {
         PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.valueOf(approval));
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
@@ -400,12 +414,13 @@ public class RequestKonversiController {
 
     @PostMapping("/api/rejected-konversi/{id}")
     public ResponseEntity<BaseResponseDto> rejectedKonversi(@PathVariable String id,
-                                                            @RequestParam String approval) {
+            @RequestParam String approval) {
         PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id).get();
         pendaftaranRequestKonversi.setStatus(Approval.valueOf(approval));
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
-        for (DetailPendaftaranKonversi detailPendaftaranKonversi : pendaftaranRequestKonversi.getDetailPendaftaranKonversiList()) {
+        for (DetailPendaftaranKonversi detailPendaftaranKonversi : pendaftaranRequestKonversi
+                .getDetailPendaftaranKonversiList()) {
             detailPendaftaranKonversi.setStatus(Approval.REJECTED);
             detailPendaftaranKonversiDao.save(detailPendaftaranKonversi);
         }
@@ -427,8 +442,10 @@ public class RequestKonversiController {
     public ResponseEntity<BaseResponseDto> rejectedKonversi(@PathVariable String id) {
         DetailPendaftaranKonversi detailPendaftaranKonversi = detailPendaftaranKonversiDao.findById(id).get();
         detailPendaftaranKonversiDao.delete(detailPendaftaranKonversi);
-        Integer totalSks = detailPendaftaranKonversiDao.sumTotalSks(detailPendaftaranKonversi.getPendaftaranRequestKonversi());
-        PendaftaranRequestKonversi pendaftaranRequestKonversi = detailPendaftaranKonversi.getPendaftaranRequestKonversi();
+        Integer totalSks = detailPendaftaranKonversiDao
+                .sumTotalSks(detailPendaftaranKonversi.getPendaftaranRequestKonversi());
+        PendaftaranRequestKonversi pendaftaranRequestKonversi = detailPendaftaranKonversi
+                .getPendaftaranRequestKonversi();
         pendaftaranRequestKonversi.setTotalSks(totalSks);
         pendaftaranRequestKonversiDao.save(pendaftaranRequestKonversi);
 
@@ -452,7 +469,7 @@ public class RequestKonversiController {
             krsDetail.setGrade(grade.getNama());
             krsDetail.setBobot(grade.getBobot());
             krsDetail.setNilaiAkhir(grade.getBawah());
-            krsDetail.setStatusKonversi(StatusRecord.REQEUST_KONVERSI);
+            krsDetail.setStatusKonversi(StatusRecord.REQUEST_KONVERSI);
             krsDetailDao.save(krsDetail);
         }
 
@@ -476,7 +493,7 @@ public class RequestKonversiController {
 
     @PostMapping("/request-konversi/update-tanggal")
     public String updateTanggalKonversi(@RequestParam String tanggalAwal,
-                                        @RequestParam String tanggalAkhir) {
+            @RequestParam String tanggalAkhir) {
         RequestKonversiTenggat requestKonversiTenggat = requestKonversiTenggatDao.findByStatus(StatusRecord.AKTIF);
         requestKonversiTenggat.setTanggalAwal(LocalDate.parse(tanggalAwal));
         requestKonversiTenggat.setTanggalAkhir(LocalDate.parse(tanggalAkhir));
