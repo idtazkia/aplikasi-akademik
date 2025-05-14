@@ -1829,7 +1829,7 @@ public class GraduationController {
         try {
             HttpHeaders headers = new HttpHeaders();
             if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg")
-                    || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                    || seminar.getFileSkripsi().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (seminar.getFileSkripsi().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
