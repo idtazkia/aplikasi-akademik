@@ -36,10 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,7 +86,7 @@ public class ReportController {
     private EdomMahasiswaDao edomMahasiswaDao;
 
     @Autowired
-    private EdomQuestionDao edomQuestionDao;
+    private EdomQuestionOldDao edomQuestionOldDao;
 
     @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
@@ -441,7 +438,7 @@ public class ReportController {
             List<Object[]> headerEdom = edomMahasiswaDao.headerEdomMahasiswa(tahunAkademik, prodi);
             model.addAttribute("headerEdom", headerEdom);
             if (headerEdom != null) {
-                List<Object[]> detailEdom = edomQuestionDao.detailEdom(tahunAkademik, prodi);
+                List<Object[]> detailEdom = edomQuestionOldDao.detailEdom(tahunAkademik, prodi);
                 model.addAttribute("detailEdom", detailEdom);
 
                 // EdomQuestion edomQuestion1 =

@@ -4,7 +4,6 @@ import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponseDto;
-import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.*;
 import id.ac.tazkia.smilemahasiswa.dto.krs.GeneratedKrsDto;
@@ -175,7 +174,7 @@ public class StudiesActivityController {
     private EdomMahasiswaDao edomMahasiswaDao;
 
     @Autowired
-    private EdomQuestionDao edomQuestionDao;
+    private EdomQuestionOldDao edomQuestionOldDao;
 
     @Autowired
     private MateriMengajarDao materiMengajarDao;
@@ -2962,7 +2961,7 @@ public class StudiesActivityController {
         List<Object[]> headerEdom = edomMahasiswaDao.headerEdomMahasiswaPerDosen(jadwal, dosen);
         model.addAttribute("headerEdom", headerEdom);
         if (headerEdom != null) {
-            List<Object[]> detailEdom = edomQuestionDao.detailEdomPerDosen(jadwal, dosen);
+            List<Object[]> detailEdom = edomQuestionOldDao.detailEdomPerDosen(jadwal, dosen);
             model.addAttribute("detailEdom", detailEdom);
         } else {
             model.addAttribute("questionNull", "Pertanyaan Edom Belum Dibuat");

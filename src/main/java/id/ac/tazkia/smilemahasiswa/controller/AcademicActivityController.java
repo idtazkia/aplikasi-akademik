@@ -139,7 +139,7 @@ public class AcademicActivityController {
     private MataKuliahSetaraDao mataKuliahSetaraDao;
 
     @Autowired
-    private EdomQuestionDao edomQuestionDao;
+    private EdomQuestionOldDao edomQuestionOldDao;
 
     @Autowired
     private PresensiDosenDao presensiDosenDao;
@@ -603,7 +603,7 @@ public class AcademicActivityController {
             TahunAkademik tahunAkademik = new TahunAkademik();
             List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
 
-            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(
+            List<EdomQuestionOld> edomQuestionOld = edomQuestionOldDao.findByStatusAndTahunAkademikOrderByNomorAsc(
                     StatusRecord.AKTIF, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
 
             String tahun = kodeTahunAkademik.substring(0, 4);
@@ -639,14 +639,14 @@ public class AcademicActivityController {
                 tahunAkademik.setStatus(status);
             }
             tahunAkademikDao.save(tahunAkademik);
-            for (EdomQuestion question : edomQuestion) {
-                EdomQuestion edomQues = new EdomQuestion();
+            for (EdomQuestionOld question : edomQuestionOld) {
+                EdomQuestionOld edomQues = new EdomQuestionOld();
                 edomQues.setStatus(StatusRecord.AKTIF);
                 edomQues.setBahasa(question.getBahasa());
                 edomQues.setNomor(question.getNomor());
                 edomQues.setPertanyaan(question.getPertanyaan());
                 edomQues.setTahunAkademik(tahunAkademik);
-                edomQuestionDao.save(edomQues);
+                edomQuestionOldDao.save(edomQues);
             }
 
             for (Prodi prodi : prodis) {

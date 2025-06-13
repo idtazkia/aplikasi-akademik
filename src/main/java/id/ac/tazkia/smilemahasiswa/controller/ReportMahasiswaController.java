@@ -81,7 +81,7 @@ public class ReportMahasiswaController {
     private PraKrsSpDao praKrsSpDao;
 
     @Autowired
-    private EdomQuestionDao edomQuestionDao;
+    private EdomQuestionOldDao edomQuestionOldDao;
 
     @Autowired
     private EdomMahasiswaDao edomMahasiswaDao;
@@ -157,7 +157,8 @@ public class ReportMahasiswaController {
             PrasyaratDto prasyarat = prasyaratDao.cariPrasyarat(matakuliahKurikulum);
 
             if (prasyarat != null) {
-                List<PrasyaratDto> pras = prasyaratDao.validasiPras(mahasiswa, prasyarat.getGrade(), prasyarat.getMatakuliah(), prasyarat.getEnglish(), prasyarat.getKode());
+                List<PrasyaratDto> pras = prasyaratDao.validasiPras(mahasiswa, prasyarat.getGrade(),
+                        prasyarat.getMatakuliah(), prasyarat.getEnglish(), prasyarat.getKode());
                 System.out.println(pras);
                 if (pras == null || pras.isEmpty()) {
                     Kartu gagal = new Kartu();
@@ -180,9 +181,9 @@ public class ReportMahasiswaController {
 
     }
 
-
     @GetMapping("/report/khs")
-    public String khs(Model model, Authentication authentication, @RequestParam(required = false) TahunAkademik tahunAkademik) throws ParseException {
+    public String khs(Model model, Authentication authentication,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) throws ParseException {
 
         User user = currentUserService.currentUser(authentication);
 
@@ -191,9 +192,11 @@ public class ReportMahasiswaController {
         List<TugasDto> tugasDtos = new ArrayList<>();
         List<TugasDto> utsDtos = new ArrayList<>();
         List<TugasDto> uasDtos = new ArrayList<>();
-        model.addAttribute("tahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("tahun",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
-            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
+            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(
+                    mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
             model.addAttribute("selectedTahun", tahunAkademik);
 
@@ -232,7 +235,6 @@ public class ReportMahasiswaController {
 
         return "report/khs";
 
-
     }
 
     @Transactional
@@ -248,16 +250,19 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/report/edom")
-    public void edom(Authentication authentication, Model model, @RequestParam(required = false) TahunAkademik tahunAkademik) {
+    public void edom(Authentication authentication, Model model,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
 
-        List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
+        List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF,
+                StatusRecord.UNDONE);
 
         List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa, tahunAkademik);
-        List<EdomQuestion> listQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
+        List<EdomQuestionOld> listQuestion = edomQuestionOldDao
+                .findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
 
         model.addAttribute("detail", detailEdoms);
         model.addAttribute("question", listQuestion);
@@ -265,22 +270,25 @@ public class ReportMahasiswaController {
     }
 
     @PostMapping("/report/edom")
-    public String prosesForm(Authentication authentication, HttpServletRequest request, @RequestParam TahunAkademik tahunAkademik,
-                             RedirectAttributes attributes) {
+    public String prosesForm(Authentication authentication, HttpServletRequest request,
+            @RequestParam TahunAkademik tahunAkademik,
+            RedirectAttributes attributes) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa, tahunAkademik);
-        List<EdomQuestion> listQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
+        List<EdomQuestionOld> listQuestion = edomQuestionOldDao
+                .findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
 
         for (DetailEdom edom : detailEdoms) {
-            for (EdomQuestion question : listQuestion) {
-                String pertanyaan1 = request.getParameter(edom.getKrs() + "-" + edom.getDosen() + "-" + question.getNomor());
+            for (EdomQuestionOld question : listQuestion) {
+                String pertanyaan1 = request
+                        .getParameter(edom.getKrs() + "-" + edom.getDosen() + "-" + question.getNomor());
                 KrsDetail krsDetail = krsDetailDao.findById(edom.getKrs()).get();
                 if (pertanyaan1 == null) {
                     EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
-                    edomMahasiswa.setEdomQuestion(question);
+                    edomMahasiswa.setEdomQuestionOld(question);
                     edomMahasiswa.setJadwal(jadwalDao.findById(edom.getJadwal()).get());
                     edomMahasiswa.setKrsDetail(krsDetail);
                     edomMahasiswa.setNilai(3);
@@ -289,7 +297,7 @@ public class ReportMahasiswaController {
                     edomMahasiswaDao.save(edomMahasiswa);
                 } else {
                     EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
-                    edomMahasiswa.setEdomQuestion(question);
+                    edomMahasiswa.setEdomQuestionOld(question);
                     edomMahasiswa.setJadwal(jadwalDao.findById(edom.getJadwal()).get());
                     edomMahasiswa.setKrsDetail(krsDetail);
                     edomMahasiswa.setNilai(Integer.valueOf(pertanyaan1));
@@ -318,7 +326,6 @@ public class ReportMahasiswaController {
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
         TahunAkademik tahunAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-
         model.addAttribute("tahun", tahun);
         model.addAttribute("ceklis", praKrsSpDao.cariKrsSp(mahasiswa, tahun));
         model.addAttribute("total", praKrsSpDao.countSp(mahasiswa, tahun));
@@ -326,7 +333,8 @@ public class ReportMahasiswaController {
         model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
         model.addAttribute("semesterTranskript", krsDao.semesterTranskriptMahasiswa(mahasiswa.getId()));
         model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
-        model.addAttribute("hapusSp", praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa, StatusRecord.AKTIF, StatusApprove.WAITING, tahun));
+        model.addAttribute("hapusSp", praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa,
+                StatusRecord.AKTIF, StatusApprove.WAITING, tahun));
 
         if (LocalDate.now().isAfter(tahunAktif.getTanggalSelesaiNilai())) {
             return "redirect:edom?tahunAkademik=" + tahunAktif.getId();
@@ -373,14 +381,16 @@ public class ReportMahasiswaController {
     }
 
     @PostMapping("/report/akselerasi")
-    public String akselerasi(@RequestParam String idMatkul, @RequestParam(required = false) String idMatkul2, Authentication authentication) {
+    public String akselerasi(@RequestParam String idMatkul, @RequestParam(required = false) String idMatkul2,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         JenisTagihan jt = jenisTagihanDao.findByKodeAndStatus("23", StatusRecord.AKTIF);
 
         if (idMatkul2 == "kosong" || idMatkul2.trim().equals("kosong")) {
 
-            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF,
+                    StatusRecord.PENDEK);
             MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(idMatkul).get();
             System.out.println(matakuliahKurikulum);
 
@@ -392,8 +402,9 @@ public class ReportMahasiswaController {
             pks1.setTahunAkademik(tahunAkademik);
             praKrsSpDao.save(pks1);
 
-            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
-                    mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
+            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao
+                    .findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
+                            mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
             if (nilaiJenisTagihan == null) {
 
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
@@ -432,15 +443,18 @@ public class ReportMahasiswaController {
 
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
                 BigDecimal total = bs.getBiaya().multiply(new BigDecimal(matakuliahKurikulum.getJumlahSks()));
-                List<PraKrsSp> cekSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa, StatusRecord.HAPUS, StatusApprove.HAPUS, tahunAkademik);
+                List<PraKrsSp> cekSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa,
+                        StatusRecord.HAPUS, StatusApprove.HAPUS, tahunAkademik);
                 System.out.println("sp kosong : " + cekSp);
 
                 String keteranganTagihan = "Tagihan " + nilaiJenisTagihan.getJenisTagihan().getNama()
                         + " a.n. " + mahasiswa.getNama();
 
-                Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
+                Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(
+                        StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
                 if (t == null) {
-                    t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, true);
+                    t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(
+                            StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, true);
                     if (t == null) {
                         Tagihan tagihan = new Tagihan();
                         tagihan.setMahasiswa(mahasiswa);
@@ -480,8 +494,10 @@ public class ReportMahasiswaController {
                                 tagihan.setMahasiswa(mahasiswa);
                                 tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
                                 tagihan.setKeterangan(keteranganTagihan);
-                                tagihan.setNilaiTagihan(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
-                                tagihan.setNilaiTagihanAsli(new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
+                                tagihan.setNilaiTagihan(
+                                        new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
+                                tagihan.setNilaiTagihanAsli(
+                                        new BigDecimal(total.intValue() - t.getNilaiTagihan().intValue()));
                                 tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
                                 tagihan.setTanggalPembuatan(LocalDate.now());
                                 tagihan.setTanggalJatuhTempo(tahunAkademik.getTanggalSelesaiUas().minusDays(2));
@@ -502,10 +518,10 @@ public class ReportMahasiswaController {
                     tagihanService.editTagihan(t, t.getNomor());
                 }
 
-
             }
         } else {
-            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF,
+                    StatusRecord.PENDEK);
             MatakuliahKurikulum mk1 = matakuliahKurikulumDao.findById(idMatkul).get();
             MatakuliahKurikulum mk2 = matakuliahKurikulumDao.findById(idMatkul2).get();
 
@@ -525,9 +541,9 @@ public class ReportMahasiswaController {
             pks2.setTahunAkademik(tahunAkademik);
             praKrsSpDao.save(pks2);
 
-
-            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
-                    mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
+            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao
+                    .findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
+                            mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
             if (nilaiJenisTagihan == null) {
 
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
@@ -570,7 +586,8 @@ public class ReportMahasiswaController {
                 String keteranganTagihan = "Tagihan " + nilaiJenisTagihan.getJenisTagihan().getNama()
                         + " a.n. " + mahasiswa.getNama();
 
-                Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, true);
+                Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(
+                        StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, true);
                 if (t != null) {
                     if (total.compareTo(t.getNilaiTagihan()) > 0) {
                         Tagihan tagihan = new Tagihan();
@@ -621,15 +638,19 @@ public class ReportMahasiswaController {
         JenisTagihan jt = jenisTagihanDao.findByKodeAndStatus("23", StatusRecord.AKTIF);
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
 
-        List<PraKrsSp> listSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa, StatusRecord.AKTIF, StatusApprove.WAITING, tahunAkademik);
+        List<PraKrsSp> listSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa,
+                StatusRecord.AKTIF, StatusApprove.WAITING, tahunAkademik);
         for (PraKrsSp deleteSp : listSp) {
             deleteSp.setStatus(StatusRecord.HAPUS);
             deleteSp.setUserDelete(user);
             deleteSp.setStatusApprove(StatusApprove.HAPUS);
             praKrsSpDao.save(deleteSp);
         }
-        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
-        Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
+        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao
+                .findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
+                        mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
+        Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF,
+                tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
 
         if (t != null) {
             t.setStatus(StatusRecord.HAPUS);
@@ -650,36 +671,60 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/studiesActivity/khs/konversiApproval")
-    public String requestKonversiApproval(Model model, @PageableDefault(size = 100) Pageable pageable, String search, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Mahasiswa mahasiswa) {
-//        model.addAttribute("report","active");
+    public String requestKonversiApproval(Model model, @PageableDefault(size = 100) Pageable pageable, String search,
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Mahasiswa mahasiswa) {
+        // model.addAttribute("report","active");
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("selectedNim", search);
 
-        for (RequestKonversi requestKonversi1 : requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, pageable)) {
+        for (RequestKonversi requestKonversi1 : requestKonversiDao
+                .findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(prodi, StatusRecord.APPROVED,
+                        StatusRecord.AKTIF, StatusRecord.N, pageable)) {
 
             model.addAttribute("requestKonversi", khsService.getRequestKonversiById(requestKonversi1.getId()));
 
         }
 
-
         if (prodi != null) {
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, search, pageable));
-                model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, mahasiswa, search, pageable));
-                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(prodi, StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.PRESTASI, search, pageable));
-                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(prodi, StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.TAHFIZH, search, pageable));
-                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(prodi, StatusRecord.AKTIF, search, pageable));
+                model.addAttribute("listRequestApproved", requestKonversiDao
+                        .findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(
+                                prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, search, pageable));
+                model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao
+                        .findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaIdAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(
+                                prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, mahasiswa, search,
+                                pageable));
+                model.addAttribute("listRequestPrestasi", requestKonversiDao
+                        .findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(
+                                prodi, StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.PRESTASI, search,
+                                pageable));
+                model.addAttribute("listRequestTahfizh", requestKonversiDao
+                        .findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilaiAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(
+                                prodi, StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.TAHFIZH, search,
+                                pageable));
+                model.addAttribute("listFinal", requestKonversiDao
+                        .findByKrsDetailMahasiswaIdProdiAndStatusAndKrsDetailMahasiswaNimContainingIgnoreCaseOrderByCreatedTimeAsc(
+                                prodi, StatusRecord.AKTIF, search, pageable));
 
             } else {
                 model.addAttribute("listRequestApprovedGroup", requestKonversiDao.listApprovalGroup(prodi, pageable));
-                model.addAttribute("listApprovalGroupDetail", requestKonversiDao.listApprovalGroupDetail(prodi, pageable));
-                model.addAttribute("listRequestApproved", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, pageable));
-                model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaId(prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, mahasiswa, pageable));
-                model.addAttribute("listRequestPrestasi", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(prodi, StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.PRESTASI, pageable));
-                model.addAttribute("listRequestTahfizh", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(prodi, StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.TAHFIZH, pageable));
-                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatus(prodi, StatusRecord.AKTIF, pageable));
-
+                model.addAttribute("listApprovalGroupDetail",
+                        requestKonversiDao.listApprovalGroupDetail(prodi, pageable));
+                model.addAttribute("listRequestApproved",
+                        requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalization(prodi,
+                                StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, pageable));
+                model.addAttribute("listRequestApprovedGroupMahasiswa", requestKonversiDao
+                        .findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndFinalizationAndKrsDetailMahasiswaId(
+                                prodi, StatusRecord.APPROVED, StatusRecord.AKTIF, StatusRecord.N, mahasiswa, pageable));
+                model.addAttribute("listRequestPrestasi",
+                        requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(prodi,
+                                StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.PRESTASI, pageable));
+                model.addAttribute("listRequestTahfizh",
+                        requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndApprovalAndStatusAndJenisNilai(prodi,
+                                StatusRecord.WAITING, StatusRecord.AKTIF, StatusRecord.TAHFIZH, pageable));
+                model.addAttribute("listFinal", requestKonversiDao.findByKrsDetailMahasiswaIdProdiAndStatus(prodi,
+                        StatusRecord.AKTIF, pageable));
 
             }
         }
@@ -688,9 +733,10 @@ public class ReportMahasiswaController {
     }
 
     @PostMapping("/studiesActivity/khs/requestKonversi")
-    public String requestKonversi(@Valid @ModelAttribute RequestKonversi requestKonversi, @RequestParam KrsDetail krsDetail, @RequestParam("file") MultipartFile file,
-                                  Authentication authentication, RedirectAttributes redirectAttributes, BindingResult errors) throws IOException {
-
+    public String requestKonversi(@Valid @ModelAttribute RequestKonversi requestKonversi,
+            @RequestParam KrsDetail krsDetail, @RequestParam("file") MultipartFile file,
+            Authentication authentication, RedirectAttributes redirectAttributes, BindingResult errors)
+            throws IOException {
 
         try {
             if (errors.hasErrors()) {
@@ -708,18 +754,20 @@ public class ReportMahasiswaController {
             khsService.uploadFileKonversi(requestKonversi, krsDetail, file, lokasiUpload);
 
             redirectAttributes.addFlashAttribute("success", "Save data successfull..");
-            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal="
+                    + krsDetail.getJadwal().getId();
         } catch (Exception e) {
             log.error("Error : ", e.getMessage());
             redirectAttributes.addFlashAttribute("gagal", e.getMessage());
-            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal="
+                    + krsDetail.getJadwal().getId();
         }
 
     }
 
     @PostMapping("/studiesActivity/khs/konversiApproval/save")
     public String updateNilai(@RequestParam List<String> grade, @RequestParam List<RequestKonversi> requestKonversi,
-                              Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
+            Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
 
         for (RequestKonversi requestKonversi1 : requestKonversi) {
             for (String grade2 : grade) {
@@ -729,11 +777,11 @@ public class ReportMahasiswaController {
                 if (requestKonversi1.getId().equals(grade2.substring(2, grade2.length()))) {
                     try {
                         khsService.updateNilai(authentication, requestKonversi1.getKrsDetail(), grade2.substring(0, 1));
-//                   redirectAttributes.addFlashAttribute("success", "Save data successfull..");
+                        // redirectAttributes.addFlashAttribute("success", "Save data successfull..");
                     } catch (Exception e) {
                         log.error("Error : ", e.getMessage());
                         redirectAttributes.addFlashAttribute("gagal", e.getMessage());
-//                    return "redirect:../../khs/konversiApproval";
+                        // return "redirect:../../khs/konversiApproval";
                     }
                 }
             }
@@ -749,13 +797,16 @@ public class ReportMahasiswaController {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (requestKonversi.getFilename().toLowerCase().endsWith("jpeg") || requestKonversi.getFilename().toLowerCase().endsWith("jpg")) {
+            if (requestKonversi.getFilename().toLowerCase().endsWith("jpeg")
+                    || requestKonversi.getFilename().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (requestKonversi.getFilename().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (requestKonversi.getFilename().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
-            } else if (requestKonversi.getFilename().toLowerCase().endsWith("xlsx") || requestKonversi.getFilename().toLowerCase().endsWith("xls") || requestKonversi.getFilename().toLowerCase().endsWith("csv")) {
+            } else if (requestKonversi.getFilename().toLowerCase().endsWith("xlsx")
+                    || requestKonversi.getFilename().toLowerCase().endsWith("xls")
+                    || requestKonversi.getFilename().toLowerCase().endsWith("csv")) {
                 headers.setContentType(new MediaType("application", "force-download"));
                 headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + requestKonversi.getNamaFile());
             } else {
@@ -770,7 +821,8 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/khs/request/delete")
-    public String evidenceDelete(@RequestParam String requestKonversi, Authentication authentication, @RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes) {
+    public String evidenceDelete(@RequestParam String requestKonversi, Authentication authentication,
+            @RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes) {
         try {
             khsService.deleteRequestKonversi(requestKonversi, authentication, krsDetail);
 
@@ -778,17 +830,20 @@ public class ReportMahasiswaController {
             System.out.println("ID JADWAL" + krsDetail.getJadwal().getId());
 
             redirectAttributes.addFlashAttribute("success", "Delete data successfull..");
-            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal="
+                    + krsDetail.getJadwal().getId();
         } catch (Exception e) {
 
             log.error("Error : ", e.getMessage());
             redirectAttributes.addFlashAttribute("gagal", e.getMessage());
-            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal=" + krsDetail.getJadwal().getId();
+            return "redirect:../../studiesActivity/khs/konversi?krsDetail=" + krsDetail.getId() + "&jadwal="
+                    + krsDetail.getJadwal().getId();
         }
     }
 
     @GetMapping("/khs/request/approved")
-    public String requestApproved(@RequestParam String requestKonversi, Authentication authentication, @RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes) {
+    public String requestApproved(@RequestParam String requestKonversi, Authentication authentication,
+            @RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes) {
         try {
             khsService.approveRequestKonversi(authentication, requestKonversi, krsDetail);
 
@@ -806,7 +861,8 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/khs/request/rejected")
-    public String requestRejected(@RequestParam String requestKonversi, Authentication authentication, @RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes) {
+    public String requestRejected(@RequestParam String requestKonversi, Authentication authentication,
+            @RequestParam(required = false) KrsDetail krsDetail, RedirectAttributes redirectAttributes) {
         try {
             khsService.rejectRequestKonversi(authentication, requestKonversi, krsDetail);
 
@@ -822,6 +878,5 @@ public class ReportMahasiswaController {
             return "redirect:../../studiesActivity/khs/konversiApproval";
         }
     }
-
 
 }

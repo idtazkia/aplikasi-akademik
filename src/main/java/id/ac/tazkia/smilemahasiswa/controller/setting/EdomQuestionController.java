@@ -2,9 +2,9 @@ package id.ac.tazkia.smilemahasiswa.controller.setting;
 
 
 import id.ac.tazkia.smilemahasiswa.dao.BahasaDao;
-import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionDao;
+import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionOldDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
-import id.ac.tazkia.smilemahasiswa.entity.EdomQuestion;
+import id.ac.tazkia.smilemahasiswa.entity.EdomQuestionOld;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 //import jdk.nashorn.internal.objects.annotations.Getter;
@@ -27,7 +27,7 @@ public class EdomQuestionController {
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
-    private EdomQuestionDao edomQuestionDao;
+    private EdomQuestionOldDao edomQuestionOldDao;
 
     @Autowired
     private BahasaDao bahasaDao;
@@ -38,7 +38,7 @@ public class EdomQuestionController {
                                   @RequestParam(required = false) TahunAkademik tahunAkademik,
                                   @RequestParam(required = false) String bahasa,
                                   @PageableDefault(size = 10)Pageable page){
-        model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusOrderByNomor(StatusRecord.AKTIF));
+        model.addAttribute("listEdomQuestion", edomQuestionOldDao.findByStatusOrderByNomor(StatusRecord.AKTIF));
 
 
         return "setting/edomquestion/list";
@@ -49,7 +49,7 @@ public class EdomQuestionController {
 
         model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-        model.addAttribute("edomQuestion", new EdomQuestion());
+        model.addAttribute("edomQuestion", new EdomQuestionOld());
 
         return "setting/edomquestion/form";
 
@@ -61,27 +61,27 @@ public class EdomQuestionController {
 
         model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-        model.addAttribute("edomQuestion", edomQuestionDao.findById(id));
+        model.addAttribute("edomQuestion", edomQuestionOldDao.findById(id));
 
         return "setting/edomquestion/form";
 
     }
 
     @PostMapping("/setting/edom/question/save")
-    public String saveEdomQuestion(@ModelAttribute EdomQuestion edomQuestion,
+    public String saveEdomQuestion(@ModelAttribute EdomQuestionOld edomQuestionOld,
                                    RedirectAttributes redirectAttributes){
 
-        edomQuestion.setStatus(StatusRecord.AKTIF);
-        edomQuestionDao.save(edomQuestion);
+        edomQuestionOld.setStatus(StatusRecord.AKTIF);
+        edomQuestionOldDao.save(edomQuestionOld);
 
         redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
         return "redirect:/setting/edomquestion/list";
     }
 
     @PostMapping("/setting/edom/question/delete")
-    public String deleteEdom(@RequestParam EdomQuestion edomQuestion){
-        edomQuestion.setStatus(StatusRecord.HAPUS);
-        edomQuestionDao.save(edomQuestion);
+    public String deleteEdom(@RequestParam EdomQuestionOld edomQuestionOld){
+        edomQuestionOld.setStatus(StatusRecord.HAPUS);
+        edomQuestionOldDao.save(edomQuestionOld);
 
         return "redirect:../questions";
     }

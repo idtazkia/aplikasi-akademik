@@ -5,7 +5,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 
 @Data
@@ -31,7 +30,7 @@ public class EdomMahasiswa {
 
     @ManyToOne
     @JoinColumn(name = "id_edom_question")
-    private EdomQuestion edomQuestion;
+    private EdomQuestionOld edomQuestionOld;
 
     @ManyToOne
     @JoinColumn(name = "id_dosen")

@@ -3,7 +3,6 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,10 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -36,7 +33,7 @@ public class SettingController {
     private JenjangDao jenjangDao;
 
     @Autowired
-    private EdomQuestionDao edomQuestionDao;
+    private EdomQuestionOldDao edomQuestionOldDao;
 
     @Autowired
     private FakultasDao fakultasDao;
@@ -370,7 +367,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         if (tahun == null){
             tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         }
-        model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahun));
+        model.addAttribute("listEdomQuestion", edomQuestionOldDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahun));
     }
 
     @GetMapping("/setting/beasiswa/list")
