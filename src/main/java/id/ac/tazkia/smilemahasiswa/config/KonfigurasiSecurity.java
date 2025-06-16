@@ -258,7 +258,10 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/generate-presensi-mahasiswa/{id}")
                 .antMatchers("/generate-sesikuliah/{id}")
                 .antMatchers("/api/get-tagihan-pembayaran-perbulan")
-                .antMatchers("/api/get-tagihan-akun");
+                .antMatchers("/api/get-tagihan-akun")
+                .antMatchers("/api/get-prodi")
+                .antMatchers("/api/get-kurikulum-prodi/{prodiId}")
+                .antMatchers("/api/get-matakuliah/{prodiId}/{kurikulumId}");
     }
 
     @Bean
