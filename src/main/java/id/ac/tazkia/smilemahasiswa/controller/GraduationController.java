@@ -242,9 +242,9 @@ public class GraduationController {
     @GetMapping("/api/seminar")
     @ResponseBody
     public Object[] validasiSeminar(@RequestParam Ruangan ruangan,
-                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
-                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
-                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamSelesai) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamSelesai) {
         if (tanggal.getDayOfWeek().getValue() == 7) {
             Hari hari = hariDao.findById("0").get();
             TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -318,7 +318,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/alert")
     public void alert(@RequestParam(required = false) String matkul, @RequestParam(required = false) String title,
-                      Model model) {
+            Model model) {
         model.addAttribute("title", title);
         model.addAttribute("matkul", matkul);
     }
@@ -389,8 +389,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/form")
     public String uploadBukti(@Valid Note note,
-                              BindingResult error, MultipartFile file,
-                              Authentication currentUser) throws Exception {
+            BindingResult error, MultipartFile file,
+            Authentication currentUser) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -586,7 +586,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/admin/list")
     public void list(Model model, @RequestParam(required = false) TahunAkademik tahun, Pageable pageable,
-                     @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) StatusApprove status) {
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) StatusApprove status) {
 
         if (tahun != null) {
             if (status != null) {
@@ -608,7 +608,7 @@ public class GraduationController {
 
     @GetMapping("/download/concept-note")
     public void downloadDataConceptNote(@RequestParam Prodi prodi, @RequestParam TahunAkademik tahunAkademik,
-                                        HttpServletResponse response) throws Exception {
+            HttpServletResponse response) throws Exception {
         graduationService.downloadDataConceptNote(tahunAkademik, prodi, response);
     }
 
@@ -635,8 +635,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/admin/approve")
     public String Approve(Authentication authentication,
-                          @RequestParam String idnote,
-                          @ModelAttribute Note note, @RequestParam(required = false) String keterangan) {
+            @RequestParam String idnote,
+            @ModelAttribute Note note, @RequestParam(required = false) String keterangan) {
         User user = currentUserService.currentUser(authentication);
 
         Note note1 = noteDao.findById(idnote).get();
@@ -735,14 +735,14 @@ public class GraduationController {
 
     @GetMapping("/graduation/admin/inputscore")
     public void scoreInput(@RequestParam(required = false) String nim, @RequestParam(required = false) BigDecimal nilai,
-                           Model model) {
+            Model model) {
         model.addAttribute("nim", nim);
     }
 
     @PostMapping("/graduation/admin/inputscore")
     public String prosesScoreInput(@RequestParam(required = false) String nim,
-                                   @RequestParam(required = false) BigDecimal nilai,
-                                   RedirectAttributes attributes) {
+            @RequestParam(required = false) BigDecimal nilai,
+            RedirectAttributes attributes) {
 
         String krsDetail = null;
         if (mahasiswaDao.findByNim(nim).getIdProdi().getId().equals("08")) {
@@ -795,9 +795,9 @@ public class GraduationController {
 
     @RequestMapping("/graduation/{fileName}")
     public void downloadPDFResource(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    @RequestParam Note note,
-                                    @PathVariable("fileName") String fileName) {
+            HttpServletResponse response,
+            @RequestParam Note note,
+            @PathVariable("fileName") String fileName) {
         // If user is not authorized - he should be thrown out from here itself
 
         // Authorized user will download the file
@@ -828,12 +828,14 @@ public class GraduationController {
 
             if (note.getJenis() == StatusRecord.JURNAL) {
                 if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminarJurnal())
-                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminarJurnal()) && waiting == null) {
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminarJurnal())
+                        && waiting == null) {
                     return "redirect:seminar/info";
                 }
             } else {
                 if (LocalDateTime.now().plusHours(7).isAfter(periodeWisuda.getTutupSeminar())
-                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar()) && waiting == null) {
+                        && LocalDateTime.now().plusHours(7).isBefore(periodeWisuda.getBukaSeminar())
+                        && waiting == null) {
                     return "redirect:seminar/info";
                 }
             }
@@ -907,7 +909,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/sempropasca")
     public String semproPasca(Model model, @RequestParam(name = "id", value = "id", required = false) Note note,
-                              @RequestParam(required = false) String valid) {
+            @RequestParam(required = false) String valid) {
         if (note.getStatus() == StatusApprove.APPROVED) {
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note, StatusApprove.WAITING);
@@ -992,7 +994,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/waiting")
     public String waiting(Model model, @RequestParam(name = "id", value = "id", required = false) Note note,
-                          Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -1042,11 +1044,12 @@ public class GraduationController {
         UjianTahfidzKompre kompre = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(
                 seminar.getNote().getMahasiswa(), "UjianKomprehensif", StatusRecord.LULUS);
 
-        if (seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05") || seminar.getNote().getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")
-                || seminar.getNote().getMahasiswa().getIdProgram().getId().equals("3abf660c-e801-4ca3-b6d6-e69f67b9f09c")) {
+        if (seminar.getNote().getMahasiswa().getIdProdi().getId().equals("05")
+                || seminar.getNote().getMahasiswa().getIdProdi().getId().equals("4f8e1779-4d46-4365-90df-996fab83b47c")
+                || seminar.getNote().getMahasiswa().getIdProgram().getId()
+                        .equals("3abf660c-e801-4ca3-b6d6-e69f67b9f09c")) {
             model.addAttribute("valid", "valid");
         }
-
 
         if (tahfidz != null) {
             model.addAttribute("tahfidz", tahfidz);
@@ -1072,8 +1075,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/sempro")
     public String prosesSeminar(@Valid Seminar seminar,
-                                BindingResult error, MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
-                                Authentication currentUser, MultipartFile formulir, MultipartFile kehadiran) throws Exception {
+            BindingResult error, MultipartFile kartu, MultipartFile skripsi, MultipartFile pengesahan,
+            Authentication currentUser, MultipartFile formulir, MultipartFile kehadiran) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -1233,9 +1236,9 @@ public class GraduationController {
 
     @PostMapping("/graduation/sempro-publikasi")
     public String prosesSeminarPublikasi(@Valid Seminar seminar,
-                                         BindingResult error, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
-                                         MultipartFile ktp, MultipartFile ijazah, @RequestParam(required = false) MultipartFile berita,
-                                         Authentication currentUser) throws Exception {
+            BindingResult error, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
+            MultipartFile ktp, MultipartFile ijazah, @RequestParam(required = false) MultipartFile berita,
+            Authentication currentUser) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -1627,7 +1630,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/list")
     public void seminarList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                            @RequestParam(required = false) Prodi prodi, Pageable pageable, Authentication authentication) {
+            @RequestParam(required = false) Prodi prodi, Pageable pageable, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
@@ -1648,7 +1651,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/admin/list")
     public void seminarAdminList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                                 @RequestParam(required = false) Prodi prodi, Pageable pageable) {
+            @RequestParam(required = false) Prodi prodi, Pageable pageable) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("listSempro", seminarDao.listSeminarAdmin(tahunAkademik, prodi, pageable));
@@ -1657,7 +1660,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/prodi/list")
     public void seminarProdiList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                                 @RequestParam(required = false) Prodi prodi, Pageable pageable) {
+            @RequestParam(required = false) Prodi prodi, Pageable pageable) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("listSempro", seminarDao.listSeminarAdmin(tahunAkademik, prodi, pageable));
@@ -1753,7 +1756,7 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/reject")
     public String prosesReject(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan,
-                               Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         seminar.setUserApprove(user);
         seminar.setKomentar(keterangan);
@@ -1904,12 +1907,46 @@ public class GraduationController {
 
     }
 
+    @GetMapping("/upload/{seminar}/kehadiranpasca/")
+    public ResponseEntity<byte[]> fileKehadiranPasca(@PathVariable Seminar seminar, Model model) throws Exception {
+        String kehadiranFile = null;
+        if (seminar.getFileKehadiran() == null
+                || seminar.getFileKehadiran().isEmpty()) {
+            kehadiranFile = seminar.getFileBimbingan();
+        } else {
+            kehadiranFile = seminar.getFileKehadiran();
+        }
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + kehadiranFile;
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (kehadiranFile.toLowerCase().endsWith("jpeg")
+                    || kehadiranFile.toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (kehadiranFile.toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (kehadiranFile.toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+    }
+
     @GetMapping("/upload/{seminar}/bimbinganpasca/")
     public ResponseEntity<byte[]> fileBimbinganPasca(@PathVariable Seminar seminar, Model model)
             throws Exception {
-        String lokasiFile =
-                seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
-                        + File.separator + seminar.getFileBimbinganPasca();
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileBimbinganPasca();
         LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
 
         try {
@@ -2000,7 +2037,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/penilaian")
     public void penilaianSeminar(Model model, @RequestParam Seminar seminar,
-                                 @RequestParam(required = false) String kosong, Authentication authentication) {
+            @RequestParam(required = false) String kosong, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -2026,7 +2063,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/penilaianpasca")
     public void penilaianSeminarPasca(Model model, @RequestParam Seminar seminar,
-                                      @RequestParam(required = false) String kosong, Authentication authentication) {
+            @RequestParam(required = false) String kosong, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -2068,10 +2105,10 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/penilaianPasca")
     public String saveKetua(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal nilaiA,
-                            Authentication authentication,
-                            @RequestParam(required = false) BigDecimal nilaiB, @RequestParam(required = false) BigDecimal nilaiC,
-                            @RequestParam(required = false) BigDecimal nilaiD, @RequestParam(required = false) BigDecimal nilaiE,
-                            @RequestParam(required = false) String beritaAcara, @RequestParam(required = false) String komentar) {
+            Authentication authentication,
+            @RequestParam(required = false) BigDecimal nilaiB, @RequestParam(required = false) BigDecimal nilaiC,
+            @RequestParam(required = false) BigDecimal nilaiD, @RequestParam(required = false) BigDecimal nilaiE,
+            @RequestParam(required = false) String beritaAcara, @RequestParam(required = false) String komentar) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -2107,7 +2144,7 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/updatescore")
     public String updatePublish(Model model, Authentication authentication, @RequestParam Seminar seminar,
-                                @Valid SeminarDto seminarDto) {
+            @Valid SeminarDto seminarDto) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -2122,7 +2159,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/score")
     public void nilaiProdi(Model model, @RequestParam Seminar seminar, @RequestParam(required = false) String kosong,
-                           Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -2144,7 +2181,7 @@ public class GraduationController {
 
         if (Integer.parseInt(seminar.getNote().getMahasiswa().getAngkatan()) >= 21
                 && seminar.getNote().getMahasiswa().getIdProdi().getId()
-                .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
+                        .equals("4f8e1779-4d46-4365-90df-996fab83b47c")) {
             model.addAttribute("valid", "dosen2");
 
         }
@@ -2160,7 +2197,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/lecture/sempro")
     public void listSeminar(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model,
-                            Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -2182,8 +2219,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/detailPost")
     public String saveComment(@RequestParam Seminar seminar, @RequestParam(required = false) String komentarDosen1,
-                              @RequestParam(required = false) String komentarDosen2,
-                              @RequestParam(required = false) String komentarDosen3) {
+            @RequestParam(required = false) String komentarDosen2,
+            @RequestParam(required = false) String komentarDosen3) {
 
         if (komentarDosen1 != null) {
             seminar.setKomentarDosen1(komentarDosen1);
@@ -2206,10 +2243,10 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/ketua")
     public String saveKetua(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal ka,
-                            @RequestParam(required = false) BigDecimal kb, @RequestParam(required = false) BigDecimal kc,
-                            @RequestParam(required = false) BigDecimal kd, @RequestParam(required = false) BigDecimal ke,
-                            @RequestParam(required = false) String beritaAcara,
-                            @RequestParam(required = false) BigDecimal kf, @RequestParam(required = false) String komentarKetua) {
+            @RequestParam(required = false) BigDecimal kb, @RequestParam(required = false) BigDecimal kc,
+            @RequestParam(required = false) BigDecimal kd, @RequestParam(required = false) BigDecimal ke,
+            @RequestParam(required = false) String beritaAcara,
+            @RequestParam(required = false) BigDecimal kf, @RequestParam(required = false) String komentarKetua) {
         if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI
                 || seminar.getNote().getJenis() == StatusRecord.MAGANG
                 || seminar.getNote().getJenis() == StatusRecord.JURNAL) {
@@ -2295,9 +2332,9 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/dosen")
     public String saveDosen(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal ua,
-                            @RequestParam(required = false) BigDecimal ub, @RequestParam(required = false) BigDecimal uc,
-                            @RequestParam(required = false) BigDecimal ud, @RequestParam(required = false) BigDecimal ue,
-                            @RequestParam(required = false) BigDecimal uf, @RequestParam(required = false) String komentarPenguji) {
+            @RequestParam(required = false) BigDecimal ub, @RequestParam(required = false) BigDecimal uc,
+            @RequestParam(required = false) BigDecimal ud, @RequestParam(required = false) BigDecimal ue,
+            @RequestParam(required = false) BigDecimal uf, @RequestParam(required = false) String komentarPenguji) {
         if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.JURNAL
                 || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setUa(ua);
@@ -2377,9 +2414,9 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/pembimbing")
     public String savePembimbing(@RequestParam Seminar seminar, @RequestParam(required = false) BigDecimal pa,
-                                 @RequestParam(required = false) BigDecimal pb, @RequestParam(required = false) BigDecimal pc,
-                                 @RequestParam(required = false) BigDecimal pd, @RequestParam(required = false) BigDecimal pe,
-                                 @RequestParam(required = false) BigDecimal pf, @RequestParam(required = false) String komentarPembimbing) {
+            @RequestParam(required = false) BigDecimal pb, @RequestParam(required = false) BigDecimal pc,
+            @RequestParam(required = false) BigDecimal pd, @RequestParam(required = false) BigDecimal pe,
+            @RequestParam(required = false) BigDecimal pf, @RequestParam(required = false) String komentarPembimbing) {
         if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI || seminar.getNote().getJenis() == StatusRecord.JURNAL
                 || seminar.getNote().getJenis() == StatusRecord.MAGANG) {
             seminar.setPa(pa);
@@ -2569,7 +2606,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/formulir")
     public void formulirSempro(@RequestParam(name = "id") Note note,
-                               HttpServletResponse response) {
+            HttpServletResponse response) {
         try {
             // 0. Setup converter
             Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
@@ -2605,7 +2642,7 @@ public class GraduationController {
     }
 
     protected static String tampilkanTanggalDanWaktu(LocalDate tanggalDanWaktu,
-                                                     String pola) {
+            String pola) {
         String tanggalStr = null;
         SimpleDateFormat formatter = null;
         formatter = new SimpleDateFormat(pola);
@@ -2616,9 +2653,9 @@ public class GraduationController {
 
     @GetMapping("/dowload/dataSeminar")
     public void downloadDataSeminar(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi,
-                                    HttpServletResponse response) throws IOException {
-        String[] colums = {"No", "Nim", "Nama", "Judul Seminar", "Pembimbing", "Ketua Penguji", "Dosen Penguji",
-                "Tanggal", "Waktu"};
+            HttpServletResponse response) throws IOException {
+        String[] colums = { "No", "Nim", "Nama", "Judul Seminar", "Pembimbing", "Ketua Penguji", "Dosen Penguji",
+                "Tanggal", "Waktu" };
 
         List<Seminar> seminar = seminarDao
                 .findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputDesc(
@@ -2977,8 +3014,8 @@ public class GraduationController {
 
     @GetMapping("/graduation/magang/admin/list")
     public void listMagangAdmin(@RequestParam(required = false) TahunAkademik tahunAkademik, Pageable pageable,
-                                @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) String status,
-                                Model model) {
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) String status,
+            Model model) {
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("selectedStatus", status);
@@ -2986,13 +3023,18 @@ public class GraduationController {
             if (status.equals("ALL")) {
                 model.addAttribute("selectedStatus", status);
                 model.addAttribute("list",
-                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadAsc(prodi,
-                                Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik, pageable));
+                        fileMagangDao
+                                .findByMahasiswaIdProdiAndStatusInAndTahunAkademikOrderByStatusDescTanggalUploadAsc(
+                                        prodi,
+                                        Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik,
+                                        pageable));
             } else {
                 model.addAttribute("list",
-                        fileMagangDao.findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadAsc(prodi,
-                                Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik,
-                                MagangStatus.valueOf(status), pageable));
+                        fileMagangDao
+                                .findByMahasiswaIdProdiAndStatusInAndTahunAkademikAndJenisOrderByStatusDescTanggalUploadAsc(
+                                        prodi,
+                                        Arrays.asList(StatusApprove.WAITING, StatusApprove.APPROVED), tahunAkademik,
+                                        MagangStatus.valueOf(status), pageable));
             }
         }
 
@@ -3031,7 +3073,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/magang")
     public String pendaftaranMagang(Model model, Authentication authentication,
-                                    @RequestParam(required = false) String id) {
+            @RequestParam(required = false) String id) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -3055,7 +3097,7 @@ public class GraduationController {
 
     @GetMapping("/graduation/waiting-magang")
     public String listMagang(Model model, Authentication authentication,
-                             @RequestParam(required = false) String id) {
+            @RequestParam(required = false) String id) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -3082,8 +3124,8 @@ public class GraduationController {
 
     @PostMapping("/graduation/magang")
     public String uploadMagang(@Valid FileMagang fileMagang,
-                               BindingResult error, MultipartFile laporan, MultipartFile penilaian,
-                               Authentication currentUser) throws Exception {
+            BindingResult error, MultipartFile laporan, MultipartFile penilaian,
+            Authentication currentUser) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -3196,75 +3238,76 @@ public class GraduationController {
 
     @PostMapping("/graduation/magang/admin/tolak")
     public String tolakMagang(@RequestParam(name = "id", value = "id") FileMagang fileMagang,
-                              @RequestParam(required = false) String komentar) {
+            @RequestParam(required = false) String komentar) {
         fileMagang.setKomentar(komentar);
         fileMagang.setStatus(StatusApprove.REJECTED);
         fileMagangDao.save(fileMagang);
         mailService.intershipRejected(fileMagang);
         return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
-                + fileMagang.getMahasiswa().getIdProdi().getId()+"&status=ALL";
+                + fileMagang.getMahasiswa().getIdProdi().getId() + "&status=ALL";
     }
 
     @PostMapping("/graduation/magang/admin/terima")
     public String terimaMagang(@RequestParam(name = "id", value = "id") FileMagang fileMagang,
-                               @RequestParam(required = false) String komentar) {
+            @RequestParam(required = false) String komentar) {
         fileMagang.setKomentar(komentar);
         fileMagang.setStatus(StatusApprove.APPROVED);
         fileMagangDao.save(fileMagang);
         mailService.intershipApproved(fileMagang);
         return "redirect:list?tahunAkademik=" + fileMagang.getTahunAkademik().getId() + "&prodi="
-                + fileMagang.getMahasiswa().getIdProdi().getId()+"&status=ALL";
+                + fileMagang.getMahasiswa().getIdProdi().getId() + "&status=ALL";
     }
 
     @GetMapping("/upload/{seminar}/file-jurnal/{file}/")
     public ResponseEntity<byte[]> getFileUpload(@PathVariable Seminar seminar,
-                                                @PathVariable String file) throws Exception {
+            @PathVariable String file) throws Exception {
         return graduationService.getFileJurnal(seminar, file);
     }
 
     @GetMapping("/upload/{sidang}/file-jurnal-loa/{file}/")
     public ResponseEntity<byte[]> getFileUploadSidangJurnal(@PathVariable Sidang sidang,
-                                                @PathVariable String file) throws Exception {
+            @PathVariable String file) throws Exception {
         if (Integer.parseInt(sidang.getTahunAkademik().getKodeTahunAkademik()) >= Integer.parseInt("20241")) {
             return graduationService.getFileJurnalSidang(sidang, file);
-        }else {
+        } else {
             System.out.println("yeay");
             return graduationService.getFileJurnal(sidang.getSeminar(), file);
         }
     }
 
-    @GetMapping("/graduation/konversi-seminar")
-    @ResponseBody
-    public String konversiSeminar() {
-        List<Note> noteList = noteDao.cariJurnal();
-        for (Note note : noteList) {
-            System.out.println(note.getMahasiswa().getNim() + "  --  " + note.getMahasiswa().getNama());
-            Seminar seminar = new Seminar();
-            seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
-            seminar.setNilai(new BigDecimal(71));
-            seminar.setStatus(StatusApprove.APPROVED);
-            seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-            seminar.setTanggalUjian(LocalDate.now());
-            seminar.setRuangan(ruanganDao.findById("286f1174-4c36-456b-819d-6f23bd74d853").get());
-            seminar.setPenguji(note.getDosen());
-            seminar.setDosenPenguji(note.getDosen());
-            seminar.setKetuaPenguji(note.getDosen());
-            seminar.setJenis(StatusRecord.KONVERSI_JURNAL);
-            seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
-            seminar.setNote(note);
-            seminar.setJamMulai(LocalTime.now());
-            seminar.setJamSelesai(LocalTime.now());
-            seminar.setPublish("AKTIF");
-            seminarDao.save(seminar);
+    // @GetMapping("/graduation/konversi-seminar")
+    // @ResponseBody
+    // public String konversiSeminar() {
+    // List<Note> noteList = noteDao.cariJurnal();
+    // for (Note note : noteList) {
+    // System.out.println(note.getMahasiswa().getNim() + " -- " +
+    // note.getMahasiswa().getNama());
+    // Seminar seminar = new Seminar();
+    // seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
+    // seminar.setNilai(new BigDecimal(71));
+    // seminar.setStatus(StatusApprove.APPROVED);
+    // seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+    // seminar.setTanggalUjian(LocalDate.now());
+    // seminar.setRuangan(ruanganDao.findById("286f1174-4c36-456b-819d-6f23bd74d853").get());
+    // seminar.setPenguji(note.getDosen());
+    // seminar.setDosenPenguji(note.getDosen());
+    // seminar.setKetuaPenguji(note.getDosen());
+    // seminar.setJenis(StatusRecord.KONVERSI_JURNAL);
+    // seminar.setTanggalInput(LocalDateTime.now().plusHours(7));
+    // seminar.setNote(note);
+    // seminar.setJamMulai(LocalTime.now());
+    // seminar.setJamSelesai(LocalTime.now());
+    // seminar.setPublish("AKTIF");
+    // seminarDao.save(seminar);
 
-            if (note.getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
-                note.setJenis(StatusRecord.SKRIPSI);
-            } else {
-                note.setJenis(StatusRecord.TESIS);
-            }
-            noteDao.save(note);
-        }
-        return "sukses";
-    }
+    // if (note.getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
+    // note.setJenis(StatusRecord.SKRIPSI);
+    // } else {
+    // note.setJenis(StatusRecord.TESIS);
+    // }
+    // noteDao.save(note);
+    // }
+    // return "sukses";
+    // }
 
 }
