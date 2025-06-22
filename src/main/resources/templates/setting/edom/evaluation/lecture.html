@@ -157,12 +157,7 @@
 
 				<ul class="nav nav-tabs">
 					<li th:each="dosen, iterStat : ${listKrsDetail}" th:classappend="${iterStat.index == 0} ? 'active'">
-						<a
-							data-toggle="tab"
-							th:href="'#' + ${dosen.jadwal.id}"
-							th:text="${dosen.jadwal.dosen.karyawan.namaKaryawan}"
-							>Nama Dosen</a
-						>
+						<a data-toggle="tab" th:href="'#' + ${dosen.jadwal}" th:text="${dosen.karyawan}">Nama Dosen</a>
 					</li>
 				</ul>
 
@@ -171,19 +166,12 @@
 					<div class="tab-content" style="padding-top: 20px">
 						<div
 							th:each="dosen, iterStat : ${listKrsDetail}"
-							th:id="${dosen.jadwal.id}"
+							th:id="${dosen.jadwal}"
 							th:class="'tab-pane fade in' + (${iterStat.index == 0} ? ' active' : '')"
 						>
 							<div class="lecturer-header">
-								<h3 class="lecturer-name" th:text="${dosen.jadwal.dosen.karyawan.namaKaryawan}">
-									Dr. Ahmad Fauzi, M.Kom
-								</h3>
-								<p
-									th:text="${dosen.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"
-									class="lecturer-course"
-								>
-									Pemrograman Web Lanjut
-								</p>
+								<h3 class="lecturer-name" th:text="${dosen.karyawan}">Dr. Ahmad Fauzi, M.Kom</h3>
+								<p th:text="${dosen.matkul}" class="lecturer-course">Pemrograman Web Lanjut</p>
 							</div>
 							<div class="question-item" th:each=" pertanyaan: ${listConfigDosen}">
 								<p class="question-text" th:text="${pertanyaan.question.questionText}">
@@ -193,35 +181,35 @@
 									<label class="rating-option"
 										><input
 											type="radio"
-											th:name="evaluasi[__${dosen.jadwal.id}__][__${pertanyaan.question.id}__]"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
 											value="1"
 										/><span class="rating-label">1</span></label
 									>
 									<label class="rating-option"
 										><input
 											type="radio"
-											th:name="evaluasi[__${dosen.jadwal.id}__][__${pertanyaan.question.id}__]"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
 											value="2"
 										/><span class="rating-label">2</span></label
 									>
 									<label class="rating-option"
 										><input
 											type="radio"
-											th:name="evaluasi[__${dosen.jadwal.id}__][__${pertanyaan.question.id}__]"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
 											value="3"
 										/><span class="rating-label">3</span></label
 									>
 									<label class="rating-option"
 										><input
 											type="radio"
-											th:name="evaluasi[__${dosen.jadwal.id}__][__${pertanyaan.question.id}__]"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
 											value="4"
 										/><span class="rating-label">4</span></label
 									>
 									<label class="rating-option"
 										><input
 											type="radio"
-											th:name="evaluasi[__${dosen.jadwal.id}__][__${pertanyaan.question.id}__]"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
 											value="5"
 										/><span class="rating-label">5</span></label
 									>

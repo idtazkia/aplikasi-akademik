@@ -26,6 +26,7 @@ import id.ac.tazkia.smilemahasiswa.dao.edom.EdomCategoryDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomGeneralResponseDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionConfigDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionDao;
+import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.Krs;
 import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
@@ -82,9 +83,10 @@ public class EdomQuestionController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
+        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,
+                tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("listKrsDetail",
-                krsDetailDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa,
-                        tahunAkademikDao.findByStatus(StatusRecord.AKTIF), StatusRecord.AKTIF));
+                detailEdoms);
         model.addAttribute("listConfigDosen", edomQuestionConfigDao
                 .findByTargetTypeAndTahunAkademik("DOSEN", tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         return "setting/edom/evaluation/lecture";
