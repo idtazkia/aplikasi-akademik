@@ -30,6 +30,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         @Query("SELECT u FROM KrsDetail u WHERE u.mahasiswa = ?1 and u.krs = ?2 and u.status= ?3 order by u.jadwal.hari,u.jadwal.jamMulai")
         List<KrsDetail> findByMahasiswaAndKrsAndStatus(Mahasiswa mahasiswa, Krs krs, StatusRecord statusRecord);
 
+        List<KrsDetail> findByMahasiswaAndTahunAkademikAndStatus(Mahasiswa mahasiswa, TahunAkademik tahunAkademik,
+                        StatusRecord statusRecord);
+
         List<KrsDetail> findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(
                         StatusRecord status, Krs krs, Mahasiswa mahasiswa);
 

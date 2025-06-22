@@ -13,6 +13,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import id.ac.tazkia.smilemahasiswa.entity.Auditable;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa; // Assuming this path
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,18 +31,24 @@ public class EdomGeneralResponse extends Auditable {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "evaluation_target_id", nullable = false)
-    private EdomEvaluationTarget evaluationTarget;
+    private String target;
 
     @ManyToOne
     @JoinColumn(name = "id_mahasiswa", nullable = false)
     private Mahasiswa mahasiswa;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(name = "id_question", nullable = false)
     private EdomQuestion question;
 
+    @ManyToOne
+    @JoinColumn(name = "id_krs_detail")
+    private KrsDetail krsDetail;
+
+    @ManyToOne
+    @JoinColumn(name = "id_jadwal", nullable = false)
+    private Jadwal jadwal;
+
     @Column(name = "response_value", columnDefinition = "TEXT")
-    private String responseValue; // Stores the answer (e.g., '5' for rating, or text for open-ended)
+    private String responseValue;
 }

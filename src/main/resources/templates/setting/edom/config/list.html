@@ -118,7 +118,9 @@
 								<div class="d-flex justify-content-between align-items-center mb-4">
 									<div>
 										<span class="badge badge-success">AKTIF</span>
-										<small class="text-muted ml-2">Tahun Akademik 2023/2024</small>
+										<small th:text="${akademikAktif.namaTahunAkademik}" class="text-muted ml-2"
+											>Tahun Akademik 2023/2024</small
+										>
 									</div>
 									<button
 										class="btn btn-sm btn-success"
@@ -140,20 +142,24 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>Metodologi pengajaran dosen</td>
-												<td><span class="badge category-badge">Pengajaran</span></td>
-												<td><span class="badge type-badge rating-type">Rating</span></td>
-												<td class="text-right">
-													<button class="btn btn-link text-danger btn-sm">
-														<i class="fas fa-times"></i>
-													</button>
+											<tr th:each=" data: ${listConfigDosen}">
+												<td th:text="${data.question.questionText}">
+													Metodologi pengajaran dosen
 												</td>
-											</tr>
-											<tr>
-												<td>Kedalaman pengetahuan dosen</td>
-												<td><span class="badge category-badge">Kompetensi</span></td>
-												<td><span class="badge type-badge rating-type">Rating</span></td>
+												<td>
+													<span
+														th:text="${data.question.edomCategory.categoryName}"
+														class="badge category-badge"
+														>Pengajaran</span
+													>
+												</td>
+												<td>
+													<span
+														th:text="${data.question.questionType}"
+														class="badge type-badge rating-type"
+														>Rating</span
+													>
+												</td>
 												<td class="text-right">
 													<button class="btn btn-link text-danger btn-sm">
 														<i class="fas fa-times"></i>
@@ -170,7 +176,9 @@
 								<div class="d-flex justify-content-between align-items-center mb-4">
 									<div>
 										<span class="badge badge-success">AKTIF</span>
-										<small class="text-muted ml-2">Tahun Akademik 2023/2024</small>
+										<small th:text="${akademikAktif.namaTahunAkademik}" class="text-muted ml-2"
+											>Tahun Akademik 2023/2024</small
+										>
 									</div>
 									<button
 										class="btn btn-sm btn-danger"
@@ -192,10 +200,24 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>Kebersihan ruang kelas</td>
-												<td><span class="badge category-badge">Fasilitas</span></td>
-												<td><span class="badge type-badge rating-type">Rating</span></td>
+											<tr th:each=" data: ${listConfigSarpras}">
+												<td th:text="${data.question.questionText}">
+													Metodologi pengajaran dosen
+												</td>
+												<td>
+													<span
+														th:text="${data.question.edomCategory.categoryName}"
+														class="badge category-badge"
+														>Pengajaran</span
+													>
+												</td>
+												<td>
+													<span
+														th:text="${data.question.questionType}"
+														class="badge type-badge rating-type"
+														>Rating</span
+													>
+												</td>
 												<td class="text-right">
 													<button class="btn btn-link text-danger btn-sm">
 														<i class="fas fa-times"></i>
@@ -271,7 +293,7 @@
 							</button>
 						</div>
 						<div class="modal-body">
-							<form action="/setting/edom/configuration" method="post">
+							<form th:action="@{/setting/edom/configuration}" method="post">
 								<div class="form-group row">
 									<label class="col-sm-3 col-form-label">Tahun Akademik</label>
 									<div class="col-sm-9">
@@ -298,11 +320,12 @@
 									</select>
 									<input type="hidden" name="targetType" value="SARPRAS" />
 								</div>
+
+								<div class="modal-footer border-0">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+									<button type="submit" class="btn btn-danger">Simpan Konfigurasi</button>
+								</div>
 							</form>
-						</div>
-						<div class="modal-footer border-0">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-							<button type="button" class="btn btn-danger">Simpan Konfigurasi</button>
 						</div>
 					</div>
 				</div>
