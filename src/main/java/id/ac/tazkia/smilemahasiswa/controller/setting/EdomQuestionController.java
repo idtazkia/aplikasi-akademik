@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller.setting;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomCategory;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomGeneralResponse;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestion;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
@@ -107,13 +109,22 @@ public class EdomQuestionController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        model.addAttribute("listSarpras",
-                edomCategoryDao.findAllActiveSarpras());
-        model.addAttribute("listConfigSarpras", edomQuestionConfigDao
-                .findByTargetTypeAndTahunAkademik("SARPRAS",
-                        tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
-        return "setting/edom/evaluation/facilities";
+        List<EdomCategory> categories = edomCategoryDao.findAllActiveSarpras();
+        model.addAttribute("listSarpras", categories);
 
+        TahunAkademik aktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Map<String, List<EdomQuestionConfig>> configPerCategory = new HashMap<>();
+
+        for (EdomCategory category : categories) {
+            List<EdomQuestionConfig> configs = edomQuestionConfigDao
+                    .findByTargetTypeAndTahunAkademikAndQuestionEdomCategoryOrderByQuestionCreatedTimeAsc(
+                            "SARPRAS", aktif, category);
+            configPerCategory.put(category.getId(), configs);
+        }
+
+        model.addAttribute("configPerCategory", configPerCategory);
+
+        return "setting/edom/evaluation/facilities";
     }
 
     @GetMapping("/setting/edom/configuration")
@@ -214,6 +225,40 @@ public class EdomQuestionController {
         }
 
         return "redirect:/setting/edom/eval-dosen";
+    }
+
+    @PostMapping("/edom/eval-facilities/submit")
+    public String submitEvaluasiFacilities(@RequestParam Map<String, String> formData, Authentication authentication) {
+        System.out.println("Evaluasi Sarpras: " + formData);
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        for (Map.Entry<String, String> entry : formData.entrySet()) {
+            String key = entry.getKey();
+            if (!key.startsWith("evaluasi["))
+                continue;
+
+            String inner = key.substring(9, key.length() - 1);
+            String[] parts = inner.split("]\\[");
+
+            if (parts.length != 1)
+                continue;
+
+            String questionId = parts[0];
+            int nilai = Integer.parseInt(entry.getValue());
+            EdomQuestion edomQuestion = edomQuestionDao.findById(questionId).get();
+
+            log.info("Evaluasi Sarpras: {} dengan nilai {}", edomQuestion.getQuestionText(), nilai);
+
+            EdomGeneralResponse response = new EdomGeneralResponse();
+            response.setTarget("SARPRAS");
+            response.setMahasiswa(mahasiswa);
+            response.setQuestion(edomQuestion);
+            response.setResponseValue(String.valueOf(nilai));
+            edomGeneralResponseDao.save(response);
+
+        }
+
+        return "redirect:/setting/edom/eval-facilities";
     }
 
 }

@@ -147,22 +147,30 @@
 			</div>
 
 			<div class="evaluation-container">
+				<!-- Alerts -->
 				<div class="alert alert-danger" id="globalWarning" style="display: none" role="alert">
-					<strong>Perhatian!</strong> Harap lengkapi semua pertanyaan yang ditandai untuk semua dosen sebelum
-					mengirim.
+					<strong>Perhatian!</strong> Harap lengkapi semua pertanyaan sebelum mengirim.
 				</div>
 				<div class="alert alert-success" id="globalSuccess" style="display: none" role="alert">
-					<strong>Berhasil!</strong> Terima kasih, semua evaluasi Anda telah berhasil dikirim.
+					<strong>Berhasil!</strong> Semua evaluasi telah berhasil dikirim.
 				</div>
 
+				<!-- Tabs -->
 				<ul class="nav nav-tabs">
-					<li th:each="data, iterStat : ${listSarpras}" th:classappend="${iterStat.index == 0} ? 'active'">
-						<a data-toggle="tab" th:href="'#' + ${data.id}" th:text="${data.categoryName}">Nama Dosen</a>
+					<li
+						th:each="sarpras, iterStat : ${listSarpras}"
+						th:classappend="${iterStat.index == 0} ? ' active' : ''"
+					>
+						<a data-toggle="tab" th:href="'#' + ${sarpras.id}" th:text="${sarpras.categoryName}"
+							>Kategori</a
+						>
 					</li>
 				</ul>
 
-				<form id="form-semua-evaluasi" method="post" th:action="@{/edom/eval-sarpras/submit}">
+				<!-- Form -->
+				<form id="form-semua-evaluasi" method="post" th:action="@{/edom/eval-facilities/submit}">
 					<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+
 					<div class="tab-content" style="padding-top: 20px">
 						<div
 							th:each="sarpras, iterStat : ${listSarpras}"
@@ -170,61 +178,69 @@
 							th:class="'tab-pane fade in' + (${iterStat.index == 0} ? ' active' : '')"
 						>
 							<div class="lecturer-header">
-								<h3 class="lecturer-name" th:text="${sarpras.categoryName}">Dr. Ahmad Fauzi, M.Kom</h3>
-								<!-- <p
-									th:text="${dosen.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"
-									class="lecturer-course"
-								>
-									Pemrograman Web Lanjut
-								</p> -->
+								<h3 class="lecturer-name" th:text="${sarpras.categoryName}"></h3>
 							</div>
-							<div class="question-item" th:each=" pertanyaan: ${listConfigSarpras}">
-								<p class="question-text" th:text="${pertanyaan.question.questionText}">
-									1. Kedisiplinan dosen dalam memulai dan mengakhiri perkuliahan
-								</p>
+
+							<!-- Loop Questions -->
+							<div
+								class="question-item"
+								th:each="pertanyaan : ${configPerCategory[sarpras.id.toString()]}"
+							>
+								<p class="question-text" th:text="${pertanyaan.question.questionText}"></p>
+
 								<div class="rating-scale">
-									<label class="rating-option"
-										><input
+									<label class="rating-option">
+										<input
 											type="radio"
 											th:name="evaluasi[__${pertanyaan.question.id}__]"
 											value="1"
-										/><span class="rating-label">1</span></label
-									>
-									<label class="rating-option"
-										><input
+										/>
+										<span class="rating-label">1</span>
+									</label>
+									<label class="rating-option">
+										<input
 											type="radio"
 											th:name="evaluasi[__${pertanyaan.question.id}__]"
 											value="2"
-										/><span class="rating-label">2</span></label
-									>
-									<label class="rating-option"
-										><input
+										/>
+										<span class="rating-label">2</span>
+									</label>
+									<label class="rating-option">
+										<input
 											type="radio"
 											th:name="evaluasi[__${pertanyaan.question.id}__]"
 											value="3"
-										/><span class="rating-label">3</span></label
-									>
-									<label class="rating-option"
-										><input
+										/>
+										<span class="rating-label">3</span>
+									</label>
+									<label class="rating-option">
+										<input
 											type="radio"
 											th:name="evaluasi[__${pertanyaan.question.id}__]"
 											value="4"
-										/><span class="rating-label">4</span></label
-									>
-									<label class="rating-option"
-										><input
+										/>
+										<span class="rating-label">4</span>
+									</label>
+									<label class="rating-option">
+										<input
 											type="radio"
 											th:name="evaluasi[__${pertanyaan.question.id}__]"
 											value="5"
-										/><span class="rating-label">5</span></label
-									>
+										/>
+										<span class="rating-label">5</span>
+									</label>
 								</div>
-								<div class="rating-description"><span>Sangat Kurang</span><span>Sangat Baik</span></div>
+
+								<div class="rating-description">
+									<span>Sangat Kurang</span>
+									<span>Sangat Baik</span>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="submit-section">
+					<!-- Submit Button -->
+					<div class="submit-section" style="margin-top: 20px">
 						<button type="submit" class="btn btn-primary btn-lg">Kirim Semua Evaluasi</button>
 					</div>
 				</form>
