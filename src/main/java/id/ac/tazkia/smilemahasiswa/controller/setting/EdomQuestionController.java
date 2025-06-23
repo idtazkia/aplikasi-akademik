@@ -38,8 +38,10 @@ import id.ac.tazkia.smilemahasiswa.entity.edom.EdomGeneralResponse;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestion;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 public class EdomQuestionController {
 
     @Autowired
@@ -85,11 +87,33 @@ public class EdomQuestionController {
 
         List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,
                 tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listKrsDetail",
-                detailEdoms);
-        model.addAttribute("listConfigDosen", edomQuestionConfigDao
-                .findByTargetTypeAndTahunAkademik("DOSEN", tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
-        return "setting/edom/evaluation/lecture";
+        if (detailEdoms.isEmpty()) {
+            log.info("Tidak ada data evaluasi yang tersedia untuk mahasiswa: {}", mahasiswa.getNim());
+            return "redirect:../../dashboard";
+
+        } else {
+            model.addAttribute("listKrsDetail",
+                    detailEdoms);
+            model.addAttribute("listConfigDosen", edomQuestionConfigDao
+                    .findByTargetTypeAndTahunAkademik("DOSEN",
+                            tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+            return "setting/edom/evaluation/lecture";
+        }
+
+    }
+
+    @GetMapping("/setting/edom/eval-facilities")
+    public String edomFacilities(Model model, Authentication authentication) {
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        model.addAttribute("listSarpras",
+                edomCategoryDao.findAllActiveSarpras());
+        model.addAttribute("listConfigSarpras", edomQuestionConfigDao
+                .findByTargetTypeAndTahunAkademik("SARPRAS",
+                        tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+        return "setting/edom/evaluation/facilities";
+
     }
 
     @GetMapping("/setting/edom/configuration")
