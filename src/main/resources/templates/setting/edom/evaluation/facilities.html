@@ -142,8 +142,8 @@
 	<body>
 		<div class="container">
 			<div class="page-header">
-				<h1>Evaluasi Dosen</h1>
-				<p class="lead">Berikan penilaian untuk dosen pengampu mata kuliah Anda.</p>
+				<h1>Evaluasi Sarana Prasarana</h1>
+				<p class="lead">Berikan penilaian untuk Sarana Prasarana.</p>
 			</div>
 
 			<div class="evaluation-container">
@@ -169,7 +169,8 @@
 
 				<!-- Form -->
 				<form id="form-semua-evaluasi" method="post" th:action="@{/edom/eval-facilities/submit}">
-					<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+					<input type="hidden" name="redirect" th:value="${redirect}" />
+					<input type="hidden" name="tahunAkademik" th:value="${tahunAkademik.id}" />
 
 					<div class="tab-content" style="padding-top: 20px">
 						<div

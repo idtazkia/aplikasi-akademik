@@ -34,8 +34,8 @@ public class EdomGeneralResponse extends Auditable {
     private String target;
 
     @ManyToOne
-    @JoinColumn(name = "id_mahasiswa", nullable = false)
-    private Mahasiswa mahasiswa;
+    @JoinColumn(name = "id_evaluation_target", nullable = false)
+    private EdomEvaluationTarget evaluationTarget;
 
     @ManyToOne
     @JoinColumn(name = "id_question", nullable = false)

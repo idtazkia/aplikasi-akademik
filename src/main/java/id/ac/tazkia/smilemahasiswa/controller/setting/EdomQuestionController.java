@@ -4,11 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,36 +15,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomCategoryDao;
-import id.ac.tazkia.smilemahasiswa.dao.edom.EdomGeneralResponseDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionConfigDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionDao;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.Krs;
-import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomCategory;
-import id.ac.tazkia.smilemahasiswa.entity.edom.EdomGeneralResponse;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestion;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.EdomService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
 public class EdomQuestionController {
 
+    private static final String TARGET_TYPE_DOSEN = "DOSEN";
+    private static final String TARGET_TYPE_SARPRAS = "SARPRAS";
+
     @Autowired
     private EdomQuestionConfigDao edomQuestionConfigDao;
+
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
@@ -61,70 +56,19 @@ public class EdomQuestionController {
     private KrsDetailDao krsDetailDao;
 
     @Autowired
-    private KrsDao krsDao;
-
-    @Autowired
     private CurrentUserService currentUserService;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
 
     @Autowired
-    private JadwalDao jadwalDao;
-
-    @Autowired
-    private EdomGeneralResponseDao edomGeneralResponseDao;
+    private EdomService edomService;
 
     @GetMapping("/setting/edom/questions")
     public String edomQuestionList(Model model, Pageable pageable) {
         model.addAttribute("listEdomCategory", edomCategoryDao.findAll());
         model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatus(StatusRecord.AKTIF, pageable));
         return "setting/edom/question/list";
-    }
-
-    @GetMapping("/setting/edom/eval-dosen")
-    public String edomEvaluationList(Model model, Authentication authentication) {
-        User user = currentUserService.currentUser(authentication);
-        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
-        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,
-                tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-        if (detailEdoms.isEmpty()) {
-            log.info("Tidak ada data evaluasi yang tersedia untuk mahasiswa: {}", mahasiswa.getNim());
-            return "redirect:../../dashboard";
-
-        } else {
-            model.addAttribute("listKrsDetail",
-                    detailEdoms);
-            model.addAttribute("listConfigDosen", edomQuestionConfigDao
-                    .findByTargetTypeAndTahunAkademik("DOSEN",
-                            tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
-            return "setting/edom/evaluation/lecture";
-        }
-
-    }
-
-    @GetMapping("/setting/edom/eval-facilities")
-    public String edomFacilities(Model model, Authentication authentication) {
-        User user = currentUserService.currentUser(authentication);
-        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
-        List<EdomCategory> categories = edomCategoryDao.findAllActiveSarpras();
-        model.addAttribute("listSarpras", categories);
-
-        TahunAkademik aktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        Map<String, List<EdomQuestionConfig>> configPerCategory = new HashMap<>();
-
-        for (EdomCategory category : categories) {
-            List<EdomQuestionConfig> configs = edomQuestionConfigDao
-                    .findByTargetTypeAndTahunAkademikAndQuestionEdomCategoryOrderByQuestionCreatedTimeAsc(
-                            "SARPRAS", aktif, category);
-            configPerCategory.put(category.getId(), configs);
-        }
-
-        model.addAttribute("configPerCategory", configPerCategory);
-
-        return "setting/edom/evaluation/facilities";
     }
 
     @GetMapping("/setting/edom/configuration")
@@ -135,9 +79,11 @@ public class EdomQuestionController {
         model.addAttribute("pilihanSaranaPrasarana",
                 edomQuestionDao.cariPertanyaanSaranaPrasarana(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         model.addAttribute("listConfigDosen", edomQuestionConfigDao
-                .findByTargetTypeAndTahunAkademik("DOSEN", tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+                .findByTargetTypeAndTahunAkademik(TARGET_TYPE_DOSEN,
+                        tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         model.addAttribute("listConfigSarpras", edomQuestionConfigDao
-                .findByTargetTypeAndTahunAkademik("SARPRAS", tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+                .findByTargetTypeAndTahunAkademik(TARGET_TYPE_SARPRAS,
+                        tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         return "setting/edom/config/list";
     }
 
@@ -153,11 +99,9 @@ public class EdomQuestionController {
         for (String questionId : question) {
             EdomQuestion edomQuestion = edomQuestionDao.findById(questionId).orElse(null);
             if (edomQuestion == null) {
-                System.out.println("Question not found: " + questionId);
+                log.error("Question not found: {}", questionId);
                 continue;
             }
-            System.out.println("Question : " + edomQuestion.getQuestionText());
-            System.out.println(ta.getNamaTahunAkademik());
 
             EdomQuestionConfig config = new EdomQuestionConfig();
             config.setTahunAkademik(ta);
@@ -188,77 +132,4 @@ public class EdomQuestionController {
 
         return "redirect:../questions";
     }
-
-    @PostMapping("/edom/eval-dosen/submit")
-    public String submitEvaluasi(@RequestParam Map<String, String> formData, Authentication authentication) {
-        User user = currentUserService.currentUser(authentication);
-        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        for (Map.Entry<String, String> entry : formData.entrySet()) {
-            String key = entry.getKey();
-            if (!key.startsWith("evaluasi["))
-                continue;
-
-            String inner = key.substring(9, key.length() - 1);
-            String[] parts = inner.split("]\\[");
-
-            if (parts.length != 2)
-                continue;
-
-            String jadwalId = parts[0];
-            String questionId = parts[1];
-            int nilai = Integer.parseInt(entry.getValue());
-            Jadwal jadwal = jadwalDao.findById(jadwalId).get();
-            EdomQuestion edomQuestion = edomQuestionDao.findById(questionId).get();
-            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswa, jadwal, StatusRecord.AKTIF);
-
-            EdomGeneralResponse response = new EdomGeneralResponse();
-            response.setTarget("DOSEN");
-            response.setMahasiswa(mahasiswa);
-            response.setQuestion(edomQuestion);
-            response.setKrsDetail(krsDetail);
-            response.setJadwal(jadwal);
-            response.setResponseValue(String.valueOf(nilai));
-            edomGeneralResponseDao.save(response);
-
-            krsDetail.setStatusEdom(StatusRecord.DONE);
-            krsDetailDao.save(krsDetail);
-        }
-
-        return "redirect:/setting/edom/eval-dosen";
-    }
-
-    @PostMapping("/edom/eval-facilities/submit")
-    public String submitEvaluasiFacilities(@RequestParam Map<String, String> formData, Authentication authentication) {
-        System.out.println("Evaluasi Sarpras: " + formData);
-        User user = currentUserService.currentUser(authentication);
-        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        for (Map.Entry<String, String> entry : formData.entrySet()) {
-            String key = entry.getKey();
-            if (!key.startsWith("evaluasi["))
-                continue;
-
-            String inner = key.substring(9, key.length() - 1);
-            String[] parts = inner.split("]\\[");
-
-            if (parts.length != 1)
-                continue;
-
-            String questionId = parts[0];
-            int nilai = Integer.parseInt(entry.getValue());
-            EdomQuestion edomQuestion = edomQuestionDao.findById(questionId).get();
-
-            log.info("Evaluasi Sarpras: {} dengan nilai {}", edomQuestion.getQuestionText(), nilai);
-
-            EdomGeneralResponse response = new EdomGeneralResponse();
-            response.setTarget("SARPRAS");
-            response.setMahasiswa(mahasiswa);
-            response.setQuestion(edomQuestion);
-            response.setResponseValue(String.valueOf(nilai));
-            edomGeneralResponseDao.save(response);
-
-        }
-
-        return "redirect:/setting/edom/eval-facilities";
-    }
-
 }

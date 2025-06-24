@@ -3,6 +3,8 @@ package id.ac.tazkia.smilemahasiswa.entity.edom;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -13,7 +15,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import id.ac.tazkia.smilemahasiswa.entity.Auditable;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik; // Assuming this path
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,12 +37,9 @@ public class EdomEvaluationTarget extends Auditable {
     private TahunAkademik tahunAkademik;
 
     @ManyToOne
-    @JoinColumn(name = "target_type_id", nullable = false)
-    private EdomTargetType targetType;
-
-    @Column(name = "target_id", nullable = false, length = 255)
-    private String targetId; // Changed to VARCHAR(255) to store names for facilities
+    @JoinColumn(name = "id_mahasiswa", nullable = false)
+    private Mahasiswa mahasiswa;
 
     @Column(nullable = false, length = 50)
-    private String status = "OPEN"; // e.g., 'OPEN', 'CLOSED', 'COMPLETED'
+    private String status = "OPEN";
 }

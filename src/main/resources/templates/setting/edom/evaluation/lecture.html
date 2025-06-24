@@ -162,7 +162,8 @@
 				</ul>
 
 				<form id="form-semua-evaluasi" method="post" th:action="@{/edom/eval-dosen/submit}">
-					<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+					<input type="hidden" name="redirect" th:value="${redirect}" />
+					<input type="hidden" name="tahunAkademik" th:value="${tahunAkademik.id}" />
 					<div class="tab-content" style="padding-top: 20px">
 						<div
 							th:each="dosen, iterStat : ${listKrsDetail}"
