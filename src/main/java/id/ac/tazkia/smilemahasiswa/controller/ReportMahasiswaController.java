@@ -225,7 +225,7 @@ public class ReportMahasiswaController {
                 Date dateNow = sdformat.parse(LocalDate.now().toString());
                 Date scoreEnd = sdformat.parse(tahunAkademik.getTanggalSelesaiNilai().toString());
                 if (dateNow.compareTo(scoreEnd) > 0) {
-                    return "redirect:edom?tahunAkademik=" + tahunAkademik.getId();
+                    return "redirect:../edom/eval-facilities?tahunAkademik=" + tahunAkademik.getId() + "&redirect=khs";
                 } else {
                     model.addAttribute("hidden", "Data KHS masih terkunci");
                     return "report/khs";
@@ -336,11 +336,11 @@ public class ReportMahasiswaController {
         model.addAttribute("hapusSp", praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa,
                 StatusRecord.AKTIF, StatusApprove.WAITING, tahun));
 
-        if (LocalDate.now().isAfter(tahunAktif.getTanggalSelesaiNilai())) {
-            return "redirect:edom?tahunAkademik=" + tahunAktif.getId();
-        } else {
-            return "report/transcript";
-        }
+        // if (LocalDate.now().isAfter(tahunAktif.getTanggalSelesaiNilai())) {
+        // return "redirect:edom?tahunAkademik=" + tahunAktif.getId();
+        // } else {
+        return "report/transcript";
+        // }
 
     }
 
