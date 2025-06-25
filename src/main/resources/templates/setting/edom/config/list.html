@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Konfigurasi Evaluasi</title>
+		<th:block layout:fragment="style">
+			<!-- Select2 CSS -->
+			<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+			<style>
+				.nav-tabs .nav-link {
+					border: none;
+					padding: 1rem 1.5rem;
+					color: #6c757d;
+					font-weight: 500;
+					border-bottom: 3px solid transparent;
+				}
+				.nav-tabs .nav-link.active {
+					color: #5e72e4;
+					border-bottom: 3px solid #5e72e4;
+					background: transparent;
+				}
+				.question-card {
+					border-left: 4px solid transparent;
+					transition: all 0.2s;
+				}
+				.dosen-question {
+					border-left-color: #4caf50;
+				}
+				.sarpras-question {
+					border-left-color: #f44336;
+				}
+				.category-badge {
+					font-size: 0.75rem;
+					background: #f0f0f0;
+				}
+				.type-badge {
+					font-size: 0.75rem;
+				}
+				.text-type {
+					background: #bbdefb;
+					color: #0d47a1;
+				}
+				.rating-type {
+					background: #c8e6c9;
+					color: #1b5e20;
+				}
+				.choice-type {
+					background: #ffecb3;
+					color: #ff6f00;
+				}
+				.config-table th {
+					border-top: none;
+					border-bottom: 2px solid #f0f0f0;
+				}
+			</style>
+		</th:block>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">Konfigurasi</h5>
+												<span class="h2 font-weight-bold mb-0">Evaluasi Dosen & Sarpras</span>
+											</div>
+											<div class="col-auto">
+												<div
+													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
+												>
+													<i class="fas fa-cog"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container-fluid mt--7">
+				<div class="card shadow">
+					<!-- Tab Navigation -->
+					<div class="card-header border-0 bg-white p-0">
+						<ul class="nav nav-tabs" id="configTabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" id="dosen-tab" data-toggle="tab" href="#dosen" role="tab">
+									<i class="fas fa-chalkboard-teacher mr-2"></i>Dosen
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" id="sarpras-tab" data-toggle="tab" href="#sarpras" role="tab">
+									<i class="fas fa-building mr-2"></i>Sarana Prasarana
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Tab Content -->
+					<div class="card-body">
+						<div class="tab-content" id="configTabsContent">
+							<!-- Dosen Tab -->
+							<div class="tab-pane fade show active" id="dosen" role="tabpanel">
+								<div class="d-flex justify-content-between align-items-center mb-4">
+									<div>
+										<span class="badge badge-success">AKTIF</span>
+										<small th:text="${akademikAktif.namaTahunAkademik}" class="text-muted ml-2"
+											>Tahun Akademik 2023/2024</small
+										>
+									</div>
+									<button
+										class="btn btn-sm btn-success"
+										data-toggle="modal"
+										data-target="#configDosenModal"
+									>
+										<i class="fas fa-cog mr-1"></i> Konfigurasi
+									</button>
+								</div>
+
+								<div class="table-responsive">
+									<table class="table config-table">
+										<thead>
+											<tr>
+												<th width="40%">Pertanyaan</th>
+												<th width="20%">Kategori</th>
+												<th width="20%">Tipe</th>
+												<th width="20%"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each=" data: ${listConfigDosen}">
+												<td th:text="${data.question.questionText}">
+													Metodologi pengajaran dosen
+												</td>
+												<td>
+													<span
+														th:text="${data.question.edomCategory.categoryName}"
+														class="badge category-badge"
+														>Pengajaran</span
+													>
+												</td>
+												<td>
+													<span
+														th:text="${data.question.questionType}"
+														class="badge type-badge rating-type"
+														>Rating</span
+													>
+												</td>
+												<td class="text-right">
+													<button class="btn btn-link text-danger btn-sm">
+														<i class="fas fa-times"></i>
+													</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+
+							<!-- Sarpras Tab -->
+							<div class="tab-pane fade" id="sarpras" role="tabpanel">
+								<div class="d-flex justify-content-between align-items-center mb-4">
+									<div>
+										<span class="badge badge-success">AKTIF</span>
+										<small th:text="${akademikAktif.namaTahunAkademik}" class="text-muted ml-2"
+											>Tahun Akademik 2023/2024</small
+										>
+									</div>
+									<button
+										class="btn btn-sm btn-danger"
+										data-toggle="modal"
+										data-target="#configSarprasModal"
+									>
+										<i class="fas fa-cog mr-1"></i> Konfigurasi
+									</button>
+								</div>
+
+								<div class="table-responsive">
+									<table class="table config-table">
+										<thead>
+											<tr>
+												<th width="40%">Pertanyaan</th>
+												<th width="20%">Kategori</th>
+												<th width="20%">Tipe</th>
+												<th width="20%"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each=" data: ${listConfigSarpras}">
+												<td th:text="${data.question.questionText}">
+													Metodologi pengajaran dosen
+												</td>
+												<td>
+													<span
+														th:text="${data.question.edomCategory.categoryName}"
+														class="badge category-badge"
+														>Pengajaran</span
+													>
+												</td>
+												<td>
+													<span
+														th:text="${data.question.questionType}"
+														class="badge type-badge rating-type"
+														>Rating</span
+													>
+												</td>
+												<td class="text-right">
+													<button class="btn btn-link text-danger btn-sm">
+														<i class="fas fa-times"></i>
+													</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Configuration Modals -->
+			<!-- Dosen Config Modal -->
+			<div class="modal fade" id="configDosenModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header border-0">
+							<h5 class="modal-title">Konfigurasi Evaluasi Dosen</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form th:action="@{/setting/edom/configuration}" method="post">
+								<div class="form-group row">
+									<label class="col-sm-3 col-form-label">Tahun Akademik</label>
+									<div class="col-sm-9">
+										<input
+											type="text"
+											class="form-control"
+											name="tahunAkademik"
+											th:value="${akademikAktif.namaTahunAkademik}"
+											readonly
+										/>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label>Pilih Pertanyaan</label>
+									<select name="question" class="form-control select2-multiple" multiple="multiple">
+										<option
+											th:each="pertanyaan : ${pilihanDosen}"
+											th:value="${pertanyaan.id}"
+											th:text="${pertanyaan.questionText}"
+										>
+											Metodologi pengajaran dosen
+										</option>
+									</select>
+									<input type="hidden" name="targetType" value="DOSEN" />
+								</div>
+								<div class="modal-footer border-0">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+									<button type="submit" class="btn btn-success">Simpan Konfigurasi</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Sarpras Config Modal -->
+			<div class="modal fade" id="configSarprasModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header border-0">
+							<h5 class="modal-title">Konfigurasi Evaluasi Sarpras</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form th:action="@{/setting/edom/configuration}" method="post">
+								<div class="form-group row">
+									<label class="col-sm-3 col-form-label">Tahun Akademik</label>
+									<div class="col-sm-9">
+										<input
+											type="text"
+											class="form-control"
+											name="tahunAkademik"
+											th:value="${akademikAktif.namaTahunAkademik}"
+											readonly
+										/>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label>Pilih Pertanyaan</label>
+									<select class="form-control select2-multiple" name="question" multiple="multiple">
+										<option
+											th:each="pertanyaan : ${pilihanSaranaPrasarana}"
+											th:value="${pertanyaan.id}"
+											th:text="${pertanyaan.questionText}"
+										>
+											Kebersihan ruang kelas
+										</option>
+									</select>
+									<input type="hidden" name="targetType" value="SARPRAS" />
+								</div>
+
+								<div class="modal-footer border-0">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+									<button type="submit" class="btn btn-danger">Simpan Konfigurasi</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	$(document).ready(function () {
+		$("#configDosenModal .select2-multiple").select2({
+			placeholder: "Pilih pertanyaan",
+			width: "100%",
+			dropdownParent: $("#configDosenModal"),
+		});
+
+		$("#configSarprasModal .select2-multiple").select2({
+			placeholder: "Pilih pertanyaan",
+			width: "100%",
+			dropdownParent: $("#configSarprasModal"),
+		});
+
+		$("#configTabs a").on("click", function (e) {
+			e.preventDefault();
+			$(this).tab("show");
+		});
+	});
+</script>

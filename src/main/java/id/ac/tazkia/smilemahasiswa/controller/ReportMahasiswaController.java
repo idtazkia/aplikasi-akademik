@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dao.edom.EdomEvaluationTargetDao;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
@@ -8,6 +9,7 @@ import id.ac.tazkia.smilemahasiswa.dto.report.TugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.study.Kartu;
 import id.ac.tazkia.smilemahasiswa.dto.user.PrasyaratDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomEvaluationTarget;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KhsService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
@@ -45,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -61,6 +64,9 @@ public class ReportMahasiswaController {
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
+
+    @Autowired
+    private EdomEvaluationTargetDao edomEvaluationTargetDao;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -195,8 +201,8 @@ public class ReportMahasiswaController {
         model.addAttribute("tahun",
                 tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
-            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(
-                    mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
+            Optional<EdomEvaluationTarget> target = edomEvaluationTargetDao
+                    .findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, "COMPLETED");
 
             model.addAttribute("selectedTahun", tahunAkademik);
 
@@ -210,7 +216,7 @@ public class ReportMahasiswaController {
                 uasDtos.addAll(nilaiUas);
             }
 
-            if (validasiEdom.isEmpty() || validasiEdom == null) {
+            if (target.isPresent()) {
                 if (!krsDetail.isEmpty()) {
                     model.addAttribute("tugas", tugasDtos);
                     model.addAttribute("uts", utsDtos);
@@ -225,7 +231,7 @@ public class ReportMahasiswaController {
                 Date dateNow = sdformat.parse(LocalDate.now().toString());
                 Date scoreEnd = sdformat.parse(tahunAkademik.getTanggalSelesaiNilai().toString());
                 if (dateNow.compareTo(scoreEnd) > 0) {
-                    return "redirect:edom?tahunAkademik=" + tahunAkademik.getId();
+                    return "redirect:../edom/eval-facilities?tahunAkademik=" + tahunAkademik.getId() + "&redirect=khs";
                 } else {
                     model.addAttribute("hidden", "Data KHS masih terkunci");
                     return "report/khs";
@@ -336,11 +342,11 @@ public class ReportMahasiswaController {
         model.addAttribute("hapusSp", praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa,
                 StatusRecord.AKTIF, StatusApprove.WAITING, tahun));
 
-        if (LocalDate.now().isAfter(tahunAktif.getTanggalSelesaiNilai())) {
-            return "redirect:edom?tahunAkademik=" + tahunAktif.getId();
-        } else {
-            return "report/transcript";
-        }
+        // if (LocalDate.now().isAfter(tahunAktif.getTanggalSelesaiNilai())) {
+        // return "redirect:edom?tahunAkademik=" + tahunAktif.getId();
+        // } else {
+        return "report/transcript";
+        // }
 
     }
 

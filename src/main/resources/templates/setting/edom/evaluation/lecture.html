@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Evaluasi Dosen</title>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+
+		<style>
+			:root {
+				--primary: #4285f4;
+				--primary-light: #e8f0fe;
+				--text: #202124;
+				--text-light: #5f6368;
+				--border: #dadce0;
+				--success: #34a853;
+				--warning-bg: #fffbe6;
+				--warning-border: #f0c36d;
+				--danger-border: #d9534f;
+			}
+			body {
+				background-color: #f5f5f5;
+				padding-top: 20px;
+				padding-bottom: 40px;
+			}
+			.evaluation-container {
+				background: white;
+				border-radius: 8px;
+				padding: 30px;
+				margin-top: 20px;
+				border: 1px solid #ddd;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+			}
+			/* Style untuk tab yang error */
+			.nav-tabs > li > a.has-error {
+				border-bottom: 3px solid var(--danger-border) !important;
+				color: var(--danger-border) !important;
+			}
+			.tab-content .tab-pane {
+				animation: fadeIn 0.5s ease;
+			}
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			.lecturer-header {
+				padding-bottom: 15px;
+				margin-bottom: 20px;
+				border-bottom: 1px solid var(--border);
+			}
+			.lecturer-name {
+				color: var(--primary);
+				margin-bottom: 5px;
+			}
+			.lecturer-course {
+				color: var(--text-light);
+				font-size: 14px;
+			}
+			.question-item {
+				margin-bottom: 25px;
+				padding: 15px;
+				border: 1px solid transparent;
+				border-radius: 6px;
+				transition: all 0.4s ease;
+			}
+			.question-unanswered {
+				background-color: var(--warning-bg);
+				border-color: var(--warning-border);
+				transform: scale(1.01);
+			}
+			.question-text {
+				margin-bottom: 15px;
+				font-weight: 500;
+				color: #333;
+			}
+			.rating-scale {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 15px;
+				margin-bottom: 5px;
+			}
+			.rating-option {
+				position: relative;
+				width: 40px;
+				height: 40px;
+			}
+			.rating-option input {
+				position: absolute;
+				opacity: 0;
+				width: 0;
+				height: 0;
+			}
+			.rating-label {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				background: #f8f8f8;
+				border: 1px solid var(--border);
+				color: var(--text-light);
+				font-weight: 500;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+			.rating-option input:focus + .rating-label {
+				box-shadow: 0 0 0 3px var(--primary-light);
+			}
+			.rating-option:hover .rating-label {
+				border-color: var(--primary);
+			}
+			.rating-option input:checked + .rating-label {
+				background: var(--primary);
+				color: white;
+				border-color: var(--primary);
+				transform: scale(1.1);
+			}
+			.rating-description {
+				display: flex;
+				justify-content: space-between;
+				font-size: 12px;
+				color: var(--text-light);
+				padding: 0 5px;
+				margin-top: 5px;
+			}
+			.submit-section {
+				margin-top: 40px;
+				padding-top: 20px;
+				border-top: 1px solid #eee;
+				text-align: right;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="page-header">
+				<h1>Evaluasi Dosen</h1>
+				<p class="lead">Berikan penilaian untuk dosen pengampu mata kuliah Anda.</p>
+			</div>
+
+			<div class="evaluation-container">
+				<div class="alert alert-danger" id="globalWarning" style="display: none" role="alert">
+					<strong>Perhatian!</strong> Harap lengkapi semua pertanyaan yang ditandai untuk semua dosen sebelum
+					mengirim.
+				</div>
+				<div class="alert alert-success" id="globalSuccess" style="display: none" role="alert">
+					<strong>Berhasil!</strong> Terima kasih, semua evaluasi Anda telah berhasil dikirim.
+				</div>
+
+				<ul class="nav nav-tabs">
+					<li th:each="dosen, iterStat : ${listKrsDetail}" th:classappend="${iterStat.index == 0} ? 'active'">
+						<a data-toggle="tab" th:href="'#' + ${dosen.jadwal}" th:text="${dosen.karyawan}">Nama Dosen</a>
+					</li>
+				</ul>
+
+				<form id="form-semua-evaluasi" method="post" th:action="@{/edom/eval-dosen/submit}">
+					<input type="hidden" name="redirect" th:value="${redirect}" />
+					<input type="hidden" name="tahunAkademik" th:value="${tahunAkademik.id}" />
+					<div class="tab-content" style="padding-top: 20px">
+						<div
+							th:each="dosen, iterStat : ${listKrsDetail}"
+							th:id="${dosen.jadwal}"
+							th:class="'tab-pane fade in' + (${iterStat.index == 0} ? ' active' : '')"
+						>
+							<div class="lecturer-header">
+								<h3 class="lecturer-name" th:text="${dosen.karyawan}">Dr. Ahmad Fauzi, M.Kom</h3>
+								<p th:text="${dosen.matkul}" class="lecturer-course">Pemrograman Web Lanjut</p>
+							</div>
+							<div class="question-item" th:each=" pertanyaan: ${listConfigDosen}">
+								<p class="question-text" th:text="${pertanyaan.question.questionText}">
+									1. Kedisiplinan dosen dalam memulai dan mengakhiri perkuliahan
+								</p>
+								<div class="rating-scale">
+									<label class="rating-option"
+										><input
+											type="radio"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
+											value="1"
+										/><span class="rating-label">1</span></label
+									>
+									<label class="rating-option"
+										><input
+											type="radio"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
+											value="2"
+										/><span class="rating-label">2</span></label
+									>
+									<label class="rating-option"
+										><input
+											type="radio"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
+											value="3"
+										/><span class="rating-label">3</span></label
+									>
+									<label class="rating-option"
+										><input
+											type="radio"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
+											value="4"
+										/><span class="rating-label">4</span></label
+									>
+									<label class="rating-option"
+										><input
+											type="radio"
+											th:name="evaluasi[__${dosen.jadwal}__][__${pertanyaan.question.id}__]"
+											value="5"
+										/><span class="rating-label">5</span></label
+									>
+								</div>
+								<div class="rating-description"><span>Sangat Kurang</span><span>Sangat Baik</span></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="submit-section">
+						<button type="submit" class="btn btn-primary btn-lg">Kirim Semua Evaluasi</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const mainForm = document.getElementById("form-semua-evaluasi");
+				const warningAlert = document.getElementById("globalWarning");
+				const successAlert = document.getElementById("globalSuccess");
+
+				mainForm.addEventListener("submit", function (e) {
+					let isValid = true;
+					let firstUnansweredItem = null;
+					let firstUnansweredTabId = null;
+
+					// Reset semua highlight
+					document.querySelectorAll(".question-item").forEach((item) => {
+						item.classList.remove("question-unanswered");
+					});
+					document.querySelectorAll(".nav-tabs a").forEach((a) => {
+						a.classList.remove("has-error");
+					});
+
+					// Validasi semua pertanyaan di setiap tab
+					document.querySelectorAll(".tab-pane").forEach((pane) => {
+						const lecturerId = pane.id;
+						pane.querySelectorAll(".question-item").forEach((item) => {
+							const isAnswered = item.querySelector('input[type="radio"]:checked');
+							if (!isAnswered && isValid) {
+								isValid = false;
+								firstUnansweredItem = item;
+								firstUnansweredTabId = lecturerId;
+							}
+						});
+					});
+
+					// Jika ada pertanyaan yang belum dijawab
+					if (!isValid) {
+						e.preventDefault(); // Hanya cegah submit jika tidak valid
+						warningAlert.style.display = "block";
+						successAlert.style.display = "none";
+
+						// Tandai tab yang bermasalah
+						const errorTabLink = document.querySelector(`a[href="#${firstUnansweredTabId}"]`);
+						if (errorTabLink) {
+							errorTabLink.classList.add("has-error");
+							$(errorTabLink).tab("show");
+						}
+
+						// Scroll ke pertanyaan yang bermasalah
+						setTimeout(() => {
+							firstUnansweredItem.classList.add("question-unanswered");
+							firstUnansweredItem.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+							});
+						}, 300);
+					} else {
+						// Biarkan form submit secara default
+						warningAlert.style.display = "none";
+						successAlert.style.display = "block";
+						// Tidak perlu call form.submit()
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
