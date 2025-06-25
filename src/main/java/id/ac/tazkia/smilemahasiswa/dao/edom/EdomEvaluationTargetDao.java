@@ -10,4 +10,7 @@ import id.ac.tazkia.smilemahasiswa.entity.edom.EdomEvaluationTarget;
 
 public interface EdomEvaluationTargetDao extends PagingAndSortingRepository<EdomEvaluationTarget, String> {
     Optional<EdomEvaluationTarget> findByMahasiswaAndTahunAkademik(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
+    Optional<EdomEvaluationTarget> findByMahasiswaAndTahunAkademikAndStatus(Mahasiswa mahasiswa,
+            TahunAkademik tahunAkademik, String status);
 }

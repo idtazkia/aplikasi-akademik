@@ -88,23 +88,20 @@ public class EdomController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<EdomCategory> categories = edomCategoryDao.findAllActiveSarpras();
+        List<EdomCategory> categories = edomCategoryDao
+                .findCategoriesWithQuestionsWithoutResponsesForMahasiswaAndTahunAkademik(mahasiswa, tahunAkademik);
         model.addAttribute("listSarpras", categories);
-
-        TahunAkademik activeTahunAkademik = tahunAkademik != null ? tahunAkademik
-                : tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         Map<String, List<EdomQuestionConfig>> configPerCategory = new HashMap<>();
         for (EdomCategory category : categories) {
             List<EdomQuestionConfig> configs = edomQuestionConfigDao
-                    .findByTargetTypeAndTahunAkademikAndQuestionEdomCategoryOrderByQuestionCreatedTimeAsc(
-                            TARGET_TYPE_SARPRAS, activeTahunAkademik, category);
+                    .findUnansweredQuestionsByMahasiswaAndTahunAndCategory(
+                            mahasiswa, tahunAkademik, category);
             configPerCategory.put(category.getId(), configs);
         }
-
         model.addAttribute("configPerCategory", configPerCategory);
         model.addAttribute("redirect", redirect);
-        model.addAttribute("tahunAkademik", activeTahunAkademik);
+        model.addAttribute("tahunAkademik", tahunAkademik);
 
         return "setting/edom/evaluation/facilities";
     }
