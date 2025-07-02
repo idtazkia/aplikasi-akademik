@@ -48,6 +48,9 @@ public class KrsService {
     @Autowired
     private GradeDao gradeDao;
 
+    @Autowired
+    private PraKrsSpDao praKrsSpDao;
+
     public BaseResponse updateIpKrsApi(List<Mahasiswa> mhs) {
         BaseResponse response = null;
         for (Mahasiswa m : mhs) {
@@ -317,6 +320,17 @@ public class KrsService {
         krsDetailDao.save(krsDetail);
 
         return krsDetail;
+    }
+
+    // KRS SP
+    public void createKrsSp(Mahasiswa mhs, MatakuliahKurikulum mk, TahunAkademik tahunAkademik, String nomorTelepon){
+        PraKrsSp pks = new PraKrsSp();
+        pks.setMahasiswa(mhs);
+        pks.setMatakuliahKurikulum(mk);
+        pks.setNomorTelepon(nomorTelepon);
+        pks.setStatus(StatusRecord.AKTIF);
+        pks.setTahunAkademik(tahunAkademik);
+        praKrsSpDao.save(pks);
     }
 
 }

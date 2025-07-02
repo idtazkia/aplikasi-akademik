@@ -407,7 +407,7 @@
 											type="submit"
 											class="mb-5 btn btn-success btn-sm"
 										>
-											Request Semester Pendek (Maks 2)
+											Request Semester Pendek (Maks 3)
 										</button>
 									</div>
 								</div>
@@ -532,8 +532,10 @@
 	//     });
 	// }
 
-	if ($("#totalMatkul").val() < 1) {
-		var max_limit = 2; // Max Limit
+	if ($("#totalMatkul").val() < 2) {
+		var max_limit = 3; // Max Limit
+	} else if ($("#totalMatkul").val() < 1){
+		max_limit = 2; // Max Limit
 	} else {
 		max_limit = 1; // Max Limit
 	}

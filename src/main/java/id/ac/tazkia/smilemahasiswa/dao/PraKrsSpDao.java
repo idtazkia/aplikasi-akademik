@@ -170,8 +170,8 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
     @Query(value = "select sum(jumlah_sks) from matakuliah_kurikulum where id = ?1", nativeQuery = true)
     Integer jumlahSks1(String idMatkul1);
 
-    @Query(value = "select sum(jumlah_sks) from matakuliah_kurikulum where id in (?1, ?2)", nativeQuery = true)
-    Integer jumlahSks2(String idMatkul1, String idMatkul2);
+    @Query(value = "select sum(jumlah_sks) from matakuliah_kurikulum where id in (?1)", nativeQuery = true)
+    Integer jumlahSksList(List<String> idMatkul1);
 
     @Query(value = "select * from pra_krs_sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF' limit 1", nativeQuery = true)
     PraKrsSp cariKrsSp(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
