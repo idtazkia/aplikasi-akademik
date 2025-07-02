@@ -69,6 +69,7 @@ public class EdomService {
             String questionId;
             String dosenId = null;
             String targetStatus;
+            Dosen dosen = null;
 
             if (targetType.equals("DOSEN")) {
                 if (parts.length != 3)
@@ -76,6 +77,7 @@ public class EdomService {
                 jadwalId = parts[0];
                 questionId = parts[1];
                 dosenId = parts[2];
+                dosen = dosenDao.findById(dosenId).orElse(null);
                 targetStatus = "COMPLETED";
             } else if (targetType.equals("SARPRAS")) {
                 if (parts.length != 1)
@@ -89,7 +91,6 @@ public class EdomService {
 
             int nilai = Integer.parseInt(entry.getValue());
             EdomQuestion edomQuestion = edomQuestionDao.findById(questionId).orElse(null);
-            Dosen dosen = dosenDao.findById(dosenId).orElse(null);
 
             if (edomQuestion == null) {
                 log.warn("Question not found: {}", questionId);
