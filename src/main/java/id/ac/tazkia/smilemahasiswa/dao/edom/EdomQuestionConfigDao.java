@@ -36,4 +36,7 @@ public interface EdomQuestionConfigDao
                         TahunAkademik idTahunAkademik,
                         EdomCategory idCategory);
 
+        @Query("SELECT DISTINCT ta FROM TahunAkademik ta JOIN EdomQuestionConfig e ON e.tahunAkademik.id = ta.id")
+        List<TahunAkademik> findDistinctTahunAkademik();
+
 }

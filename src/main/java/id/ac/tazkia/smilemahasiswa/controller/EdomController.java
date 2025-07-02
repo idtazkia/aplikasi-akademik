@@ -3,7 +3,9 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.apache.poi.ss.formula.functions.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomCategoryDao;
+import id.ac.tazkia.smilemahasiswa.dao.edom.EdomEvaluationTargetDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionConfigDao;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
@@ -23,6 +26,7 @@ import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomCategory;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomEvaluationTarget;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.EdomService;
@@ -36,6 +40,9 @@ public class EdomController {
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
+
+    @Autowired
+    private EdomEvaluationTargetDao edomEvaluationTargetDao;
 
     @Autowired
     private EdomCategoryDao edomCategoryDao;
@@ -87,6 +94,8 @@ public class EdomController {
             @RequestParam(required = false) String redirect) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Optional<EdomEvaluationTarget> target = edomEvaluationTargetDao
+                .findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, "OPEN");
 
         List<EdomCategory> categories = edomCategoryDao
                 .findCategoriesWithQuestionsWithoutResponsesForMahasiswaAndTahunAkademik(mahasiswa, tahunAkademik);
@@ -102,8 +111,13 @@ public class EdomController {
         model.addAttribute("configPerCategory", configPerCategory);
         model.addAttribute("redirect", redirect);
         model.addAttribute("tahunAkademik", tahunAkademik);
+        if (target.isEmpty()) {
+            return "setting/edom/evaluation/facilities";
+        } else {
+            return "redirect:eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
 
-        return "setting/edom/evaluation/facilities";
+        }
+
     }
 
     @PostMapping("/edom/eval-dosen/submit")
@@ -130,4 +144,18 @@ public class EdomController {
         edomService.processEvaluationResponse(formData, mahasiswa, TARGET_TYPE_SARPRAS, tahunAkademik);
         return "redirect:../eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
     }
+
+    @GetMapping("/report/edom/lecture")
+    public String getLectureReport() {
+        return "report/edom/lecture/list";
+    }
+
+    @GetMapping("/report/edom/facilities")
+    public String getFacilitiesReport(Model model,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
+        model.addAttribute("tahunAkademik", tahunAkademik);
+        model.addAttribute("listTahunAkademik", edomQuestionConfigDao.findDistinctTahunAkademik());
+        return "report/edom/facilities/list";
+    }
+
 }

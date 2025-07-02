@@ -1095,7 +1095,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         +
                         "  where kd.id_mahasiswa = ?1 and kd.id_tahun_akademik = ?2 and kd.status = 'AKTIF' and kd.status_edom = 'UNDONE' \n"
                         +
-                        "  and (jadwalDosen = 'PENGAMPU' or jadwalDosen = 'TEAM' and (select count(*)from presensi_dosen where id_jadwal = jj.jadwal \n"
+                        "  and (jadwalDosen = 'PENGAMPU' and (select count(*)from presensi_dosen where id_jadwal = jj.jadwal \n"
                         +
                         "  and id_dosen = jj.dosen and status = 'AKTIF') > 0 ) order by jadwal, jadwalDosen asc", nativeQuery = true)
         List<DetailEdom> getListEdom(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
