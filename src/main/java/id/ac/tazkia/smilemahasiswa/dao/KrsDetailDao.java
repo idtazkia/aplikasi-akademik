@@ -1082,22 +1082,32 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         List<Object[]> newPilihKrs(TahunAkademik tahunAkademik, Kelas kelas, Prodi prodi, Mahasiswa mahasiswa,
                         Jenjang jenjang);
 
-        @Query(value = "select kd.id as krs, jj.*,(select count(*)from presensi_dosen where id_jadwal = jj.jadwal and id_dosen = jj.dosen and status = 'AKTIF') as total from krs_detail as kd\n"
-                        +
-                        " left join \n" +
-                        " (select j.id as jadwal,m.nama_matakuliah as matkul,m.nama_matakuliah_english as course ,jd.status_jadwal_dosen as jadwalDosen,jd.id_dosen as dosen,k.nama_karyawan as karyawan\n"
-                        +
-                        " from jadwal_dosen as jd inner join dosen as d on \n" +
-                        " jd.id_dosen = d.id inner join karyawan as k on d.id_karyawan = k.id\n" +
-                        " inner join jadwal as j on jd.id_jadwal = j.id inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id \n"
-                        +
-                        " inner join matakuliah as m on mk.id_matakuliah = m.id where j.status = 'AKTIF' and j.id_hari is not null) jj on kd.id_jadwal = jj.jadwal\n"
-                        +
-                        "  where kd.id_mahasiswa = ?1 and kd.id_tahun_akademik = ?2 and kd.status = 'AKTIF' and kd.status_edom = 'UNDONE' \n"
-                        +
-                        "  and (jadwalDosen = 'PENGAMPU' and (select count(*)from presensi_dosen where id_jadwal = jj.jadwal \n"
-                        +
-                        "  and id_dosen = jj.dosen and status = 'AKTIF') > 0 ) order by jadwal, jadwalDosen asc", nativeQuery = true)
+        @Query(value = "SELECT "
+                        + "kd.id AS krs, "
+                        + "jj.*, "
+                        + "(SELECT COUNT(*) FROM presensi_dosen WHERE id_jadwal = jj.jadwal AND id_dosen = jj.dosen AND status = 'AKTIF') AS total "
+                        + "FROM krs_detail AS kd "
+                        + "LEFT JOIN ("
+                        + "SELECT j.id AS jadwal, m.nama_matakuliah AS matkul, m.nama_matakuliah_english AS course, "
+                        + "jd.status_jadwal_dosen AS jadwalDosen, jd.id_dosen AS dosen, k.nama_karyawan AS karyawan "
+                        + "FROM jadwal_dosen AS jd "
+                        + "INNER JOIN dosen AS d ON jd.id_dosen = d.id "
+                        + "INNER JOIN karyawan AS k ON d.id_karyawan = k.id "
+                        + "INNER JOIN jadwal AS j ON jd.id_jadwal = j.id "
+                        + "INNER JOIN matakuliah_kurikulum AS mk ON j.id_matakuliah_kurikulum = mk.id "
+                        + "INNER JOIN matakuliah AS m ON mk.id_matakuliah = m.id "
+                        + "WHERE j.status = 'AKTIF' AND j.id_hari IS NOT NULL "
+                        + ") AS jj ON kd.id_jadwal = jj.jadwal "
+                        + "WHERE kd.id_mahasiswa = ?1 "
+                        + "AND kd.id_tahun_akademik = ?2 "
+                        + "AND kd.status = 'AKTIF' "
+                        + "AND kd.status_edom = 'UNDONE' "
+                        + "AND ("
+                        + "jj.jadwalDosen IN ('PENGAMPU', 'TEAM') AND ("
+                        + "SELECT COUNT(*) FROM presensi_dosen WHERE id_jadwal = jj.jadwal AND id_dosen = jj.dosen AND status = 'AKTIF'"
+                        + ") > 0"
+                        + ") "
+                        + "ORDER BY jj.jadwal, jj.jadwalDosen ASC", nativeQuery = true)
         List<DetailEdom> getListEdom(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
         @Query(value = "select count(*) from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id where id_mahasiswa = ?1 and mk.jumlah_sks not in (6,0) and finalisasi = 'FINAL' and kd.status = 'AKTIF' and grade not in ('A','A-','B','B+')", nativeQuery = true)
