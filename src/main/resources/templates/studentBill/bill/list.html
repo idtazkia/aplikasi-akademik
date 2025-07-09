@@ -48,6 +48,7 @@
                         <table class="table table-striped">
                             <thead class="thead-dark">
                                 <tr>
+                                    <th>No</th>
                                     <th>Tahun Akademik</th>
                                     <th>Jenis Tagihan</th>
                                     <th>Total</th>
@@ -59,6 +60,7 @@
                             <tbody>
 
                                 <tr th:each="data, row : ${biayaMahasiswa}">
+                                    <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data.getNamaTahun()}">1</td>
                                     <td th:text="${data.getNamaTagihan()}">Ini SKS</td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getnilai_tagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
@@ -76,11 +78,13 @@
                                 </tr>
                                 <tr>
                                     <td></td>
+                                    <td></td>
                                     <td><h5>Total : </h5></td>
                                     <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                     <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                 </tr>
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td><h5>Sisa : </h5></td>
                                     <td></td>
@@ -101,6 +105,7 @@
                         <table class="table table-striped">
                             <thead class="thead-dark">
                             <tr>
+                                <th>No</th>
                                 <th>Tahun Akademik</th>
                                 <th>Jenis Tagihan</th>
                                 <th>Tanggal</th>
@@ -111,12 +116,14 @@
                             <tbody>
 
                             <tr th:each="data,row : ${pembayaran}">
+                                <td th:text="${(row.index + 1)}"></td>
                                 <td th:text="${data[1]}">1</td>
                                 <td th:text="${data[2]}">Ini SKS</td>
                                 <td th:text="${data[3]}"></td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data[4], 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <td></td>
                                 <td><h5>Total : </h5></td>
                                 <td></td>
