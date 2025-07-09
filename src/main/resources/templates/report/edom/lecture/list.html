@@ -97,6 +97,7 @@
 													<th>Total Mahasiswa</th>
 													<th>Mengisi</th>
 													<th>Rata-rata</th>
+													<th></th>
 												</tr>
 											</thead>
 											<tbody th:each="data : ${entry.value}">
@@ -105,6 +106,13 @@
 													<td th:text="${data.totalMahasiswa}">0</td>
 													<td th:text="${data.totalMengisi}">0</td>
 													<td th:text="${data.rataRata}">0.00</td>
+													<td>
+														<a
+															th:href="@{/report/edom/lecture/detail(id=${data.id})}"
+															class="btn btn-sm btn-primary"
+															>Detail</a
+														>
+													</td>
 												</tr>
 											</tbody>
 										</table>

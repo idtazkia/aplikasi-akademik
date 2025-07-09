@@ -160,7 +160,8 @@ public class EdomController {
     }
 
     @GetMapping("/report/edom/lecture")
-    public String getLectureReport() {
+    public String getLectureReport(@RequestParam(required = false) String id, Model model) {
+
         return "report/edom/lecture/detail";
     }
 
