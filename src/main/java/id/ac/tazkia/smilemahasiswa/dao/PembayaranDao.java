@@ -40,7 +40,7 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
             "a.amount as jumlah from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id \n" +
             "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on \n" +
             "c.id_jenis_tagihan=d.id inner join tahun_akademik as e on b.id_tahun_akademik=e.id \n" +
-            "where b.id_mahasiswa=?1 and a.status='AKTIF';", nativeQuery = true)
+            "where b.id_mahasiswa=?1 and a.status='AKTIF' order by a.waktu_bayar", nativeQuery = true)
     List<Object[]> pembayaranMahasiswa(String idMahasiswa);
 
     @Query(value = "select p.id as idPembayaran, t.id as idTagihan, m.nim as nim, m.nama as nama, m.angkatan as angkatan, prm.nama_program as program, pr.nama_prodi as prodi, jt.nama as jenisTagihan, ta.nama_tahun_akademik as tahunAkademik, b.nama as bank, p.amount as jumlah, p.waktu_bayar as tanggalTransaksi, p.referensi as referensi from pembayaran as p inner join tagihan as t on p.id_tagihan=t.id inner join mahasiswa as m on t.id_mahasiswa=m.id inner join prodi as pr on m.id_prodi=pr.id inner join program as prm on m.id_program=prm.id inner join tahun_akademik as ta on t.id_tahun_akademik=ta.id inner join bank as b on p.id_bank=b.id inner join nilai_jenis_tagihan as njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan as jt on njt.id_jenis_tagihan=jt.id where p.waktu_bayar between :mulai and :sampai order by p.waktu_bayar", nativeQuery = true,
