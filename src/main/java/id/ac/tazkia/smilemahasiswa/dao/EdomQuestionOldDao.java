@@ -47,7 +47,7 @@ public interface EdomQuestionOldDao extends PagingAndSortingRepository<EdomQuest
                         "count(a.id_jadwal) as responden,sum(a.nilai)/count(a.id_jadwal)as average\n" +
                         "from edom_mahasiswa as a\n" +
                         "inner join jadwal as b on a.id_jadwal = b.id\n" +
-                        "inner join edom_question as c on a.id_edom_question = c.id\n" +
+                        "inner join edom_question_old as c on a.id_edom_question = c.id\n" +
                         "inner join dosen as d on a.id_dosen = d.id\n" +
                         "inner join karyawan as e on d.id_karyawan = e.id\n" +
                         "inner join matakuliah_kurikulum as f on b.id_matakuliah_kurikulum = f.id\n" +
