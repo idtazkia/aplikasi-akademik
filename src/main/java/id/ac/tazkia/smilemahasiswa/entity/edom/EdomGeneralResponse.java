@@ -16,7 +16,6 @@ import id.ac.tazkia.smilemahasiswa.entity.Auditable;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa; // Assuming this path
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

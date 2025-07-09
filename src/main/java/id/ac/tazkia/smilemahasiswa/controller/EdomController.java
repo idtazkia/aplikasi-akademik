@@ -1,11 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.apache.poi.ss.formula.functions.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,14 +20,19 @@ import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomCategoryDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomEvaluationTargetDao;
+import id.ac.tazkia.smilemahasiswa.dao.edom.EdomGeneralResponseDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionConfigDao;
+import id.ac.tazkia.smilemahasiswa.dto.edom.RekapEdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomCategory;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomEvaluationTarget;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomGeneralResponse;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.EdomService;
@@ -35,6 +41,10 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class EdomController {
+
+    @Autowired
+    private EdomGeneralResponseDao edomGeneralResponseDao;
+
     @Autowired
     private EdomQuestionConfigDao edomQuestionConfigDao;
 
@@ -61,6 +71,10 @@ public class EdomController {
 
     private static final String TARGET_TYPE_DOSEN = "DOSEN";
     private static final String TARGET_TYPE_SARPRAS = "SARPRAS";
+
+    EdomController(EdomGeneralResponseDao edomGeneralResponseDao) {
+        this.edomGeneralResponseDao = edomGeneralResponseDao;
+    }
 
     @GetMapping("/edom/eval-dosen")
     public String edomEvaluationList(Model model, Authentication authentication,
@@ -147,6 +161,22 @@ public class EdomController {
 
     @GetMapping("/report/edom/lecture")
     public String getLectureReport() {
+        return "report/edom/lecture/detail";
+    }
+
+    @GetMapping("/report/edom/lecture-list")
+    public String getLectureListReport(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model) {
+        model.addAttribute("tahunAkademik", tahunAkademik);
+        model.addAttribute("listTahunAkademik",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(List.of(StatusRecord.HAPUS)));
+
+        if (tahunAkademik != null) {
+            List<RekapEdomDto> rekap = edomGeneralResponseDao.findRekapEdomGlobal(tahunAkademik.getId());
+            Map<String, List<RekapEdomDto>> perDosen = rekap.stream()
+                    .collect(Collectors.groupingBy(RekapEdomDto::getIdDosen));
+            model.addAttribute("rekapEdom", perDosen);
+        }
+
         return "report/edom/lecture/list";
     }
 
