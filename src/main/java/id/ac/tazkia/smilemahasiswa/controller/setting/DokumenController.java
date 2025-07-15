@@ -35,6 +35,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 public class DokumenController {
@@ -114,6 +117,19 @@ public class DokumenController {
 
         return "dokumen/mahasiswa";
     }
+
+    @GetMapping("/dokumen/hapus")
+    public String hapusDokumen(@RequestParam Dokumen dokumen, RedirectAttributes redirectAttributes, Authentication authentication) {
+        User user = currentUserService.currentUser(authentication);
+
+        dokumen.setStatus(StatusRecord.HAPUS);
+        dokumen.setTanggalDelete(LocalDateTime.now());
+        dokumen.setUserDelete(user.getUsername());
+        dokumenDao.save(dokumen);
+        redirectAttributes.addFlashAttribute("success","Dokumen berhasil dihapus......");
+        return "redirect:../dokumen";
+    }
+    
 
 
 

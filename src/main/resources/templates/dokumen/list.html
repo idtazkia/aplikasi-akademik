@@ -112,9 +112,11 @@
                                     <a th:href="@{/dokumen/edit(dokumen=${data.getId()})}" class="btn btn-primary btn-sm small">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <button class="btn btn-danger btn-sm small">
+                                    <a th:href="@{/dokumen/hapus(dokumen=${data.getId()})}"
+                                        class="btn btn-danger btn-sm small"
+                                        onclick="return confirm('Yakin ingin menghapus dokumen ini?');">
                                         <i class="fa fa-trash"></i>
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
