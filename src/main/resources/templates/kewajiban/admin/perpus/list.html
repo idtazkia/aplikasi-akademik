@@ -54,7 +54,7 @@
                                     <a th:href="@{/kewajiban/admin/perpus/approval/staff}" class="btn btn-sm btn-success">Histori Approval</a>
                                 </div>
                                 <div th:if="${kabag != null}" class="col-md-6">
-                                    <a th:href="@{/kewajiban/admin/perpus/approval/kabag}" class="btn btn-sm btn-success">Histori Approval</a>
+                                    <a th:href="@{/kewajiban/admin/perpus/approval/approved}" class="btn btn-sm btn-info">Approval</a>
                                 </div>
                                 <div th:if="${kabag != null}" class="col-md-6">
                                     <div class="input-group mb-3">
@@ -126,8 +126,6 @@
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
                                     <th scope="col" width="30px;">Status Staff</th>
-                                    <th scope="col" width="30px;">Status Kabag</th>
-                                    <th scope="col" colspan="2"></th>
 
                                 </tr>
                                 </thead>
@@ -152,10 +150,10 @@
                                                     <div class="modal-body">
                                                         <table class="table-modal">
                                                             <tr><h4>Daftar yang harus di selesaikan untuk mendapatan persetujuan perpustakaan:</h4></tr>
-                                                            <tr th:each="dataKewajiban, row: ${listKewajiban}">
+                                                            <tr th:each="dataKewajiban, row: ${listKewajiban}" th:if="${data.id == dataKewajiban.bebasKewajiban.id}">
                                                                 <td style="width: 30px;">
-                                                                    <input th:name="${'check-'+data.id}" th:if="${data.id == dataKewajiban.bebasKewajiban.id && dataKewajiban.status == dataKewajiban.status.AKTIF}" checked disabled type="checkbox" th:id="${data.id + '-checkbox'}">
-                                                                    <input th:name="${'check-'+data.id}" th:if="${data.id == dataKewajiban.bebasKewajiban.id && dataKewajiban.status == dataKewajiban.status.NONAKTIF}" disabled type="checkbox" th:id="${data.id + '-checkbox'}">
+                                                                    <input th:name="${'check-'+data.id}" th:if="${dataKewajiban.status == dataKewajiban.status.AKTIF}" checked disabled type="checkbox" th:id="${data.id + '-checkbox'}">
+                                                                    <input th:name="${'check-'+data.id}" th:if="${dataKewajiban.status == dataKewajiban.status.NONAKTIF}" disabled type="checkbox" th:id="${data.id + '-checkbox'}">
                                                                 </td>
                                                                 <td>
                                                                     <label th:if="${data.id == dataKewajiban.bebasKewajiban.id}" th:for="${dataKewajiban.id + '-checkbox'}" th:text="${dataKewajiban.kewajibanPerpus.keterangan}"></label>
@@ -167,55 +165,55 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING}">
-                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>
-                                    </td>
-                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.APPROVED}">
-                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>
-                                    </td>
-                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">
-                                        <button type="button" class="btn btn-danger btn-sm">REJECTED</button>
-                                    </td>
+<!--                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING}">-->
+<!--                                        <button type="button" class="btn btn-warning btn-sm">WAITING</button>-->
+<!--                                    </td>-->
+<!--                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.APPROVED}">-->
+<!--                                        <button type="button" class="btn btn-success btn-sm">APPROVED</button>-->
+<!--                                    </td>-->
+<!--                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">-->
+<!--                                        <button type="button" class="btn btn-danger btn-sm">REJECTED</button>-->
+<!--                                    </td>-->
 
-                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING || data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">
-                                        <!--button-->
-                                        <form th:action="@{/kewajiban/admin/perpus/approve(bebasKewajiban=${data.id})}" method="post">
-                                            <button type="submit" class="btn btn-success btn-outline-success btn-sm">
-                                                Approved
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING || data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">
-                                        <button type="submit" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejected'+data.id}">Rejected</button>
-                                        <div class="modal fade" th:id="${'modal-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <h2>Histori Komentar</h2>
-                                                        <div th:each="histori, row:${histori}">
-                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>
-                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>
-                                                        </div>
-                                                        <form th:action="@{/kewajiban/admin/perpus/reject(bebasKewajiban=${data.id})}" method="post">
-                                                            <div class="form-group">
-                                                                <label for="keterangan">Komentar</label>
-                                                                <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="10"></textarea>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <button class="btn btn-danger" type="submit">Reject</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
+<!--                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING || data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">-->
+<!--                                        &lt;!&ndash;button&ndash;&gt;-->
+<!--                                        <form th:action="@{/kewajiban/admin/perpus/approve(bebasKewajiban=${data.id})}" method="post">-->
+<!--                                            <button type="submit" class="btn btn-success btn-outline-success btn-sm">-->
+<!--                                                Approved-->
+<!--                                            </button>-->
+<!--                                        </form>-->
+<!--                                    </td>-->
+<!--                                    <td th:if="${data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.WAITING || data.statusApproveKabagPerpus == data.statusApproveKabagPerpus.REJECTED}">-->
+<!--                                        <button type="submit" class="btn btn-danger btn-outline-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-rejected'+data.id}">Rejected</button>-->
+<!--                                        <div class="modal fade" th:id="${'modal-rejected'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--                                            <div class="modal-dialog modal-dialog-centered" role="document">-->
+<!--                                                <div class="modal-content">-->
+<!--                                                    <div class="modal-header">-->
+<!--                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>-->
+<!--                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                                            <span aria-hidden="true">&times;</span>-->
+<!--                                                        </button>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="modal-body">-->
+<!--                                                        <h2>Histori Komentar</h2>-->
+<!--                                                        <div th:each="histori, row:${histori}">-->
+<!--                                                            <b th:if="${histori.bebasKewajiban.id == data.id}" th:text="${#temporals.format(histori.waktuInput, 'dd-MM-yyyy HH:mm')}"></b>-->
+<!--                                                            <p th:if="${histori.bebasKewajiban.id == data.id}" th:text="${histori.komentar}"></p>-->
+<!--                                                        </div>-->
+<!--                                                        <form th:action="@{/kewajiban/admin/perpus/reject(bebasKewajiban=${data.id})}" method="post">-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <label for="keterangan">Komentar</label>-->
+<!--                                                                <textarea name="komentar" class="form-control" placeholder="Komentar" id="keterangan" cols="30" rows="10"></textarea>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <button class="btn btn-danger" type="submit">Reject</button>-->
+<!--                                                            </div>-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
                                 </tr>
                                 </tbody>
                             </table>

@@ -377,9 +377,9 @@ public class BebasKewajibanController {
             model.addAttribute("kabag", "Kabag Perpus");
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, search, search, page));
+                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotAndStatusApprovePerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, StatusApprove.APPROVED, search, search, page));
             }else{
-                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, page));
+                model.addAttribute("listMahasiswaKabag", bebasKewajibanDao.findByStatusAndStatusApproveKabagPerpusNotAndStatusApprovePerpusNotOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, StatusApprove.APPROVED, page));
             }
             model.addAttribute("listKewajiban", kewajibanPerpusMahasiswaDao.findAll());
             model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.KABAG_PERPUS, StatusRecord.AKTIF));
@@ -402,6 +402,18 @@ public class BebasKewajibanController {
 
         model.addAttribute("list", bebasKewajibanDao.historiApprovalPerpus(ByBagian.PERPUSTAKAAN.toString()));
         model.addAttribute("histori", historiBebasKewajibanDao.findByByBagianAndStatusOrderByWaktuInput(ByBagian.PERPUSTAKAAN, StatusRecord.AKTIF));
+
+    }
+
+    @GetMapping("/kewajiban/admin/perpus/approval/approved")
+    public void approvedMhsKabagPerpus(Model model, @PageableDefault(size = 10) Pageable page, String search){
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusAndStatusApproveKabagPerpusNotAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, StatusApprove.APPROVED, search, search, page));
+        }else{
+            model.addAttribute("listMahasiswa", bebasKewajibanDao.findByStatusAndStatusApprovePerpusAndStatusApproveKabagPerpusNotOrderByStatusApprovePerpus(StatusRecord.AKTIF, StatusApprove.APPROVED, StatusApprove.APPROVED, page));
+        }
 
     }
 
@@ -433,7 +445,7 @@ public class BebasKewajibanController {
         return "redirect:/kewajiban/admin/perpus/list";
     }
 
-    @PostMapping("/kewajiban/admin/perpus/approve")
+    @GetMapping("/kewajiban/admin/perpus/approve")
     public String approveKabagPerpus(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, @RequestParam(required = false) String komentar, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveKabagPerpus(StatusApprove.APPROVED);
@@ -443,6 +455,31 @@ public class BebasKewajibanController {
         mailService.mailApproveKabagPerpus(bebasKewajiban, "DONE");
 
         return "redirect:/kewajiban/admin/perpus/list";
+    }
+
+    @PostMapping("/kewajiban/admin/perpus/approve/select")
+    public String approveSelectedKabagPerpus(@RequestParam(required = false) String[] checkedBebasKewajiban, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+
+        if (checkedBebasKewajiban != null) {
+            for (String idBebasKewajiban : checkedBebasKewajiban) {
+                PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findById(idBebasKewajiban).get();
+
+                log.info("Data Bebas kewajiban : {}", bebasKewajiban.getMahasiswa().getNim());
+
+                if (bebasKewajiban != null) {
+                    String komentar = "DONE";
+                    bebasKewajiban.setStatusApproveKabagPerpus(StatusApprove.APPROVED);
+                    bebasKewajibanDao.save(bebasKewajiban);
+
+                    bebasKewajibanService.saveKabagPerpus(bebasKewajiban, komentar, user);
+                    mailService.mailApproveKabagPerpus(bebasKewajiban, "DONE");
+                }
+            }
+        }
+
+        return "redirect:/kewajiban/admin/perpus/approval/approved";
     }
 
     @PostMapping("/kewajiban/admin/perpus/reject")
