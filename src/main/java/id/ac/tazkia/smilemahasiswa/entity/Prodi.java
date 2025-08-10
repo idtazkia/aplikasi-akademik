@@ -12,17 +12,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Set;
 
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Getter
 @Setter
-    public class Prodi {
+public class Prodi {
 
         @Id
-        @GeneratedValue(generator = "uuid" )
+        @GeneratedValue(generator = "uuid")
         @GenericGenerator(name = "uuid", strategy = "uuid2")
         private String id;
 
@@ -63,5 +62,9 @@ import java.time.LocalDate;
         private String kodeSpmb;
 
         private String kodePddikti;
+
+        @ManyToMany
+        @JoinTable(name = "prodi_program", joinColumns = @JoinColumn(name = "id_prodi"), inverseJoinColumns = @JoinColumn(name = "id_program"))
+        private Set<Program> programs;
 
 }
