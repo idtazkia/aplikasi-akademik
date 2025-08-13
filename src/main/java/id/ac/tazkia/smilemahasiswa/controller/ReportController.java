@@ -561,6 +561,28 @@ public class ReportController {
             Seminar seminar = seminarDao.findByNoteAndStatus(note, StatusApprove.APPROVED);
             Sidang sidang = sidangDao.findBySeminarAndStatusSidang(seminar, StatusApprove.APPROVED);
 
+            // Data utama
+            List<Object[]> transkriptTampil = krsDetailDao.transkriptTampil(mahasiswa.getId());
+            List<Object[]> semesterTranskript = krsDao.semesterTranskript(mahasiswa.getId());
+
+            // Hitung total SKS per semester
+            Map<Object, Integer> totalSksPerSemester = new HashMap<>();
+            for (Object[] sem : semesterTranskript) {
+                Object semesterKey = sem[0];
+                int total = transkriptTampil.stream()
+                        .filter(row -> row[0].equals(semesterKey))
+                        .mapToInt(row -> Integer.parseInt(row[3].toString()))
+                        .sum();
+                totalSksPerSemester.put(semesterKey, total);
+            }
+
+            List<KrsDetail> konversi = krsDetailDao.findByMahasiswaAndStatusAndStatusKonversi(mahasiswa,
+                    StatusRecord.AKTIF, StatusRecord.AKTIF);
+            int totalSks = konversi.stream()
+                    .mapToInt(k -> k.getMatakuliahKurikulum().getJumlahSks())
+                    .sum();
+            model.addAttribute("totalSksPerSemester", totalSksPerSemester);
+            model.addAttribute("totalSksKonversi", totalSks);
             model.addAttribute("mhs", mahasiswa);
             model.addAttribute("kelas", kelasMahasiswa);
             model.addAttribute("url", URL);
@@ -577,10 +599,14 @@ public class ReportController {
             model.addAttribute("pembimbing", note);
             model.addAttribute("seminar", seminar);
             model.addAttribute("sidang", sidang);
-            model.addAttribute("tahfidz", ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianTahfidz", StatusRecord.LULUS));
-            model.addAttribute("kompre", ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianKomprehensif", StatusRecord.LULUS));
-            model.addAttribute("inggris", bebasKewajibanDao.findByMahasiswaAndStatusApproveTlc(mahasiswa, StatusApprove.APPROVED));
-            model.addAttribute("konversi", krsDetailDao.findByMahasiswaAndStatusAndStatusKonversi(mahasiswa, StatusRecord.AKTIF, StatusRecord.AKTIF));
+            model.addAttribute("tahfidz", ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa,
+                    "UjianTahfidz", StatusRecord.LULUS));
+            model.addAttribute("kompre", ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa,
+                    "UjianKomprehensif", StatusRecord.LULUS));
+            model.addAttribute("inggris",
+                    bebasKewajibanDao.findByMahasiswaAndStatusApproveTlc(mahasiswa, StatusApprove.APPROVED));
+            model.addAttribute("konversi", krsDetailDao.findByMahasiswaAndStatusAndStatusKonversi(mahasiswa,
+                    StatusRecord.AKTIF, StatusRecord.AKTIF));
 
         }
     }
