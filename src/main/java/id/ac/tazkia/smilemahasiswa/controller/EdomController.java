@@ -1,8 +1,11 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,13 +19,20 @@ import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomCategoryDao;
+import id.ac.tazkia.smilemahasiswa.dao.edom.EdomEvaluationTargetDao;
+import id.ac.tazkia.smilemahasiswa.dao.edom.EdomGeneralResponseDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionConfigDao;
+import id.ac.tazkia.smilemahasiswa.dto.edom.RekapEdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.User;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomCategory;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomEvaluationTarget;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomGeneralResponse;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.EdomService;
@@ -31,11 +41,18 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class EdomController {
+
+    @Autowired
+    private EdomGeneralResponseDao edomGeneralResponseDao;
+
     @Autowired
     private EdomQuestionConfigDao edomQuestionConfigDao;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
+
+    @Autowired
+    private EdomEvaluationTargetDao edomEvaluationTargetDao;
 
     @Autowired
     private EdomCategoryDao edomCategoryDao;
@@ -54,6 +71,10 @@ public class EdomController {
 
     private static final String TARGET_TYPE_DOSEN = "DOSEN";
     private static final String TARGET_TYPE_SARPRAS = "SARPRAS";
+
+    EdomController(EdomGeneralResponseDao edomGeneralResponseDao) {
+        this.edomGeneralResponseDao = edomGeneralResponseDao;
+    }
 
     @GetMapping("/edom/eval-dosen")
     public String edomEvaluationList(Model model, Authentication authentication,
@@ -87,6 +108,8 @@ public class EdomController {
             @RequestParam(required = false) String redirect) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Optional<EdomEvaluationTarget> target = edomEvaluationTargetDao
+                .findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, "OPEN");
 
         List<EdomCategory> categories = edomCategoryDao
                 .findCategoriesWithQuestionsWithoutResponsesForMahasiswaAndTahunAkademik(mahasiswa, tahunAkademik);
@@ -102,8 +125,13 @@ public class EdomController {
         model.addAttribute("configPerCategory", configPerCategory);
         model.addAttribute("redirect", redirect);
         model.addAttribute("tahunAkademik", tahunAkademik);
+        if (target.isEmpty()) {
+            return "setting/edom/evaluation/facilities";
+        } else {
+            return "redirect:eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
 
-        return "setting/edom/evaluation/facilities";
+        }
+
     }
 
     @PostMapping("/edom/eval-dosen/submit")
@@ -130,4 +158,35 @@ public class EdomController {
         edomService.processEvaluationResponse(formData, mahasiswa, TARGET_TYPE_SARPRAS, tahunAkademik);
         return "redirect:../eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
     }
+
+    @GetMapping("/report/edom/lecture")
+    public String getLectureReport(@RequestParam(required = false) String id, Model model) {
+
+        return "report/edom/lecture/detail";
+    }
+
+    @GetMapping("/report/edom/lecture-list")
+    public String getLectureListReport(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model) {
+        model.addAttribute("tahunAkademik", tahunAkademik);
+        model.addAttribute("listTahunAkademik",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(List.of(StatusRecord.HAPUS)));
+
+        if (tahunAkademik != null) {
+            List<RekapEdomDto> rekap = edomGeneralResponseDao.findRekapEdomGlobal(tahunAkademik.getId());
+            Map<String, List<RekapEdomDto>> perDosen = rekap.stream()
+                    .collect(Collectors.groupingBy(RekapEdomDto::getIdDosen));
+            model.addAttribute("rekapEdom", perDosen);
+        }
+
+        return "report/edom/lecture/list";
+    }
+
+    @GetMapping("/report/edom/facilities")
+    public String getFacilitiesReport(Model model,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
+        model.addAttribute("tahunAkademik", tahunAkademik);
+        model.addAttribute("listTahunAkademik", edomQuestionConfigDao.findDistinctTahunAkademik());
+        return "report/edom/facilities/list";
+    }
+
 }

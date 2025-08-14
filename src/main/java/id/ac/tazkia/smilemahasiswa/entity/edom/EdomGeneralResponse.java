@@ -13,9 +13,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import id.ac.tazkia.smilemahasiswa.entity.Auditable;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa; // Assuming this path
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -48,6 +48,10 @@ public class EdomGeneralResponse extends Auditable {
     @ManyToOne
     @JoinColumn(name = "id_jadwal", nullable = false)
     private Jadwal jadwal;
+
+    @ManyToOne
+    @JoinColumn(name = "id_dosen", nullable = false)
+    private Dosen dosen;
 
     @Column(name = "response_value", columnDefinition = "TEXT")
     private String responseValue;

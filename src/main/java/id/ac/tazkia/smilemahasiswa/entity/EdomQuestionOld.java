@@ -19,7 +19,7 @@ public class EdomQuestionOld {
 
     @Id
     @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+@GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
     @NotNull

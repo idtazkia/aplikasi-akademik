@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
 import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomEvaluationTargetDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomGeneralResponseDao;
 import id.ac.tazkia.smilemahasiswa.dao.edom.EdomQuestionDao;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
@@ -31,6 +33,8 @@ public class EdomService {
     private EdomGeneralResponseDao edomGeneralResponseDao;
     @Autowired
     private EdomQuestionDao edomQuestionDao;
+    @Autowired
+    private DosenDao dosenDao;
     @Autowired
     private KrsDetailDao krsDetailDao;
     @Autowired
@@ -63,13 +67,17 @@ public class EdomService {
 
             String jadwalId = null;
             String questionId;
+            String dosenId = null;
             String targetStatus;
+            Dosen dosen = null;
 
             if (targetType.equals("DOSEN")) {
-                if (parts.length != 2)
+                if (parts.length != 3)
                     continue;
                 jadwalId = parts[0];
                 questionId = parts[1];
+                dosenId = parts[2];
+                dosen = dosenDao.findById(dosenId).orElse(null);
                 targetStatus = "COMPLETED";
             } else if (targetType.equals("SARPRAS")) {
                 if (parts.length != 1)
@@ -108,6 +116,7 @@ public class EdomService {
             EdomGeneralResponse response = new EdomGeneralResponse();
             response.setTarget(targetType);
             response.setEvaluationTarget(target);
+            response.setDosen(dosen);
             response.setQuestion(edomQuestion);
             response.setResponseValue(String.valueOf(nilai));
             response.setJadwal(jadwal);
