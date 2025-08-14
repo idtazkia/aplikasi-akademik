@@ -1,749 +1,492 @@
 <!DOCTYPE html>
-<html
-	lang="en"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-	layout:decorate="~{layoutadmin}"
->
-	<head>
-		<meta charset="UTF-8" />
-		<title>History Mahasiswa</title>
-	</head>
-	<body>
-		<div layout:fragment="main">
-			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-				<div class="container-fluid">
-					<div class="header-body">
-						<!-- Card stats -->
-						<div class="row">
-							<div class="col-xl-12 col-lg-12">
-								<div class="card card-stats mb-4 mb-xl-0">
-									<div class="card-body">
-										<div class="row">
-											<div class="col">
-												<h5 class="card-title text-uppercase text-muted mb-0">Menu</h5>
-												<span class="h2 font-weight-bold mb-0">History Mahasiswa </span>
-											</div>
-											<div class="col-auto">
-												<div
-													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
-												>
-													<i class="fas fa-user-astronaut"></i>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>History Mahasiswa</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Menu</h5>
+                                        <span class="h2 font-weight-bold mb-0">History Mahasiswa </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
 
-			<div class="container-fluid mt--7">
-				<div class="row">
-					<div class="col">
-						<div class="card shadow">
-							<div class="card-header border-0">
-								<div class="row align-items-center">
-									<div class="col">
-										<h3 class="mb-0">Data List</h3>
-									</div>
-								</div>
-							</div>
+                            </div>
+                        </div>
+                    </div>
 
-							<div class="card-body">
-								<form method="get">
-									<div class="row">
-										<div class="col-md-12">
-											<b>Nim</b><br />
-											<div class="input-group mb-3" style="margin-top: 10px">
-												<input
-													type="text"
-													name="nim"
-													class="form-control"
-													placeholder="NIM"
-													th:value="${nim}"
-												/>
-												<div class="input-group-append">
-													<button class="btn btn-success" type="submit">
-														<i class="fas fa-search"></i> Search
-													</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</form>
-								<div th:if="${nim != null}">
-									<div class="row">
-										<div class="col-md-6">
-											<div class="card shadow">
-												<div class="card-header border-0">
-													<div class="row align-items-center">
-														<div class="col">
-															<h3 class="mb-0">Data Rekam Mahasiswa</h3>
-														</div>
-													</div>
-												</div>
-												<div class="card-body">
-													<div class="row">
-														<div class="col-md-12">
-															<div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.PRIA}">
-																<p>
-																	<img
-																		class="img-fluid"
-																		width="200px"
-																		src="https://image.flaticon.com/icons/png/512/4392/4392947.png"
-																		alt="card image"
-																	/>
-																</p>
-															</div>
-															<div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.WANITA}">
-																<p>
-																	<img
-																		class="img-fluid"
-																		width="200px"
-																		src="https://image.flaticon.com/icons/png/512/4264/4264378.png"
-																		alt="card image"
-																	/>
-																</p>
-															</div>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Nama</label>
-															<h4 th:text="${mhs.nama}">Muhammad Arif Rahmatullah</h4>
-														</div>
-														<div class="col-md-6">
-															<label>NIM</label>
-															<h4 th:text="${mhs.nim}">18120029</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>NIK</label>
-															<h4 th:if="${mhs.nik} == null">-</h4>
-															<h4 th:text="${mhs.nik}"></h4>
-														</div>
-														<div class="col-md-6">
-															<label>TTL</label>
-															<h4 th:text="${mhs.tempatLahir}">
-																Bogor, 29 November 2000
-															</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Program Studi</label>
-															<h4>
-																<a
-																	th:href="${urlProdi}"
-																	th:text="${mhs.idProdi.namaProdi}"
-																	>Ekonomi Syariah</a
-																>
-															</h4>
-														</div>
-														<div class="col-md-6">
-															<label>No. HP</label>
-															<h4 th:if="${mhs.teleponSeluler} == null">-</h4>
-															<h4>
-																<a th:href="${url}" th:text="${mhs.teleponSeluler}"
-																	>085819531387</a
-																>
-															</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-12">
-															<label>Alamat</label>
-															<h4 th:if="${mhs.namaJalan} == null">-</h4>
-															<h4
-																th:if="${mhs.idKelurahan != null || mhs.namaJalan != null}"
-																th:text="${mhs.namaJalan + ' Rt.' + mhs.rt + '/Rw.' + mhs.rw + ' Desa ' + mhs.idKelurahan + ' Kec. ' + mhs.idKecamatan + ' ' + mhs.idKotaKabupaten }"
-															>
-																Bogor
-															</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Beasiswa</label>
-															<h4 th:if="${mhs.beasiswa == null}">-</h4>
-															<h4
-																th:if="${mhs.beasiswa != null}"
-																th:text="${mhs.beasiswa.namaBeasiswa}"
-															></h4>
-														</div>
-														<div class="col-md-6">
-															<label>Tahun Akademik Masuk</label>
-															<h4 th:text="${tahunMasuk}">2019</h4>
-														</div>
-													</div>
-													<br />
-													<div th:if="${mhs.ayah != null}" class="row">
-														<div class="col-md-6">
-															<label>Nama Ayah</label>
-															<h4 th:text="${mhs.ayah.namaAyah ?: '-'}"></h4>
-														</div>
-														<div class="col-md-6">
-															<label>Kontak Ayah</label>
-															<h4
-																th:text="${(mhs.ayah.nomorAyah ?: '-') + ' / ' + (mhs.ayah.emailAyah ?: '-')}"
-															>
-																2019
-															</h4>
-														</div>
-													</div>
-													<br />
-													<div th:if="${mhs.ibu != null}" class="row">
-														<div class="col-md-6">
-															<label>Nama Ibu</label>
-															<h4 th:text="${mhs.ibu.namaIbuKandung ?: '-'}"></h4>
-														</div>
-														<div class="col-md-6">
-															<label>Kontak Ibu</label>
-															<h4
-																th:text="${(mhs.ibu.nomorIbu ?: '-') + ' / ' + (mhs.ibu.emailIbu ?: '-')}"
-															>
-																2019
-															</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Pembina</label>
-															<h4>-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Dosen Wali</label>
-															<h4 th:if="${mhs.dosen} == null">-</h4>
-															<h4
-																th:if="${mhs.dosen.karyawan} != null"
-																th:text="${mhs.dosen.karyawan.namaKaryawan}"
-															>
-																Sopian Lc, MA
-															</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Kelas Matrikulasi</label>
-															<h4>-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Kelas Program Studi</label>
-															<h4 th:text="${kelas.kelas.namaKelas}">-</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Asal Program Studi</label>
-															<h4 th:text="${mhs.idProdi.namaProdi}">-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Asal Perguruan Tinggi Sebelumnya</label>
-															<h4>-</h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Jenis Konsep Note</label>
-															<h4
-																th:text="${#strings.replace(pembimbing?.jenis, '_', ' ')} ?: '-'"
-															>
-																-
-															</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Pembimbing</label>
-															<h4
-																th:text="${pembimbing?.dosen?.karyawan?.namaKaryawan} ?: '-'"
-															></h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Nilai Seminar</label>
-															<h4 th:text="${seminar?.nilai} ?: '-'">-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Nilai Sidang</label>
-															<h4 th:text="${sidang?.nilai} ?: '-'"></h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Ujian Tahfidz</label>
-															<h4 th:text="${tahfidz?.statusLulus} ?: '-'">-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Nilai Tahfidz</label>
-															<h4 th:text="${tahfidz?.nilai} ?: '-'"></h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Ujian Komprehensif</label>
-															<h4 th:text="${kompre?.statusLulus} ?: '-'">-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Nilai Komprehensif</label>
-															<h4 th:text="${kompre?.nilai} ?: '-'"></h4>
-														</div>
-													</div>
-													<br />
-													<div class="row">
-														<div class="col-md-6">
-															<label>Nilai TOEFL</label>
-															<h4 th:text="${inggris?.nilaiToefl} ?: '-'">-</h4>
-														</div>
-														<div class="col-md-6">
-															<label>Nilai IELTS</label>
-															<h4 th:text="${inggris?.nilaiIelts} ?: '-'"></h4>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="card shadow">
-												<div class="card-header border-0">
-													<div class="row align-items-center">
-														<div class="col">
-															<h3 class="mb-0">Rekaman Akademik</h3>
-														</div>
-													</div>
-												</div>
-												<div class="card-body">
-													<div class="row">
-														<div class="col-md-12">
-															<div class="table-responsive">
-																<table class="table table-striped">
-																	<thead class="thead-light">
-																		<tr>
-																			<th><b>Tahun Akademik</b></th>
-																			<th><b>Jumlah SKS</b></th>
-																			<th><b>IPS</b></th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		<tr th:each="data, row : ${history}">
-																			<td th:text="${data[0]}"></td>
-																			<td th:text="${data[1]}"></td>
-																			<td th:text="${data[2]}"></td>
-																		</tr>
-																		<tr>
-																			<td><b>Total SKS :</b></td>
-																			<td colspan="2">
-																				<b th:text="${sksTotal}"></b>
-																			</td>
-																		</tr>
-																		<tr>
-																			<td><b>IPK :</b></td>
-																			<td colspan="2">
-																				<b th:text="${ipk.ipk}"></b>
-																			</td>
-																		</tr>
-																	</tbody>
-																</table>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											<br />
-											<div class="card shadow">
-												<div class="card-body">
-													<div class="row">
-														<div class="col-md-3">
-															<div class="col text-right">
-																<a
-																	th:href="@{/report/pembinaanMatrikulasi(nim = ${mhs.nim})}"
-																	class="btn btn-md btn-info"
-																	><i class="fas fa-plus-circle"></i> Matriculation
-																	Program</a
-																>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<br />
-									<div class="row"></div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="card shadow">
-												<div class="card-body">
-													<div class="nav-wrapper">
-														<ul
-															class="nav nav-pills nav-fill flex-column flex-md-row"
-															id="tabs-icons-text"
-															role="tablist"
-														>
-															<li class="nav-item">
-																<a
-																	class="nav-link mb-sm-3 mb-md-0 active"
-																	id="tabs-icons-text-1-tab"
-																	data-toggle="tab"
-																	href="#tabs-icons-text-1"
-																	role="tab"
-																	aria-controls="tabs-icons-text-1"
-																	aria-selected="true"
-																	><i class="ni ni-cloud-upload-96 mr-2"></i>Rekaman
-																	KHS</a
-																>
-															</li>
-															<li class="nav-item">
-																<a
-																	class="nav-link mb-sm-3 mb-md-0"
-																	id="tabs-icons-text-2-tab"
-																	data-toggle="tab"
-																	href="#tabs-icons-text-2"
-																	role="tab"
-																	aria-controls="tabs-icons-text-2"
-																	aria-selected="false"
-																	><i class="ni ni-bell-55 mr-2"></i>Rekaman
-																	Transkrip</a
-																>
-															</li>
-															<li class="nav-item">
-																<a
-																	class="nav-link mb-sm-3 mb-md-0"
-																	id="tabs-icons-text-3-tab"
-																	data-toggle="tab"
-																	href="#tabs-icons-text-3"
-																	role="tab"
-																	aria-controls="tabs-icons-text-3"
-																	aria-selected="false"
-																	><i class="ni ni-cloud-upload-96 mr-2"></i>Rekaman
-																	Konversi</a
-																>
-															</li>
-														</ul>
-													</div>
-													<div class="card shadow">
-														<div class="card-body">
-															<div class="tab-content" id="myTabContent">
-																<div
-																	class="tab-pane fade show active"
-																	id="tabs-icons-text-1"
-																	role="tabpanel"
-																	aria-labelledby="tabs-icons-text-1-tab"
-																>
-																	<div
-																		class="card"
-																		th:each="dataSemester, row : ${semester}"
-																		style="margin-top: 5px"
-																	>
-																		<div class="card-header">
-																			<h4
-																				th:if="${(row.index) == 0}"
-																				th:text="${' KHS Semester Terkahir '}"
-																			></h4>
-																			<h4 th:text="${dataSemester[1]}"></h4>
-																		</div>
-																		<div class="card-body">
-																			<div class="table-responsive">
-																				<table
-																					class="table align-items-center table-flush"
-																				>
-																					<thead class="thead-light">
-																						<tr>
-																							<th>Code</th>
-																							<th>Matakuliah</th>
-																							<th>Presensi</th>
-																							<th>Task</th>
-																							<th>Mid Term</th>
-																							<th>End Semester Exam</th>
-																							<th>Weight</th>
-																							<th>Grade</th>
-																						</tr>
-																					</thead>
-																					<tbody>
-																						<tr
-																							th:each="data, row : ${khsHistory}"
-																						>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[2]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[3]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[4]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[5]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[6]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[7]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[9]}"
-																							></td>
-																							<td
-																								th:if="${dataSemester[0] == data[0]}"
-																								th:text="${data[10]}"
-																							></td>
-																						</tr>
-																					</tbody>
-																				</table>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div
-																	class="tab-pane fade"
-																	id="tabs-icons-text-2"
-																	role="tabpanel"
-																	aria-labelledby="tabs-icons-text-2-tab"
-																>
-																	<div
-																		class="card"
-																		style="margin-bottom: 5px"
-																		th:each="dataSemesterTranskrip,row : ${semesterTranskript}"
-																	>
-																		<div class="card-header">
-																			<h3
-																				th:if="${dataSemesterTranskrip[3] == 'PENDEK'}"
-																				class="mb-0"
-																				th:text="${dataSemesterTranskrip[2] + ' ( Semester ' + dataSemesterTranskrip[3] + ')'}"
-																			>
-																				Semester<b> 1</b>
-																			</h3>
+                </div>
+            </div>
+        </div>
+    </div>
 
-																			<h3
-																				th:if="${dataSemesterTranskrip[3] != 'PENDEK'}"
-																				class="mb-0"
-																				th:text="${dataSemesterTranskrip[2] + ' ( Semester ' + (row.index + 1) + ')'}"
-																			>
-																				Semester<b> 1</b>
-																			</h3>
-																		</div>
-																		<div class="card-body">
-																			<div class="table-responsive">
-																				<table
-																					class="table align-items-center table-flush"
-																				>
-																					<thead class="thead-light">
-																						<tr>
-																							<th>Kode MK</th>
-																							<th>Nama Mata Kuliah</th>
-																							<th>SKS</th>
-																							<th>Nilai</th>
-																							<th>Bobot</th>
-																							<th>Mutu</th>
-																						</tr>
-																					</thead>
-																					<tbody>
-																						<tr
-																							th:each="dataTranskrip : ${transkriptTampil}"
-																						>
-																							<td
-																								th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}"
-																								th:text="${dataTranskrip[1]}"
-																							>
-																								AEM1101
-																							</td>
-																							<td
-																								th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}"
-																								th:text="${dataTranskrip[2]}"
-																							>
-																								Dirasah Islamiah
-																							</td>
-																							<td
-																								th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}"
-																								th:text="${dataTranskrip[3]}"
-																							>
-																								<b>3</b>
-																							</td>
-																							<td
-																								th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}"
-																								th:text="${dataTranskrip[5]}"
-																							>
-																								<button
-																									class="bd-primary"
-																								>
-																									<b>B</b>
-																								</button>
-																							</td>
-																							<td
-																								th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}"
-																								th:text="${dataTranskrip[4]}"
-																							>
-																								<button
-																									class="bd-danger"
-																								>
-																									<b>3.00</b>
-																								</button>
-																							</td>
-																							<td
-																								th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}"
-																								th:text="${dataTranskrip[6]}"
-																							>
-																								<b>9</b>
-																							</td>
-																						</tr>
-																					</tbody>
-																					<tfoot>
-																						<tr>
-																							<td colspan="2">
-																								<b>Total SKS :</b>
-																							</td>
-																							<td
-																								th:text="${totalSksPerSemester[dataSemesterTranskrip[0]]}"
-																							></td>
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
 
-																							<td colspan="3"></td>
-																						</tr>
-																					</tfoot>
-																				</table>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div
-																	class="tab-pane fade"
-																	id="tabs-icons-text-3"
-																	role="tabpanel"
-																	aria-labelledby="tabs-icons-text-3-tab"
-																>
-																	<div class="card" style="margin-bottom: 5px">
-																		<div class="card-header">
-																			<h3>Matakuliah Konversi</h3>
-																		</div>
-																		<div class="card-body">
-																			<div class="table-responsive">
-																				<table
-																					class="table align-items-center table-flush"
-																				>
-																					<thead class="thead-light">
-																						<tr>
-																							<th>Kode MK</th>
-																							<th>Nama Mata Kuliah</th>
-																							<th>SKS</th>
-																							<th>Nilai</th>
-																							<th>Bobot</th>
-																							<th>Mutu</th>
-																						</tr>
-																					</thead>
-																					<tbody>
-																						<tr
-																							th:each="data : ${konversi}"
-																						>
-																							<td
-																								th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}"
-																							>
-																								AEM1101
-																							</td>
-																							<td
-																								th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"
-																							>
-																								Dirasah Islamiah
-																							</td>
-																							<td
-																								th:text="${data.matakuliahKurikulum.jumlahSks}"
-																							>
-																								<b>3</b>
-																							</td>
-																							<td th:text="${data.grade}">
-																								<button
-																									class="bd-primary"
-																								>
-																									<b>B</b>
-																								</button>
-																							</td>
-																							<td th:text="${data.bobot}">
-																								<button
-																									class="bd-danger"
-																								>
-																									<b>3.00</b>
-																								</button>
-																							</td>
-																							<td
-																								th:text="${data.matakuliahKurikulum.jumlahSks * data.bobot} ?: 'waiting'"
-																							>
-																								<b>9</b>
-																							</td>
-																						</tr>
-																					</tbody>
-																					<tfoot>
-																						<tr>
-																							<td colspan="2">
-																								<b>Total</b>
-																							</td>
-																							<td
-																								th:text="${totalSksKonversi}"
-																							>
-																								0
-																							</td>
-																							<td></td>
-																							<td></td>
-																							<td></td>
-																						</tr>
-																					</tfoot>
-																				</table>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
-	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-	<script>
-		var current_id = 0;
-		$("#btn").click(function () {
-			nextElement($("#Meal_00"));
-		});
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
 
-		function nextElement(element) {
-			var newElement = element.clone();
-			var id = current_id + 1;
-			current_id = id;
-			if (id < 10) id = "0" + id;
-			newElement.attr("id", element.attr("id").split("_")[0] + "_" + id);
-			var field = $("input", newElement).attr("id");
-			$("input", newElement).attr("id", field.split("_")[0] + "_" + id);
-			newElement.appendTo($("#elements"));
-		}
-	</script>
+
+                                <div class="col-md-12">
+                                    <b>Nim</b><br>
+                                    <div class="input-group mb-3" style="margin-top: 10px;">
+                                        <input type="text" name="nim" class="form-control" placeholder="NIM" th:value="${nim}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
+                        <div  th:if="${nim != null}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card shadow">
+                                        <div class="card-header border-0">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h3 class="mb-0">Data Rekam Mahasiswa</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+
+
+
+                                                <div class="col-md-12">
+
+                                                    <div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.PRIA}">
+                                                        <p><img class="img-fluid"  width="200px" src="https://image.flaticon.com/icons/png/512/4392/4392947.png" alt="card image"></p>
+                                                    </div>
+                                                    <div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.WANITA}">
+                                                        <p><img class="img-fluid"  width="200px" src="https://image.flaticon.com/icons/png/512/4264/4264378.png" alt="card image"></p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nama</label>
+                                                    <h4 th:text="${mhs.nama}">Muhammad Arif Rahmatullah</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>NIM</label>
+                                                    <h4 th:text="${mhs.nim}">18120029</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>NIK</label>
+                                                    <h4 th:if="${mhs.nik} == null">-</h4>
+                                                    <h4 th:text="${mhs.nik}"></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>TTL</label>
+                                                    <h4 th:text="${mhs.tempatLahir}">Bogor, 29 November 2000</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Program Studi</label>
+                                                    <h4><a th:href="${urlProdi}" th:text="${mhs.idProdi.namaProdi}">Ekonomi Syariah</a></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>No. HP</label>
+                                                    <h4 th:if="${mhs.teleponSeluler} == null">-</h4>
+                                                    <h4><a th:href="${url}" th:text="${mhs.teleponSeluler}">085819531387</a></h4>
+                                                </div>
+
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>Alamat</label>
+                                                    <h4 th:if="${mhs.namaJalan} == null">-</h4>
+                                                    <h4 th:if="${mhs.idKelurahan != null || mhs.namaJalan != null}" th:text="${mhs.namaJalan + ' Rt.' + mhs.rt + '/Rw.' + mhs.rw + ' Desa ' + mhs.idKelurahan + ' Kec. ' + mhs.idKecamatan + ' ' + mhs.idKotaKabupaten }">Bogor</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Beasiswa</label>
+                                                    <h4 th:if="${mhs.beasiswa == null}">-</h4>
+                                                    <h4 th:if="${mhs.beasiswa != null}" th:text="${mhs.beasiswa.namaBeasiswa}"></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Tahun Akademik Masuk</label>
+                                                    <h4 th:text="${tahunMasuk}">2019</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div th:if="${mhs.ayah != null}" class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nama Ayah</label>
+                                                    <h4 th:text="${mhs.ayah.namaAyah ?: '-'}"></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Kontak Ayah</label>
+                                                    <h4 th:text="${(mhs.ayah.nomorAyah ?: '-') + ' / ' + (mhs.ayah.emailAyah ?: '-')}">2019</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div th:if="${mhs.ibu != null}" class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nama Ibu</label>
+                                                    <h4 th:text="${mhs.ibu.namaIbuKandung ?: '-'}"></h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Kontak Ibu</label>
+                                                    <h4 th:text="${(mhs.ibu.nomorIbu ?: '-') + ' / ' + (mhs.ibu.emailIbu ?: '-')}">2019</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Pembina</label>
+                                                    <h4>-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Dosen Wali</label>
+                                                    <h4 th:if="${mhs.dosen} == null">-</h4>
+                                                    <h4 th:if="${mhs.dosen.karyawan} != null" th:text="${mhs.dosen.karyawan.namaKaryawan}">Sopian Lc, MA</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Kelas Matrikulasi</label>
+                                                    <h4>-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Kelas Program Studi</label>
+                                                    <h4 th:text="${kelas.kelas.namaKelas}">-</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Asal Program Studi</label>
+                                                    <h4 th:text="${mhs.idProdi.namaProdi}">-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Asal Perguruan Tinggi Sebelumnya</label>
+                                                    <h4>-</h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Jenis Konsep Note</label>
+                                                    <h4 th:text="${#strings.replace(pembimbing?.jenis, '_', ' ')} ?: '-'">-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Pembimbing</label>
+                                                    <h4 th:text="${pembimbing?.dosen?.karyawan?.namaKaryawan} ?: '-'"></h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nilai Seminar</label>
+                                                    <h4 th:text="${seminar?.nilai} ?: '-'">-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Nilai Sidang</label>
+                                                    <h4 th:text="${sidang?.nilai} ?: '-'"></h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Ujian Tahfidz</label>
+                                                    <h4 th:text="${tahfidz?.statusLulus} ?: '-'">-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Nilai Tahfidz</label>
+                                                    <h4 th:text="${tahfidz?.nilai} ?: '-'"></h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Ujian Komprehensif</label>
+                                                    <h4 th:text="${kompre?.statusLulus} ?: '-'">-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Nilai Komprehensif</label>
+                                                    <h4 th:text="${kompre?.nilai} ?: '-'"></h4>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Nilai TOEFL</label>
+                                                    <h4 th:text="${inggris?.nilaiToefl} ?: '-'">-</h4>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Nilai IELTS</label>
+                                                    <h4 th:text="${inggris?.nilaiIelts} ?: '-'"></h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card shadow">
+                                        <div class="card-header border-0">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h3 class="mb-0">Rekaman Akademik</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th><b>Tahun Akademik</b></th>
+                                                                <th><b>Jumlah SKS</b></th>
+                                                                <th><b>IPS</b></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="data, row : ${history}">
+                                                                <td th:text="${data[0]}"></td>
+                                                                <td th:text="${data[1]}"></td>
+                                                                <td th:text="${data[2]}"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><b>Total SKS :</b></td>
+                                                                <td colspan="2"><b th:text="${sksTotal}"></b></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><b>IPK :</b></td>
+                                                                <td colspan="2"><b th:text="${ipk.ipk}"></b></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="card shadow">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="col text-right">
+                                                        <a th:href="@{/report/pembinaanMatrikulasi(nim = ${mhs.nim})}" class="btn btn-md btn-info" ><i class="fas fa-plus-circle"></i> Matriculation Program</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card shadow">
+                                        <div class="card-body">
+                                            <div class="nav-wrapper">
+                                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-cloud-upload-96 mr-2"></i>Rekaman KHS</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Rekaman Transkrip</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-cloud-upload-96 mr-2"></i>Rekaman Konversi</a>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                    <div class="tab-content" id="myTabContent">
+                                                        <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                                            <div class="card" th:each="dataSemester, row : ${semester}" style="margin-top: 5px;">
+                                                                <div class="card-header">
+                                                                    <h4 th:if="${(row.index) == 0}" th:text="${' KHS Semester Terkahir '}"></h4>
+                                                                    <h4 th:text="${dataSemester[1]}"></h4>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table align-items-center table-flush">
+                                                                            <thead class="thead-light">
+                                                                            <tr>
+                                                                                <th>Code</th>
+                                                                                <th>Matakuliah</th>
+                                                                                <th>Presensi</th>
+                                                                                <th>Task</th>
+                                                                                <th>Mid Term</th>
+                                                                                <th>End Semester Exam</th>
+                                                                                <th>Weight</th>
+                                                                                <th>Grade</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr th:each="data, row : ${khsHistory}">
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[2]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[3]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[4]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[5]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[6]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[7]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[9]}"></td>
+                                                                                <td th:if="${dataSemester[0] == data[0]}"  th:text="${data[10]}"></td>
+                                                                            </tr>
+                                                                            </tbody>
+
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                            <div class="card" style="margin-bottom: 5px;" th:each="dataSemesterTranskrip,row : ${semesterTranskript}">
+                                                                <div class="card-header">
+                                                                    <h3 th:if="${dataSemesterTranskrip[3] == 'PENDEK'}" class="mb-0" th:text="${dataSemesterTranskrip[2] + ' ( Semester ' + dataSemesterTranskrip[3] + ')'}">Semester<b> 1</b></h3>
+
+                                                                    <h3 th:if="${dataSemesterTranskrip[3] != 'PENDEK'}" class="mb-0" th:text="${dataSemesterTranskrip[2] + ' ( Semester ' + (row.index + 1) + ')'}">Semester<b> 1</b></h3>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table align-items-center table-flush">
+                                                                            <thead class="thead-light">
+                                                                            <tr>
+                                                                                <th>Kode MK</th>
+                                                                                <th>Nama Mata Kuliah</th>
+                                                                                <th>SKS</th>
+                                                                                <th>Nilai</th>
+                                                                                <th>Bobot</th>
+                                                                                <th>Mutu</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr th:each="dataTranskrip : ${transkriptTampil}">
+                                                                                <td th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}" th:text="${dataTranskrip[1]}">AEM1101</td>
+                                                                                <td th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}" th:text="${dataTranskrip[2]}">Dirasah Islamiah</td>
+                                                                                <td th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}" th:text="${dataTranskrip[3]}"><b>3</b></td>
+                                                                                <td th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}" th:text="${dataTranskrip[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                                                                <td th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}" th:text="${dataTranskrip[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                                                                <td th:if="${dataSemesterTranskrip[0] == dataTranskrip[0]}" th:text="${dataTranskrip[6]}"><b>9</b></td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                                                            <div class="card" style="margin-bottom: 5px;">
+                                                                <div class="card-header">
+                                                                    <h3>Matakuliah Konversi</h3>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table align-items-center table-flush">
+                                                                            <thead class="thead-light">
+                                                                            <tr>
+                                                                                <th>Kode MK</th>
+                                                                                <th>Nama Mata Kuliah</th>
+                                                                                <th>SKS</th>
+                                                                                <th>Nilai</th>
+                                                                                <th>Bobot</th>
+                                                                                <th>Mutu</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr th:each="data : ${konversi}">
+                                                                                <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">AEM1101</td>
+                                                                                <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}">Dirasah Islamiah</td>
+                                                                                <td th:text="${data.matakuliahKurikulum.jumlahSks}"><b>3</b></td>
+                                                                                <td th:text="${data.grade}"><button class="bd-primary"><b>B</b></button></td>
+                                                                                <td th:text="${data.bobot}"><button class="bd-danger"><b>3.00</b></button></td>
+                                                                                <td th:text="${data.matakuliahKurikulum.jumlahSks * data.bobot} ?: 'waiting'"><b>9</b></td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script>
+    var current_id = 0;
+    $('#btn').click(function(){
+        nextElement($('#Meal_00'));
+    })
+
+    function nextElement(element){
+        var newElement = element.clone();
+        var id = current_id+1;
+        current_id = id;
+        if(id <10)id = "0"+id;
+        newElement.attr("id",element.attr("id").split("_")[0]+"_"+id);
+        var field = $('input', newElement).attr("id");
+        $('input', newElement).attr("id", field.split("_")[0]+"_"+id );
+        newElement.appendTo($("#elements"));
+    }
+</script>
+
 </html>
