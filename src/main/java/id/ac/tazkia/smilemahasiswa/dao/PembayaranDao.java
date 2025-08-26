@@ -30,7 +30,7 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
     BigDecimal totalAllDibayarByTahunAkademik(String tahunAkademik);
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id\n" +
-            "where b.id_mahasiswa=?1 and b.status = 'AKTIF'", nativeQuery = true)
+            "where b.id_mahasiswa=?1 and b.status IN ('AKTIF','NONAKTIF')", nativeQuery = true)
     BigDecimal totalDibayarMahasiswa(String idMahasiswa);
 
     @Query(value = "select a.id as idPembayaran, b.id as idTagihan, b.id_mahasiswa, b.id_tahun_akademik, a.waktu_bayar as tanggal, b.nomor as nomorBukti, a.amount as jumlah, d.nama as keterangan from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on c.id_jenis_tagihan=d.id where b.id_tahun_akademik=?1 and id_mahasiswa=?2 and a.status='AKTIF' order by tanggal", nativeQuery = true)
