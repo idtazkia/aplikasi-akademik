@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 
 import id.ac.tazkia.smilemahasiswa.dao.DetailTahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionOldDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
 import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
@@ -46,6 +47,8 @@ public class TahunAkademikService {
     private EdomQuestionOldDao edomQuestionOldDao;
     @Autowired
     private TahunProdiDao tahunProdiDao;
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
 
     /**
      * Create tahun akademik beserta detail untuk setiap kombinasi prodi-program
@@ -490,20 +493,17 @@ public class TahunAkademikService {
         tahunAkademikDao.save(tahunAkademik);
     }
 
-    /**
-     * Setup model for editing TahunAkademikProdi
-     */
-    public void setupTahunAkademikProdiEditMode(TahunAkademikProdi tahunAkademikProdi,
-            org.springframework.ui.Model model) {
-        model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
+    public void setupTahunAkademikProdiEditMode(DetailTahunAkademik detailTahunAkademik,
+            Model model) {
+        model.addAttribute("detail", detailTahunAkademik);
         model.addAttribute("tahunAkademik",
-                tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get());
-        model.addAttribute("prodi", prodiDao.findById(tahunAkademikProdi.getProdi().getId()).get());
+                tahunAkademikDao.findById(detailTahunAkademik.getTahunAkademik().getId()).get());
+        model.addAttribute("prodi", prodiDao.findById(detailTahunAkademik.getProdi().getId()).get());
+        model.addAttribute("programList", detailTahunAkademik.getProdi().getPrograms());
+        model.addAttribute("angkatanList",
+                mahasiswaDao.findDistinctAngkatanByJenjang(detailTahunAkademik.getProdi().getIdJenjang().getId()));
     }
 
-    /**
-     * Save TahunAkademikProdi
-     */
     @Transactional
     public void saveTahunAkademikProdi(TahunAkademikProdi tahunAkademikProdi) {
         tahunAkademikProdi.setStatus(StatusRecord.AKTIF);
