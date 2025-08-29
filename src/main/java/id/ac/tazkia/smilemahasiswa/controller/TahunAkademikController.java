@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.CreateTahunAkademikDto;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
@@ -125,15 +127,18 @@ public class TahunAkademikController {
         return "redirect:list";
     }
 
-    @GetMapping("/academic/prodi/list")
-    public void yearProdiList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik) {
+    @GetMapping("/academic/year/prodi/list")
+    public void yearProdiList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi) {
         model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
         if (tahunAkademik != null) {
             model.addAttribute("search", tahunAkademik);
-            model.addAttribute("prodiTahunAkademik", tahunProdiDao.tahunAkademikProdiGet(tahunAkademik));
+            model.addAttribute("prodiTahunAkademik", tahunProdiDao.tahunAkademikProdiGet(tahunAkademik, prodi));
         }
-        model.addAttribute("tahunAkademik1", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listYearProdi", tahunProdiDao.listTahaunAkademikProdi());
+        model.addAttribute("listTahunAkademik",
+                tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listProdi", tahunProdiDao.listTahaunAkademikProdi());
     }
 
     private void generateSuggestedValues(Model model) {
@@ -168,14 +173,6 @@ public class TahunAkademikController {
 
         return "prodi/tahun_akademik/list";
 
-    }
-
-    @GetMapping("/prodi/tahun/edit")
-    public String editTahunAkademikProdi(Model model,
-            @RequestParam(required = false) TahunAkademikProdi tahunAkademikProdi) {
-
-        tahunAkademikService.setupTahunAkademikProdiEditMode(tahunAkademikProdi, model);
-        return "prodi/tahun_akademik/form";
     }
 
     @PostMapping("/prodi/tahun/save")
