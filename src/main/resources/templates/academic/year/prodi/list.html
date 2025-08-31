@@ -44,16 +44,21 @@
 				<!-- Table -->
 				<div class="row">
 					<div class="col">
-						<div class="alert alert-danger" th:if="${gagal != null}">Save data gagal</div>
-						<div class="alert alert-success" th:if="${success != null}">Save data berhasil</div>
 						<div class="card shadow">
 							<div class="card-header border-0">
 								<div class="row align-items-center">
 									<div class="col">
 										<h3 class="mb-0">Data List</h3>
 									</div>
-									<div class="col text-right">
-										<!--                                <a th:href="@{/prodi/tahun/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>-->
+									<div
+										class="col text-right"
+										th:if="${selectedProdi != null && selectedTahun != null}"
+									>
+										<a
+											th:href="@{/academic/year/prodi/form (prodi = ${selectedProdi.id}, tahunAkademik = ${selectedTahun.id})}"
+											class="btn btn-sm btn-default"
+											><i class="fas fa-plus-circle"></i> Add</a
+										>
 									</div>
 								</div>
 							</div>
@@ -102,40 +107,27 @@
 										<thead class="thead-light">
 											<tr>
 												<th scope="col">#</th>
-												<th scope="col">Prodi</th>
-												<th scope="col">Kode Tahun Akademik</th>
-												<th scope="col">Nama Tahun Akademik</th>
-												<th scope="col">Tahun</th>
-												<th scope="col">Status</th>
+												<th scope="col">Program</th>
+												<th scope="col">Tahun Akademik</th>
+												<th scope="col">Angkatan</th>
 												<th></th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr th:each="data, row : ${prodiTahunAkademik}">
 												<td th:text="${row.index + 1}"></td>
-												<td th:text="${data[1]}"></td>
-												<td th:text="${data[2]}"></td>
+												<td th:text="${data.program.namaProgram}"></td>
+												<td th:text="${data.tahunAkademik.namaTahunAkademik}"></td>
 												<td>
 													<span
 														class="btn btn-outline-success btn-sm"
-														th:text="${data[3]}"
+														th:text="${data.angkatanMulai != null ? data.angkatanMulai + ' - ' + data.angkatanSelesai : '-'}"
 													></span>
 												</td>
-												<td th:text="${data[4]}"></td>
-												<td>
-													<div th:if="${data[5] == 'AKTIF'}">
-														<span
-															class="btn btn-success btn-sm"
-															th:text="${data[5]}"
-														></span>
-													</div>
-													<div th:if="${data[5] == 'NONAKTIF'}">
-														<span class="btn btn-danger btn-sm" th:text="${data[5]}"></span>
-													</div>
-												</td>
+
 												<td>
 													<a
-														th:href="@{/prodi/tahun/edit (tahunAkademikProdi = ${data[0]})}"
+														th:href="@{/academic/year/prodi/form (detailTahunAkademik = ${data.id})}"
 														class="btn btn-primary btn-sm"
 														data-toggle="tooltip"
 														data-placement="bottom"
@@ -151,10 +143,7 @@
 						</div>
 					</div>
 				</div>
-				<!-- Dark table -->
 			</div>
 		</div>
-
-		<!--modal-->
 	</body>
 </html>

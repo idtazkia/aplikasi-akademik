@@ -74,11 +74,12 @@
 									</div>
 								</div>
 								<form method="post" th:action="@{/academic/year/prodi/save}" th:object="${detail}">
-									<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+									<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>KRS Start Date</label>
+												<input type="hidden" th:field="*{id}" />
 												<input
 													type="date"
 													name="tanggalMulaiKrs"
@@ -213,7 +214,7 @@
 													type="text"
 													name="namaProdi"
 													readonly
-													th:value="${detail.prodi.namaProdi}"
+													th:value="${prodi.namaProdi}"
 													class="form-control"
 												/>
 												<input type="hidden" th:field="*{prodi.id}" />
@@ -238,7 +239,11 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>Angkatan Mulai</label>
-												<select name="angkatanMulai" class="form-control" th:field="*{angkatanMulai}">
+												<select
+													name="angkatanMulai"
+													class="form-control"
+													th:field="*{angkatanMulai}"
+												>
 													<option value="">-</option>
 													<option
 														th:each=" angkatan: ${angkatanList}"
@@ -251,7 +256,11 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>Angkatan Selesai</label>
-												<select name="angkatanSelesai" class="form-control" th:field="*{angkatanSelesai}">
+												<select
+													name="angkatanSelesai"
+													class="form-control"
+													th:field="*{angkatanSelesai}"
+												>
 													<option value="">-</option>
 													<option
 														th:each=" angkatan: ${angkatanList}"
@@ -279,5 +288,4 @@
 			</div>
 		</div>
 	</body>
-	<script th:src="@{/css/assets/js/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
 </html>

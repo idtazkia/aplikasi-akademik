@@ -504,6 +504,15 @@ public class TahunAkademikService {
                 mahasiswaDao.findDistinctAngkatanByJenjang(detailTahunAkademik.getProdi().getIdJenjang().getId()));
     }
 
+    public void setupTahunAkademikProdiMode(TahunAkademik tahunAkademik, Prodi prodi, Model model) {
+        model.addAttribute("detail", new DetailTahunAkademik());
+        model.addAttribute("tahunAkademik", tahunAkademik);
+        model.addAttribute("prodi", prodi);
+        model.addAttribute("programList", prodi.getPrograms());
+        model.addAttribute("angkatanList",
+                mahasiswaDao.findDistinctAngkatanByJenjang(prodi.getIdJenjang().getId()));
+    }
+
     @Transactional
     public void saveTahunAkademikProdi(TahunAkademikProdi tahunAkademikProdi) {
         tahunAkademikProdi.setStatus(StatusRecord.AKTIF);

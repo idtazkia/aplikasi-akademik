@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import id.ac.tazkia.smilemahasiswa.dao.DetailTahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.CreateTahunAkademikDto;
+import id.ac.tazkia.smilemahasiswa.entity.DetailTahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
@@ -37,6 +40,10 @@ public class TahunAkademikController {
     private TahunAkademikDao tahunAkademikDao;
     @Autowired
     private TahunProdiDao tahunProdiDao;
+    @Autowired
+    private DetailTahunAkademikDao detailTahunAkademikdDao;
+    @Autowired
+    private ProdiDao prodiDao;
     @Autowired
     private TahunAkademikService tahunAkademikService;
 
@@ -134,11 +141,23 @@ public class TahunAkademikController {
         model.addAttribute("selectedProdi", prodi);
         if (tahunAkademik != null) {
             model.addAttribute("search", tahunAkademik);
-            model.addAttribute("prodiTahunAkademik", tahunProdiDao.tahunAkademikProdiGet(tahunAkademik, prodi));
+            model.addAttribute("prodiTahunAkademik", detailTahunAkademikdDao
+                    .findByTahunAkademikAndProdiAndStatus(tahunAkademik, prodi, StatusRecord.AKTIF));
         }
         model.addAttribute("listTahunAkademik",
                 tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("listProdi", tahunProdiDao.listTahaunAkademikProdi());
+        model.addAttribute("listProdi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+    }
+
+    @GetMapping("/academic/year/prodi/form")
+    public void yearProdiForm(Model model, @RequestParam(required = false) DetailTahunAkademik detailTahunAkademik,
+            @RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) TahunAkademik tahunAkademik) {
+        if (detailTahunAkademik == null) {
+            tahunAkademikService.setupTahunAkademikProdiMode(tahunAkademik, prodi, model);
+        } else {
+            tahunAkademikService.setupTahunAkademikProdiEditMode(detailTahunAkademik, model);
+        }
     }
 
     private void generateSuggestedValues(Model model) {
