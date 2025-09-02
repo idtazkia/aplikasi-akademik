@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.log;
-import org.slf4j.logFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,6 +14,8 @@ import id.ac.tazkia.smilemahasiswa.dao.DetailTahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.entity.DetailTahunAkademik;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Program;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import lombok.extern.slf4j.Slf4j;
@@ -479,6 +479,136 @@ public class DetailTahunAkademikService {
             return null;
 
         return new LocalDate[] { detail.getTanggalMulaiUas(), detail.getTanggalSelesaiUas() };
+    }
+
+    /**
+     * Return study period (periode kuliah) based on schedule's prodi, program, and
+     * angkatan
+     * This method is specifically designed for jadwal-based queries
+     * 
+     * @param tahunAkademik tahun akademik from jadwal
+     * @param prodi         prodi from jadwal
+     * @param program       program from jadwal
+     * @param angkatan      angkatan to filter the rules
+     * @return LocalDate array [startDate, endDate] of study period, or null if not
+     *         found
+     */
+    public LocalDate[] getStudyPeriod(TahunAkademik tahunAkademik, Prodi prodi, Program program, String angkatan) {
+        log.debug("getStudyPeriod dipanggil untuk tahunAkademik: {}, prodi: {}, program: {}, angkatan: {}",
+                tahunAkademik != null ? tahunAkademik.getNamaTahunAkademik() : "NULL",
+                prodi != null ? prodi.getNamaProdi() : "NULL",
+                program != null ? program.getNamaProgram() : "NULL",
+                angkatan);
+
+        if (tahunAkademik == null || prodi == null) {
+            log.warn("getStudyPeriod: TahunAkademik atau Prodi tidak boleh null");
+            return null;
+        }
+
+        // Find applicable rule based on prodi, program, and angkatan
+        List<DetailTahunAkademik> applicableRules = detailTahunAkademikDao.findApplicableRules(
+                tahunAkademik.getId(),
+                prodi.getId(),
+                program != null ? program.getId() : null,
+                angkatan, // angkatan parameter
+                StatusRecord.AKTIF);
+
+        DetailTahunAkademik detail = null;
+        if (!applicableRules.isEmpty()) {
+            detail = applicableRules.get(0); // Get the highest priority rule
+            log.debug("getStudyPeriod: Rule ditemukan - Prodi: {}, Program: {}, Prioritas: {}",
+                    detail.getProdi() != null ? detail.getProdi().getNamaProdi() : "NULL",
+                    detail.getProgram() != null ? detail.getProgram().getNamaProgram() : "NULL",
+                    detail.getPrioritas());
+        } else {
+            // Fallback to virtual detail from TahunAkademik if no rule found
+            log.warn(
+                    "getStudyPeriod: DetailTahunAkademik tidak ditemukan untuk tahunAkademik: {}, prodi: {}, program: {}, angkatan: {}",
+                    tahunAkademik.getNamaTahunAkademik(),
+                    prodi.getNamaProdi(),
+                    program != null ? program.getNamaProgram() : "NULL",
+                    angkatan);
+
+            // Create virtual detail from TahunAkademik as fallback
+            detail = createVirtualDetailFromTahunAkademikForJadwal(tahunAkademik, prodi, program);
+        }
+
+        if (detail == null) {
+            log.error("getStudyPeriod: Tidak dapat membuat virtual detail untuk tahunAkademik: {}, prodi: {}",
+                    tahunAkademik.getNamaTahunAkademik(), prodi.getNamaProdi());
+            return null;
+        }
+
+        LocalDate[] periode = new LocalDate[] { detail.getTanggalMulaiKuliah(), detail.getTanggalSelesaiKuliah() };
+        log.debug("getStudyPeriod: Periode kuliah ditemukan - mulai: {}, selesai: {}",
+                periode[0], periode[1]);
+        return periode;
+    }
+
+    /**
+     * Overloaded method for backward compatibility - calls main method with null
+     * angkatan
+     * This will find rules that don't have angkatan restrictions
+     * 
+     * @param tahunAkademik tahun akademik from jadwal
+     * @param prodi         prodi from jadwal
+     * @param program       program from jadwal
+     * @return LocalDate array [startDate, endDate] of study period, or null if not
+     *         found
+     */
+    public LocalDate[] getStudyPeriod(TahunAkademik tahunAkademik, Prodi prodi, Program program) {
+        return getStudyPeriod(tahunAkademik, prodi, program, null);
+    }
+
+    /**
+     * Create virtual DetailTahunAkademik from TahunAkademik data for jadwal-based
+     * queries
+     * This is used as fallback when no specific rule is found for prodi/program
+     * combination
+     * 
+     * @param tahunAkademik tahun akademik
+     * @param prodi         prodi from jadwal
+     * @param program       program from jadwal
+     * @return virtual DetailTahunAkademik dengan data dari TahunAkademik
+     */
+    private DetailTahunAkademik createVirtualDetailFromTahunAkademikForJadwal(TahunAkademik tahunAkademik, Prodi prodi,
+            Program program) {
+        if (tahunAkademik == null) {
+            log.error("createVirtualDetailFromTahunAkademikForJadwal: TahunAkademik tidak boleh null");
+            return null;
+        }
+
+        log.info("Creating virtual DetailTahunAkademik from TahunAkademik: {} for prodi: {}, program: {}",
+                tahunAkademik.getNamaTahunAkademik(),
+                prodi != null ? prodi.getNamaProdi() : "NULL",
+                program != null ? program.getNamaProgram() : "NULL");
+
+        // Buat DetailTahunAkademik virtual dengan data dari TahunAkademik
+        DetailTahunAkademik virtual = new DetailTahunAkademik();
+        virtual.setTahunAkademik(tahunAkademik);
+        virtual.setProdi(prodi);
+        virtual.setProgram(program);
+
+        // Copy semua tanggal dari TahunAkademik
+        virtual.setTanggalMulaiKrs(tahunAkademik.getTanggalMulaiKrs());
+        virtual.setTanggalSelesaiKrs(tahunAkademik.getTanggalSelesaiKrs());
+        virtual.setTanggalMulaiKuliah(tahunAkademik.getTanggalMulaiKuliah());
+        virtual.setTanggalSelesaiKuliah(tahunAkademik.getTanggalSelesaiKuliah());
+        virtual.setTanggalMulaiUts(tahunAkademik.getTanggalMulaiUts());
+        virtual.setTanggalSelesaiUts(tahunAkademik.getTanggalSelesaiUts());
+        virtual.setTanggalMulaiUas(tahunAkademik.getTanggalMulaiUas());
+        virtual.setTanggalSelesaiUas(tahunAkademik.getTanggalSelesaiUas());
+        virtual.setTanggalMulaiNilai(tahunAkademik.getTanggalMulaiNilai());
+        virtual.setTanggalSelesaiNilai(tahunAkademik.getTanggalSelesaiNilai());
+
+        // Set status aktif untuk virtual rule
+        virtual.setStatus(StatusRecord.AKTIF);
+        virtual.setPrioritas(999); // Low priority for virtual rule
+
+        log.info("Virtual DetailTahunAkademik created with dates - Kuliah: {} to {}",
+                virtual.getTanggalMulaiKuliah(), virtual.getTanggalSelesaiKuliah());
+
+        return virtual;
     }
 
     /**
