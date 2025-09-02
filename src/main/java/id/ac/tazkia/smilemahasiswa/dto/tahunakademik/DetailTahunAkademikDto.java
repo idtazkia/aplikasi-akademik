@@ -16,4 +16,5 @@ public class DetailTahunAkademikDto extends BaseTanggalDto {
     private String angkatanSelesai;
     private Integer prioritas;
     private String keterangan;
+
 }
