@@ -1,15 +1,25 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDto;
-import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
-import id.ac.tazkia.smilemahasiswa.entity.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +27,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.*;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiDto;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
+import id.ac.tazkia.smilemahasiswa.entity.PresensiMahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Sesi;
+import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
+import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 
 @Service
 @Transactional
@@ -50,6 +73,8 @@ public class PresensiService {
     private KrsDetailDao krsDetailDao;
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+    @Autowired
+    private DetailTahunAkademikService detailTahunAkademikService;
     @Autowired
     private JadwalDao jadwalDao;
     @Value("${presensi.barcode.url}")
@@ -126,7 +151,8 @@ public class PresensiService {
             Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
                     StatusRecord.AKTIF);
             for (KrsDetail kd : krsDetail) {
-                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
+                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(),
+                        sesiKuliah, StatusRecord.AKTIF);
                 if (pm == null) {
                     PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                     presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
@@ -139,7 +165,7 @@ public class PresensiService {
                     presensiMahasiswa.setRating(0);
                     presensiMahasiswaDao.save(presensiMahasiswa);
                     updateNilaiPresensi(kd);
-                }else {
+                } else {
                     pm.setStatusPresensi(StatusPresensi.HADIR);
                     pm.setCatatan("Manual");
                     pm.setWaktuMasuk(LocalDateTime.now());
@@ -211,7 +237,8 @@ public class PresensiService {
             Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
                     StatusRecord.AKTIF);
             for (KrsDetail kd : krsDetail) {
-                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
+                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(),
+                        sesiKuliah, StatusRecord.AKTIF);
                 if (pm == null) {
                     PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                     presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
@@ -222,7 +249,7 @@ public class PresensiService {
                     presensiMahasiswa.setRating(0);
                     presensiMahasiswaDao.save(presensiMahasiswa);
                     updateNilaiPresensi(kd);
-                }else{
+                } else {
                     pm.setStatusPresensi(StatusPresensi.MANGKIR);
                     pm.setCatatan("Manual");
                     pm.setRating(0);
@@ -305,7 +332,8 @@ public class PresensiService {
             Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
                     StatusRecord.AKTIF);
             for (KrsDetail kd : krsDetail) {
-                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
+                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(),
+                        sesiKuliah, StatusRecord.AKTIF);
                 if (pm == null) {
                     PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                     presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
@@ -318,7 +346,7 @@ public class PresensiService {
                     presensiMahasiswa.setRating(0);
                     presensiMahasiswaDao.save(presensiMahasiswa);
                     updateNilaiPresensi(kd);
-                }else{
+                } else {
                     pm.setStatusPresensi(StatusPresensi.HADIR);
                     pm.setCatatan("Manual");
                     pm.setWaktuMasuk(LocalDateTime.now());
@@ -390,7 +418,8 @@ public class PresensiService {
             Iterable<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,
                     StatusRecord.AKTIF);
             for (KrsDetail kd : krsDetail) {
-                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
+                PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(),
+                        sesiKuliah, StatusRecord.AKTIF);
                 if (pm == null) {
                     PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                     presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
@@ -401,7 +430,7 @@ public class PresensiService {
                     presensiMahasiswa.setRating(0);
                     presensiMahasiswaDao.save(presensiMahasiswa);
                     updateNilaiPresensi(kd);
-                }else{
+                } else {
                     pm.setStatusPresensi(StatusPresensi.MANGKIR);
                     pm.setCatatan("Manual");
                     pm.setRating(0);
@@ -517,6 +546,14 @@ public class PresensiService {
     }
 
     public BaseResponse generateSesi(Jadwal jadwal) throws Exception {
+        String angkatan = (jadwal.getKelas() != null) ? jadwal.getKelas().getAngkatan() : null;
+
+        LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
+                jadwal.getTahunAkademik(),
+                jadwal.getProdi(),
+                jadwal.getProgram(),
+                angkatan);
+
         BaseResponse response = null;
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
         Integer valueJadwal = null;
@@ -526,8 +563,9 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
-
+        // Find the first occurrence of the target day of week starting from study
+        // period start date
+        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(studyPeriod[0], valueJadwal);
         if (totalPresensi == 0) {
             int attend = 16;
 
@@ -535,7 +573,8 @@ public class PresensiService {
 
                 generatePresensi(jadwal.getDosen(),
                         jadwal, "-",
-                        LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1), jadwal.getJamMulai()),
+                        LocalDateTime.of(firstAttendDate.plusWeeks(pertemuan - 1),
+                                jadwal.getJamMulai()),
                         pertemuan);
 
             }
@@ -549,6 +588,15 @@ public class PresensiService {
     }
 
     public void generateSesi2(Jadwal jadwal) throws Exception {
+        // Get angkatan from jadwal.kelas, fallback to null if not available
+        String angkatan = (jadwal.getKelas() != null) ? jadwal.getKelas().getAngkatan() : null;
+
+        LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
+                jadwal.getTahunAkademik(),
+                jadwal.getProdi(),
+                jadwal.getProgram(),
+                angkatan);
+
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
         Integer valueJadwal = null;
         if (jadwal.getHari().getId().equals("0")) {
@@ -557,7 +605,12 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
+        // Use studyPeriod, with fallback to tahunAkademik dates if not available
+        LocalDate startDate = (studyPeriod != null && studyPeriod[0] != null)
+                ? studyPeriod[0]
+                : jadwal.getTahunAkademik().getTanggalMulaiKuliah();
+
+        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(startDate, valueJadwal);
 
         if (totalPresensi == 0) {
             int attend = 16;
@@ -574,7 +627,14 @@ public class PresensiService {
     }
 
     public void updateSesi1(Jadwal jadwal) throws Exception {
-        Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
+        String angkatan = (jadwal.getKelas() != null) ? jadwal.getKelas().getAngkatan() : null;
+
+        LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
+                jadwal.getTahunAkademik(),
+                jadwal.getProdi(),
+                jadwal.getProgram(),
+                angkatan);
+
         Integer valueJadwal = null;
         if (jadwal.getHari().getId().equals("0")) {
             valueJadwal = 7;
@@ -582,7 +642,12 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
+        // Use studyPeriod, with fallback to tahunAkademik dates if not available
+        LocalDate startDate = (studyPeriod != null && studyPeriod[0] != null)
+                ? studyPeriod[0]
+                : jadwal.getTahunAkademik().getTanggalMulaiKuliah();
+
+        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(startDate, valueJadwal);
 
         int attend = 16;
 
@@ -607,7 +672,7 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = LocalDate.parse(tanggal).plusDays(valueJadwal - 1);
+        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(LocalDate.parse(tanggal), valueJadwal);
 
         int attend = 16;
 
@@ -632,7 +697,7 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = LocalDate.parse("2023-10-16").plusDays(valueJadwal - 1);
+        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(LocalDate.parse("2023-10-16"), valueJadwal);
 
         int attend = 16;
 
@@ -648,6 +713,14 @@ public class PresensiService {
     }
 
     public BaseResponse updateSesi(Jadwal jadwal) throws Exception {
+        String angkatan = (jadwal.getKelas() != null) ? jadwal.getKelas().getAngkatan() : null;
+
+        LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
+                jadwal.getTahunAkademik(),
+                jadwal.getProdi(),
+                jadwal.getProgram(),
+                angkatan);
+
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
         Integer valueJadwal = null;
         if (jadwal.getHari().getId().equals("0")) {
@@ -656,7 +729,12 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
+        // Use studyPeriod, with fallback to tahunAkademik dates if not available
+        LocalDate startDate = (studyPeriod != null && studyPeriod[0] != null)
+                ? studyPeriod[0]
+                : jadwal.getTahunAkademik().getTanggalMulaiKuliah();
+
+        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(startDate, valueJadwal);
 
         if (totalPresensi == 0) {
             int attend = 16;
@@ -691,7 +769,8 @@ public class PresensiService {
                 presensiDosen.getJadwal(),
                 StatusRecord.AKTIF);
         for (KrsDetail kd : krsDetail) {
-            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
+            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(),
+                    sesiKuliah, StatusRecord.AKTIF);
             if (pm == null) {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
@@ -701,7 +780,7 @@ public class PresensiService {
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
-            }else{
+            } else {
                 pm.setStatusPresensi(StatusPresensi.MANGKIR);
                 pm.setCatatan("System");
                 pm.setRating(0);
@@ -793,9 +872,10 @@ public class PresensiService {
         }
 
         sesiKuliah.setPertemuan(jadwalDto.getPertemuan());
-        if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan()) || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
+        if ("Offline".equalsIgnoreCase(jadwalDto.getPertemuan())
+                || "Pengganti Offline".equalsIgnoreCase(jadwalDto.getPertemuan())) {
             sesiKuliah.setLinkOnline(null);
-        }else{
+        } else {
             sesiKuliah.setLinkOnline(jadwalDto.getLinkOnline());
         }
         sesiKuliahDao.save(sesiKuliah);
@@ -808,7 +888,8 @@ public class PresensiService {
                 sesiKuliah.getJadwal(),
                 StatusRecord.AKTIF);
         for (KrsDetail kd : krsDetail) {
-            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(), sesiKuliah, StatusRecord.AKTIF);
+            PresensiMahasiswa pm = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(kd.getMahasiswa(),
+                    sesiKuliah, StatusRecord.AKTIF);
             if (pm == null) {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
@@ -818,7 +899,7 @@ public class PresensiService {
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
-            }else{
+            } else {
                 pm.setStatusPresensi(StatusPresensi.MANGKIR);
                 pm.setCatatan("System");
                 pm.setRating(0);
@@ -831,14 +912,55 @@ public class PresensiService {
                 .build();
     }
 
-    public void updateNilaiPresensi(KrsDetail kd){
-        Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(), StatusRecord.AKTIF, StatusPresensi.HADIR);
-        Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(Arrays.asList(StatusPresensi.MANGKIR), StatusRecord.AKTIF, kd);
+    public void updateNilaiPresensi(KrsDetail kd) {
+        Integer presensiDosen = presensiDosenDao.countByJadwalAndStatusAndStatusPresensi(kd.getJadwal(),
+                StatusRecord.AKTIF, StatusPresensi.HADIR);
+        Integer presensiMhs = presensiMahasiswaDao.countByStatusPresensiNotInAndStatusAndKrsDetail(
+                Arrays.asList(StatusPresensi.MANGKIR), StatusRecord.AKTIF, kd);
 
-        if (presensiDosen != null){
-//            kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) / presensiDosen).multiply(kd.getJadwal().getBobotPresensi()).divide(new BigDecimal(100)));
+        if (presensiDosen != null) {
+            // kd.setNilaiPresensi(new BigDecimal((presensiMhs * 100) /
+            // presensiDosen).multiply(kd.getJadwal().getBobotPresensi()).divide(new
+            // BigDecimal(100)));
             kd.setJumlahKehadiran(presensiMhs);
             krsDetailDao.save(kd);
         }
+    }
+
+    /**
+     * Find the next occurrence of a specific day of week starting from or after the
+     * given start date
+     * 
+     * @param startDate            the start date to search from
+     * @param targetDayOfWeekValue the target day of week value (1=Monday,
+     *                             2=Tuesday, ..., 7=Sunday)
+     * @return the date of the next occurrence of the target day of week
+     */
+    private LocalDate findNextOccurrenceOfDayOfWeek(LocalDate startDate, int targetDayOfWeekValue) {
+        if (startDate == null) {
+            return null;
+        }
+
+        // Get current day of week value (1=Monday, 7=Sunday in Java's DayOfWeek)
+        int currentDayOfWeekValue = startDate.getDayOfWeek().getValue();
+
+        // Handle Sunday as 7 in both current and target values
+        int currentDay = (currentDayOfWeekValue == 7) ? 7 : currentDayOfWeekValue;
+        int targetDay = targetDayOfWeekValue;
+
+        // Calculate days to add to reach the target day
+        int daysToAdd;
+        if (currentDay == targetDay) {
+            // If today is already the target day, return today
+            daysToAdd = 0;
+        } else {
+            // Calculate days forward to reach target day
+            daysToAdd = (targetDay - currentDay + 7) % 7;
+            if (daysToAdd == 0) {
+                daysToAdd = 7; // Next week if same day
+            }
+        }
+
+        return startDate.plusDays(daysToAdd);
     }
 }
