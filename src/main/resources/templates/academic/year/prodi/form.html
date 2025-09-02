@@ -9,6 +9,17 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Title</title>
+		<style>
+			.is-invalid {
+				border-color: #dc3545 !important;
+				box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+			}
+			.error-message {
+				font-size: 0.875rem;
+				margin-top: 0.25rem;
+				color: #dc3545 !important;
+			}
+		</style>
 	</head>
 	<body>
 		<div layout:fragment="main">
@@ -74,12 +85,10 @@
 									</div>
 								</div>
 								<form method="post" th:action="@{/academic/year/prodi/save}" th:object="${detail}">
-									<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>KRS Start Date</label>
-												<input type="hidden" th:field="*{id}" />
 												<input
 													type="date"
 													name="tanggalMulaiKrs"
@@ -217,20 +226,35 @@
 													th:value="${prodi.namaProdi}"
 													class="form-control"
 												/>
-												<input type="hidden" th:field="*{prodi.id}" />
+												<input
+													type="hidden"
+													name="prodi"
+													id="prodi"
+													th:value="${prodi.id}"
+													class="form-control"
+												/>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>Program</label>
-												<select class="form-control" th:field="*{program.id}">
-													<option value="">Pilih Program</option>
+												<select
+													class="form-control"
+													name="program"
+													id="programSelect"
+													th:field="*{program}"
+												>
+													<option value="">-- Semua Program --</option>
 													<option
 														th:each="program : ${programList}"
 														th:value="${program.id}"
 														th:text="${program.namaProgram}"
 													></option>
 												</select>
+												<small class="form-text text-muted">
+													Pilih "Semua Program" untuk membuat aturan yang berlaku untuk semua
+													program di prodi ini
+												</small>
 											</div>
 										</div>
 									</div>
@@ -241,12 +265,13 @@
 												<label>Angkatan Mulai</label>
 												<select
 													name="angkatanMulai"
-													class="form-control"
+													id="angkatanMulaiSelect"
 													th:field="*{angkatanMulai}"
+													class="form-control"
 												>
 													<option value="">-</option>
 													<option
-														th:each=" angkatan: ${angkatanList}"
+														th:each="angkatan: ${angkatanList}"
 														th:value="${angkatan}"
 														th:text="${angkatan}"
 													></option>
@@ -258,12 +283,13 @@
 												<label>Angkatan Selesai</label>
 												<select
 													name="angkatanSelesai"
-													class="form-control"
+													id="angkatanSelesaiSelect"
 													th:field="*{angkatanSelesai}"
+													class="form-control"
 												>
 													<option value="">-</option>
 													<option
-														th:each=" angkatan: ${angkatanList}"
+														th:each="angkatan: ${angkatanList}"
 														th:value="${angkatan}"
 														th:text="${angkatan}"
 													></option>
@@ -272,12 +298,12 @@
 										</div>
 									</div>
 									<input type="hidden" name="id" th:field="*{id}" />
-									<input type="hidden" th:field="*{tahunAkademik.id}" />
+									<input type="hidden" name="tahunAkademik" th:value="${tahunAkademik.id}" />
 									<input type="hidden" name="status" th:field="*{status}" />
 									<input type="hidden" name="prioritas" th:field="*{prioritas}" />
 									<input type="hidden" name="keterangan" th:field="*{keterangan}" />
 									<div class="form-group">
-										<button type="submit" class="btn btn-primary">Save</button>
+										<button type="submit" class="btn btn-primary" id="submitBtn">Save</button>
 									</div>
 								</form>
 							</div>
@@ -289,3 +315,343 @@
 		</div>
 	</body>
 </html>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		// Get all date input elements by name
+		const dateInputs = {
+			tanggalMulaiKrs: document.querySelector('input[name="tanggalMulaiKrs"]'),
+			tanggalSelesaiKrs: document.querySelector('input[name="tanggalSelesaiKrs"]'),
+			tanggalMulaiKuliah: document.querySelector('input[name="tanggalMulaiKuliah"]'),
+			tanggalSelesaiKuliah: document.querySelector('input[name="tanggalSelesaiKuliah"]'),
+			tanggalMulaiUts: document.querySelector('input[name="tanggalMulaiUts"]'),
+			tanggalSelesaiUts: document.querySelector('input[name="tanggalSelesaiUts"]'),
+			tanggalMulaiUas: document.querySelector('input[name="tanggalMulaiUas"]'),
+			tanggalSelesaiUas: document.querySelector('input[name="tanggalSelesaiUas"]'),
+			tanggalMulaiNilai: document.querySelector('input[name="tanggalMulaiNilai"]'),
+			tanggalSelesaiNilai: document.querySelector('input[name="tanggalSelesaiNilai"]'),
+		};
+
+		// Function to show error message
+		function showError(element, message) {
+			if (!element) return;
+
+			// Remove existing error message
+			const existingError = element.parentNode.querySelector(".error-message");
+			if (existingError) {
+				existingError.remove();
+			}
+
+			// Add error class to input
+			element.classList.add("is-invalid");
+
+			// Create error message element
+			const errorDiv = document.createElement("div");
+			errorDiv.className = "error-message text-danger small mt-1";
+			errorDiv.textContent = message;
+			element.parentNode.appendChild(errorDiv);
+		}
+
+		// Function to clear error message
+		function clearError(element) {
+			if (!element) return;
+
+			element.classList.remove("is-invalid");
+			const errorMessage = element.parentNode.querySelector(".error-message");
+			if (errorMessage) {
+				errorMessage.remove();
+			}
+		}
+
+		// Function to validate manual input
+		function validateManualInput(input) {
+			if (!input.value) return true;
+
+			let errorMessage = "";
+			let shouldClear = false;
+
+			// Validate date format (YYYY-MM-DD)
+			const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+			if (!datePattern.test(input.value)) {
+				console.log("Invalid date format pattern:", input.value);
+				errorMessage = "Format tanggal harus YYYY-MM-DD";
+				shouldClear = true;
+			} else {
+				const inputDate = new Date(input.value);
+				const inputName = input.name;
+
+				console.log("Validating manual input:", inputName, "value:", input.value);
+
+				// Check if the date is valid
+				if (isNaN(inputDate.getTime())) {
+					console.log("Invalid date:", input.value);
+					errorMessage = "Tanggal tidak valid";
+					shouldClear = true;
+				} else {
+					// Additional check: ensure the date string when parsed back matches input
+					// This catches cases like 2025-02-30 which would be parsed as 2025-03-02
+					const formattedBack = inputDate.toISOString().split("T")[0];
+					if (formattedBack !== input.value) {
+						console.log("Date normalization mismatch:", input.value, "vs", formattedBack);
+						errorMessage = "Tanggal tidak valid (contoh: 30 Feb tidak ada)";
+						shouldClear = true;
+					} else {
+						// Check min constraint
+						if (input.min) {
+							const minDate = new Date(input.min);
+							if (inputDate < minDate) {
+								console.log("Manual input violates min constraint:", input.value, "<", input.min);
+								errorMessage = `Tanggal tidak boleh lebih kecil dari ${input.min}`;
+								shouldClear = true;
+							}
+						}
+
+						// Check max constraint
+						if (!shouldClear && input.max) {
+							const maxDate = new Date(input.max);
+							if (inputDate > maxDate) {
+								console.log("Manual input violates max constraint:", input.value, ">", input.max);
+								errorMessage = `Tanggal tidak boleh lebih besar dari ${input.max}`;
+								shouldClear = true;
+							}
+						}
+					}
+				}
+			}
+
+			if (shouldClear) {
+				// Clear the input
+				input.value = "";
+				// Show notification
+				alert(errorMessage);
+				// Focus back to the input
+				input.focus();
+				return false;
+			}
+
+			clearError(input);
+			return true;
+		}
+
+		// Function to update date constraints
+		function updateDateConstraints() {
+			console.log("Updating date constraints...");
+
+			// Clear all errors first
+			Object.values(dateInputs).forEach((input) => {
+				if (input) clearError(input);
+			});
+
+			// 1. KRS End Date min = KRS Start Date
+			if (dateInputs.tanggalMulaiKrs.value) {
+				dateInputs.tanggalSelesaiKrs.min = dateInputs.tanggalMulaiKrs.value;
+				console.log("KRS End min set to:", dateInputs.tanggalMulaiKrs.value);
+			}
+
+			// 2. Study Start Date min = KRS End Date (if exists)
+			if (dateInputs.tanggalSelesaiKrs.value) {
+				dateInputs.tanggalMulaiKuliah.min = dateInputs.tanggalSelesaiKrs.value;
+				console.log("Study Start min set to:", dateInputs.tanggalSelesaiKrs.value);
+			}
+
+			// 3. Study End Date min = Study Start Date
+			if (dateInputs.tanggalMulaiKuliah.value) {
+				dateInputs.tanggalSelesaiKuliah.min = dateInputs.tanggalMulaiKuliah.value;
+				console.log("Study End min set to:", dateInputs.tanggalMulaiKuliah.value);
+			}
+
+			// 4. UTS Start Date constraints
+			if (dateInputs.tanggalMulaiKuliah.value) {
+				dateInputs.tanggalMulaiUts.min = dateInputs.tanggalMulaiKuliah.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalMulaiUts.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 5. UTS End Date constraints
+			if (dateInputs.tanggalMulaiUts.value) {
+				dateInputs.tanggalSelesaiUts.min = dateInputs.tanggalMulaiUts.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalSelesaiUts.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 6. UAS Start Date constraints
+			if (dateInputs.tanggalMulaiKuliah.value) {
+				dateInputs.tanggalMulaiUas.min = dateInputs.tanggalMulaiKuliah.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalMulaiUas.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 7. UAS End Date constraints
+			if (dateInputs.tanggalMulaiUas.value) {
+				dateInputs.tanggalSelesaiUas.min = dateInputs.tanggalMulaiUas.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalSelesaiUas.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 8. Grade Entry Start Date min = UAS End Date (if exists)
+			if (dateInputs.tanggalSelesaiUas.value) {
+				dateInputs.tanggalMulaiNilai.min = dateInputs.tanggalSelesaiUas.value;
+			}
+
+			// 9. Grade Entry End Date min = Grade Entry Start Date
+			if (dateInputs.tanggalMulaiNilai.value) {
+				dateInputs.tanggalSelesaiNilai.min = dateInputs.tanggalMulaiNilai.value;
+			}
+
+			console.log("Date constraints updated successfully");
+		}
+
+		// Add event listeners to all date inputs
+		Object.values(dateInputs).forEach((input) => {
+			if (input) {
+				// Handle date picker changes
+				input.addEventListener("change", function () {
+					console.log("Date changed:", this.name, "value:", this.value);
+					clearError(this); // Clear any existing errors
+					updateDateConstraints(); // Update constraints for other fields
+				});
+
+				// Handle manual typing
+				input.addEventListener("input", function () {
+					console.log("Manual input:", this.name, "value:", this.value);
+					// Clear any existing errors first when user starts typing
+					clearError(this);
+				});
+
+				// Handle when user types (validate after complete date)
+				input.addEventListener("keyup", function () {
+					// Only validate if we have a complete date and user is not still typing
+					if (this.value.length === 10) {
+						setTimeout(() => {
+							validateManualInput(this);
+							updateDateConstraints(); // Update constraints for other fields
+						}, 500); // Wait 500ms to make sure user finished typing
+					}
+				});
+
+				// Validate when user leaves the field
+				input.addEventListener("blur", function () {
+					if (this.value) {
+						validateManualInput(this);
+						updateDateConstraints(); // Update constraints after validation
+					}
+				});
+			}
+		});
+
+		// Initial constraint setup
+		updateDateConstraints();
+
+		// AJAX function to load available angkatan based on program selection
+		function loadAvailableAngkatan() {
+			const prodiId = document.getElementById("prodi").value;
+			const programId = document.getElementById("programSelect").value;
+			const currentDetailId = document.querySelector('input[name="id"]').value;
+
+			console.log(
+				"Loading available angkatan for prodi:",
+				prodiId,
+				"program:",
+				programId || "ALL",
+				"currentDetailId:",
+				currentDetailId
+			);
+
+			if (!prodiId) {
+				console.log("Prodi not selected, skipping AJAX call");
+				return;
+			}
+
+			// Build URL with parameters - programId can be empty for "all programs"
+			const url =
+				"/academic/year/prodi/available-angkatan?" +
+				"prodiId=" +
+				encodeURIComponent(prodiId) +
+				(programId ? "&programId=" + encodeURIComponent(programId) : "") +
+				(currentDetailId ? "&currentDetailId=" + encodeURIComponent(currentDetailId) : "");
+
+			console.log("AJAX URL:", url);
+
+			fetch(url)
+				.then((response) => {
+					console.log("Response status:", response.status);
+					if (!response.ok) {
+						throw new Error("Network response was not ok");
+					}
+					return response.json();
+				})
+				.then((data) => {
+					console.log("Available angkatan received:", data);
+
+					// Update angkatan select options
+					const angkatanMulaiSelect = document.getElementById("angkatanMulaiSelect");
+					const angkatanSelesaiSelect = document.getElementById("angkatanSelesaiSelect");
+
+					// Clear existing options (keep default option)
+					angkatanMulaiSelect.innerHTML = '<option value="">-</option>';
+					angkatanSelesaiSelect.innerHTML = '<option value="">-</option>';
+
+					// Add available angkatan options
+					data.forEach((angkatan) => {
+						const option1 = new Option(angkatan, angkatan);
+						const option2 = new Option(angkatan, angkatan);
+						angkatanMulaiSelect.add(option1);
+						angkatanSelesaiSelect.add(option2);
+					});
+
+					console.log("Angkatan options updated successfully");
+				})
+				.catch((error) => {
+					console.error("Error loading available angkatan:", error);
+					alert("Gagal memuat daftar angkatan. Silakan coba lagi.");
+				});
+		}
+
+		// Add event listener to program select
+		const programSelect = document.getElementById("programSelect");
+		if (programSelect) {
+			programSelect.addEventListener("change", function () {
+				console.log("Program changed to:", this.value);
+				loadAvailableAngkatan();
+			});
+		}
+
+		// Load available angkatan when DOM is ready (after all elements are available)
+		setTimeout(function () {
+			console.log("DOM ready, loading initial available angkatan");
+			loadAvailableAngkatan();
+		}, 100); // Small delay to ensure all DOM elements are ready
+
+		// Form submission validation
+		const form = document.querySelector("form");
+		if (form) {
+			form.addEventListener("submit", function (e) {
+				console.log("Form submitting, validating all manual inputs...");
+
+				let hasErrors = false;
+
+				// Validate all date inputs before submission
+				Object.values(dateInputs).forEach((input) => {
+					if (input && input.value) {
+						if (!validateManualInput(input)) {
+							hasErrors = true;
+						}
+					}
+				});
+
+				if (hasErrors) {
+					e.preventDefault();
+					alert("Terdapat tanggal yang tidak valid. Mohon perbaiki sebelum menyimpan.");
+					return false;
+				}
+
+				console.log("All dates are valid, allowing form submission");
+			});
+		}
+
+		console.log("All event listeners attached!");
+	});
+</script>

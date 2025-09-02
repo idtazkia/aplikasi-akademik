@@ -495,22 +495,53 @@ public class TahunAkademikService {
 
     public void setupTahunAkademikProdiEditMode(DetailTahunAkademik detailTahunAkademik,
             Model model) {
+
+        // Guard clause for null input
+        if (detailTahunAkademik == null) {
+            log.warn("DetailTahunAkademik is null, setting up empty form");
+            model.addAttribute("detail", new DetailTahunAkademik());
+            model.addAttribute("programList", new ArrayList<>());
+            model.addAttribute("angkatanList", new ArrayList<>());
+            return;
+        }
+
         model.addAttribute("detail", detailTahunAkademik);
-        model.addAttribute("tahunAkademik",
-                tahunAkademikDao.findById(detailTahunAkademik.getTahunAkademik().getId()).get());
-        model.addAttribute("prodi", prodiDao.findById(detailTahunAkademik.getProdi().getId()).get());
-        model.addAttribute("programList", detailTahunAkademik.getProdi().getPrograms());
-        model.addAttribute("angkatanList",
-                mahasiswaDao.findDistinctAngkatanByJenjang(detailTahunAkademik.getProdi().getIdJenjang().getId()));
+
+        if (detailTahunAkademik.getTahunAkademik() != null) {
+            model.addAttribute("tahunAkademik",
+                    tahunAkademikDao.findById(detailTahunAkademik.getTahunAkademik().getId()).get());
+        }
+
+        if (detailTahunAkademik.getProdi() != null) {
+            model.addAttribute("prodi", prodiDao.findById(detailTahunAkademik.getProdi().getId()).get());
+            model.addAttribute("programList", detailTahunAkademik.getProdi().getPrograms());
+
+            // Get available angkatan (exclude already used ones in detail tahun akademik)
+            List<String> availableAngkatan = getAvailableAngkatanForDetail(
+                    detailTahunAkademik.getProdi(),
+                    detailTahunAkademik.getProgram(),
+                    detailTahunAkademik.getId());
+            model.addAttribute("angkatanList", availableAngkatan);
+        } else {
+            model.addAttribute("programList", new ArrayList<>());
+            model.addAttribute("angkatanList", new ArrayList<>());
+        }
     }
 
     public void setupTahunAkademikProdiMode(TahunAkademik tahunAkademik, Prodi prodi, Model model) {
         model.addAttribute("detail", new DetailTahunAkademik());
         model.addAttribute("tahunAkademik", tahunAkademik);
         model.addAttribute("prodi", prodi);
-        model.addAttribute("programList", prodi.getPrograms());
-        model.addAttribute("angkatanList",
-                mahasiswaDao.findDistinctAngkatanByJenjang(prodi.getIdJenjang().getId()));
+
+        if (prodi != null) {
+            model.addAttribute("programList", prodi.getPrograms());
+            // For create mode, we don't have a program selected yet, so show all angkatan
+            model.addAttribute("angkatanList",
+                    mahasiswaDao.findDistinctAngkatanByJenjang(prodi.getIdJenjang().getId()));
+        } else {
+            model.addAttribute("programList", new ArrayList<>());
+            model.addAttribute("angkatanList", new ArrayList<>());
+        }
     }
 
     @Transactional
@@ -569,21 +600,165 @@ public class TahunAkademikService {
     }
 
     /**
-     * Validasi dinamis untuk DetailTahunAkademik berdasarkan data existing
-     * Logika: Cek apakah kombinasi Prodi + Program sudah pernah ada untuk range
-     * angkatan yang overlap
-     * Jika ada overlap, berarti range angkatan tersebut sudah digunakan dan tidak
-     * boleh diduplikasi
+     * Get available angkatan for detail tahun akademik (exclude already used ones)
      */
-    public void validateDetailTahunAkademikDynamic(DetailTahunAkademik newDetail) {
-        if (newDetail.getProdi() == null || newDetail.getProgram() == null) {
-            return; // Skip validation if prodi or program is null
+    private List<String> getAvailableAngkatanForDetail(Prodi prodi, Program program, String currentDetailId) {
+        if (prodi == null) {
+            return new ArrayList<>();
         }
 
-        // Cari semua detail existing dengan kombinasi prodi + program yang sama
-        List<DetailTahunAkademik> existingDetails = detailTahunAkademikDao
-                .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), newDetail.getProgram(),
-                        StatusRecord.AKTIF);
+        // Get all angkatan for this jenjang
+        List<String> allAngkatan = mahasiswaDao.findDistinctAngkatanByJenjang(prodi.getIdJenjang().getId());
+
+        // Extract used angkatan ranges, excluding current detail if editing
+        List<String> usedAngkatan = new ArrayList<>();
+
+        if (program == null) {
+            // Program null means this rule applies to ALL programs in prodi
+            // Check angkatan used by any program in this prodi
+            List<DetailTahunAkademik> existingDetails = detailTahunAkademikDao
+                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(prodi, null, StatusRecord.AKTIF);
+
+            // Also get details for specific programs that might conflict
+            List<Program> programs = prodi.getPrograms() == null ? new ArrayList<>()
+                    : new ArrayList<>(prodi.getPrograms());
+            for (Program specificProgram : programs) {
+                List<DetailTahunAkademik> programDetails = detailTahunAkademikDao
+                        .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(prodi, specificProgram,
+                                StatusRecord.AKTIF);
+                existingDetails.addAll(programDetails);
+            }
+
+            extractUsedAngkatan(existingDetails, usedAngkatan, currentDetailId);
+
+        } else {
+            // Program is specified, check conflicts with:
+            // 1. Same prodi+program combination
+            // 2. Rules that apply to all programs (program = null) in this prodi
+
+            List<DetailTahunAkademik> existingDetails = detailTahunAkademikDao
+                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(prodi, program, StatusRecord.AKTIF);
+
+            // Also check rules that apply to all programs (program = null)
+            List<DetailTahunAkademik> generalRules = detailTahunAkademikDao
+                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(prodi, null, StatusRecord.AKTIF);
+            existingDetails.addAll(generalRules);
+
+            extractUsedAngkatan(existingDetails, usedAngkatan, currentDetailId);
+        }
+
+        // Filter out used angkatan
+        return allAngkatan.stream()
+                .filter(angkatan -> !usedAngkatan.contains(angkatan))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    /**
+     * Helper method to extract used angkatan from list of details
+     */
+    private void extractUsedAngkatan(List<DetailTahunAkademik> existingDetails, List<String> usedAngkatan,
+            String currentDetailId) {
+        for (DetailTahunAkademik detail : existingDetails) {
+            // Skip current detail when editing
+            if (currentDetailId != null && currentDetailId.equals(detail.getId())) {
+                continue;
+            }
+
+            String mulai = detail.getAngkatanMulai();
+            String selesai = detail.getAngkatanSelesai();
+
+            if (mulai != null && selesai != null) {
+                // Add all angkatan in range
+                try {
+                    int start = Integer.parseInt(mulai);
+                    int end = Integer.parseInt(selesai);
+                    for (int i = start; i <= end; i++) {
+                        usedAngkatan.add(String.valueOf(i));
+                    }
+                } catch (NumberFormatException e) {
+                    // If not numeric, add as is
+                    usedAngkatan.add(mulai);
+                    if (!mulai.equals(selesai)) {
+                        usedAngkatan.add(selesai);
+                    }
+                }
+            } else if (mulai != null) {
+                usedAngkatan.add(mulai);
+            }
+        }
+    }
+
+    /**
+     * Get available angkatan for AJAX call when program is selected
+     */
+    public List<String> getAvailableAngkatanByProdiAndProgram(String prodiId, String programId,
+            String currentDetailId) {
+        if (prodiId == null) {
+            return new ArrayList<>();
+        }
+
+        Optional<Prodi> prodiOpt = prodiDao.findById(prodiId);
+        if (!prodiOpt.isPresent()) {
+            return new ArrayList<>();
+        }
+
+        Prodi prodi = prodiOpt.get();
+        Program program = null;
+
+        if (programId != null) {
+            Optional<Program> programOpt = programDao.findById(programId);
+            if (programOpt.isPresent()) {
+                program = programOpt.get();
+            }
+        }
+
+        return getAvailableAngkatanForDetail(prodi, program, currentDetailId);
+    }
+
+    public void validateDetailTahunAkademikDynamic(DetailTahunAkademik newDetail) {
+        if (newDetail.getProdi() == null) {
+            return; // No validation needed if prodi is not set
+        }
+
+        // Get existing details that could conflict with new detail
+        List<DetailTahunAkademik> existingDetails = new ArrayList<>();
+
+        if (newDetail.getProgram() == null) {
+            // New detail applies to ALL programs - check conflicts with:
+            // 1. Other rules that apply to all programs (program = null)
+            // 2. Any rules for specific programs in this prodi
+
+            // Rules for all programs
+            List<DetailTahunAkademik> generalRules = detailTahunAkademikDao
+                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), null,
+                            StatusRecord.AKTIF);
+            existingDetails.addAll(generalRules);
+
+            // Rules for specific programs
+            List<Program> programs = newDetail.getProdi().getPrograms() == null ? new ArrayList<>()
+                    : new ArrayList<>(newDetail.getProdi().getPrograms());
+            for (Program program : programs) {
+                List<DetailTahunAkademik> programRules = detailTahunAkademikDao
+                        .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), program,
+                                StatusRecord.AKTIF);
+                existingDetails.addAll(programRules);
+            }
+
+        } else {
+            // New detail applies to specific program - check conflicts with:
+            // 1. Rules for same prodi+program combination
+            // 2. Rules that apply to all programs (program = null) in this prodi
+
+            List<DetailTahunAkademik> programRules = detailTahunAkademikDao
+                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), newDetail.getProgram(),
+                            StatusRecord.AKTIF);
+            existingDetails.addAll(programRules);
+
+            List<DetailTahunAkademik> generalRules = detailTahunAkademikDao
+                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), null,
+                            StatusRecord.AKTIF);
+            existingDetails.addAll(generalRules);
+        }
 
         if (existingDetails.isEmpty()) {
             return; // Tidak ada data existing, boleh input apapun
@@ -594,17 +769,72 @@ public class TahunAkademikService {
         String newAngkatanSelesai = newDetail.getAngkatanSelesai();
 
         for (DetailTahunAkademik existing : existingDetails) {
+            // Skip validasi jika ini adalah data yang sama (update case)
+            if (newDetail.getId() != null && newDetail.getId().equals(existing.getId())) {
+                continue;
+            }
+
+            // Skip validasi jika ini adalah range angkatan yang sama dalam tahun akademik
+            // yang sama
+            // (misal: 2024-2024 untuk angkatan khusus 2024)
+            if (newDetail.getTahunAkademik() != null &&
+                    newDetail.getTahunAkademik().getId().equals(existing.getTahunAkademik().getId()) &&
+                    newAngkatanMulai != null && newAngkatanMulai.equals(newAngkatanSelesai) &&
+                    existing.getAngkatanMulai() != null
+                    && existing.getAngkatanMulai().equals(existing.getAngkatanSelesai()) &&
+                    newAngkatanMulai.equals(existing.getAngkatanMulai())) {
+                continue; // Izinkan multiple detail untuk angkatan khusus yang sama dalam tahun akademik
+                          // yang sama
+            }
+
             if (TahunAkademikUtils.isOverlapping(newAngkatanMulai, newAngkatanSelesai,
                     existing.getAngkatanMulai(), existing.getAngkatanSelesai())) {
+
+                String conflictDescription = buildConflictDescription(newDetail, existing);
+
                 throw new IllegalArgumentException(
-                        String.format("Range angkatan %s-%s untuk kombinasi Prodi '%s' + Program '%s' " +
-                                "bertumpang tindih dengan data existing (angkatan %s-%s). " +
+                        String.format("Range angkatan %s-%s untuk %s " +
+                                "bertumpang tindih dengan data existing: %s. " +
                                 "Silakan gunakan range angkatan yang berbeda.",
                                 newAngkatanMulai, newAngkatanSelesai,
-                                newDetail.getProdi().getNamaProdi(),
-                                newDetail.getProgram().getNamaProgram(),
-                                existing.getAngkatanMulai(), existing.getAngkatanSelesai()));
+                                getDetailDescription(newDetail),
+                                conflictDescription));
             }
         }
+    }
+
+    /**
+     * Helper method to build conflict description
+     */
+    private String buildConflictDescription(DetailTahunAkademik newDetail, DetailTahunAkademik existing) {
+        StringBuilder desc = new StringBuilder();
+        desc.append("angkatan ").append(existing.getAngkatanMulai()).append("-").append(existing.getAngkatanSelesai());
+
+        if (existing.getProgram() == null) {
+            desc.append(" untuk semua program");
+        } else {
+            desc.append(" untuk program ").append(existing.getProgram().getNamaProgram());
+        }
+
+        desc.append(" di prodi ").append(existing.getProdi().getNamaProdi());
+
+        return desc.toString();
+    }
+
+    /**
+     * Helper method to get detail description
+     */
+    private String getDetailDescription(DetailTahunAkademik detail) {
+        StringBuilder desc = new StringBuilder();
+
+        if (detail.getProgram() == null) {
+            desc.append("semua program");
+        } else {
+            desc.append("program '").append(detail.getProgram().getNamaProgram()).append("'");
+        }
+
+        desc.append(" di prodi '").append(detail.getProdi().getNamaProdi()).append("'");
+
+        return desc.toString();
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import id.ac.tazkia.smilemahasiswa.dao.DetailTahunAkademikDao;
@@ -150,13 +151,51 @@ public class TahunAkademikController {
     }
 
     @GetMapping("/academic/year/prodi/form")
-    public void yearProdiForm(Model model, @RequestParam(required = false) DetailTahunAkademik detailTahunAkademik,
+    public void yearProdiForm(Model model,
             @RequestParam(required = false) Prodi prodi,
             @RequestParam(required = false) TahunAkademik tahunAkademik) {
-        if (detailTahunAkademik == null) {
-            tahunAkademikService.setupTahunAkademikProdiMode(tahunAkademik, prodi, model);
-        } else {
-            tahunAkademikService.setupTahunAkademikProdiEditMode(detailTahunAkademik, model);
+
+        tahunAkademikService.setupTahunAkademikProdiMode(tahunAkademik, prodi, model);
+    }
+
+    @GetMapping("/academic/year/prodi/edit")
+    public void yearProdiEdit(Model model, @RequestParam(required = false) DetailTahunAkademik detailTahunAkademik) {
+        tahunAkademikService.setupTahunAkademikProdiEditMode(detailTahunAkademik, model);
+    }
+
+    @PostMapping("/academic/year/prodi/save")
+    public String saveYearProdi(@Valid @ModelAttribute("detail") DetailTahunAkademik detailTahunAkademik,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // Validate input data
+        if (bindingResult.hasErrors()) {
+            log.warn("Validation errors while saving DetailTahunAkademik: {}", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("error", "Data yang dimasukkan tidak valid");
+            return "redirect:/academic/year/prodi/form";
+        }
+
+        try {
+            log.info("Saving DetailTahunAkademik for Tahun Akademik: {} and Prodi: {}",
+                    detailTahunAkademik.getTahunAkademik().getNamaTahunAkademik(),
+                    detailTahunAkademik.getProdi().getNamaProdi());
+
+            DetailTahunAkademik saved = tahunAkademikService.saveDetailTahunAkademikWithValidation(detailTahunAkademik);
+
+            redirectAttributes.addFlashAttribute("success",
+                    String.format("Data tahun akademik untuk prodi %s berhasil disimpan",
+                            saved.getProdi().getNamaProdi()));
+
+            return String.format("redirect:/academic/year/prodi/list?tahunAkademik=%s&prodi=%s",
+                    saved.getTahunAkademik().getId(),
+                    saved.getProdi().getId());
+
+        } catch (Exception e) {
+            log.error("Error saving DetailTahunAkademik: {}", e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("error",
+                    "Gagal menyimpan data: " + e.getMessage());
+            return "redirect:/academic/year/prodi/form";
         }
     }
 
@@ -219,5 +258,18 @@ public class TahunAkademikController {
         tahunAkademikService.deactivateTahunAkademikProdi(tahunAkademikProdi);
         redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
         return "redirect:../tahun";
+    }
+
+    /**
+     * AJAX endpoint to get available angkatan based on prodi and program
+     */
+    @GetMapping("/academic/year/prodi/available-angkatan")
+    @ResponseBody
+    public List<String> getAvailableAngkatan(
+            @RequestParam(required = false) String prodiId,
+            @RequestParam(required = false) String programId,
+            @RequestParam(required = false) String currentDetailId) {
+
+        return tahunAkademikService.getAvailableAngkatanByProdiAndProgram(prodiId, programId, currentDetailId);
     }
 }

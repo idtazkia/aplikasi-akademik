@@ -116,7 +116,17 @@
 										<tbody>
 											<tr th:each="data, row : ${prodiTahunAkademik}">
 												<td th:text="${row.index + 1}"></td>
-												<td th:text="${data.program.namaProgram}"></td>
+												<td>
+													<span
+														th:if="${data.program != null}"
+														th:text="${data.program.namaProgram}"
+													></span>
+													<span
+														th:if="${data.program == null}"
+														class="text-muted font-weight-bold"
+														>Semua Program</span
+													>
+												</td>
 												<td th:text="${data.tahunAkademik.namaTahunAkademik}"></td>
 												<td>
 													<span
@@ -127,7 +137,7 @@
 
 												<td>
 													<a
-														th:href="@{/academic/year/prodi/form (detailTahunAkademik = ${data.id})}"
+														th:href="@{/academic/year/prodi/edit (detailTahunAkademik = ${data.id})}"
 														class="btn btn-primary btn-sm"
 														data-toggle="tooltip"
 														data-placement="bottom"
