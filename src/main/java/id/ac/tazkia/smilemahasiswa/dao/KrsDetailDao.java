@@ -979,7 +979,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "\t\t(select * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'TERTUTUP' and id_hari is not null and id_kelas = ?2\n"
                         + //
                         "\t\tunion\n" + //
-                        "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3' \n"
+                        "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3 \n"
                         + //
                         "\t\tunion\n" + //
                         "\t\tselect a.* from jadwal as a \n" + //
@@ -1006,7 +1006,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "\t\t(select * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'TERTUTUP' and id_hari is not null and id_kelas = ?2\n"
                         + //
                         "\t\tunion\n" + //
-                        "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3' \n"
+                        "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3 \n"
                         + //
                         "\t\tunion\n" + //
                         "\t\tselect a.* from jadwal as a \n" + //
