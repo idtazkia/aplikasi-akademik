@@ -328,11 +328,18 @@ public class MahasiswaController {
     public String prosesForm(@RequestParam Mahasiswa mahasiswa, @ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult errors, Authentication authentication){
         User userUpdate = currentUserService.currentUser(authentication);
 
-        BeanUtils.copyProperties(mahasiswaDto,mahasiswa);
+        // Exclude ukuranBaju to prevent null override from DTO
+        BeanUtils.copyProperties(mahasiswaDto,mahasiswa, "ukuranBaju");
         mahasiswa.setNama(WordUtils.capitalizeFully(mahasiswaDto.getNama()));
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswa.setIdAgama(mahasiswaDto.getReligion());
         mahasiswa.setStatusUpdateUser(userUpdate.getUsername());
+        
+        // Only set ukuranBaju if it's not null in DTO
+        if (mahasiswaDto.getUkuranBaju() != null) {
+            mahasiswa.setUkuranBaju(mahasiswaDto.getUkuranBaju());
+        }
+        
         mahasiswaDao.save(mahasiswa);
 
         if (mahasiswa.getUser() != null) {
