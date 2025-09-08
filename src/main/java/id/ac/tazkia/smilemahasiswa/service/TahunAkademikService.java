@@ -517,7 +517,6 @@ public class TahunAkademikService {
             model.addAttribute("prodi", prodiDao.findById(detailTahunAkademik.getProdi().getId()).get());
             model.addAttribute("programList", programDao.findAll());
 
-            // Get available angkatan (exclude already used ones in detail tahun akademik)
             List<String> availableAngkatan = getAvailableAngkatanForDetail(
                     detailTahunAkademik.getProdi(),
                     detailTahunAkademik.getProgram(),

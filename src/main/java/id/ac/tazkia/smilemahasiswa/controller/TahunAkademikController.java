@@ -104,7 +104,6 @@ public class TahunAkademikController {
                         String.format("Tahun Akademik '%s' berhasil diperbarui",
                                 tahunAkademik.getNamaTahunAkademik()));
             } else {
-                // Create mode - create new tahun akademik with details
                 tahunAkademik = tahunAkademikService.createTahunAkademikWithDetails(dto);
 
                 redirectAttributes.addFlashAttribute("success",
