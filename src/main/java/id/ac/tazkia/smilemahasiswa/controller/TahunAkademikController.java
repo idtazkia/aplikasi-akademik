@@ -163,6 +163,45 @@ public class TahunAkademikController {
         tahunAkademikService.setupTahunAkademikProdiEditMode(detailTahunAkademik, model);
     }
 
+    @PostMapping("/academic/year/prodi/edit")
+    public String updateYearProdi(@Valid @ModelAttribute("detail") DetailTahunAkademik detailTahunAkademik,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // Validate input data
+        if (bindingResult.hasErrors()) {
+            log.warn("Validation errors while updating DetailTahunAkademik: {}", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("error", "Data yang dimasukkan tidak valid");
+            return "redirect:/academic/year/prodi/edit?detailTahunAkademik=" + detailTahunAkademik.getId();
+        }
+
+        try {
+            log.info("Updating DetailTahunAkademik ID: {} for Tahun Akademik: {} and Prodi: {}",
+                    detailTahunAkademik.getId(),
+                    detailTahunAkademik.getTahunAkademik() != null
+                            ? detailTahunAkademik.getTahunAkademik().getNamaTahunAkademik()
+                            : "N/A",
+                    detailTahunAkademik.getProdi() != null ? detailTahunAkademik.getProdi().getNamaProdi() : "N/A");
+
+            DetailTahunAkademik saved = tahunAkademikService.saveDetailTahunAkademikWithValidation(detailTahunAkademik);
+
+            redirectAttributes.addFlashAttribute("success",
+                    String.format("Data tahun akademik untuk prodi %s berhasil diperbarui",
+                            saved.getProdi().getNamaProdi()));
+
+            return String.format("redirect:/academic/year/prodi/list?tahunAkademik=%s&prodi=%s",
+                    saved.getTahunAkademik().getId(),
+                    saved.getProdi().getId());
+
+        } catch (Exception e) {
+            log.error("Error updating DetailTahunAkademik: {}", e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("error",
+                    "Gagal memperbarui data: " + e.getMessage());
+            return "redirect:/academic/year/prodi/edit?detailTahunAkademik=" + detailTahunAkademik.getId();
+        }
+    }
+
     @PostMapping("/academic/year/prodi/save")
     public String saveYearProdi(@Valid @ModelAttribute("detail") DetailTahunAkademik detailTahunAkademik,
             BindingResult bindingResult,

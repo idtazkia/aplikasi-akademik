@@ -515,7 +515,7 @@ public class TahunAkademikService {
 
         if (detailTahunAkademik.getProdi() != null) {
             model.addAttribute("prodi", prodiDao.findById(detailTahunAkademik.getProdi().getId()).get());
-            model.addAttribute("programList", detailTahunAkademik.getProdi().getPrograms());
+            model.addAttribute("programList", programDao.findAll());
 
             // Get available angkatan (exclude already used ones in detail tahun akademik)
             List<String> availableAngkatan = getAvailableAngkatanForDetail(
@@ -535,7 +535,7 @@ public class TahunAkademikService {
         model.addAttribute("prodi", prodi);
 
         if (prodi != null) {
-            model.addAttribute("programList", prodi.getPrograms());
+            model.addAttribute("programList", programDao.findAll());
             // For create mode, we don't have a program selected yet, so show all angkatan
             model.addAttribute("angkatanList",
                     mahasiswaDao.findDistinctAngkatanByJenjang(prodi.getIdJenjang().getId()));
