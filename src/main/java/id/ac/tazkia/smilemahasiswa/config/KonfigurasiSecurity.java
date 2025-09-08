@@ -260,6 +260,9 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/get-tagihan-pembayaran-perbulan")
                 .antMatchers("/api/get-tagihan-akun")
                 .antMatchers("/api/get-prodi")
+                .antMatchers("/api/mahasiswa-dokumen/upload/{idMahasiswa}")
+                .antMatchers("/api/mahasiswa-dokumen/{idMahasiswa}")
+                .antMatchers("/api/mahasiswa-dokumen/delete/{id}")
                 .antMatchers("/api/get-kurikulum-prodi/{prodiId}")
                 .antMatchers("/api/get-matakuliah/{prodiId}/{kurikulumId}");
     }
