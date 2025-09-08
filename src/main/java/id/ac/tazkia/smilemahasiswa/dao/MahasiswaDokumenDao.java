@@ -9,4 +9,5 @@ import id.ac.tazkia.smilemahasiswa.entity.MahasiswaDokumen;
 
 public interface MahasiswaDokumenDao extends PagingAndSortingRepository<MahasiswaDokumen, String> {
     List<MahasiswaDokumen> findByMahasiswa(Mahasiswa mahasiswa);
+    
 }

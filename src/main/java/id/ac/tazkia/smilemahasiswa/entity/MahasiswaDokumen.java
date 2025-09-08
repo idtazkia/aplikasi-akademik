@@ -21,6 +21,7 @@ public class MahasiswaDokumen {
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
+    
 
     @ManyToOne
     @JsonBackReference

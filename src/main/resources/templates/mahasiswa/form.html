@@ -893,48 +893,48 @@
             const idMahasiswa = document.getElementById("idMhsw").value;
 
             // Hapus baris di tabel utama + API
-document.querySelector("#dokumenTable tbody").addEventListener("click", function (e) {
-    if (e.target.closest(".deleteRow")) {
-        const row = e.target.closest("tr");
-        const id = row.getAttribute("data-id"); // ambil id dari attribute tr
+            document.querySelector("#dokumenTable tbody").addEventListener("click", function (e) {
+                if (e.target.closest(".deleteRow")) {
+                    const row = e.target.closest("tr");
+                    const id = row.getAttribute("data-id"); // ambil id dari attribute tr
 
-        if (confirm("Yakin mau hapus dokumen ini?")) {
-            fetch(`/api/mahasiswa-dokumen/delete/${id}`, {
-                method: "DELETE"
-            })
-            .then(resp => {
-                if (!resp.ok) throw new Error("Gagal hapus dokumen");
-                return resp.text();
-            })
-            .then(msg => {
-                alert(msg);      // tampilkan pesan sukses
-                loadDokumen();   // reload tabel biar data terbaru
-            })
-            .catch(err => {
-                console.error(err);
-                alert("Terjadi kesalahan saat menghapus dokumen");
+                    if (confirm("Yakin mau hapus dokumen ini?")) {
+                        fetch(`/api/mahasiswa-dokumen/delete/${id}`, {
+                            method: "DELETE"
+                        })
+                            .then(resp => {
+                                if (!resp.ok) throw new Error("Gagal hapus dokumen");
+                                return resp.text();
+                            })
+                            .then(msg => {
+                                alert(msg);      // tampilkan pesan sukses
+                                loadDokumen();   // reload tabel biar data terbaru
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                alert("Terjadi kesalahan saat menghapus dokumen");
+                            });
+                    }
+                }
             });
-        }
-    }
-});
 
-// Fungsi load dokumen dari server
-function loadDokumen() {
-    fetch(`/api/mahasiswa-dokumen/${idMahasiswa}`)
-        .then(res => res.json())
-        .then(data => {
-            const tbody = document.querySelector("#dokumenTable tbody");
-            tbody.innerHTML = "";
+            // Fungsi load dokumen dari server
+            function loadDokumen() {
+                fetch(`/api/mahasiswa-dokumen/${idMahasiswa}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const tbody = document.querySelector("#dokumenTable tbody");
+                        tbody.innerHTML = "";
 
-            data.forEach(dokumen => {
-                const row = document.createElement("tr");
-                row.setAttribute("data-id", dokumen.id); // simpan ID ke row
-                row.innerHTML = `
+                        data.forEach(dokumen => {
+                            const row = document.createElement("tr");
+                            row.setAttribute("data-id", dokumen.id); // simpan ID ke row
+                            row.innerHTML = `
                     <td>${dokumen.keterangan || '-'}</td>
                     <td>
                         ${dokumen.file
-                            ? `<a href="${'/api/mahasiswa-dokumen/show/' + dokumen.file}" target="_blank">Lihat File</a>`
-                            : '-'}
+                                    ? `<a href="${'/api/mahasiswa-dokumen/show/' + dokumen.file}" target="_blank">Lihat File</a>`
+                                    : '-'}
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm deleteRow">
@@ -942,13 +942,13 @@ function loadDokumen() {
                         </button>
                     </td>
                 `;
-                tbody.appendChild(row);
-            });
-        })
-        .catch(err => console.error("Error load dokumen:", err));
-}
+                            tbody.appendChild(row);
+                        });
+                    })
+                    .catch(err => console.error("Error load dokumen:", err));
+            }
 
-document.addEventListener("DOMContentLoaded", loadDokumen);
+            document.addEventListener("DOMContentLoaded", loadDokumen);
 
             // Fungsi validasi ukuran file
             function validateFileSize(input) {

@@ -6,11 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,7 +62,6 @@ public class MahasiswaDokumenService {
         Path filePath = Paths.get(uploadDir).resolve(dok.getFile()).normalize();
         Files.deleteIfExists(filePath);
 
-        
         mahasiswaDokumenDao.delete(dok);
     }
 

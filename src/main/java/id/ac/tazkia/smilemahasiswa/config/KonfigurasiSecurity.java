@@ -267,6 +267,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/get-matakuliah/{prodiId}/{kurikulumId}");
     }
 
+    
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
         return new SpringSecurityDialect();

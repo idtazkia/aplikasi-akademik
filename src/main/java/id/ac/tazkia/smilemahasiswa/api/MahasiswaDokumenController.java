@@ -71,6 +71,7 @@ public class MahasiswaDokumenController {
         return ResponseEntity.ok(mahasiswaDokumen); // asumsi ada relasi OneToMany di Mahasiswa
     }
 
+    
 
     @GetMapping("/show/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
