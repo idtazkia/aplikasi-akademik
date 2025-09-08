@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Title</title>
+		<style>
+			.is-invalid {
+				border-color: #dc3545 !important;
+				box-shado			// Validate date format (YYYY-MM-DD)
+			const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+			if (!datePattern.test(input.value)) {
+				errorMessage = 'Format tanggal harus YYYY-MM-DD';0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+			}
+			.error-message {
+				font-size: 0.875rem;
+				margin-top: 0.25rem;
+				color: #dc3545 !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+												<span class="h2 font-weight-bold mb-0">Detail Tahun Akademik </span>
+											</div>
+											<div class="col-auto">
+												<div
+													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
+												>
+													<i class="fas fa-calendar"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container-fluid mt--7">
+				<!-- Table -->
+				<div class="row">
+					<div class="col">
+						<div class="card shadow">
+							<div class="card-header border-0">
+								<div class="row align-items-center">
+									<div class="col">
+										<h3 class="mb-0">Data List</h3>
+									</div>
+									<div class="col text-right">
+										<a th:href="@{/academic/year/prodi/list}" class="btn btn-sm btn-default"
+											><i class="fas fa-arrow-alt-circle-left"></i> Back</a
+										>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<!-- <label th:text="${detailTahunAkademik.prodi.namaProdi}"
+												>Academic Year Code</label
+											> -->
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<!--                                        <label th:text="${tahunAkademik.namTahunAkademik}">Academic Year Name</label>-->
+										</div>
+									</div>
+								</div>
+								<form method="post" th:action="@{/academic/year/prodi/save}" th:object="${detail}">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>KRS Start Date</label>
+												<input
+													type="date"
+													name="tanggalMulaiKrs"
+													th:field="*{tanggalMulaiKrs}"
+													class="form-control"
+													placeholder="ex : 2024-01-15"
+												/>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>KRS End Date</label>
+												<input
+													type="date"
+													name="tanggalSelesaiKrs"
+													th:field="*{tanggalSelesaiKrs}"
+													placeholder="ex : 2024-01-31"
+													class="form-control"
+												/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Study Start Date</label>
+												<input
+													type="date"
+													name="tanggalMulaiKuliah"
+													th:field="*{tanggalMulaiKuliah}"
+													class="form-control"
+													placeholder="ex : 2024-02-01"
+												/>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Study End Date</label>
+												<input
+													type="date"
+													name="tanggalSelesaiKuliah"
+													th:field="*{tanggalSelesaiKuliah}"
+													placeholder="ex : 2024-07-15"
+													class="form-control"
+												/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Mid Term Exam Start Date (UTS)</label>
+												<input
+													type="date"
+													name="tanggalMulaiUts"
+													th:field="*{tanggalMulaiUts}"
+													class="form-control"
+													placeholder="ex : 2024-04-01"
+												/>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Mid Term Exam End Date (UTS)</label>
+												<input
+													type="date"
+													name="tanggalSelesaiUts"
+													th:field="*{tanggalSelesaiUts}"
+													placeholder="ex : 2024-04-15"
+													class="form-control"
+												/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Final Exam Start Date (UAS)</label>
+												<input
+													type="date"
+													class="form-control"
+													name="tanggalMulaiUas"
+													th:field="*{tanggalMulaiUas}"
+													placeholder="ex : 2024-06-01"
+												/>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Final Exam End Date (UAS)</label>
+												<input
+													type="date"
+													placeholder="ex : 2024-06-15"
+													name="tanggalSelesaiUas"
+													th:field="*{tanggalSelesaiUas}"
+													class="form-control"
+												/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Grade Entry Start Date</label>
+												<input
+													type="date"
+													class="form-control"
+													name="tanggalMulaiNilai"
+													th:field="*{tanggalMulaiNilai}"
+													placeholder="ex : 2024-06-16"
+												/>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Grade Entry End Date</label>
+												<input
+													type="date"
+													placeholder="ex : 2024-07-31"
+													name="tanggalSelesaiNilai"
+													th:field="*{tanggalSelesaiNilai}"
+													class="form-control"
+												/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Prodi</label>
+												<input
+													type="text"
+													name="namaProdi"
+													readonly
+													th:value="${prodi.namaProdi}"
+													class="form-control"
+												/>
+												<input
+													type="hidden"
+													name="prodi"
+													id="prodi"
+													th:value="${prodi.id}"
+													class="form-control"
+												/>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Program</label>
+												<select
+													class="form-control"
+													name="program"
+													id="programSelect"
+													th:field="*{program}"
+												>
+													<option value="">-- Semua Program --</option>
+													<option
+														th:each="program : ${programList}"
+														th:value="${program.id}"
+														th:text="${program.namaProgram}"
+													></option>
+												</select>
+												<small class="form-text text-muted">
+													Pilih "Semua Program" untuk membuat aturan yang berlaku untuk semua
+													program di prodi ini
+												</small>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Angkatan Mulai</label>
+												<select
+													name="angkatanMulai"
+													th:field="*{angkatanMulai}"
+													class="form-control"
+												>
+													<option value="">-</option>
+													<option
+														th:each="angkatan: ${angkatanList}"
+														th:value="${angkatan}"
+														th:text="${angkatan}"
+													></option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Angkatan Selesai</label>
+												<select
+													name="angkatanSelesai"
+													th:field="*{angkatanSelesai}"
+													class="form-control"
+												>
+													<option value="">-</option>
+													<option
+														th:each="angkatan: ${angkatanList}"
+														th:value="${angkatan}"
+														th:text="${angkatan}"
+													></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<input type="hidden" name="id" th:field="*{id}" />
+									<input type="hidden" name="tahunAkademik" th:value="${tahunAkademik.id}" />
+									<input type="hidden" name="status" th:field="*{status}" />
+									<input type="hidden" name="prioritas" th:field="*{prioritas}" />
+									<input type="hidden" name="keterangan" th:field="*{keterangan}" />
+									<div class="form-group">
+										<button type="submit" class="btn btn-primary" id="submitBtn">Save</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Dark table -->
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		// Get all date input elements by name
+		const dateInputs = {
+			tanggalMulaiKrs: document.querySelector('input[name="tanggalMulaiKrs"]'),
+			tanggalSelesaiKrs: document.querySelector('input[name="tanggalSelesaiKrs"]'),
+			tanggalMulaiKuliah: document.querySelector('input[name="tanggalMulaiKuliah"]'),
+			tanggalSelesaiKuliah: document.querySelector('input[name="tanggalSelesaiKuliah"]'),
+			tanggalMulaiUts: document.querySelector('input[name="tanggalMulaiUts"]'),
+			tanggalSelesaiUts: document.querySelector('input[name="tanggalSelesaiUts"]'),
+			tanggalMulaiUas: document.querySelector('input[name="tanggalMulaiUas"]'),
+			tanggalSelesaiUas: document.querySelector('input[name="tanggalSelesaiUas"]'),
+			tanggalMulaiNilai: document.querySelector('input[name="tanggalMulaiNilai"]'),
+			tanggalSelesaiNilai: document.querySelector('input[name="tanggalSelesaiNilai"]'),
+		};
+
+		// Function to show error message
+		function showError(element, message) {
+			if (!element) return;
+
+			// Remove existing error message
+			const existingError = element.parentNode.querySelector(".error-message");
+			if (existingError) {
+				existingError.remove();
+			}
+
+			// Add error class to input
+			element.classList.add("is-invalid");
+
+			// Create error message element
+			const errorDiv = document.createElement("div");
+			errorDiv.className = "error-message text-danger small mt-1";
+			errorDiv.textContent = message;
+			element.parentNode.appendChild(errorDiv);
+		}
+
+		// Function to clear error message
+		function clearError(element) {
+			if (!element) return;
+
+			element.classList.remove("is-invalid");
+			const errorMessage = element.parentNode.querySelector(".error-message");
+			if (errorMessage) {
+				errorMessage.remove();
+			}
+		}
+
+		// Function to validate manual input
+		function validateManualInput(input) {
+			if (!input.value) return true;
+
+			let errorMessage = "";
+			let shouldClear = false;
+
+			// Validate date format (YYYY-MM-DD)
+			const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+			if (!datePattern.test(input.value)) {
+				console.log("Invalid date format pattern:", input.value);
+				errorMessage = "Format tanggal harus YYYY-MM-DD";
+				shouldClear = true;
+			} else {
+				const inputDate = new Date(input.value);
+				const inputName = input.name;
+
+				// Check if the date is valid
+				if (isNaN(inputDate.getTime())) {
+					errorMessage = "Tanggal tidak valid";
+					shouldClear = true;
+				} else {
+					// Additional check: ensure the date string when parsed back matches input
+					// This catches cases like 2025-02-30 which would be parsed as 2025-03-02
+					const formattedBack = inputDate.toISOString().split("T")[0];
+					if (formattedBack !== input.value) {
+						errorMessage = "Tanggal tidak valid (contoh: 30 Feb tidak ada)";
+						shouldClear = true;
+					} else {
+						// Check min constraint
+						if (input.min) {
+							const minDate = new Date(input.min);
+							if (inputDate < minDate) {
+								errorMessage = `Tanggal tidak boleh lebih kecil dari ${input.min}`;
+								shouldClear = true;
+							}
+						}
+
+						// Check max constraint
+						if (!shouldClear && input.max) {
+							const maxDate = new Date(input.max);
+							if (inputDate > maxDate) {
+								errorMessage = `Tanggal tidak boleh lebih besar dari ${input.max}`;
+								shouldClear = true;
+							}
+						}
+					}
+				}
+			}
+
+			if (shouldClear) {
+				// Clear the input
+				input.value = "";
+				// Show notification
+				alert(errorMessage);
+				// Focus back to the input
+				input.focus();
+				return false;
+			}
+
+			clearError(input);
+			return true;
+		}
+
+		// Function to update date constraints
+		function updateDateConstraints() {
+			// Clear all errors first
+			Object.values(dateInputs).forEach((input) => {
+				if (input) clearError(input);
+			});
+
+			// 1. KRS End Date min = KRS Start Date
+			if (dateInputs.tanggalMulaiKrs.value) {
+				dateInputs.tanggalSelesaiKrs.min = dateInputs.tanggalMulaiKrs.value;
+			}
+
+			// 2. Study Start Date min = KRS End Date (if exists)
+			if (dateInputs.tanggalSelesaiKrs.value) {
+				dateInputs.tanggalMulaiKuliah.min = dateInputs.tanggalSelesaiKrs.value;
+			}
+
+			// 3. Study End Date min = Study Start Date
+			if (dateInputs.tanggalMulaiKuliah.value) {
+				dateInputs.tanggalSelesaiKuliah.min = dateInputs.tanggalMulaiKuliah.value;
+			}
+
+			// 4. UTS Start Date constraints
+			if (dateInputs.tanggalMulaiKuliah.value) {
+				dateInputs.tanggalMulaiUts.min = dateInputs.tanggalMulaiKuliah.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalMulaiUts.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 5. UTS End Date constraints
+			if (dateInputs.tanggalMulaiUts.value) {
+				dateInputs.tanggalSelesaiUts.min = dateInputs.tanggalMulaiUts.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalSelesaiUts.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 6. UAS Start Date constraints
+			if (dateInputs.tanggalMulaiKuliah.value) {
+				dateInputs.tanggalMulaiUas.min = dateInputs.tanggalMulaiKuliah.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalMulaiUas.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 7. UAS End Date constraints
+			if (dateInputs.tanggalMulaiUas.value) {
+				dateInputs.tanggalSelesaiUas.min = dateInputs.tanggalMulaiUas.value;
+			}
+			if (dateInputs.tanggalSelesaiKuliah.value) {
+				dateInputs.tanggalSelesaiUas.max = dateInputs.tanggalSelesaiKuliah.value;
+			}
+
+			// 8. Grade Entry Start Date min = UAS End Date (if exists)
+			if (dateInputs.tanggalSelesaiUas.value) {
+				dateInputs.tanggalMulaiNilai.min = dateInputs.tanggalSelesaiUas.value;
+			}
+
+			// 9. Grade Entry End Date min = Grade Entry Start Date
+			if (dateInputs.tanggalMulaiNilai.value) {
+				dateInputs.tanggalSelesaiNilai.min = dateInputs.tanggalMulaiNilai.value;
+			}
+		}
+
+		// Add event listeners to all date inputs
+		Object.values(dateInputs).forEach((input) => {
+			if (input) {
+				// Handle date picker changes
+				input.addEventListener("change", function () {
+					clearError(this); // Clear any existing errors
+					updateDateConstraints(); // Update constraints for other fields
+				});
+
+				// Handle manual typing
+				input.addEventListener("input", function () {
+					// Clear any existing errors first when user starts typing
+					clearError(this);
+				});
+
+				// Handle when user types (validate after complete date)
+				input.addEventListener("keyup", function () {
+					// Only validate if we have a complete date and user is not still typing
+					if (this.value.length === 10) {
+						setTimeout(() => {
+							validateManualInput(this);
+							updateDateConstraints(); // Update constraints for other fields
+						}, 500); // Wait 500ms to make sure user finished typing
+					}
+				});
+
+				// Validate when user leaves the field
+				input.addEventListener("blur", function () {
+					if (this.value) {
+						validateManualInput(this);
+						updateDateConstraints(); // Update constraints after validation
+					}
+				});
+			}
+		});
+
+		// Initial constraint setup
+		updateDateConstraints();
+
+		// Form submission validation
+		const form = document.querySelector("form");
+		if (form) {
+			form.addEventListener("submit", function (e) {
+				let hasErrors = false;
+
+				// Validate all date inputs before submission
+				Object.values(dateInputs).forEach((input) => {
+					if (input && input.value) {
+						if (!validateManualInput(input)) {
+							hasErrors = true;
+						}
+					}
+				});
+
+				if (hasErrors) {
+					e.preventDefault();
+					alert("Terdapat tanggal yang tidak valid. Mohon perbaiki sebelum menyimpan.");
+					return false;
+				}
+			});
+		}
+
+		// Function to load available angkatan based on prodi and program selection
+		function loadAvailableAngkatan() {
+			const prodiSelect = document.getElementById("prodi");
+			const programSelect = document.getElementById("program");
+			const angkatanMulaiSelect = document.getElementById("angkatanMulai");
+			const angkatanSelesaiSelect = document.getElementById("angkatanSelesai");
+
+			if (!prodiSelect || !angkatanMulaiSelect || !angkatanSelesaiSelect) {
+				console.log("Required select elements not found");
+				return;
+			}
+
+			const prodiId = prodiSelect.value;
+			const programId = programSelect ? programSelect.value : "";
+
+			console.log("Loading angkatan for prodi:", prodiId, "program:", programId);
+
+			if (!prodiId) {
+				// Clear angkatan options if no prodi selected
+				angkatanMulaiSelect.innerHTML = '<option value="">Pilih Angkatan Mulai</option>';
+				angkatanSelesaiSelect.innerHTML = '<option value="">Pilih Angkatan Selesai</option>';
+				return;
+			}
+
+			// Build URL with parameters
+			let url = "/academic/year/prodi/available-angkatan?prodiId=" + prodiId;
+			if (programId) {
+				url += "&programId=" + programId;
+			}
+
+			console.log("Fetching from URL:", url);
+
+			// Make AJAX request
+			fetch(url)
+				.then((response) => {
+					console.log("Response status:", response.status);
+					if (!response.ok) {
+						throw new Error("Network response was not ok");
+					}
+					return response.json();
+				})
+				.then((data) => {
+					console.log("Received angkatan data:", data);
+
+					// Save current selected values
+					const currentAngkatanMulai = angkatanMulaiSelect.value;
+					const currentAngkatanSelesai = angkatanSelesaiSelect.value;
+
+					// Clear current options
+					angkatanMulaiSelect.innerHTML = '<option value="">Pilih Angkatan Mulai</option>';
+					angkatanSelesaiSelect.innerHTML = '<option value="">Pilih Angkatan Selesai</option>';
+
+					// Add new options
+					data.forEach((angkatan) => {
+						const optionMulai = document.createElement("option");
+						optionMulai.value = angkatan;
+						optionMulai.textContent = angkatan;
+						angkatanMulaiSelect.appendChild(optionMulai);
+
+						const optionSelesai = document.createElement("option");
+						optionSelesai.value = angkatan;
+						optionSelesai.textContent = angkatan;
+						angkatanSelesaiSelect.appendChild(optionSelesai);
+					});
+
+					// Restore previously selected values if they still exist in the new options
+					if (currentAngkatanMulai && data.includes(parseInt(currentAngkatanMulai))) {
+						angkatanMulaiSelect.value = currentAngkatanMulai;
+					}
+					if (currentAngkatanSelesai && data.includes(parseInt(currentAngkatanSelesai))) {
+						angkatanSelesaiSelect.value = currentAngkatanSelesai;
+					}
+				})
+				.catch((error) => {
+					console.error("Error loading angkatan:", error);
+					angkatanMulaiSelect.innerHTML = '<option value="">Error loading angkatan</option>';
+					angkatanSelesaiSelect.innerHTML = '<option value="">Error loading angkatan</option>';
+				});
+		}
+
+		// Add event listeners for dynamic angkatan loading
+		const prodiSelect = document.getElementById("prodi");
+		const programSelect = document.getElementById("program");
+
+		if (prodiSelect) {
+			prodiSelect.addEventListener("change", loadAvailableAngkatan);
+		}
+
+		if (programSelect) {
+			programSelect.addEventListener("change", loadAvailableAngkatan);
+		}
+
+		// Load angkatan on page load if prodi is already selected
+		if (prodiSelect && prodiSelect.value) {
+			loadAvailableAngkatan();
+		}
+	});
+</script>

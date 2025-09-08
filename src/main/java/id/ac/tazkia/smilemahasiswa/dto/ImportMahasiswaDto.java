@@ -57,6 +57,7 @@ public class ImportMahasiswaDto implements Serializable {
     private String telepon;
     @NotNull
     private String email;
+    private String ukuranBaju; // Tambahan field untuk ukuran baju
     private String statusAktif;
     private String user;
     @NotNull

@@ -13,7 +13,7 @@
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
-<!doctype html>
+<!DOCTYPE html>
 <html
 	lang="en"
 	xmlns:th="http://www.thymeleaf.org"
@@ -470,7 +470,7 @@
 									<li class="nav-item">
 										<a
 											sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')"
-											th:href="@{/academic/prodi/list}"
+											th:href="@{/academic/year/prodi/list}"
 											class="nav-link"
 											>Tahun Prodi</a
 										>
@@ -1302,7 +1302,7 @@
 
 						<li
 							class="nav-item"
-							sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')"
+							sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')"
 						>
 							<a th:class="${'nav-link ' + statusmenu}" th:href="@{/dokumen}">
 								<i class="ni ni-collection text-green"></i>

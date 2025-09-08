@@ -44,7 +44,13 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "where id_tahun_akademik=?1 and id_mahasiswa=?2 and status!='HAPUS'", nativeQuery = true)
     BigDecimal totalTagihanPerTahunAkademikDanMahasiswa(String idTahunAkademik, String idMahasiswa);
 
-    @Query(value = "select coalesce(sum(nilai_tagihan),0) from tagihan where id_mahasiswa = ?1 and status = 'AKTIF'", nativeQuery = true)
+    @Query(value = "select coalesce(SUM(\n" +
+            "        CASE \n" +
+            "            WHEN status = 'AKTIF' THEN nilai_tagihan\n" +
+            "            WHEN status = 'NONAKTIF' THEN akumulasi_pembayaran\n" +
+            "            ELSE 0\n" +
+            "        END\n" +
+            "    ),0) from tagihan where id_mahasiswa = ?1 and status IN ('AKTIF', 'NONAKTIF') GROUP BY id_mahasiswa ORDER BY id_mahasiswa", nativeQuery = true)
     BigDecimal totalTagihanPerMahasiswa(String idMahasiswa);
 
     @Query(value = "select coalesce(sum(nilai_tagihan),0) as tagihan from tagihan as a join tahun_akademik as b on a.id_tahun_akademik=b.id where b.id=?1 and a.status!='HAPUS'", nativeQuery = true)

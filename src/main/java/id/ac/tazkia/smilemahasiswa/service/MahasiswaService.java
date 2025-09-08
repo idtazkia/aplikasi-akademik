@@ -75,8 +75,14 @@ public class MahasiswaService {
 
     public Mahasiswa prosesMahasiswa(MahasiswaDto mahasiswaDto){
         Mahasiswa mahasiswa = new Mahasiswa();
-                BeanUtils.copyProperties(mahasiswaDto, mahasiswa);
+        // Exclude ukuranBaju to prevent null override from DTO
+        BeanUtils.copyProperties(mahasiswaDto, mahasiswa, "ukuranBaju");
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
+        
+        // Only set ukuranBaju if it's not null in DTO
+        if (mahasiswaDto.getUkuranBaju() != null) {
+            mahasiswa.setUkuranBaju(mahasiswaDto.getUkuranBaju());
+        }
 
         if (mahasiswa.getUser() == null) {
             createUser(mahasiswa);
@@ -175,7 +181,8 @@ public class MahasiswaService {
 
 
         Mahasiswa mahasiswa = new Mahasiswa();
-        BeanUtils.copyProperties(importMahasiswaDto,mahasiswa);
+        // Copy properties but exclude sensitive fields that should not be overwritten by import
+        BeanUtils.copyProperties(importMahasiswaDto, mahasiswa, "ukuranBaju", "rfid", "foto", "fileKtp", "fileIjazah");
         mahasiswa.setIdProdi(prodiDao.findByKodeSpmb(importMahasiswaDto.getProdi()));
         mahasiswa.setIdKotaKabupaten(importMahasiswaDto.getKabupaten());
         mahasiswa.setIdProvinsi(importMahasiswaDto.getProvinsi());

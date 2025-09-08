@@ -1,218 +1,310 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layout}">
-<head>
-    <meta charset="UTF-8">
-    <title>Revisi</title>
-    <style type="text/css">
-        .bd-primary{
-            background-color: white;
-            border: 2px solid #0275d8;
-            border-radius: 15px;
-            color: #0275d8;
-            padding: 7px;
-            font-size: 12px;
-            transition: 1s;
-        }
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Revisi</title>
+		<style type="text/css">
+			.bd-primary {
+				background-color: white;
+				border: 2px solid #0275d8;
+				border-radius: 15px;
+				color: #0275d8;
+				padding: 7px;
+				font-size: 12px;
+				transition: 1s;
+			}
 
-        .bd-primary:hover{
-            background-color: #0275d8;
-            color: white;
-        }
+			.bd-primary:hover {
+				background-color: #0275d8;
+				color: white;
+			}
 
-        .bd-success{
-            background-color: #5cb85c;
-            border-radius: 10px;
-        }
+			.bd-success {
+				background-color: #5cb85c;
+				border-radius: 10px;
+			}
 
-        .bd-warning{
-            background-color: white;
-            border: 2px solid #f0ad4e;
-            border-radius: 15px;
-            color: #f0ad4e;
-            padding: 7px;
-            font-size: 12px;
-            transition: 1s;
-        }
+			.bd-warning {
+				background-color: white;
+				border: 2px solid #f0ad4e;
+				border-radius: 15px;
+				color: #f0ad4e;
+				padding: 7px;
+				font-size: 12px;
+				transition: 1s;
+			}
 
-        .bd-warning:hover{
-            background-color: #f0ad4e;
-            color: white;
-        }
+			.bd-warning:hover {
+				background-color: #f0ad4e;
+				color: white;
+			}
 
-        .bd-danger{
-            background-color: #d9534f;
-            border-radius: 10px;
-        }
-    </style>
-</head>
-<body onload="myFunction()">
-<section layout:fragment="main" class="content">
-    <div class="breadcomb-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
-                    <div class="breadcomb-list">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <div class="breadcomb-wp">
-                                    <div class="breadcomb-icon">
-                                        <i class="notika-icon notika-form"></i>
-                                    </div>
-                                    <div class="breadcomb-ctn">
-                                        <h2>Pendaftaran Sidang</h2>
-                                        <p>Semangat, Semoga Lancar!! 💙</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <div class="breadcomb-report">
+			.bd-danger {
+				background-color: #d9534f;
+				border-radius: 10px;
+			}
+		</style>
+	</head>
+	<body onload="myFunction()">
+		<section layout:fragment="main" class="content">
+			<div class="breadcomb-area">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12 col-xs-12">
+							<div class="breadcomb-list">
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-xs-12">
+										<div class="breadcomb-wp">
+											<div class="breadcomb-icon">
+												<i class="notika-icon notika-form"></i>
+											</div>
+											<div class="breadcomb-ctn">
+												<h2>Pendaftaran Sidang</h2>
+												<p>Semangat, Semoga Lancar!! 💙</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-xs-12">
+										<div class="breadcomb-report"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+			<div class="container">
+				<div class="bounceIn">
+					<div class="row">
+						<div class="col-md-4 col-xs-12">
+							<div class="normal-table-list mg-t-30">
+								<div class="basic-tb-hd">
+									<h2>Form Download</h2>
+									<hr />
+								</div>
+								<div class="bsc-tbl-st">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="dropdown">
+												<a
+													th:if="${S1 != null}"
+													class="btn btn-primary dropdown-toggle"
+													type="button"
+													th:href="@{/graduation/sidang/formulir(id = ${sidang.seminar.id})}"
+													>Download Formulir <span class="caret"></span
+												></a>
+												<a
+													th:if="${S2 != null}"
+													class="btn btn-primary dropdown-toggle"
+													type="button"
+													th:href="@{/graduation/sidang/formulirpasca(id = ${sidang.seminar.id})}"
+													>Download Formulir <span class="caret"></span
+												></a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-8 col-xs-12">
+							<div class="normal-table-list mg-t-30">
+								<div class="basic-tb-hd">
+									<h2>Form</h2>
+								</div>
+								<div class="bsc-tbl-st">
+									<div class="row">
+										<div class="col-md-12">
+											<div th:if="${S1 != null}">
+												<form
+													th:action="@{/graduation/sidang/mahasiswa/pendaftaran}"
+													method="post"
+													enctype="multipart/form-data"
+													th:object="${sidang}"
+												>
+													<div class="form-group">
+														<label>Judul Tugas Akhir</label>
+														<input
+															type="text"
+															th:field="*{judulTugasAkhir}"
+															required
+															name="judulTugasAkhir"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Judul Inggris</label>
+														<input
+															type="text"
+															th:field="*{judulInggris}"
+															required
+															name="judulInggris"
+															class="form-control"
+														/>
+													</div>
+													<input type="hidden" th:field="*{id}" />
+													<div class="form-group">
+														<label>Upload Draft Sidang</label>
+														<input type="file" required name="draft" class="form-control" />
+													</div>
+													<div class="form-group">
+														<label>Upload Form Pendaftaran</label>
+														<input
+															type="file"
+															required
+															name="pendaftaran"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Upload ijazah</label>
+														<input
+															type="file"
+															required
+															name="ijazah"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Upload KTP</label>
+														<input type="file" required name="ktp" class="form-control" />
+													</div>
+													<div class="form-group">
+														<label>Upload Kartu Bimbingan</label>
+														<input type="file" required name="kartu" class="form-control" />
+													</div>
+													<div class="form-group">
+														<label>Upload Hasil Uji Plagiarisme</label>
+														<input
+															type="file"
+															required
+															name="plagiat"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Berita Acara Seminar Proposal</label>
+														<input
+															type="file"
+															required
+															name="berita"
+															class="form-control"
+														/>
+													</div>
 
-    <div class="container">
-        <div class="bounceIn">
-            <div class="row">
-                <div class="col-md-4 col-xs-12">
-                    <div class="normal-table-list mg-t-30">
-                        <div class="basic-tb-hd">
-                            <h2>Form Download</h2>
-                            <hr>
-                        </div>
-                        <div class="bsc-tbl-st">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="dropdown">
-                                        <a th:if="${S1 != null}" class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulir(id = ${sidang.seminar.id})}">Download Formulir
-                                            <span class="caret"></span></a>
-                                        <a th:if="${S2 != null}" class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulirpasca(id = ${sidang.seminar.id})}">Download Formulir
-                                            <span class="caret"></span></a>
-                                    </div>
-                                </div>
-                            </div>
+													<div class="form-group">
+														<button class="btn btn-success">Upload</button>
+													</div>
+													<input type="hidden" name="seminar" th:field="*{seminar}" />
+												</form>
+											</div>
+											<div th:if="${S2 != null}">
+												<form
+													th:action="@{/graduation/sidang/mahasiswa/pendaftaranS2}"
+													method="post"
+													enctype="multipart/form-data"
+													th:object="${sidang}"
+												>
+													<div class="form-group">
+														<label>Judul Tugas Akhir</label>
+														<input
+															type="text"
+															th:field="*{judulTugasAkhir}"
+															required
+															name="judulTugasAkhir"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Judul Inggris</label>
+														<input
+															type="text"
+															th:field="*{judulInggris}"
+															required
+															name="judulInggris"
+															class="form-control"
+														/>
+													</div>
+													<input type="hidden" th:field="*{id}" />
+													<div class="form-group">
+														<label>Upload Draft Sidang</label>
+														<input type="file" required name="draft" class="form-control" />
+													</div>
+													<div class="form-group">
+														<label>Upload Form Pendaftaran</label>
+														<input
+															type="file"
+															required
+															name="pendaftaran"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Upload Lembar Persetujuan</label>
+														<input
+															type="file"
+															required
+															name="persetujuan"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Upload CV</label>
+														<input type="file" required name="cv" class="form-control" />
+													</div>
+													<div class="form-group">
+														<label>Upload Bukti Kehadiran</label>
+														<input
+															type="file"
+															required
+															name="kehadiran"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Upload Hasil Uji Plagiarisme</label>
+														<input
+															type="file"
+															required
+															name="plagiat"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<label>Upload Lembar Perbaikan</label>
+														<input
+															type="file"
+															required
+															name="perbaikan"
+															class="form-control"
+														/>
+													</div>
+													<div class="form-group">
+														<button class="btn btn-success">Upload</button>
+													</div>
+													<input type="hidden" name="seminar" th:field="*{seminar}" />
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8 col-xs-12">
-                    <div class="normal-table-list mg-t-30">
-                        <div class="basic-tb-hd">
-                            <h2>Form</h2>
-                        </div>
-                        <div class="bsc-tbl-st">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div th:if="${S1 != null}">
-                                        <form th:action="@{/graduation/sidang/mahasiswa/pendaftaran}" method="post" enctype="multipart/form-data" th:object="${sidang}">
-                                            <div class="form-group">
-                                                <label>Judul Tugas Akhir</label>
-                                                <input type="text" th:field="*{judulTugasAkhir}" required name="judulTugasAkhir" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Judul Inggris</label>
-                                                <input type="text" th:field="*{judulInggris}" required name="judulInggris" class="form-control">
-                                            </div>
-                                            <input type="hidden" th:field="*{id}">
-                                            <div class="form-group">
-                                                <label>Upload Draft Sidang</label>
-                                                <input type="file" required name="draft" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Form Pendaftaran</label>
-                                                <input type="file" required name="pendaftaran" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload ijazah</label>
-                                                <input type="file" required name="ijazah" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload KTP</label>
-                                                <input type="file" required name="ktp" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Kartu Bimbingan</label>
-                                                <input type="file" required name="kartu" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Hasil Uji Plagiarisme</label>
-                                                <input type="file" required name="plagiat" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Berita Acara Seminar Proposal</label>
-                                                <input type="file" required name="berita" class="form-control">
-                                            </div>
-
-                                            <div class="form-group">
-                                                <button class="btn btn-success">Upload</button>
-                                            </div>
-                                            <input type="hidden" name="seminar" th:field="*{seminar}">
-                                        </form>
-                                    </div>
-                                    <div th:if="${S2 != null}">
-                                        <form th:action="@{/graduation/sidang/mahasiswa/pendaftaranS2}" method="post" enctype="multipart/form-data" th:object="${sidang}">
-                                            <div class="form-group">
-                                                <label>Judul Tugas Akhir</label>
-                                                <input type="text" th:field="*{judulTugasAkhir}" required name="judulTugasAkhir" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Judul Inggris</label>
-                                                <input type="text" th:field="*{judulInggris}" required name="judulInggris" class="form-control">
-                                            </div>
-                                            <input type="hidden" th:field="*{id}">
-                                            <div class="form-group">
-                                                <label>Upload Draft Sidang</label>
-                                                <input type="file" required name="draft" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Form Pendaftaran</label>
-                                                <input type="file" required name="pendaftaran" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Lembar Persetujuan</label>
-                                                <input type="file" required name="persetujuan" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload CV</label>
-                                                <input type="file" required name="cv" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Bukti Kehadiran</label>
-                                                <input type="file" required name="kehadiran" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Upload Hasil Uji Plagiarisme</label>
-                                                <input type="file" required name="plagiat" class="form-control">
-                                            </div>
-
-                                            <div class="form-group">
-                                                <button class="btn btn-success">Upload</button>
-                                            </div>
-                                            <input type="hidden" name="seminar" th:field="*{seminar}">
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-    $("#save").click(function(){
-        $("#save").hide();
-    });
-</script>
-</body>
+		<script>
+			$("#save").click(function () {
+				$("#save").hide();
+			});
+		</script>
+	</body>
 </html>

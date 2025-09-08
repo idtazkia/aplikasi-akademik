@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}"
+>
+	<head>
+		<title>Detail Tahun Akademik</title>
+	</head>
+
+	<body>
+		<div layout:fragment="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active">Detail Tahun Akademik</li>
+			</ol>
+		</div>
+
+		<div layout:fragment="content">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Detail Tahun Akademik</h3>
+							<div class="card-tools">
+								<a th:href="@{/academic/year/detail/form}" class="btn btn-sm btn-primary">
+									<i class="fas fa-plus"></i> Tambah
+								</a>
+							</div>
+						</div>
+
+						<div class="card-body">
+							<!-- Filter -->
+							<form method="get" th:action="@{/academic/year/detail/list}">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Tahun Akademik</label>
+											<select name="tahunAkademik" class="form-control">
+												<option value="">-- Pilih Tahun Akademik --</option>
+												<option
+													th:each="t : ${listTahunAkademik}"
+													th:value="${t.id}"
+													th:text="${t.kodeTahunAkademik + ' - ' + t.namaTahunAkademik}"
+													th:selected="${selectedTahun != null && selectedTahun.id == t.id}"
+												></option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Program Studi</label>
+											<select name="prodi" class="form-control">
+												<option value="">-- Pilih Program Studi --</option>
+												<option
+													th:each="p : ${listProdi}"
+													th:value="${p.id}"
+													th:text="${p.namaProdi}"
+													th:selected="${selectedProdi != null && selectedProdi.id == p.id}"
+												></option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>&nbsp;</label>
+											<div>
+												<button type="submit" class="btn btn-primary">
+													<i class="fas fa-search"></i> Filter
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+
+							<!-- Detail List -->
+							<div th:if="${detailTahunAkademikList != null && !detailTahunAkademikList.empty}">
+								<table class="table table-striped table-bordered">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Tahun Akademik</th>
+											<th>Program Studi</th>
+											<th>Program</th>
+											<th>Angkatan Mulai</th>
+											<th>Angkatan Selesai</th>
+											<th>Mulai KRS</th>
+											<th>Selesai KRS</th>
+											<th>Status</th>
+											<th>Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="detail, iter : ${detailTahunAkademikList}">
+											<td th:text="${iter.count}"></td>
+											<td
+												th:text="${detail.tahunAkademik != null ? detail.tahunAkademik.kodeTahunAkademik + ' - ' + detail.tahunAkademik.namaTahunAkademik : '-'}"
+											></td>
+											<td
+												th:text="${detail.prodi != null ? detail.prodi.namaProdi : 'Semua'}"
+											></td>
+											<td
+												th:text="${detail.program != null ? detail.program.namaProgram : 'Semua'}"
+											></td>
+											<td th:text="${detail.angkatanMulai ?: '-'}"></td>
+											<td th:text="${detail.angkatanSelesai ?: '-'}"></td>
+											<td
+												th:text="${#temporals.format(detail.tanggalMulaiKrs, 'dd/MM/yyyy') ?: '-'}"
+											></td>
+											<td
+												th:text="${#temporals.format(detail.tanggalSelesaiKrs, 'dd/MM/yyyy') ?: '-'}"
+											></td>
+											<td>
+												<span
+													class="badge badge-success"
+													th:if="${detail.status.name() == 'AKTIF'}"
+													>AKTIF</span
+												>
+												<span
+													class="badge badge-danger"
+													th:if="${detail.status.name() == 'NONAKTIF'}"
+													>NONAKTIF</span
+												>
+											</td>
+											<td>
+												<a
+													th:href="@{/academic/year/detail/form(id=${detail.id})}"
+													class="btn btn-sm btn-warning"
+												>
+													<i class="fas fa-edit"></i> Edit
+												</a>
+												<form
+													method="post"
+													th:action="@{/academic/year/detail/delete}"
+													style="display: inline"
+													onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')"
+												>
+													<input type="hidden" name="id" th:value="${detail.id}" />
+													<button type="submit" class="btn btn-sm btn-danger">
+														<i class="fas fa-trash"></i> Hapus
+													</button>
+												</form>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<div
+								th:if="${selectedTahun != null && (detailTahunAkademikList == null || detailTahunAkademikList.empty)}"
+								class="alert alert-info"
+							>
+								<i class="fas fa-info-circle"></i> Tidak ada detail ditemukan untuk filter yang dipilih.
+							</div>
+
+							<div th:if="${selectedTahun == null}" class="alert alert-warning">
+								<i class="fas fa-exclamation-triangle"></i> Silakan pilih tahun akademik untuk melihat
+								detail.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

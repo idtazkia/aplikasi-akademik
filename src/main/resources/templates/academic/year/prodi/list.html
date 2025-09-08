@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Tahun Akademik Prodi</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+												<span class="h2 font-weight-bold mb-0">Tahun Akademik Prodi </span>
+											</div>
+											<div class="col-auto">
+												<div
+													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
+												>
+													<i class="fas fa-calendar"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid mt--7">
+				<!-- Table -->
+				<div class="row">
+					<div class="col">
+						<div class="card shadow">
+							<div class="card-header border-0">
+								<div class="row align-items-center">
+									<div class="col">
+										<h3 class="mb-0">Data List</h3>
+									</div>
+									<div
+										class="col text-right"
+										th:if="${selectedProdi != null && selectedTahun != null}"
+									>
+										<a
+											th:href="@{/academic/year/prodi/form (prodi = ${selectedProdi.id}, tahunAkademik = ${selectedTahun.id})}"
+											class="btn btn-sm btn-default"
+											><i class="fas fa-plus-circle"></i> Add</a
+										>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<form method="get">
+									<div class="row">
+										<div class="col-md-6">
+											<label>Prodi</label>
+											<select name="prodi" required class="form-control">
+												<option value="" selected disabled>-- Select One --</option>
+												<th:block th:each="prodi : ${listProdi}">
+													<option
+														th:selected="(${prodi} == *{selectedProdi})"
+														th:value="${prodi.id}"
+														th:text="${prodi.namaProdi}"
+													></option>
+												</th:block>
+											</select>
+										</div>
+										<div class="col-md-6">
+											<label>Tahun Akademik</label>
+											<select name="tahunAkademik" required class="form-control">
+												<option value="" selected disabled>-- Select One --</option>
+												<th:block th:each="tahun : ${listTahunAkademik}">
+													<option
+														th:selected="(${tahun} == *{selectedTahun})"
+														th:value="${tahun.id}"
+														th:text="${tahun.namaTahunAkademik}"
+													></option>
+												</th:block>
+											</select>
+										</div>
+									</div>
+									<div class="row" style="padding-top: 10px; padding-bottom: 20px">
+										<div class="col-md-12" style="text-align: center">
+											<button type="submit" class="btn btn-info">
+												<i class="fas fa-search"></i> Cari
+											</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div th:if="${selectedTahun != null}">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">#</th>
+												<th scope="col">Program</th>
+												<th scope="col">Tahun Akademik</th>
+												<th scope="col">Angkatan</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="data, row : ${prodiTahunAkademik}">
+												<td th:text="${row.index + 1}"></td>
+												<td>
+													<span
+														th:if="${data.program != null}"
+														th:text="${data.program.namaProgram}"
+													></span>
+													<span
+														th:if="${data.program == null}"
+														class="text-muted font-weight-bold"
+														>Semua Program</span
+													>
+												</td>
+												<td th:text="${data.tahunAkademik.namaTahunAkademik}"></td>
+												<td>
+													<span
+														class="btn btn-outline-success btn-sm"
+														th:text="${data.angkatanMulai != null ? data.angkatanMulai + ' - ' + data.angkatanSelesai : '-'}"
+													></span>
+												</td>
+
+												<td>
+													<a
+														th:href="@{/academic/year/prodi/edit (detailTahunAkademik = ${data.id})}"
+														class="btn btn-primary btn-sm"
+														data-toggle="tooltip"
+														data-placement="bottom"
+														title="Edit"
+														><i class="fas fa-edit"></i
+													></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

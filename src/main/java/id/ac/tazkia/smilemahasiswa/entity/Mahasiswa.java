@@ -206,4 +206,41 @@ public class Mahasiswa {
     public String formatTanggalLahir() {
         return tanggalLahir.format(formatter);
     }
+
+    // Custom setter untuk ukuranBaju
+    public void setUkuranBaju(String ukuranBaju) {
+        // Logging untuk debugging
+        if (ukuranBaju == null && this.ukuranBaju != null && !this.ukuranBaju.trim().isEmpty()) {
+            // Log stack trace untuk melihat dari mana method ini dipanggil
+            System.out.println("⚠️  MENCOBA SET UKURAN BAJU KE NULL!");
+            System.out.println("   Nilai sebelumnya: '" + this.ukuranBaju + "'");
+            System.out.println("   NIM: " + this.nim);
+            System.out.println("   Stack trace:");
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (int i = 2; i < Math.min(6, stackTrace.length); i++) {
+                System.out.println("   -> " + stackTrace[i].getClassName() + "." + stackTrace[i].getMethodName() + ":" + stackTrace[i].getLineNumber());
+            }
+            System.out.println("   Nilai TIDAK DIUBAH - dipertahankan: '" + this.ukuranBaju + "'");
+            // Tidak mengubah nilai, tetap mempertahankan nilai lama
+            return;
+        }
+        
+        // Log perubahan nilai untuk debugging
+        if (this.ukuranBaju != null && ukuranBaju != null && !this.ukuranBaju.equals(ukuranBaju)) {
+            System.out.println("✅ Mengubah ukuran baju dari '" + this.ukuranBaju + "' ke '" + ukuranBaju + "' (NIM: " + this.nim + ")");
+        }
+        
+        // Jika nilai baru bukan null atau nilai lama memang kosong, update nilai
+        this.ukuranBaju = ukuranBaju;
+    }
+
+    // Custom getter untuk ukuranBaju
+    public String getUkuranBaju() {
+        return this.ukuranBaju;
+    }
+
+    // Method untuk memaksa update ukuranBaju (jika diperlukan untuk bypass logic di setter)
+    public void forceSetUkuranBaju(String ukuranBaju) {
+        this.ukuranBaju = ukuranBaju;
+    }
 }
