@@ -408,7 +408,7 @@ public class StudyActivityController {
             model.addAttribute("sks", jumlahSks);
             model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
 
-            model.addAttribute("kosong", null);
+            model.addAttribute("kosong", "kosong");
         }
 
         if (k != null) {
