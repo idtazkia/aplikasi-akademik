@@ -1141,16 +1141,16 @@ public class TugasAkhirController {
             dataWisudaHEs++;
         }
 
-        List<String> listWisudaDiploma = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),
-                "04");
-        List<Object[]> diplomaList = wisudaDao.getDetailWisuda(listWisudaDiploma);
+        List<String> listWisudaKpi = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),
+                "09");
+        List<Object[]> kpiList = wisudaDao.getDetailWisuda(listWisudaKpi);
 
-        int dataWisudaDiplomaa = 5;
-        int noDiploma = 1;
-        for (Object[] data : diplomaList) {
-            Row row = d3.createRow(dataWisudaDiplomaa);
+        int dataWisudaKpi = 5;
+        int noKpi = 1;
+        for (Object[] data : kpiList) {
+            Row row = kpi.createRow(dataWisudaKpi);
 
-            row.createCell(0).setCellValue(noDiploma++);
+            row.createCell(0).setCellValue(noKpi++);
             row.createCell(1).setCellValue(data[0].toString());
             row.createCell(2).setCellValue(data[1].toString());
             row.createCell(3).setCellValue(data[2].toString());
@@ -1163,7 +1163,7 @@ public class TugasAkhirController {
             row.getCell(4).setCellStyle(styleData);
             row.getCell(5).setCellStyle(styleData);
 
-            row.createCell(6).setCellValue("Diploma III");
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
             row.getCell(6).setCellStyle(styleData);
 
             if (data[6] != null) {
@@ -1215,7 +1215,7 @@ public class TugasAkhirController {
             }
             row.createCell(18).setCellValue(data[17].toString());
             row.getCell(18).setCellStyle(styleData);
-            dataWisudaDiplomaa++;
+            dataWisudaKpi++;
         }
 
         List<String> listWisudaTips = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),
