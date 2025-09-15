@@ -335,7 +335,7 @@
                             </div>
                             <div class="col text-right">
                                 <a class="btn btn-success btn-sm text-white" data-toggle="modal" data-target="#modal-import"><i class="fas fa-download"></i> Import per angkatan</a>
-
+                                <a class="btn btn-primary btn-sm text-white" data-toggle="modal" data-target="#modal-email"><i class="fas fa-upload"></i> Upload Email Mahasiswa</a>
                                 <a th:href="@{/mahasiswa/status}" class="btn btn-info btn-sm text-white"><i class="fas fa-eye"></i> Cek Status</a>
 
                                 <div class="modal fade" id="modal-import" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
@@ -371,7 +371,45 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="modal fade" id="modal-email" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body p-0">
+                                                <div class="card bg-secondary shadow border-0">
+                                                    <!-- Unduh Templat -->
+                                                <div class="card-header bg-transparent pb-5">
+                                                    <div class="text-muted text-center mt-2 mb-3"><small>Templat</small></div>
+                                                    <div class="text-center">
+                                                        <a th:href="@{/sample/email}" class="btn btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                                                            <span class="btn-inner--text">Unduh templat</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- Unggah File -->
+                                                <div class="card-header bg-transparent pb-5">
+                                                    <div class="text-muted text-center mt-2 mb-3"><small>Unggah</small></div>
+                                                    <div class="text-center">
+                                                        <form method="post" th:action="@{/mahasiswa/email/upload}" enctype="multipart/form-data">
+                                                            
+                                                            <div class="form-group">
+                                                                <input type="file" name="file" class="form-control" id="rencPembelajaran" required />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success" type="submit">
+                                                                    <i class="fas fa-save"></i> Unggah
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            </div><br><br><br>
                         </div>
                     </div>
                     <div class="card-body">

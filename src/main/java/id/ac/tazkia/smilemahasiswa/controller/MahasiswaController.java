@@ -1,42 +1,91 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MengundurkanDiriDto;
-import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
-import id.ac.tazkia.smilemahasiswa.service.PresensiService;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.management.ObjectName;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.awt.*;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import id.ac.tazkia.smilemahasiswa.dao.AgamaDao;
+import id.ac.tazkia.smilemahasiswa.dao.AyahDao;
+import id.ac.tazkia.smilemahasiswa.dao.BeasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.CutiDao;
+import id.ac.tazkia.smilemahasiswa.dao.IbuDao;
+import id.ac.tazkia.smilemahasiswa.dao.JenisTinggalDao;
+import id.ac.tazkia.smilemahasiswa.dao.KodeposDao;
+import id.ac.tazkia.smilemahasiswa.dao.KonsentrasiDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaBeasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDetailKeluargaDao;
+import id.ac.tazkia.smilemahasiswa.dao.PekerjaanDao;
+import id.ac.tazkia.smilemahasiswa.dao.PendidikanDao;
+import id.ac.tazkia.smilemahasiswa.dao.PenghasilanDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
+import id.ac.tazkia.smilemahasiswa.dao.RoleDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.UserDao;
+import id.ac.tazkia.smilemahasiswa.dao.WaliDao;
+import id.ac.tazkia.smilemahasiswa.dto.mahasiswa.MengundurkanDiriDto;
+import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.entity.Ayah;
+import id.ac.tazkia.smilemahasiswa.entity.Beasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Cuti;
+import id.ac.tazkia.smilemahasiswa.entity.Ibu;
+import id.ac.tazkia.smilemahasiswa.entity.Krs;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.MahasiswaBeasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Pekerjaan;
+import id.ac.tazkia.smilemahasiswa.entity.Pendidikan;
+import id.ac.tazkia.smilemahasiswa.entity.Penghasilan;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Role;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
 
 @Controller
 public class MahasiswaController {
@@ -109,6 +158,8 @@ public class MahasiswaController {
     @Autowired
     private KrsDao krsDao;
 
+    @Value("classpath:sample/contohEmail.xlsx")
+    private Resource exampleEmail;
 
     @ModelAttribute("penghasilan")
     public Iterable<Penghasilan> penghasilan() {
@@ -139,26 +190,72 @@ public class MahasiswaController {
     public Iterable<TahunAkademik> tahunAkademik() {
         return tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
     }
+
     @GetMapping("/mahasiswa/list")
-    public void daftarMahasiswa(Model model, @PageableDefault(size = 50) Pageable page, String search,Authentication authentication){
+    public void daftarMahasiswa(Model model, @PageableDefault(size = 50) Pageable page, String search,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         model.addAttribute("user", user);
         model.addAttribute("search", search);
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(Arrays.asList(StatusRecord.HAPUS), search,search, page));
+            model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(
+                    Arrays.asList(StatusRecord.HAPUS), search, search, page));
         }
+    }
+
+    @GetMapping("/sample/email")
+    public void downloadContohFileInputEmail(HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/vns.ms-excel");
+        response.setHeader("Content-Disposition", "attahment; filename=Example-Email.xlsx");
+        FileCopyUtils.copy(exampleEmail.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
+
+    }
+
+    @Transactional
+    @PostMapping("/mahasiswa/email/upload")
+    public String uploadEmailFile(MultipartFile file, RedirectAttributes attributes) throws Exception {
+
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+            int row = 5; // baris ke 6
+            int terakhir = sheetPertama.getLastRowNum() - row;
+
+            for (int i = 0; i <= terakhir; i++) {
+                Row baris = sheetPertama.getRow(row + i);
+                Cell nimCell = baris.getCell(0);
+                nimCell.setCellType(CellType.STRING);
+                Cell emailCell = baris.getCell(1);
+                emailCell.setCellType(CellType.STRING);
+                Mahasiswa mahasiswa = mahasiswaDao.findByNim(nimCell.getStringCellValue());
+                if (mahasiswa != null) {
+                    mahasiswa.setEmailTazkia(emailCell.getStringCellValue());
+                    mahasiswaDao.save(mahasiswa);
+                    User user = mahasiswa.getUser();
+                    user.setUsername(emailCell.getStringCellValue());
+                    userDao.save(user);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:../list";
     }
 
     @GetMapping("/mahasiswa/import/angkatan")
     public void importAngkatan(@RequestParam String angkatan, HttpServletResponse response) throws IOException {
 
-        String[] columns = {"NO", "NIM", "Nama", "Prodi", "Email"};
+        String[] columns = { "NO", "NIM", "Nama", "Prodi", "Email" };
 
         List<Mahasiswa> mhs = mahasiswaDao.findByStatusAndStatusAktifAndAngkatan(StatusRecord.AKTIF, "AKTIF", angkatan);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Angkatan "+angkatan);
+        XSSFSheet sheet = workbook.createSheet("Angkatan " + angkatan);
 
         sheet.addMergedRegion(CellRangeAddress.valueOf("C2:D2"));
 
@@ -180,7 +277,7 @@ public class MahasiswaController {
         ketCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
         Row headerRow = sheet.createRow(3);
-        for (int i = 0; i<columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
@@ -194,7 +291,7 @@ public class MahasiswaController {
         int rowNum = 4;
         int baris = 1;
 
-        for (Mahasiswa m : mhs){
+        for (Mahasiswa m : mhs) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(m.getNim());
@@ -202,59 +299,58 @@ public class MahasiswaController {
             row.createCell(3).setCellValue(m.getIdProdi().getNamaProdi());
             if (m.getEmailTazkia() != null) {
                 row.createCell(4).setCellValue(m.getEmailTazkia());
-            }else{
+            } else {
                 row.createCell(4).setCellValue("-");
             }
         }
 
-        for (int i = 0; i<columns.length;i++){
+        for (int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vns.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data Mahasiswa Angkatan " + angkatan +".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Data Mahasiswa Angkatan " + angkatan + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
     }
 
-
-
     @GetMapping("/mahasiswa/rfid")
-    public void rfid(@RequestParam(required = false) String nim, @RequestParam(required = false) String rfid, Model model){
+    public void rfid(@RequestParam(required = false) String nim, @RequestParam(required = false) String rfid,
+            Model model) {
         model.addAttribute("nim", nim);
         model.addAttribute("rfid", rfid);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-        if (mahasiswa != null){
+        if (mahasiswa != null) {
             model.addAttribute("mahasiswa", mahasiswa);
         }
 
     }
 
     @PostMapping("/mahasiswa/rfid")
-    public String prosesRfid(@RequestParam String nim,@RequestParam String rfid){
+    public String prosesRfid(@RequestParam String nim, @RequestParam String rfid) {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         mahasiswa.setRfid(rfid);
         mahasiswaDao.save(mahasiswa);
 
-        return "redirect:rfid?nim="+nim+"&rfid="+rfid;
+        return "redirect:rfid?nim=" + nim + "&rfid=" + rfid;
     }
 
     @GetMapping("/mahasiswa/form")
-    public void  formMahasiswa(Model model,Mahasiswa mahasiswa){
-        model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("tinggal",jenisTinggalDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("program",programDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("prodi",prodiDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("konsentrasi",konsentrasiDao.findByStatus(StatusRecord.AKTIF));
+    public void formMahasiswa(Model model, Mahasiswa mahasiswa) {
+        model.addAttribute("agama", agamaDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("tinggal", jenisTinggalDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("konsentrasi", konsentrasiDao.findByStatus(StatusRecord.AKTIF));
 
-        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("mhsw", mahasiswa);
         model.addAttribute("ayah", ayahDao.findById(mahasiswa.getAyah().getId()));
         model.addAttribute("ibu", ibuDao.findById(mahasiswa.getIbu().getId()));
-//        model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
+        // model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
 
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
 
@@ -325,21 +421,22 @@ public class MahasiswaController {
     }
 
     @PostMapping("/mahasiswa/form")
-    public String prosesForm(@RequestParam Mahasiswa mahasiswa, @ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult errors, Authentication authentication){
+    public String prosesForm(@RequestParam Mahasiswa mahasiswa, @ModelAttribute @Valid MahasiswaDto mahasiswaDto,
+            BindingResult errors, Authentication authentication) {
         User userUpdate = currentUserService.currentUser(authentication);
 
         // Exclude ukuranBaju to prevent null override from DTO
-        BeanUtils.copyProperties(mahasiswaDto,mahasiswa, "ukuranBaju");
+        BeanUtils.copyProperties(mahasiswaDto, mahasiswa, "ukuranBaju");
         mahasiswa.setNama(WordUtils.capitalizeFully(mahasiswaDto.getNama()));
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswa.setIdAgama(mahasiswaDto.getReligion());
         mahasiswa.setStatusUpdateUser(userUpdate.getUsername());
-        
+
         // Only set ukuranBaju if it's not null in DTO
         if (mahasiswaDto.getUkuranBaju() != null) {
             mahasiswa.setUkuranBaju(mahasiswaDto.getUkuranBaju());
         }
-        
+
         mahasiswaDao.save(mahasiswa);
 
         if (mahasiswa.getUser() != null) {
@@ -352,7 +449,7 @@ public class MahasiswaController {
             userDao.save(user);
         }
 
-        if (mahasiswaDto.getIbu() != null){
+        if (mahasiswaDto.getIbu() != null) {
             Ibu ibu = ibuDao.findById(mahasiswaDto.getIbu()).get();
             ibu.setId(mahasiswaDto.getIbu());
             ibu.setNamaIbuKandung(mahasiswaDto.getNamaIbuKandung());
@@ -366,7 +463,7 @@ public class MahasiswaController {
             ibu.setStatusHidup(mahasiswaDto.getStatusHidupIbu());
             ibuDao.save(ibu);
         }
-        if (mahasiswaDto.getAyah() != null){
+        if (mahasiswaDto.getAyah() != null) {
             Ayah ayah = ayahDao.findById(mahasiswaDto.getAyah()).get();
             BeanUtils.copyProperties(mahasiswaDto, ayah);
             ayah.setId(mahasiswaDto.getAyah());
@@ -375,20 +472,20 @@ public class MahasiswaController {
             ayah.setStatusHidup(mahasiswaDto.getHidup());
             ayahDao.save(ayah);
         }
-        mahasiswaService.prosesAyah(mahasiswaDto,mahasiswa);
-        mahasiswaService.prosesIbu(mahasiswaDto,mahasiswa);
+        mahasiswaService.prosesAyah(mahasiswaDto, mahasiswa);
+        mahasiswaService.prosesIbu(mahasiswaDto, mahasiswa);
         return "redirect:list";
     }
 
     @GetMapping("/mahasiswa/generate")
-    public void generateCapitalize(){
+    public void generateCapitalize() {
 
     }
 
     @PostMapping("/mahasiswa/generate")
-    public String generateCapitalize(@RequestParam String angkatan){
-        List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF,angkatan);
-        for (Mahasiswa m : mahasiswa){
+    public String generateCapitalize(@RequestParam String angkatan) {
+        List<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF, angkatan);
+        for (Mahasiswa m : mahasiswa) {
             m.setNama(WordUtils.capitalizeFully(m.getNama()));
             mahasiswaDao.save(m);
         }
@@ -396,17 +493,19 @@ public class MahasiswaController {
     }
 
     @PostMapping("/mahasiswa/beasiswa")
-    public String prosesBeasiswa(Model model,@Valid MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication, @RequestParam Beasiswa beasiswa, @RequestParam Mahasiswa mahasiswa){
-        List<MahasiswaBeasiswa> cek = mahasiswaBeasiswaDao.findByMahasiswaAndBeasiswaAndStatus(mahasiswa, beasiswa, StatusRecord.AKTIF);
+    public String prosesBeasiswa(Model model, @Valid MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication,
+            @RequestParam Beasiswa beasiswa, @RequestParam Mahasiswa mahasiswa) {
+        List<MahasiswaBeasiswa> cek = mahasiswaBeasiswaDao.findByMahasiswaAndBeasiswaAndStatus(mahasiswa, beasiswa,
+                StatusRecord.AKTIF);
 
-        if (cek.isEmpty()){
+        if (cek.isEmpty()) {
 
             mahasiswa.setBeasiswa(beasiswa);
             mahasiswaDao.save(mahasiswa);
 
             mahasiswaBeasiswa.setStatus(StatusRecord.AKTIF);
             mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
-        }else {
+        } else {
             model.addAttribute("validasi", "Beasiswa " + beasiswa.getNamaBeasiswa() + " tersebut sudah ada !!");
         }
 
@@ -414,7 +513,7 @@ public class MahasiswaController {
     }
 
     @PostMapping("/mahasiswa/beasiswadelete")
-    public String deleteBeasiswa(@RequestParam MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication){
+    public String deleteBeasiswa(@RequestParam MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication) {
         MahasiswaBeasiswa mahasiswaBeasiswa1 = mahasiswaBeasiswaDao.findById(mahasiswaBeasiswa.getId()).get();
         System.out.println("Cek = " + mahasiswaBeasiswa1);
         mahasiswaBeasiswa.setStatus(StatusRecord.HAPUS);
@@ -428,43 +527,46 @@ public class MahasiswaController {
     }
 
     @GetMapping("/mahasiswa/aktif")
-    public String statusAktif(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+    public String statusAktif(@RequestParam Mahasiswa mahasiswa, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("AKTIF");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list?search="+ mahasiswa.getNama();
+        return "redirect:list?search=" + mahasiswa.getNama();
     }
 
     @GetMapping("/mahasiswa/nonaktif")
-    public String statusNonaktif(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+    public String statusNonaktif(@RequestParam Mahasiswa mahasiswa, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("NONAKTIF");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list?search="+ mahasiswa.getNama();
+        return "redirect:list?search=" + mahasiswa.getNama();
     }
 
     @PostMapping("/mahasiswa/mengundurkandiri")
     @Transactional
-    public String statusMengundurkanDiri(@Valid MengundurkanDiriDto mengundurkanDiriDto, Authentication authentication){
+    public String statusMengundurkanDiri(@Valid MengundurkanDiriDto mengundurkanDiriDto,
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
-        Mahasiswa mahasiswa =mengundurkanDiriDto.getMahasiswa();
+        Mahasiswa mahasiswa = mengundurkanDiriDto.getMahasiswa();
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("MENGUNDURKAN_DIRI");
         mahasiswa.setTanggalMengundurkanDiri(mengundurkanDiriDto.getTanggalMengundurkanDiri());
         mahasiswa.setTahunAkademikMengundurkanDiri(mengundurkanDiriDto.getTahunAkademik());
         mahasiswaDao.save(mahasiswa);
 
-        krsDao.updateStatusKrsMengundurkanDiri(mahasiswa,mengundurkanDiriDto.getTahunAkademik().getKodeTahunAkademik());
-        return "redirect:list?search="+ mahasiswa.getNama();
+        krsDao.updateStatusKrsMengundurkanDiri(mahasiswa,
+                mengundurkanDiriDto.getTahunAkademik().getKodeTahunAkademik());
+        return "redirect:list?search=" + mahasiswa.getNama();
     }
 
     @GetMapping("/mahasiswa/tahun-aktif/{id}")
     @ResponseBody
-    List<TahunAkademik> tahunAkademikList(@PathVariable String id){
+    List<TahunAkademik> tahunAkademikList(@PathVariable String id) {
         Mahasiswa mahasiswa = mahasiswaDao.findById(id).get();
-        List<TahunAkademik> tahunAktif = krsDao.findByMahasiswaAndStatusOrderByTahunAkademikKodeTahunAkademik(mahasiswa, StatusRecord.AKTIF)
+        List<TahunAkademik> tahunAktif = krsDao
+                .findByMahasiswaAndStatusOrderByTahunAkademikKodeTahunAkademik(mahasiswa, StatusRecord.AKTIF)
                 .stream()
                 .map(Krs::getTahunAkademik)
                 .distinct()
@@ -474,26 +576,25 @@ public class MahasiswaController {
     }
 
     @GetMapping("/mahasiswa/lulus")
-    public String statusLulus(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+    public String statusLulus(@RequestParam Mahasiswa mahasiswa, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("LULUS");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list?search="+ mahasiswa.getNama();
+        return "redirect:list?search=" + mahasiswa.getNama();
     }
 
     @PostMapping("/mahasiswa/cuti")
-    public String statusCuti(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+    public String statusCuti(@RequestParam Mahasiswa mahasiswa, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("CUTI");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list?search="+ mahasiswa.getNama();
+        return "redirect:list?search=" + mahasiswa.getNama();
     }
 
-
     @PostMapping("/mahasiswa/cuti-approved")
-    public String approvedCuti(@Valid Cuti cuti){
+    public String approvedCuti(@Valid Cuti cuti) {
         cuti.setTanggalPengajuaan(LocalDate.now());
         cuti.setTanggalMulaiCuti(cuti.getTahunAkademik().getTanggalMulaiKuliah());
         cuti.setTanggalBerakhirCuti(cuti.getTahunAkademik().getTanggalSelesaiKuliah());
@@ -507,11 +608,11 @@ public class MahasiswaController {
         Mahasiswa mahasiswa = mahasiswaDao.findById(cuti.getMahasiswa().getId()).get();
         mahasiswa.setStatusAktif("CUTI");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list?search="+ mahasiswa.getNama();
+        return "redirect:list?search=" + mahasiswa.getNama();
     }
 
     @GetMapping("/mahasiswa/keluar")
-    public String statusKeluar(@RequestParam Mahasiswa mahasiswa, Authentication authentication){
+    public String statusKeluar(@RequestParam Mahasiswa mahasiswa, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("KELUAR");
@@ -521,11 +622,12 @@ public class MahasiswaController {
 
     // cek status mahassiswa untuk pddikti
     @GetMapping("/mahasiswa/status")
-    public void statusMahasiswa(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String[] angkatan){
+    public void statusMahasiswa(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) String[] angkatan) {
 
         if (angkatan != null && tahunAkademik != null) {
             List<String> ang = new ArrayList<>();
-            for (String a : angkatan){
+            for (String a : angkatan) {
                 ang.add(a);
             }
             model.addAttribute("selectAngkatan", ang.toString());
@@ -536,12 +638,14 @@ public class MahasiswaController {
     }
 
     @GetMapping("/download/status/mahasiswa")
-    public void downloadStatusMahasiswa(@RequestParam String[] angkatan, @RequestParam TahunAkademik tahun, HttpServletResponse response) throws IOException {
+    public void downloadStatusMahasiswa(@RequestParam String[] angkatan, @RequestParam TahunAkademik tahun,
+            HttpServletResponse response) throws IOException {
 
-        String[] columns = {"No", "Prodi", "Angkatan", "NIM", "Nama", "Program", "Beasiswa", "Status Semester", "Status Mahasiswa", "Tahun Akademik", "Jumlah SKS", "IPK"};
+        String[] columns = { "No", "Prodi", "Angkatan", "NIM", "Nama", "Program", "Beasiswa", "Status Semester",
+                "Status Mahasiswa", "Tahun Akademik", "Jumlah SKS", "IPK" };
 
         List<String> ang = new ArrayList<>();
-        for (String a : angkatan){
+        for (String a : angkatan) {
             ang.add(a);
         }
 
@@ -570,7 +674,7 @@ public class MahasiswaController {
         ketCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
         Row headerRow = sheet.createRow(0);
-        for (int i = 0; i<columns.length; i++){
+        for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
@@ -579,7 +683,7 @@ public class MahasiswaController {
         int rowNum = 1;
         int baris = 1;
 
-        for (Object[] list : listTagihan){
+        for (Object[] list : listTagihan) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list[0].toString());
@@ -595,12 +699,13 @@ public class MahasiswaController {
             row.createCell(11).setCellValue(list[8].toString());
         }
 
-        for (int i = 0; i<columns.length;i++){
+        for (int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vns.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data Status Mahasiswa " + tahun.getNamaTahunAkademik() + ".xlsx");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=Data Status Mahasiswa " + tahun.getNamaTahunAkademik() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
