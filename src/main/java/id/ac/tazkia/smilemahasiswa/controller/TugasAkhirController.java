@@ -56,7 +56,6 @@ public class TugasAkhirController {
     @Autowired
     KrsDetailDao krsDetailDao;
 
-
     @Autowired
     private MatakuliahDao matakuliahDao;
 
@@ -176,7 +175,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/kategori/list")
     public void listKategori(Model model, @RequestParam(required = false) Prodi prodi,
-                             @PageableDefault(size = 10) Pageable page) {
+            @PageableDefault(size = 10) Pageable page) {
 
         model.addAttribute("selectProdi", prodi);
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
@@ -195,8 +194,8 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/kategori/new")
     public String saveKategori(@RequestParam(required = false) String[] prodi,
-                               @RequestParam(required = false) String nama,
-                               @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi) {
+            @RequestParam(required = false) String nama,
+            @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi) {
 
         for (String p : prodi) {
             Prodi prod = prodiDao.findById(p).get();
@@ -270,7 +269,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/mahasiswa/wisudarevisi")
     public void revisiWisuda(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda,
-                             Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -302,7 +301,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/wisuda/revisi")
     public void revisiWisudaPasca(Model model, @RequestParam(name = "id", value = "id") Wisuda wisuda,
-                                  Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -332,7 +331,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-post")
     public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-                               Authentication authentication) throws Exception {
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -404,7 +403,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/wisuda/form-post")
     public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-                                    Authentication authentication) throws Exception {
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -468,7 +467,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-revisi")
     public String revisiWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-                               Authentication authentication) throws Exception {
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -537,7 +536,7 @@ public class TugasAkhirController {
 
     @PostMapping("/graduation/wisuda/wisuda-revisi")
     public String revisiWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-                                    Authentication authentication) throws Exception {
+            Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -609,7 +608,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/mahasiswa/waiting")
     public void waitingWisuda(Model model, @RequestParam(required = false) String pasca,
-                              Authentication authentication) {
+            Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -638,7 +637,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/mahasiswa/valid")
     public String resultWisuda(Model model, @RequestParam(name = "id", value = "id") Mahasiswa mahasiswa,
-                               Authentication authentication) {
+            Authentication authentication) {
         Wisuda wisuda = wisudaDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
 
         if (wisuda != null) {
@@ -655,7 +654,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/sidang/admin/listwisuda")
     public void resultWisuda(Model model, @RequestParam(required = false) Prodi prodi,
-                             @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
+            @RequestParam(required = false) PeriodeWisuda periode, @PageableDefault(size = 30) Pageable page) {
         model.addAttribute("periode",
                 periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
@@ -749,8 +748,8 @@ public class TugasAkhirController {
 
     @RequestMapping("/downloadwisuda/{wisuda}")
     public void downloadImage(HttpServletRequest request,
-                              HttpServletResponse response,
-                              @PathVariable("wisuda") Wisuda wisuda) {
+            HttpServletResponse response,
+            @PathVariable("wisuda") Wisuda wisuda) {
         // If user is not authorized - he should be thrown out from here itself
 
         // Authorized user will download the file
@@ -789,8 +788,8 @@ public class TugasAkhirController {
         workbook.setSheetName(workbook.getSheetIndex(es), "ES");
         XSSFSheet hes = workbook.getSheetAt(3);
         workbook.setSheetName(workbook.getSheetIndex(hes), "HES");
-        XSSFSheet d3 = workbook.getSheetAt(4);
-        workbook.setSheetName(workbook.getSheetIndex(d3), "D3");
+        XSSFSheet kpi = workbook.getSheetAt(4);
+        workbook.setSheetName(workbook.getSheetIndex(kpi), "KPI");
         XSSFSheet tips = workbook.getSheetAt(5);
         workbook.setSheetName(workbook.getSheetIndex(tips), "Tadris IPS");
         XSSFSheet pasca = workbook.getSheetAt(6);
@@ -1384,7 +1383,7 @@ public class TugasAkhirController {
 
     @GetMapping("/graduation/wisuda/foto")
     public void setWisudaFoto(Model model, RedirectAttributes attributes, @RequestParam(required = false) Prodi prodi,
-                              @RequestParam(required = false) PeriodeWisuda periode) {
+            @RequestParam(required = false) PeriodeWisuda periode) {
         model.addAttribute("periode",
                 periodeWisudaDao.findByStatusNotInOrderByNumberDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi", prodi);
@@ -1416,7 +1415,7 @@ public class TugasAkhirController {
         }
     }
 
-    //    @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
+    // @Scheduled(cron = "0 40 10 * * *", zone = "Asia/Jakarta")
     public void plotingJadwal2() throws Exception {
 
         List<Wisuda> cekMahasiswaWisuda = wisudaDao.findByPeriodeWisudaAndStatusOrderByStatusDescMahasiswaIdProdiAsc(
@@ -1452,7 +1451,7 @@ public class TugasAkhirController {
     public void cekFoto(@RequestParam String periodeId, @RequestParam String prodiId) {
         PeriodeWisuda periodeWisuda = periodeWisudaDao.findById(periodeId).get();
         List<Wisuda> listWisuda = wisudaDao.cariWisudaProdi(periodeWisuda, prodiId);
-        for (Wisuda wisuda : listWisuda){
+        for (Wisuda wisuda : listWisuda) {
             String lokasiUpload = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
                     + wisuda.getMahasiswa().getIdProdi().getNamaProdi()
                     + File.separator + wisuda.getMahasiswa().getNim();
@@ -1471,13 +1470,12 @@ public class TugasAkhirController {
                 Files.move(lokasiFoto, lokasiFotoBaru);
                 wisuda.setFoto(namaBaru);
                 wisudaDao.save(wisuda);
-            } catch (NoSuchFileException e){
+            } catch (NoSuchFileException e) {
                 System.out.println("File not found: " + lokasiFoto);
-            }catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("Error moving file: " + lokasiFoto);
                 e.printStackTrace();
             }
-
 
         }
 
