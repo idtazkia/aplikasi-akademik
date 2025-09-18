@@ -29,11 +29,12 @@ import java.util.Optional;
 @Slf4j
 public class ApiService {
 
-    static final String ID_INSTITUT = "bed6a06c-afe9-4345-8b3f-ebe2cbb49a51";
     static final String ID_YAYASAN = "8f1438e6-8c76-4219-9060-213ba926286b";
     static final List<String> tagihanTidakKirimAkunting = Arrays.asList("50", "81", "82");
 
     @Value("${akuntansi.baseurl}") private String baseAkuntansi;
+    @Value("${akuntansi.id.institusi}") private String institusi;
+    @Value("${akuntansi.tags.smile}") private String tagsSmile;
 
     @Autowired private ObjectMapper objectMapper;
 
@@ -61,7 +62,7 @@ public class ApiService {
     public boolean sendTagihan(SendTagihanDto tagihan) throws JsonProcessingException {
 
         String request = objectMapper.writeValueAsString(tagihan);
-        log.debug("request: {}", request);
+        log.info("request: {}", request);
 
         try {
             SendTagihanDto resposne = webClient.post()
@@ -81,7 +82,7 @@ public class ApiService {
 
     public boolean sendPembayaran(SendPembayaranDto pembayaran) throws JsonProcessingException{
         String request = objectMapper.writeValueAsString(pembayaran);
-        log.debug("request: {}", request);
+        log.info("request: {}", request);
         try {
              SendPembayaranDto response = webClient.post()
                     .uri(baseAkuntansi + "journal-array")
@@ -116,6 +117,8 @@ public class ApiService {
                         tagihanDto.setDateTransaction(String.valueOf(t.getTanggalPembuatan()));
                         tagihanDto.setDescription("Tagihan " + t.getNilaiJenisTagihan().getJenisTagihan().getNama() + " a.n " + t.getMahasiswa().getNama() + " " + t.getMahasiswa().getNim());
                         tagihanDto.setAmounts(t.getNilaiTagihanAsli());
+                        tagihanDto.setInstitut(institusi);
+                        tagihanDto.setTags(tagsSmile);
                         if (sendTagihan(tagihanDto)) {
                             t.setZahirExport(AkuntansiExport.SENT);
                             tagihanDao.save(t);
@@ -142,6 +145,8 @@ public class ApiService {
                     tagihanDto.setDescription("Pembalik tagihan " + t.getNilaiJenisTagihan().getJenisTagihan().getNama() + " a.n " + t.getMahasiswa().getNama() + " " + t.getMahasiswa().getNim());
                     tagihanDto.setType("reverse");
                     tagihanDto.setAmounts(t.getNilaiTagihanAsli());
+                    tagihanDto.setInstitut(institusi);
+                    tagihanDto.setTags(tagsSmile);
                     if (sendTagihan(tagihanDto)) {
                         t.setZahirExport(AkuntansiExport.DELETED);
                         tagihanDao.save(t);
@@ -187,7 +192,8 @@ public class ApiService {
                         pembayaranDtoInst.setCodeTemplate(p.getTagihan().getNilaiJenisTagihan().getKodePembayaranInst());
                         pembayaranDtoInst.setDateTransaction(String.valueOf(p.getWaktuBayar().toLocalDate()));
                         pembayaranDtoInst.setDescription("Pembayaran " + p.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama() + " Mahasiswa atas nama " + p.getTagihan().getMahasiswa().getNama() + " " + p.getTagihan().getMahasiswa().getNim());
-                        pembayaranDtoInst.setInstitut(ID_INSTITUT);
+                        pembayaranDtoInst.setInstitut(institusi);
+                        pembayaranDtoInst.setTags(tagsSmile);
                         if (p.getTipePengiriman() != null) {
                             pembayaranDtoInst.setAmounts(setPembayaranAkunting(p, "INST"));
                         }else{
@@ -225,6 +231,8 @@ public class ApiService {
                     tagihanDto.setDateTransaction(String.valueOf(cicilan.getTanggalJatuhTempo()));
                     tagihanDto.setDescription(cicilan.getKeterangan());
                     tagihanDto.setAmounts(cicilan.getNilaiCicilan());
+                    tagihanDto.setInstitut(institusi);
+                    tagihanDto.setTags(tagsSmile);
                     log.info("Mengirim cicilan tagihan HP : {}", tagihanDto);
                     if (sendTagihan(tagihanDto)) {
                         Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
@@ -256,6 +264,8 @@ public class ApiService {
                     tagihanDto.setDateTransaction(String.valueOf(cicilan.getTanggalJatuhTempo()));
                     tagihanDto.setDescription(cicilan.getKeterangan());
                     tagihanDto.setAmounts(cicilan.getNilaiCicilan());
+                    tagihanDto.setInstitut(institusi);
+                    tagihanDto.setTags(tagsSmile);
                     log.info("Mengirim cicilan tagihan NON-HP : {}", tagihanDto);
                     if (sendTagihan(tagihanDto)) {
                         Optional<Tagihan> cekTagihan = tagihanDao.findById(cicilan.getIdTagihan());
@@ -311,7 +321,8 @@ public class ApiService {
                     pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoInst.setDescription(cicilanPembayaran.getKeterangan());
-                    pembayaranDtoInst.setInstitut(ID_INSTITUT);
+                    pembayaranDtoInst.setInstitut(institusi);
+                    pembayaranDtoInst.setTags(tagsSmile);
                     if (cicilanPembayaran.getTipePengiriman() != null) {
                         pembayaranDtoInst.setAmounts(setPembayaranCicilanAkunting(cicilanPembayaran, "INST"));
                     }else{
@@ -365,7 +376,8 @@ public class ApiService {
                     pembayaranDtoInst.setCodeTemplate(cicilanPembayaran.getKodeJurnal());
                     pembayaranDtoInst.setDateTransaction(String.valueOf(cicilanPembayaran.getWaktuBayar().toLocalDate()));
                     pembayaranDtoInst.setDescription(cicilanPembayaran.getKeterangan());
-                    pembayaranDtoInst.setInstitut(ID_INSTITUT);
+                    pembayaranDtoInst.setInstitut(institusi);
+                    pembayaranDtoInst.setTags(tagsSmile);
                     if (cicilanPembayaran.getTipePengiriman() != null) {
                         pembayaranDtoInst.setAmounts(setPembayaranCicilanAkunting(cicilanPembayaran, "INST"));
                     }else{
