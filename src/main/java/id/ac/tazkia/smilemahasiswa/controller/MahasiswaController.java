@@ -641,7 +641,7 @@ public class MahasiswaController {
     public void downloadStatusMahasiswa(@RequestParam String[] angkatan, @RequestParam TahunAkademik tahun,
             HttpServletResponse response) throws IOException {
 
-        String[] columns = { "No", "Prodi", "Angkatan", "NIM", "Nama", "Program", "Beasiswa", "Status Semester",
+        String[] columns = { "No", "Prodi", "Angkatan", "NIM", "Nama", "Jenis Kelamin", "Program", "Beasiswa", "Status Semester",
                 "Status Mahasiswa", "Tahun Akademik", "Jumlah SKS", "IPK" };
 
         List<String> ang = new ArrayList<>();
@@ -690,13 +690,14 @@ public class MahasiswaController {
             row.createCell(2).setCellValue(list[1].toString());
             row.createCell(3).setCellValue(list[2].toString());
             row.createCell(4).setCellValue(list[3].toString());
-            row.createCell(5).setCellValue(list[9].toString());
+            row.createCell(5).setCellValue(list[4].toString());
             row.createCell(6).setCellValue(list[10].toString());
-            row.createCell(7).setCellValue(list[4].toString());
+            row.createCell(7).setCellValue(list[11].toString());
             row.createCell(8).setCellValue(list[5].toString());
             row.createCell(9).setCellValue(list[6].toString());
             row.createCell(10).setCellValue(list[7].toString());
             row.createCell(11).setCellValue(list[8].toString());
+            row.createCell(12).setCellValue(list[9].toString());
         }
 
         for (int i = 0; i < columns.length; i++) {

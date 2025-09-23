@@ -110,7 +110,7 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
         List<Mahasiswa> findByBeasiswaAndStatusAktifAndStatusAndAngkatanAndIdProgram(Beasiswa beasiswa, String status,
                         StatusRecord statusRecord, String angkatan, Program program);
 
-        @Query(value = "select nama_prodi,angkatan, nim, nama, if(sks is not null, if(sks > 0, 'AKTIF','NONAKTIF'),'NONAKTIF') as status_semester, \n"
+        @Query(value = "select nama_prodi,angkatan, nim, nama,jenis_kelamin, if(sks is not null, if(sks > 0, 'AKTIF','NONAKTIF'),'NONAKTIF') as status_semester, \n"
                         +
                         "coalesce(if(sks is not null, if(sks > 0, 'AKTIF',null),null),status_aktif) as status,coalesce(nama_tahun_akademik, '-') as nama_tahun, coalesce(sks, '-') as sks, coalesce(ipk, '-') as ipk, nama_program, coalesce(nama_beasiswa, '-') as beasiswa from\n"
                         +
