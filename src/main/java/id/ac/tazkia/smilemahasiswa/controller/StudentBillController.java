@@ -506,17 +506,26 @@ public class StudentBillController {
             model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
             model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
             model.addAttribute("tahunPilihan", tahunAkademik);
+                // BEASISWA
+
+                List<DaftarTagihanPerProdiDto> listProdiBeasiswa = tagihanDao.listTagihanPerProdiBeasiswa(tahunAkademik);
+                model.addAttribute("listProdiBeasiswa", listProdiBeasiswa);
+                model.addAttribute("toTagihanBeasiswa", tagihanDao.totalTagihanBeasiswa(tahunAkademik));
+                model.addAttribute("toDibayarBeasiswa", pembayaranDao.totalDibayarBeasiswa(tahunAkademik));
 
             // list per prodi + date
             model.addAttribute("tanggal1", date1);
             model.addAttribute("tanggal2", date2);
             model.addAttribute("listProdiDate", tagihanDao.listTagihanPerProdiAndDate(date1, date2, tahunAkademik));
 
+            // list per prodi
+            model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
+            model.addAttribute("listAngkatanBeasiswa", tagihanDao.listTagihanPerAngkatanBeasiswa(tahunAkademik));
+
             // list per angkatan + date
             model.addAttribute("tanggal3", date3);
             model.addAttribute("tanggal4", date4);
             model.addAttribute("listAngkatanDate", tagihanDao.listTagihanPerAngkatanDate(date3, date4, tahunAkademik));
-            model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
 
             // list klasifikasi piutang
             String th = null;
@@ -3427,6 +3436,32 @@ public class StudentBillController {
         return "redirect:list";
     }
 
+    @PostMapping("/studentBill/scholarship/payment")
+    public String paymentBillBeasiswa(@RequestParam NilaiJenisTagihan nilaiTagihan){
+
+        List<Tagihan> t = tagihanDao.findByNilaiJenisTagihanAndStatusAndStatusTagihan(nilaiTagihan, StatusRecord.AKTIF, StatusTagihan.BEASISWA);
+        if (t != null && !t.isEmpty()) {
+            for (Tagihan tagihan : t){
+                Pembayaran pembayaran = new Pembayaran();
+                pembayaran.setTagihan(tagihan);
+                pembayaran.setAmount(tagihan.getNilaiTagihan());
+                pembayaran.setWaktuBayar(LocalDateTime.now());
+                pembayaran.setNomorRekening("-");
+                pembayaran.setReferensi("-");
+                pembayaran.setStatus(StatusRecord.AKTIF);
+                pembayaranDao.save(pembayaran);
+
+                tagihan.setAkumulasiPembayaran(tagihan.getNilaiTagihan());
+                tagihan.setLunas(true);
+                tagihanDao.save(tagihan);
+            }
+        }
+
+        nilaiTagihan.setStatus(StatusRecord.NONAKTIF);
+        nilaiJenisTagihanDao.save(nilaiTagihan);
+        return "redirect:list";
+    }
+
     @GetMapping("/studentBill/scholarship/generate")
     public void generateTagihanBeasiswa(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Program program,
                                         @RequestParam(required = false) Beasiswa beasiswa, @RequestParam(required = false) String angkatan){
@@ -3435,6 +3470,10 @@ public class StudentBillController {
         model.addAttribute("selectTahun", tahunAkademik);
         model.addAttribute("selectBeasiswa", beasiswa);
         model.addAttribute("selectProgram", program);
+
+        if (tahunAkademik != null) {
+            model.addAttribute("lTagihan", tagihanDao.listAfterGenerateBeassiwa(tahunAkademik.getId(), beasiswa.getId(), program.getId(), angkatan));
+        }
 
     }
 
@@ -3447,7 +3486,7 @@ public class StudentBillController {
 
         tagihanService.generateTagihanBeasiswa(tahun, program, listMahasiswa);
 
-        return "redirect:generate";
+        return "redirect:generate?beasiswa="+beasiswa.getId()+"&program="+program.getId()+"&angkatan="+angkatan+"&tahunAkademik="+tahun.getId();
 
     }
 

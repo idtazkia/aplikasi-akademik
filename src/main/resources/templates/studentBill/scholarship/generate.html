@@ -123,50 +123,50 @@
           </div>
         </div>
 
-<!--        <div class="card shadow" th:if="${selectBeasiswa != null && selectProgram != null && selectAngkatan != null && selectTahun != null || (id != null && !id.isEmpty())}">-->
-<!--          <div class="card-header border-0">-->
+        <div class="card shadow" th:if="${selectBeasiswa != null && selectProgram != null && selectAngkatan != null && selectTahun != null || (id != null && !id.isEmpty())}">
+          <div class="card-header border-0">
 
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <div class="card-shadow">-->
-<!--              <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                  <div class="table-responsive">-->
-<!--                    <table id="data-table-basic" class="table align-items-center table-flush table-striped">-->
-<!--                      <thead class="thead-light">-->
-<!--                      <tr>-->
-<!--                        <th class="text-center">#</th>-->
-<!--                        <th>Angkatan</th>-->
-<!--                        <th>Nim</th>-->
-<!--                        <th>Nama</th>-->
-<!--                        <th>Beasiswa</th>-->
-<!--                        <th>Program</th>-->
-<!--                        <th>Tagihan</th>-->
-<!--                        <th>Beasiswa</th>-->
-<!--                      </tr>-->
-<!--                      </thead>-->
-<!--                      <tbody>-->
-<!--                      <tr th:each="data, row:${lTagihan}">-->
-<!--                        <td th:text="${(row.index + 1)}">1</td>-->
-<!--                        <td th:text="${data[0]}"></td>-->
-<!--                        <td th:text="${data[1]}"></td>-->
-<!--                        <td th:text="${data[2]}"></td>-->
-<!--                        <td th:text="${data[3]}"></td>-->
-<!--                        <td th:text="${data[4]}"></td>-->
-<!--                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[5], 0, 'POINT', 2, 'COMMA')}"></td>-->
-<!--                        <td th:text="${data[6]}"></td>-->
-<!--                        &lt;!&ndash; <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>&ndash;&gt;-->
-<!--                      </tr>-->
-<!--                      </tbody>-->
-<!--                    </table>-->
-<!--                  </div>-->
-<!--                </div>-->
+          </div>
+          <div class="card-body">
+            <div class="card-shadow">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table id="data-table-basic" class="table align-items-center table-flush table-striped">
+                      <thead class="thead-light">
+                      <tr>
+                        <th class="text-center">#</th>
+                        <th>Angkatan</th>
+                        <th>Nim</th>
+                        <th>Nama</th>
+                        <th>Beasiswa</th>
+                        <th>Jenis Tagihan</th>
+                        <th>Tagihan</th>
+                        <th>Beasiswa</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="data, row:${lTagihan}">
+                        <td th:text="${(row.index + 1)}">1</td>
+                        <td th:text="${data[0]}"></td>
+                        <td th:text="${data[1]}"></td>
+                        <td th:text="${data[2]}"></td>
+                        <td th:text="${data[3]}"></td>
+                        <td th:text="${data[4]}"></td>
+                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[5], 0, 'POINT', 2, 'COMMA')}"></td>
+                        <td th:text="${data[6]}"></td>
+                        <!-- <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>-->
+                        <!--                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>-->
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

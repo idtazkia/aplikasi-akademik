@@ -109,14 +109,14 @@ public class TagihanService {
                             t.setMahasiswa(mhs);
                             t.setNilaiJenisTagihan(nilaiBeasiswa);
                             t.setNilaiTagihan(nilaiBeasiswa.getNilai());
-                            t.setAkumulasiPembayaran(nilaiBeasiswa.getNilai());
+                            t.setAkumulasiPembayaran(BigDecimal.ZERO);
                             t.setTahunAkademik(tahunAkademik);
                             t.setTanggalPembuatan(LocalDate.now());
                             t.setTanggalJatuhTempo(tahunAkademik.getTanggalMulaiUas().minusDays(2));
                             t.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                             t.setKeterangan("Tagihan " + mhs.getBeasiswa().getNamaBeasiswa() + ".");
-                            t.setLunas(true);
-                            t.setStatus(StatusRecord.LUNAS);
+                            t.setLunas(false);
+                            t.setStatus(StatusRecord.AKTIF);
                             t.setStatusTagihan(StatusTagihan.BEASISWA);
                             tagihanDao.save(t);
                         }

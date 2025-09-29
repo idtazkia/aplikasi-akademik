@@ -476,6 +476,75 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="card shadow mt-5" th:if="${tahun == null}">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div th:if="${tanggal1 == null && tanggal2 == null}">
+                                                            <div class="bg-primary text-white text-center">Daftar Tagihan per Prodi Beasiswa</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Nama Prodi</td>
+                                                                        <td class="text-center">Total Tagihan</td>
+                                                                        <td class="text-center">Dibayar</td>
+                                                                        <td class="text-center">Sisa</td>
+                                                                        <td class="text-center">Persentase Sisa Tagihan</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr id="table-prodi-beasiswa" th:each="data, row:${listProdiBeasiswa}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center">
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id}, tahunAkademik=${tahunPilihan.id})}"
+                                                                               th:text="${data.Prodi}"></a>
+                                                                        </td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${data.Percentage+'%'}"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2" class="text-right"><h5>Total : </h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihanBeasiswa, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayarBeasiswa, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihanBeasiswa - toDibayarBeasiswa, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div th:if="${tanggal1 != null && tanggal2 != null}">
+                                                            <div class="bg-primary text-white text-center">Dartar Pemasukan per Prodi Beasiswa</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Nama Prodi</td>
+                                                                        <td class="text-center">Pemasukan</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listProdiDate}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                    </tr>
+                                                                    <tr th:if="${listProdiDate} == null">
+                                                                        <td class="text-center" th:text="Data Kosong"></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -574,6 +643,75 @@
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div th:if="${tanggal3 != null && tanggal4 != null}">
+                                                            <div class="bg-primary text-white text-center">Dartar Pemasukan per Angkatan</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Angkatan</td>
+                                                                        <td class="text-center">Pemasukan</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listAngkatanDate}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                    </tr>
+                                                                    <tr th:if="${listProdiDate} == null">
+                                                                        <td class="text-center" th:text="Data Kosong"></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card shadow mt-5" th:if="${tahun == null}">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div th:if="${tanggal3 == null && tanggal4 == null}">
+                                                            <div class="bg-primary text-white text-center">Daftar Tagihan per Angkatan Beasiswa</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-light">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Angkatan</td>
+                                                                        <td class="text-center">Total Tagihan</td>
+                                                                        <td class="text-center">Dibayar</td>
+                                                                        <td class="text-center">Sisa</td>
+                                                                        <td class="text-center">Percentage Sisa Tagihan</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listAngkatanBeasiswa}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center">
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailAngkatan(angkatan=${data.Angkatan}, tahunAkademik=${tahunPilihan.id})}"
+                                                                               th:text="${data.Angkatan}"></a>
+                                                                        </td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${data.Percentage+'%'}"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-right" colspan="2"><h5>Total : </h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihanBeasiswa, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayarBeasiswa, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihanBeasiswa - toDibayarBeasiswa, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>

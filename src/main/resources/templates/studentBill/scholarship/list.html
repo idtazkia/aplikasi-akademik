@@ -161,10 +161,14 @@
                                                     </form>
                                                     <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
+                                    <form th:if="${data.status.AKTIF == data.status}" method="post" th:action="@{/studentBill/scholarship/payment(nilaiTagihan = ${data.id})}" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             </tbody>
