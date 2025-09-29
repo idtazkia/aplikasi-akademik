@@ -551,7 +551,7 @@ public class PresensiService {
         LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
                 jadwal.getTahunAkademik(),
                 jadwal.getProdi(),
-                jadwal.getProgram(),
+                jadwal.getKelas().getProgram(),
                 angkatan);
 
         BaseResponse response = null;
@@ -594,7 +594,7 @@ public class PresensiService {
         LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
                 jadwal.getTahunAkademik(),
                 jadwal.getProdi(),
-                jadwal.getProgram(),
+                jadwal.getKelas().getProgram(),
                 angkatan);
 
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
@@ -632,7 +632,7 @@ public class PresensiService {
         LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
                 jadwal.getTahunAkademik(),
                 jadwal.getProdi(),
-                jadwal.getProgram(),
+                jadwal.getKelas().getProgram(),
                 angkatan);
 
         Integer valueJadwal = null;
@@ -718,7 +718,7 @@ public class PresensiService {
         LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
                 jadwal.getTahunAkademik(),
                 jadwal.getProdi(),
-                jadwal.getProgram(),
+                jadwal.getKelas().getProgram(),
                 angkatan);
 
         Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);

@@ -1,192 +1,231 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
-<head>
-    <meta charset="UTF-8">
-    <title>Class</title>
-</head>
-<body>
-<div layout:fragment="main">
-    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-        <div class="container-fluid">
-            <div class="header-body">
-                <!-- Card stats -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card card-stats mb-4 mb-xl-0">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Kelas </span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                            <i class="fas fa-calendar"></i>
-                                        </div>
-                                    </div>
-                                </div>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Class</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+												<span class="h2 font-weight-bold mb-0">Kelas </span>
+											</div>
+											<div class="col-auto">
+												<div
+													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
+												>
+													<i class="fas fa-calendar"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                            </div>
-                        </div>
-                    </div>
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col-md-6 col-xs-12">
+						<div class="card shadow">
+							<div class="card-header border-0">
+								<h3 class="mb-0">Form</h3>
+							</div>
+							<div th:if="${error}" class="alert alert-danger">Kurikulum tidak boleh kosong!</div>
+							<div class="card-body">
+								<form method="post" th:action="@{/equipment/class/form}" th:object="${kelas}">
+									<div class="form-group">
+										<label>Prodi</label>
+										<select
+											name="idProdi"
+											class="form-control js-example-placeholder-single"
+											onchange="myProdi()"
+											id="select2-prodi"
+											required
+										>
+											<option
+												th:each="data : ${prodi}"
+												th:selected="(${data} == *{idProdi})"
+												th:text="${data.namaProdi}"
+												th:value="${data.id}"
+											>
+												STEI Tazkia
+											</option>
+										</select>
+									</div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+									<div class="form-group">
+										<label>Kurikulum</label>
+										<select
+											name="kurikulum"
+											class="form-control js-example-placeholder-single"
+											id="select2-kurikulum"
+											required
+										>
+											<option
+												th:if="${kelas.kurikulum != null}"
+												selected
+												th:text="${kelas.kurikulum.namaKurikulum}"
+												th:value="${kelas.kurikulum.id}"
+											></option>
+										</select>
+									</div>
 
-    <div class="container-fluid mt--7">
-        <div class="row">
-            <div class="col-md-6 col-xs-12">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <h3 class="mb-0">Form</h3>
-                    </div>
-                    <div th:if="${error}" class="alert alert-danger">
-                        Kurikulum tidak boleh kosong!
-                    </div>
-                    <div class="card-body">
-                        <form method="post" th:action="@{/equipment/class/form}" th:object="${kelas}">
+									<div class="form-group">
+										<label>Angkatan</label>
+										<select name="angkatan" class="form-control" th:field="*{angkatan}">
+											<option value="">Select One</option>
+											<option
+												th:each="data: ${angkatan}"
+												th:text="${data}"
+												th:value="${data}"
+											></option>
+										</select>
+										<input type="hidden" id="idKurikulum" th:field="*{kurikulum}" />
+									</div>
 
-                            <div class="form-group">
-                                <label>Prodi</label>
-                                <select name="idProdi" class="form-control js-example-placeholder-single" onchange="myProdi()"
-                                        id="select2-prodi" required>
-                                    <option th:each="data : ${prodi}"
-                                            th:selected="(${data} == *{idProdi})"
-                                            th:text="${data.namaProdi}"
-                                            th:value="${data.id}">STEI Tazkia</option>
-                                </select>
-                            </div>
+									<div class="form-group">
+										<label>Kode Kelas</label>
+										<input
+											type="text"
+											name="kodeKelas"
+											th:field="*{kodeKelas}"
+											class="form-control"
+											placeholder="Kode Kelas"
+										/>
+									</div>
 
-                            <div class="form-group">
-                                <label>Kurikulum</label>
-                                <select name="kurikulum" class="form-control js-example-placeholder-single"
-                                        id="select2-kurikulum" required>
-                                    <option th:if="${kelas.kurikulum != null}" selected
-                                            th:text="${kelas.kurikulum.namaKurikulum}"
-                                            th:value="${kelas.kurikulum.id}"></option>
-                                </select>
-                            </div>
+									<div class="form-group">
+										<label for="exampleFormControlInput1">Nama Kelas</label>
+										<input
+											type="text"
+											th:field="*{namaKelas}"
+											class="form-control"
+											name="namaKelas"
+											id="exampleFormControlInput1"
+											placeholder="Nama Kelas"
+										/>
+									</div>
 
-                            <div class="form-group">
-                                <label>Angkatan</label>
-                                <select name="angkatan" class="form-control" th:field="*{angkatan}">
-                                    <option value="">Select One</option>
-                                    <option th:each="data: ${angkatan}" th:text="${data}" th:value="${data}"></option>
-                                </select>
-                                <input type="hidden" id="idKurikulum" th:field="*{kurikulum}">
-                            </div>
+									<div class="form-group">
+										<label>Program</label>
+										<select name="program" class="form-control" th:field="*{program}">
+											<option value="">Select One</option>
+											<option
+												th:each="data: ${programList}"
+												th:text="${data.namaProgram}"
+												th:value="${data.id}"
+											></option>
+										</select>
+									</div>
 
-                            <div class="form-group">
-                                <label>Kode Kelas</label>
-                                <input type="text" name="kodeKelas" th:field="*{kodeKelas}" class="form-control" placeholder="Kode Kelas">
-                            </div>
+									<div class="form-group">
+										<label>Keterangan</label>
+										<textarea
+											class="form-control"
+											name="keterangan"
+											th:field="*{keterangan}"
+											rows="3"
+										></textarea>
+									</div>
 
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Nama Kelas</label>
-                                <input type="text" th:field="*{namaKelas}" class="form-control" name="namaKelas" id="exampleFormControlInput1" placeholder="Nama Kelas">
-                            </div>
+									<div class="form-group">
+										<label>Status</label><br />
+										<label>
+											<input
+												name="status"
+												th:field="*{status}"
+												type="checkbox"
+												value="AKTIF"
+												class="js-switch"
+											/>
+										</label>
+									</div>
+									<input type="hidden" name="id" th:field="*{id}" />
 
-                            <div class="form-group">
-                                <label>Bahasa Pengantar</label>
-                                <select name="bahasa" class="form-control" th:field="*{bahasa}">
-                                    <option value="">Select One</option>
-                                    <option th:each="data: ${bahasa}" th:text="${data.getKeterangan()}" th:value="${data.getBahasa()}"></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Keterangan</label>
-                                <textarea class="form-control" name="keterangan" th:field="*{keterangan}" rows="3"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Status</label><br>
-                                <label>
-                                    <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
-                                </label >
-                            </div>
-                            <input type="hidden" name="id" th:field="*{id}">
-
-                            <input class="btn btn-primary" type="submit" value="Simpan">
-                            <a class="btn btn-danger" th:href="@{/equipment/class/list}" role="button">
-                                <span aria-hidden="true"></span>Batal
-                            </a>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
+									<input class="btn btn-primary" type="submit" value="Simpan" />
+									<a class="btn btn-danger" th:href="@{/equipment/class/list}" role="button">
+										<span aria-hidden="true"></span>Batal
+									</a>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $(".js-example-placeholder-single").select2({
-            placeholder: "Select one",
-            allowClear: true
-        });
+	$(document).ready(function () {
+		$(".js-example-placeholder-single").select2({
+			placeholder: "Select one",
+			allowClear: true,
+		});
 
-        console.log($('#idKurikulum').val())
+		console.log($("#idKurikulum").val());
 
-        if ($('#idKurikulum').val() == null || $('#idKurikulum').val() == ''){
-            let dropdown = $('#select2-kurikulum');
+		if ($("#idKurikulum").val() == null || $("#idKurikulum").val() == "") {
+			let dropdown = $("#select2-kurikulum");
 
-            dropdown.empty();
+			dropdown.empty();
 
-            dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>')
-            dropdown.prop('selectedIndex', 0);
-            const url = '/api/prodikurikulum?prodi='+$('#select2-prodi').val();
+			dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>');
+			dropdown.prop("selectedIndex", 0);
+			const url = "/api/prodikurikulum?prodi=" + $("#select2-prodi").val();
 
-            $.getJSON(url, function (data){
-                $.each(data, function (key, entry){
-                    dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
-                })
+			$.getJSON(url, function (data) {
+				$.each(data, function (key, entry) {
+					dropdown.append($("<option></option>").attr("value", entry.id).text(entry.namaKurikulum));
+				});
+			});
+		}
 
-            });
-        }
+		if ($("#idKurikulum").val() != null || $("#idKurikulum").val() != "") {
+			let dropdown = $("#select2-kurikulum");
 
-        if ($('#idKurikulum').val() != null || $('#idKurikulum').val() != ''){
-            let dropdown = $('#select2-kurikulum');
+			const url = "/api/prodikurikulum?prodi=" + $("#select2-prodi").val();
 
-            const url = '/api/prodikurikulum?prodi='+$('#select2-prodi').val();
+			$.getJSON(url, function (data) {
+				$.each(data, function (key, entry) {
+					dropdown.append($("<option></option>").attr("value", entry.id).text(entry.namaKurikulum));
+				});
+			});
+		}
+	});
 
-            $.getJSON(url, function (data){
-                $.each(data, function (key, entry){
-                    dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
-                })
+	function myProdi() {
+		let dropdown = $("#select2-kurikulum");
 
-            });
-        }
+		dropdown.empty();
 
+		dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>');
+		dropdown.prop("selectedIndex", 0);
+		const url = "/api/prodikurikulum?prodi=" + $("#select2-prodi").val();
 
-
-
-    });
-
-    function myProdi(){
-
-        let dropdown = $('#select2-kurikulum');
-
-        dropdown.empty();
-
-        dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>')
-        dropdown.prop('selectedIndex', 0);
-        const url = '/api/prodikurikulum?prodi='+$('#select2-prodi').val();
-
-        $.getJSON(url, function (data){
-            $.each(data, function (key, entry){
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
-            })
-
-        });
-
-    }
+		$.getJSON(url, function (data) {
+			$.each(data, function (key, entry) {
+				dropdown.append($("<option></option>").attr("value", entry.id).text(entry.namaKurikulum));
+			});
+		});
+	}
 </script>

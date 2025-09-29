@@ -1,6 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -12,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class Kelas {
 
     @Id
-    @GeneratedValue(generator = "uuid" )
+    @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
@@ -34,13 +33,15 @@ public class Kelas {
     @JoinColumn(name = "id_kurikulum")
     private Kurikulum kurikulum;
 
+    @ManyToOne
+    @JoinColumn(name = "id_program")
+    private Program program;
+
     private String bahasa;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord konsentrasi;
 
     private String angkatan;
-
-
 
 }

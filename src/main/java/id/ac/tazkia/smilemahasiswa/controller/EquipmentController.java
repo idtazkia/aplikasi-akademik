@@ -55,6 +55,9 @@ public class EquipmentController {
     private LembagaDao lembagaDao;
 
     @Autowired
+    private ProgramDao programDao;
+
+    @Autowired
     private GedungDao gedungDao;
 
     @Autowired
@@ -105,7 +108,7 @@ public class EquipmentController {
     @Value("${presensi.barcode.url}")
     private String barcodeUrl;
 
-    //    Attribute
+    // Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
         return mahasiswaDao.cariAngkatan();
@@ -116,13 +119,14 @@ public class EquipmentController {
         return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
 
-//    Institution
+    // Institution
 
     @GetMapping("/equipment/institution/list")
     public void curriculumList(Model model, @PageableDefault(size = 10) Pageable page, String search) {
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", lembagaDao.findByStatusNotInAndNamaLembagaContainingIgnoreCaseOrderByNamaLembaga(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("list", lembagaDao.findByStatusNotInAndNamaLembagaContainingIgnoreCaseOrderByNamaLembaga(
+                    Arrays.asList(StatusRecord.HAPUS), search, page));
         } else {
             model.addAttribute("list", lembagaDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
         }
@@ -162,13 +166,14 @@ public class EquipmentController {
         return "redirect:list";
     }
 
-//    Building
+    // Building
 
     @GetMapping("/equipment/building/list")
     public void daftarGedung(Model model, @RequestParam(required = false) String search, Pageable page) {
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", gedungDao.findByStatusNotInAndAndNamaGedungContainingIgnoreCaseOrderByNamaGedung(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("list", gedungDao.findByStatusNotInAndAndNamaGedungContainingIgnoreCaseOrderByNamaGedung(
+                    Arrays.asList(StatusRecord.HAPUS), search, page));
         } else {
             model.addAttribute("list", gedungDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
         }
@@ -190,7 +195,6 @@ public class EquipmentController {
         }
     }
 
-
     @PostMapping("/equipment/building/form")
     public String prosesForm(@Valid Gedung gedung) {
         if (gedung.getStatus() == null) {
@@ -208,13 +212,14 @@ public class EquipmentController {
         return "redirect:list";
     }
 
-//    Campus
+    // Campus
 
     @GetMapping("/equipment/campus/list")
     public void kampusList(Model model, @PageableDefault(size = 10) Pageable page, String search) {
         if (StringUtils.hasText(search)) {
             model.addAttribute("seacrh", search);
-            model.addAttribute("list", kampusDao.findByStatusNotInAndNamaKampusContainingIgnoreCaseOrderByNamaKampus(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("list", kampusDao.findByStatusNotInAndNamaKampusContainingIgnoreCaseOrderByNamaKampus(
+                    Arrays.asList(StatusRecord.HAPUS), search, page));
         } else {
             model.addAttribute("list", kampusDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
         }
@@ -252,12 +257,14 @@ public class EquipmentController {
         return "redirect:list";
     }
 
-    //    Room
+    // Room
     @GetMapping("/equipment/room/list")
     public void roomList(Model model, @PageableDefault(size = 10) Pageable page, String search) {
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listRuang", ruanganDao.findByStatusNotInAndAndNamaRuanganContainingIgnoreCaseOrderByNamaRuangan(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listRuang",
+                    ruanganDao.findByStatusNotInAndAndNamaRuanganContainingIgnoreCaseOrderByNamaRuangan(
+                            Arrays.asList(StatusRecord.HAPUS), search, page));
         } else {
             model.addAttribute("listRuang", ruanganDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
 
@@ -269,7 +276,6 @@ public class EquipmentController {
         model.addAttribute("ruangan", new Ruangan());
         model.addAttribute("ruangJenis", ruangJenisDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("gedung", gedungDao.findByStatus(StatusRecord.AKTIF));
-
 
         if (id != null && !id.isEmpty()) {
             Ruangan ruangan = ruanganDao.findById(id).get();
@@ -301,23 +307,23 @@ public class EquipmentController {
 
     @GetMapping("/equipment/class-list")
     @ResponseBody
-    public DataKelas listKelas( @RequestParam(required = false) String search,
-                                           @RequestParam(required = false) String sort,
-                                           @RequestParam(required = false) String order,
-                                           @RequestParam(required = false) Integer offset,
-                                           @RequestParam(required = false) Integer limit){
+    public DataKelas listKelas(@RequestParam(required = false) String search,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
 
-        if (search.isEmpty() ) {
-            List<DataKelasDto> kelas = kelasDao.listAllKelas(limit,offset);
+        if (search.isEmpty()) {
+            List<DataKelasDto> kelas = kelasDao.listAllKelas(limit, offset);
             DataKelas response = new DataKelas();
             response.setTotal(kelasDao.countAllKelas());
             response.setTotalNotFiltered(kelasDao.countAllKelas());
             response.setRows(kelas);
             return response;
-        }else {
-            List<DataKelasDto> kelas = kelasDao.listSearchKelas(search,limit,offset);
+        } else {
+            List<DataKelasDto> kelas = kelasDao.listSearchKelas(search, limit, offset);
             DataKelas response = new DataKelas();
-            response.setTotal(kelasDao.listSearchKelas(search,Integer.MAX_VALUE,offset).size());
+            response.setTotal(kelasDao.listSearchKelas(search, Integer.MAX_VALUE, offset).size());
             response.setTotalNotFiltered(kelas.size());
             response.setRows(kelas);
             return response;
@@ -325,13 +331,13 @@ public class EquipmentController {
 
     }
 
-
-    //    class
+    // class
     @GetMapping("/equipment/class/list")
     public void classList(Model model, @PageableDefault(size = 10) Pageable page, String search) {
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listKelas", kelasDao.findByStatusNotInAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listKelas", kelasDao.findByStatusNotInAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(
+                    Arrays.asList(StatusRecord.HAPUS), search, page));
         } else {
             model.addAttribute("listKelas", kelasDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
         }
@@ -341,7 +347,7 @@ public class EquipmentController {
     @GetMapping("/equipment/class/form")
     public void classForm(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("kelas", new Kelas());
-
+        model.addAttribute("programList", programDao.findByStatus(StatusRecord.AKTIF));
 
         if (id != null && !id.isEmpty()) {
             Kelas kelas = kelasDao.findById(id).get();
@@ -374,7 +380,7 @@ public class EquipmentController {
 
     @GetMapping("/equipment/class/delete")
     public String deleteKelas(@RequestParam Kelas kelas,
-                              RedirectAttributes attributes) {
+            RedirectAttributes attributes) {
 
         Integer jmlJdwal = jadwalDao.jmlJadwal(kelas.getId());
         System.out.println(jmlJdwal);
@@ -402,7 +408,9 @@ public class EquipmentController {
     }
 
     @GetMapping("/equipment/class/mahasiswa")
-    public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Konsentrasi konsentrasi, Model model, Pageable page) {
+    public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas,
+            @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Konsentrasi konsentrasi,
+            Model model, Pageable page) {
         model.addAttribute("selectedKelas", kelas);
         String ak = angkatan;
         String pro = prodi.getId();
@@ -415,10 +423,12 @@ public class EquipmentController {
             model.addAttribute("kelasAngkatan", kelasDao.kelasAngktanProdi(pro, ak));
             model.addAttribute("konsentrasi", konsentrasiDao.konsentrasiProdi(prodi.getId()));
             if (konsentrasi != null) {
-                Iterable<Mahasiswa> mahasiswaKonsentrasi = mahasiswaDao.carikelasKonsentrai(StatusRecord.AKTIF, angkatan, prodi, konsentrasi);
+                Iterable<Mahasiswa> mahasiswaKonsentrasi = mahasiswaDao.carikelasKonsentrai(StatusRecord.AKTIF,
+                        angkatan, prodi, konsentrasi);
                 if (mahasiswaKonsentrasi != null) {
                     for (Mahasiswa m : mahasiswaKonsentrasi) {
-                        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m, StatusRecord.AKTIF);
+                        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m,
+                                StatusRecord.AKTIF);
                         if (kelasMahasiswa == null) {
                             KelasMahasiswaDto km = new KelasMahasiswaDto();
                             km.setId(m.getId());
@@ -470,7 +480,8 @@ public class EquipmentController {
 
                 if (mahasiswaAll != null) {
                     for (Mahasiswa m : mahasiswaAll) {
-                        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m, StatusRecord.AKTIF);
+                        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m,
+                                StatusRecord.AKTIF);
                         if (kelasMahasiswa == null) {
                             KelasMahasiswaDto km = new KelasMahasiswaDto();
                             km.setId(m.getId());
@@ -548,7 +559,6 @@ public class EquipmentController {
                 kelasMahasiswaDao.save(km);
             }
 
-
         }
         return "redirect:list";
 
@@ -560,7 +570,6 @@ public class EquipmentController {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("ss");
         String productCode = dateFormat.format(date);
-
 
         Date date1 = Calendar.getInstance().getTime();
         DateFormat dateFormat1 = new SimpleDateFormat("mm");
@@ -579,10 +588,12 @@ public class EquipmentController {
         for (int i = 1; i <= productQuantity; i++) {
             String presensiBarcode = productCode + productionYear + productCode2
                     + String.format("%1$" + productNumberLength + "s", i)
-                    .replace(' ', '2');
+                            .replace(' ', '2');
             System.out.println("Generate QR Code for product number " + presensiBarcode);
-//            BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
-            BufferedImage qrCode = generateQRcode(barcodeUrl+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+            // BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" +
+            // presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+            BufferedImage qrCode = generateQRcode(
+                    barcodeUrl + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
             ImageIO.write(qrCode, "png",
                     new File(folderOutput + File.separator
                             + presensiBarcode + ".png"));
@@ -597,7 +608,7 @@ public class EquipmentController {
                 presensiDosenDao.save(presensiDosen);
 
             }
-//            aset.setBarcode(productCode + productCode2 + "/" +productNumber + ".png");
+            // aset.setBarcode(productCode + productCode2 + "/" +productNumber + ".png");
         }
         return "redirect:admin";
     }
@@ -635,7 +646,8 @@ public class EquipmentController {
                 return "redirect:../dashboard";
             } else {
                 model.addAttribute("detail", presensiMahasiswa.get());
-                model.addAttribute("jamMasuk", presensiMahasiswa.get().getWaktuMasuk().getHour() + " : " + presensiMahasiswa.get().getWaktuMasuk().getMinute());
+                model.addAttribute("jamMasuk", presensiMahasiswa.get().getWaktuMasuk().getHour() + " : "
+                        + presensiMahasiswa.get().getWaktuMasuk().getMinute());
                 return "study/success";
             }
         } else {
@@ -652,7 +664,8 @@ public class EquipmentController {
                 return "redirect:../dashboard";
             } else {
                 model.addAttribute("detail", presensiMahasiswa.get());
-                model.addAttribute("jamMasuk", presensiMahasiswa.get().getWaktuMasuk().getHour() + " : " + presensiMahasiswa.get().getWaktuMasuk().getMinute());
+                model.addAttribute("jamMasuk", presensiMahasiswa.get().getWaktuMasuk().getHour() + " : "
+                        + presensiMahasiswa.get().getWaktuMasuk().getMinute());
                 return "study/terlambat";
             }
         } else {
@@ -667,12 +680,14 @@ public class EquipmentController {
     }
 
     @GetMapping("/uploaded/{presensi}/barcode/")
-    public ResponseEntity<byte[]> tampilkanEvidence(@PathVariable(name = "presensi", value = "presensi") PresensiDosen presensiDosen) throws Exception {
+    public ResponseEntity<byte[]> tampilkanEvidence(
+            @PathVariable(name = "presensi", value = "presensi") PresensiDosen presensiDosen) throws Exception {
         String lokasiFile = uploadFolder + File.separator + presensiDosen.getBarcodeNow();
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            if (presensiDosen.getBarcodeNow().toLowerCase().endsWith("jpeg") || presensiDosen.getBarcodeNow().toLowerCase().endsWith("jpg")) {
+            if (presensiDosen.getBarcodeNow().toLowerCase().endsWith("jpeg")
+                    || presensiDosen.getBarcodeNow().toLowerCase().endsWith("jpg")) {
                 headers.setContentType(MediaType.IMAGE_JPEG);
             } else if (presensiDosen.getBarcodeNow().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
@@ -686,13 +701,13 @@ public class EquipmentController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-
         }
 
     }
 
     @GetMapping("/presensi/{id}")
-    public String presensiMahasiswaBarcode(@PathVariable String id, Authentication authentication, @RequestParam String barcode) {
+    public String presensiMahasiswaBarcode(@PathVariable String id, Authentication authentication,
+            @RequestParam String barcode) {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -700,25 +715,28 @@ public class EquipmentController {
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
 
         if (barcode.equals(presensiDosen.getBarcodeNow()) || barcode.equals(presensiDosen.getBarcodeBefore())) {
-            PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(mahasiswa, sesiKuliah, StatusRecord.AKTIF);
-            if (LocalTime.now().plusHours(7).compareTo(presensiDosen.getWaktuMasuk().plusMinutes(15).toLocalTime()) > 0){
+            PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(mahasiswa,
+                    sesiKuliah, StatusRecord.AKTIF);
+            if (LocalTime.now().plusHours(7)
+                    .compareTo(presensiDosen.getWaktuMasuk().plusMinutes(15).toLocalTime()) > 0) {
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
-                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
+                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),
+                        presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
                 presensiMahasiswa.setCatatan("Barcode");
                 presensiMahasiswaDao.save(presensiMahasiswa);
                 return "redirect:../terlambat-absen/" + presensiMahasiswa.getId();
 
-            }else {
+            } else {
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
-                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
+                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),
+                        presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
                 presensiMahasiswa.setCatatan("Barcode");
                 presensiMahasiswaDao.save(presensiMahasiswa);
                 return "redirect:../sukses-absen/" + presensiMahasiswa.getId();
 
             }
-
 
         } else {
 

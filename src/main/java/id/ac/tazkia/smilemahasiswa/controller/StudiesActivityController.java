@@ -13193,6 +13193,25 @@ public class StudiesActivityController {
 
         }
 
+        @GetMapping("/generate-sesikuliah-kelas/{id}")
+        @ResponseBody
+        public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse generatePresensiKelas(@PathVariable String id)
+                        throws Exception {
+                Kelas kelas = kelasDao.findById(id).get();
+                List<Jadwal> jadwals = jadwalDao.findByTahunAkademikAndKelasAndStatusAndHariNotNull(
+                                tahunAkademikDao.findByStatus(StatusRecord.AKTIF), kelas, StatusRecord.AKTIF);
+                for (Jadwal jadwal : jadwals) {
+                        presensiService
+                                        .generateSesi(jadwal);
+                }
+
+                id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = new id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse();
+                response.setCode("200");
+                response.setMessage("Berhasil Generate");
+
+                return response;
+        }
+
         @GetMapping("/generate-presensi-mahasiswa/{id}")
         @ResponseBody
         public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse generatePresensiMahasiswa(@PathVariable String id)
