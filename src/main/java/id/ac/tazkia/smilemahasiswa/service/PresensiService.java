@@ -627,14 +627,7 @@ public class PresensiService {
     }
 
     public void updateSesi1(Jadwal jadwal) throws Exception {
-        String angkatan = (jadwal.getKelas() != null) ? jadwal.getKelas().getAngkatan() : null;
-
-        LocalDate[] studyPeriod = detailTahunAkademikService.getStudyPeriod(
-                jadwal.getTahunAkademik(),
-                jadwal.getProdi(),
-                jadwal.getKelas().getProgram(),
-                angkatan);
-
+        Long totalPresensi = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF, jadwal);
         Integer valueJadwal = null;
         if (jadwal.getHari().getId().equals("0")) {
             valueJadwal = 7;
@@ -642,12 +635,7 @@ public class PresensiService {
             valueJadwal = Integer.parseInt(jadwal.getHari().getId());
         }
 
-        // Use studyPeriod, with fallback to tahunAkademik dates if not available
-        LocalDate startDate = (studyPeriod != null && studyPeriod[0] != null)
-                ? studyPeriod[0]
-                : jadwal.getTahunAkademik().getTanggalMulaiKuliah();
-
-        LocalDate firstAttendDate = findNextOccurrenceOfDayOfWeek(startDate, valueJadwal);
+        LocalDate firstAttendDate = jadwal.getTahunAkademik().getTanggalMulaiKuliah().plusDays(valueJadwal - 1);
 
         int attend = 16;
 
