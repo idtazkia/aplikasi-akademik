@@ -13193,7 +13193,7 @@ public class StudiesActivityController {
 
         }
 
-        @GetMapping("/generate-sesikuliah-kelas/{id}")
+        @GetMapping("/update-sesikuliah-kelas/{id}")
         @ResponseBody
         public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse generatePresensiKelas(@PathVariable String id)
                         throws Exception {
@@ -13202,7 +13202,7 @@ public class StudiesActivityController {
                                 tahunAkademikDao.findByStatus(StatusRecord.AKTIF), kelas, StatusRecord.AKTIF);
                 for (Jadwal jadwal : jadwals) {
                         presensiService
-                                        .generateSesi(jadwal);
+                                        .updateSesi1(jadwal);
                 }
 
                 id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = new id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse();
