@@ -237,6 +237,8 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/uploaded/{note}/bukti/")
                 .antMatchers("/images/**")
                 .antMatchers("/api/getlistTahunAkademik")
+                .antMatchers("/api/getlistKonsentrasiS1")
+                .antMatchers("/api/getlistKonsentrasiS2")
                 .antMatchers("/api/getDetailJadwal")
                 .antMatchers("/api/getKelas")
                 .antMatchers("/api/apiGetKaryawan")

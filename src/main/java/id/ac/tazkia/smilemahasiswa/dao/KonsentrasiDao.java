@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.entity.Jenjang;
 import id.ac.tazkia.smilemahasiswa.entity.Konsentrasi;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
@@ -16,6 +17,8 @@ public interface KonsentrasiDao extends PagingAndSortingRepository<Konsentrasi, 
     Page<Konsentrasi> findByStatusNotInAndAndNamaKonsentrasiContainingIgnoreCaseOrderByNamaKonsentrasi(List<StatusRecord> asList, String search, Pageable page);
 
     Page<Konsentrasi> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
+
+    List<Konsentrasi> findByStatusAndIdProdiIdJenjangOrderByIdProdiNamaProdi(StatusRecord status, Jenjang jenjang);
 
     @Query(value = "select a.id, a.kode_konsentrasi, a.nama_konsentrasi from konsentrasi as a inner join prodi as b on a.id_prodi = b.id where b.id = ?1 and a.status = 'AKTIF'", nativeQuery = true)
     List<Object[]> konsentrasiProdi(String prodi);

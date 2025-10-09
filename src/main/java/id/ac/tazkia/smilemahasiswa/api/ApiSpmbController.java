@@ -5,10 +5,12 @@ import id.ac.tazkia.smilemahasiswa.dao.MatakuliahKurikulumDao;
 import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
 import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.api.BaseResponseDto;
+import id.ac.tazkia.smilemahasiswa.dto.konsentrasi.ListKonsentrasiDto;
 import id.ac.tazkia.smilemahasiswa.entity.Kurikulum;
 import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.service.KonsentrasiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ public class ApiSpmbController {
     @Autowired private ProdiDao prodiDao;
     @Autowired private KurikulumDao kurikulumDao;
     @Autowired private MatakuliahKurikulumDao matakuliahKurikulumDao;
+
+    @Autowired private KonsentrasiService konsentrasiService;
 
     @GetMapping("/api/get-prodi")
     @ResponseBody
@@ -114,6 +118,68 @@ public class ApiSpmbController {
                                 .responseCode("200")
                                 .responseMessage("Kurikulum ditemukan")
                                 .data(matakuliahKurikulumList)
+                                .build()
+                );
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    BaseResponseDto.builder()
+                            .responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage())
+                            .build()
+            );
+        }
+    }
+
+    @GetMapping("/api/getlistKonsentrasiS1")
+    @ResponseBody
+    public ResponseEntity<BaseResponseDto> getListKonsentrasiS1() {
+        try {
+            List<ListKonsentrasiDto> konsentrasiDatas = konsentrasiService.getListKonsentrasiS1();
+            if (konsentrasiDatas.isEmpty()) {
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .responseMessage("Data Kosong")
+                                .build()
+                );
+            }else{
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .data(konsentrasiDatas)
+                                .responseMessage("Konsentrasi Ditemukan")
+                                .build()
+                );
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    BaseResponseDto.builder()
+                            .responseCode("ERR500")
+                            .responseMessage(e.getLocalizedMessage())
+                            .build()
+            );
+        }
+    }
+
+    @GetMapping("/api/getlistKonsentrasiS2")
+    @ResponseBody
+    public ResponseEntity<BaseResponseDto> getListKonsentrasiS2() {
+        try {
+            List<ListKonsentrasiDto> konsentrasiDatas = konsentrasiService.getListKonsentrasiS2();
+            if (konsentrasiDatas.isEmpty()) {
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .responseMessage("Data Kosong")
+                                .build()
+                );
+            }else{
+                return ResponseEntity.ok().body(
+                        BaseResponseDto.builder()
+                                .responseCode("200")
+                                .data(konsentrasiDatas)
+                                .responseMessage("Konsentrasi Ditemukan")
                                 .build()
                 );
             }
