@@ -316,9 +316,9 @@
 									</li>
 									<li
 										class="nav-item"
-										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')"
+										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')"
 									>
-										<a th:href="@{/setting/concentration/list}" class="nav-link">Konstrasi</a>
+										<a th:href="@{/setting/concentration/list}" class="nav-link">Konsentrasi</a>
 									</li>
 									<li
 										class="nav-item"
