@@ -884,6 +884,9 @@ public class BebasKewajibanController {
         User user = currentUserService.currentUser(authentication);
         bebasKewajiban.setStatusApproveAkademik(StatusApprove.APPROVED);
         bebasKewajiban.setStatusApprove(StatusApprove.APPROVED);
+        bebasKewajiban.setNomorUrut(bebasKewajibanService.nomorUrut());
+        bebasKewajiban.setTahun(String.valueOf(LocalDate.now().getYear()));
+        bebasKewajiban.setNomorSurat(bebasKewajibanService.createNomorSurat(bebasKewajiban.getNomorUrut(), bebasKewajiban.getTahun()));
         bebasKewajibanDao.save(bebasKewajiban);
 
         bebasKewajibanService.saveAkademik(bebasKewajiban, komentar, user);

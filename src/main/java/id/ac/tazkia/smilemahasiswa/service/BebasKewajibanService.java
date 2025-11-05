@@ -272,6 +272,22 @@ public class BebasKewajibanService {
 
     }
 
+    public Integer nomorUrut(){
+        Integer urutan;
+        PendaftaranBebasKewajiban getNomorUrut = bebasKewajibanDao.findTopByTahunOrderByNomorUrutDesc(String.valueOf(LocalDate.now().getYear()));
+        log.info("Bebas Kewajiban : {}", getNomorUrut);
+        if (getNomorUrut.getNomorUrut() == null) {
+            urutan = 1;
+        }else{
+            urutan = getNomorUrut.getNomorUrut() + 1;
+        }
+        log.info("Urut : {}", urutan);
+        return urutan;
+    }
+
+    public String createNomorSurat(Integer nomorUrut, String tahun){
+        return String.format("%03d", nomorUrut) + "-B/KET/Tazkia-Universitas/Akd/"+LocalDate.now().getMonthValue()+"/"+tahun;
+    }
 
     public void cetakSKL(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, HttpServletResponse response) throws IOException {
 

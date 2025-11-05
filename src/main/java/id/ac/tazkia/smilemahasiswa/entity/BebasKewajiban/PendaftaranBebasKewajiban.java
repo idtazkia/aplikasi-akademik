@@ -50,4 +50,8 @@ public class PendaftaranBebasKewajiban {
 
     private BigDecimal nilaiIelts = BigDecimal.ZERO;
 
+    private String nomorSurat;
+    private Integer nomorUrut;
+    private String tahun;
+
 }
