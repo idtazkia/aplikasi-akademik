@@ -1,46 +1,48 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Bebas Kewajiban Mahasiswa</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
-    <!-- fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap"
-            rel="stylesheet"
-    />
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+
     <style>
         body {
-            font-family: "Inter", sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
         }
+
         .number-step {
             background-color: #e9f3ff;
             width: 40px;
             height: 40px;
             color: #1b84ff;
+            font-weight: 600;
+            font-size: 16px;
         }
 
         .nav-item-wrapper .active .number-step,
-        .nav-item-wrapper .active .number-step.number-step.approved,
-        .nav-item-wrapper .active .number-step.number-step.rejected {
+        .nav-item-wrapper .active .number-step.approved,
+        .nav-item-wrapper .active .number-step.rejected {
             background-color: #1b84ff;
             color: #e9f3ff;
         }
 
         .nav-item-wrapper .number-step.approved {
-            background-color: rgb(0, 213, 32);
+            background-color: #00d520;
             color: #e9f3ff;
         }
 
         .nav-item-wrapper .number-step.rejected {
-            background-color: rgb(253, 0, 0);
+            background-color: #fd0000;
             color: #e9f3ff;
         }
 
@@ -48,285 +50,349 @@
             font-size: 16px;
             font-weight: 600;
             color: #78829d;
+            margin: 0;
         }
+
         .step-subtitle {
             font-size: 13px;
             font-weight: 500;
             color: #99a1b7;
+            margin: 0;
         }
+
         .nav-step-line {
             height: 40px;
             border-left: 1px dashed #dbdfe9;
             margin-left: 20px;
         }
+
+        .nav-step {
+            background: white;
+            border-radius: 12px;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 12px;
+            min-height: 500px;
+        }
     </style>
 </head>
-<body>
+<body class="pt-4">
 <div class="container">
-    <div class="mt-5"></div>
-    <div th:if="${berhasil}" class="alert alert-success" role="alert" id="berhasil">
-        <b>Berhasil!</b>
+    <!-- Success Alert -->
+    <div th:if="${berhasil}" class="alert alert-success alert-dismissible fade show mb-4" role="alert" id="berhasil">
+        <strong>Berhasil!</strong> Pengajuan Anda telah diproses.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+
     <div class="row g-4">
+        <!-- Sidebar Stepper -->
         <div class="col-lg-4">
-            <input type="hidden" id="status" th:value="${bebasKewajiban.statusApprove}">
-            <div class="nav-step flex-column h-100 p-4 border border-1 rounded-3 shadow-sm" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <input type="hidden" id="status" th:value="${bebasKewajiban.statusApprove}"/>
+
+            <div class="nav-step flex-column p-4 border rounded-3 shadow-sm" id="v-pills-tab" role="tablist">
+
+                <!-- 1. Perpustakaan -->
                 <div class="nav-item-wrapper">
-                    <div class="d-flex flex-nowrap " id="v-pills-perpustakaan-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perpustakaan" type="button" role="tab" aria-controls="v-pills-perpustakaan" aria-selected="true">
-                        <div th:if="${bebasKewajiban.statusApproveKabagPerpus == bebasKewajiban.statusApproveKabagPerpus.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                    <div class="d-flex align-items-center" id="v-pills-perpustakaan-tab"
+                         data-bs-toggle="pill" data-bs-target="#v-pills-perpustakaan"
+                         role="tab" aria-controls="v-pills-perpustakaan">
+                        <div th:if="${bebasKewajiban.statusApproveKabagPerpus == bebasKewajiban.statusApproveKabagPerpus.WAITING}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
                             1
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveKabagPerpus == bebasKewajiban.statusApproveKabagPerpus.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveKabagPerpus == bebasKewajiban.statusApproveKabagPerpus.APPROVED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                             </svg>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveKabagPerpus == bebasKewajiban.statusApproveKabagPerpus.REJECTED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveKabagPerpus == bebasKewajiban.statusApproveKabagPerpus.REJECTED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </div>
                         <div>
-                            <p class="mb-0 step-title">Perpustakaan</p>
-                            <p class="mb-0 step-subtitle">Persetujuan dari perpustakaan</p>
+                            <p class="step-title">Perpustakaan</p>
+                            <p class="step-subtitle">Persetujuan dari perpustakaan</p>
                         </div>
                     </div>
                     <div class="nav-step-line"></div>
                 </div>
+
+                <!-- 2. Keuangan -->
                 <div class="nav-item-wrapper">
-                    <div class="d-flex flex-nowrap " id="v-pills-keuangan-tab" data-bs-toggle="pill" data-bs-target="#v-pills-keuangan" type="button" role="tab" aria-controls="v-pills-keuangan" aria-selected="false">
-                        <div th:if="${bebasKewajiban.statusApproveKeuangan == bebasKewajiban.statusApproveKeuangan.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                    <div class="d-flex align-items-center" id="v-pills-keuangan-tab"
+                         data-bs-toggle="pill" data-bs-target="#v-pills-keuangan"
+                         role="tab" aria-controls="v-pills-keuangan">
+                        <div th:if="${bebasKewajiban.statusApproveKeuangan == bebasKewajiban.statusApproveKeuangan.WAITING}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
                             2
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveKeuangan == bebasKewajiban.statusApproveKeuangan.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveKeuangan == bebasKewajiban.statusApproveKeuangan.APPROVED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                             </svg>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveKeuangan == bebasKewajiban.statusApproveKeuangan.REJECTED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveKeuangan == bebasKewajiban.statusApproveKeuangan.REJECTED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </div>
                         <div>
-                            <p class="mb-0 step-title">Keuangan</p>
-                            <p class="mb-0 step-subtitle">Persetujuan dari keuangan</p>
+                            <p class="step-title">Keuangan</p>
+                            <p class="step-subtitle">Persetujuan dari keuangan</p>
                         </div>
                     </div>
-                     <div class="nav-step-line"></div>
+                    <div class="nav-step-line"></div>
                 </div>
+
+                <!-- 3. TLC & TQC (jika bukan S2) -->
                 <div th:if="${mhsS2 == null}" class="nav-item-wrapper">
-                    <div class="d-flex flex-nowrap " id="v-pills-tlc-tab" data-bs-toggle="pill" data-bs-target="#v-pills-tlc" type="button" role="tab" aria-controls="v-pills-tlc" aria-selected="false">
-                        <div th:if="${(bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING) || (bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TLC) || (bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TQC)}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                    <div class="d-flex align-items-center" id="v-pills-tlc-tab"
+                         data-bs-toggle="pill" data-bs-target="#v-pills-tlc"
+                         role="tab" aria-controls="v-pills-tlc">
+                        <div th:if="${(bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING) ||
+                                      (bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TLC) ||
+                                      (bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TQC)}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
                             3
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.APPROVED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                             </svg>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.REJECTED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.REJECTED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </div>
                         <div>
-                            <p class="mb-0 step-title">TLC & TQC</p>
-                            <p class="mb-0 step-subtitle">Persetujuan dari Tazkia Language / Qur'anic Center</p>
+                            <p class="step-title">TLC & TQC</p>
+                            <p class="step-subtitle">Persetujuan dari Tazkia Language / Qur'anic Center</p>
                         </div>
                     </div>
-                     <div class="nav-step-line"></div>
+                    <div class="nav-step-line"></div>
                 </div>
+
+                <!-- 4. Akademik -->
                 <div class="nav-item-wrapper">
-                    <div class="d-flex flex-nowrap " id="v-pills-akademik-tab" data-bs-toggle="pill" data-bs-target="#v-pills-akademik" type="button" role="tab" aria-controls="v-pills-akademik" aria-selected="false">
-                        <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
-                            <div th:if="${mhsS2 == null}">
-                                4
-                            </div>
-                            <div th:if="${mhsS2 != null}">
-                                3
-                            </div>
+                    <div class="d-flex align-items-center" id="v-pills-akademik-tab"
+                         data-bs-toggle="pill" data-bs-target="#v-pills-akademik"
+                         role="tab" aria-controls="v-pills-akademik">
+                        <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.WAITING}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            <span th:if="${mhsS2 == null}">4</span>
+                            <span th:if="${mhsS2 != null}">3</span>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.APPROVED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                             </svg>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.REJECTED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApproveAkademik == bebasKewajiban.statusApproveAkademik.REJECTED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </div>
                         <div>
-                            <p class="mb-0 step-title">Akademik</p>
-                            <p class="mb-0 step-subtitle">Persetujuan dari akademik</p>
+                            <p class="step-title">Akademik</p>
+                            <p class="step-subtitle">Persetujuan dari akademik</p>
                         </div>
                     </div>
-                     <div class="nav-step-line"></div>
+                    <div class="nav-step-line"></div>
                 </div>
+
+                <!-- 5. Complete -->
                 <div class="nav-item-wrapper">
-                    <div class="d-flex flex-nowrap " id="v-pills-complete-tab" data-bs-toggle="pill" data-bs-target="#v-pills-complete" type="button" role="tab" aria-controls="v-pills-complete" aria-selected="false">
-                        <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.WAITING}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
-                            <div th:if="${mhsS2 == null}">
-                                5
-                            </div>
-                            <div th:if="${mhsS2 != null}">
-                                4
-                            </div>
+                    <div class="d-flex align-items-center" id="v-pills-complete-tab"
+                         data-bs-toggle="pill" data-bs-target="#v-pills-complete"
+                         role="tab" aria-controls="v-pills-complete">
+                        <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.WAITING}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3">
+                            <span th:if="${mhsS2 == null}">5</span>
+                            <span th:if="${mhsS2 != null}">4</span>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.APPROVED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.APPROVED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 approved">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                             </svg>
                         </div>
-                        <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.REJECTED}" class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                        <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.REJECTED}"
+                             class="number-step rounded-3 d-flex justify-content-center align-items-center me-3 rejected">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </div>
                         <div>
-                            <p class="mb-0 step-title">Complete</p>
-                            <p class="mb-0 step-subtitle"></p>
+                            <p class="step-title">Complete</p>
+                            <p class="step-subtitle">Status akhir pengajuan</p>
                         </div>
                     </div>
-<!--                     <div class="nav-step-line"></div>-->
                 </div>
-                <div class="d-grid mt-3">
-                    <a th:href="@{/dashboard}" class="btn btn-primary" type="button"> Kembali</a>
+
+                <!-- Back Button -->
+                <div class="d-grid mt-4">
+                    <a th:href="@{/dashboard}" class="btn btn-primary">Kembali ke Dashboard</a>
                 </div>
             </div>
         </div>
+
+        <!-- Content Area -->
         <div class="col-lg-8">
-            <div class="tab-content h-100 p-4 border border-1 rounded-3 shadow-sm" id="v-pills-tabContent">
-                <div class="tab-pane fade" id="v-pills-perpustakaan" role="tabpanel" aria-labelledby="v-pills-perpustakaan-tab" tabindex="0">
-                    <table>
-                        <tr><h4>Daftar yang harus di selesaikan untuk mendapatan persetujuan perpustakaan:</h4></tr>
-                        <tr th:each="data, row: ${listKewajibanMahasiswa}">
-                            <td style="width: 30px;">
-                                <input th:name="${'check-'+data.id}" th:if="${data.status == data.status.AKTIF}" checked disabled type="checkbox" th:id="${data.id + '-checkbox'}">
-                                <input th:name="${'check-'+data.id}" th:if="${data.status == data.status.NONAKTIF}" disabled type="checkbox" th:id="${data.id + '-checkbox'}">
+            <div class="tab-content p-4 border rounded-3 shadow-sm" id="v-pills-tabContent">
+
+                <!-- Tab Perpustakaan -->
+                <div class="tab-pane fade" id="v-pills-perpustakaan" role="tabpanel">
+                    <h4>Daftar Kewajiban Perpustakaan</h4>
+                    <table class="table table-sm align-middle">
+                        <tbody>
+                        <tr th:each="data : ${listKewajibanMahasiswa}">
+                            <td width="40">
+                                <input type="checkbox"
+                                       th:checked="${data.status == data.status.AKTIF}"
+                                       disabled>
                             </td>
-                            <td>
-                                <label th:for="${data.id + '-checkbox'}" th:text="${data.kewajibanPerpus.keterangan}"></label>
-                            </td>
+                            <td th:text="${data.kewajibanPerpus.keterangan}"></td>
                         </tr>
+                        </tbody>
                     </table>
-                    <br><br>
-                    <div class="row rows-cols-2">
-                        <div th:if="${hPerpus != null}" class="col-md-6 col-xs-6 col-sm-6">
-                            <h4>Staff Perpus</h4>
-                            <b th:text="${#temporals.format(hPerpus.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hPerpus.statusApprove}"></b>
-                            <p th:text="${hPerpus.komentar}"></p>
+
+                    <div class="row g-3 mt-4">
+                        <div th:if="${hPerpus != null}" class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <h6>Staff Perpus</h6>
+                                <strong th:text="${#temporals.format(hPerpus.waktuInput, 'dd-MM-yyyy HH:mm')} + ' : ' + ${hPerpus.statusApprove}"></strong>
+                                <p class="mb-0 mt-1" th:text="${hPerpus.komentar}"></p>
+                            </div>
                         </div>
-                        <div th:if="${hKabagPerpus != null}" class="col-md-6 col-xs-6 col-sm-6" >
-                            <h4>Kabag Perpus</h4>
-                            <b th:text="${#temporals.format(hKabagPerpus.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hKabagPerpus.statusApprove}"></b>
-                            <p th:text="${hKabagPerpus.komentar}"></p>
+                        <div th:if="${hKabagPerpus != null}" class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <h6>Kabag Perpus</h6>
+                                <strong th:text="${#temporals.format(hKabagPerpus.waktuInput, 'dd-MM-yyyy HH:mm')} + ' : ' + ${hKabagPerpus.statusApprove}"></strong>
+                                <p class="mb-0 mt-1" th:text="${hKabagPerpus.komentar}"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="v-pills-keuangan" role="tabpanel" aria-labelledby="v-pills-keuangan-tab" tabindex="0">
-                    Melunasi seluruh kewajiban ke bagian keuangan.
-                    <br><br>
-                    <div th:if="${hKeuangan != null}">
-                        <b th:text="${#temporals.format(hKeuangan.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hKeuangan.statusApprove}"></b>
-                        <p th:text="${hKeuangan.komentar}"></p>
+
+                <!-- Tab Keuangan -->
+                <div class="tab-pane fade" id="v-pills-keuangan" role="tabpanel">
+                    <p>Melunasi seluruh kewajiban ke bagian keuangan.</p>
+                    <div th:if="${hKeuangan != null}" class="mt-3 p-3 bg-light rounded">
+                        <strong th:text="${#temporals.format(hKeuangan.waktuInput, 'dd-MM-yyyy HH:mm')} + ' : ' + ${hKeuangan.statusApprove}"></strong>
+                        <p class="mb-0 mt-1" th:text="${hKeuangan.komentar}"></p>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="v-pills-tlc" role="tabpanel" aria-labelledby="v-pills-tlc-tab" tabindex="0">
-                    <ul class="nav nav-pills row row-cols-2" id="myTab-" role="tablist">
-                        <li class="nav-item d-grid" role="presentation">
-                            <button class="nav-link active" id="tlc-tab" data-bs-toggle="tab" data-bs-target="#tlc-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">TLC</button>
+
+                <!-- Tab TLC & TQC -->
+                <div class="tab-pane fade" id="v-pills-tlc" role="tabpanel">
+                    <ul class="nav nav-pills mb-3" id="tlc-tqc-tab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tlc-content">TLC</button>
                         </li>
-                        <li class="nav-item d-grid" role="presentation">
-                            <button class="nav-link" id="tqc-tab" data-bs-toggle="tab" data-bs-target="#tqc-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">TQC (Untuk Hafidzpreneur)</button>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tqc-content">TQC</button>
                         </li>
                     </ul>
-                    <br>
-                    <div class="tab-content" id="myTabContent-">
-                        <div class="tab-pane fade show active" id="tlc-tab-pane" role="tabpanel" aria-labelledby="tlc-tab" tabindex="0">
-                            Telah menyelesaikan dan dinyatakan <b>LULUS</b> matakuliah General Arabics English, IELTS atau TOEFL.
-                            <br><br>
-                            <div th:if="${hTlc != null}">
-                                <b th:text="${#temporals.format(hTlc.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hTlc.statusApprove}"></b>
-                                <p th:text="${hTlc.komentar}"></p>
-                                <div th:if="${hTlc.statusApprove.REJECTED == hTlc.statusApprove}">
-                                    <a class="btn btn-warning btn-sm" th:href="@{/kewajiban/rejected/{rejected}/tlc(rejected=${hTlc.id})}" target="_blank">Lihat Document</a>
+
+                    <div class="tab-content">
+                        <!-- TLC -->
+                        <div class="tab-pane fade show active" id="tlc-content">
+                            <p>Telah menyelesaikan dan dinyatakan <strong>LULUS</strong> matakuliah General Arabic English, IELTS atau TOEFL.</p>
+
+                            <div th:if="${hTlc != null}" class="p-3 bg-light rounded mb-3">
+                                <strong th:text="${#temporals.format(hTlc.waktuInput, 'dd-MM-yyyy HH:mm')} + ' : ' + ${hTlc.statusApprove}"></strong>
+                                <p class="mb-0" th:text="${hTlc.komentar}"></p>
+                                <div th:if="${hTlc.statusApprove == hTlc.statusApprove.REJECTED}">
+                                    <a class="btn btn-warning btn-sm" th:href="@{/kewajiban/rejected/{id}/tlc(id=${hTlc.id})}" target="_blank">
+                                        Lihat Dokumen
+                                    </a>
                                 </div>
                             </div>
-                            <br>
-                            <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING || bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TLC ||
-                            bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TQC || bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.REJECTED}">
-                                <h5>Upload bukti Ujian IELTS / TOEFL</h5>
-                                <ul class="nav nav-pills row row-cols-2" id="myTab" role="tablist">
-                                    <li class="nav-item d-grid" role="presentation">
-                                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Dikampus (Dengan TLC)</button>
-                                    </li>
-                                    <li class="nav-item d-grid" role="presentation">
-                                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Diluar kampus</button>
-                                    </li>
+
+                            <!-- Upload Form -->
+                            <div th:if="${bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING ||
+                                          bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TLC ||
+                                          bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.WAITING_TQC ||
+                                          bebasKewajiban.statusApproveTlc == bebasKewajiban.statusApproveTlc.REJECTED}">
+                                <h5>Upload Bukti Ujian</h5>
+                                <ul class="nav nav-pills mb-3">
+                                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tlc-dikampus">Di Kampus</button></li>
+                                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tlc-diluar">Di Luar</button></li>
                                 </ul>
-                                <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+
+                                <div class="tab-content">
+                                    <!-- Di Kampus -->
+                                    <div class="tab-pane fade show active" id="tlc-dikampus">
                                         <form method="post" th:action="@{/kewajiban/mahasiswa/tlc/dikampus(bebasKewajiban=${bebasKewajiban.id})}">
-                                            <div class="row row-cols-2">
-                                                <div class="form-group pt-4 pb-4">
-                                                    <label for="jenis">Jenis Tes : </label>
-                                                    <select name="jenis" id="jenis" class="form-control">
-                                                        <option value="" disabled selected>Pilih Jenis</option>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label>Jenis Tes</label>
+                                                    <select name="jenis" class="form-select" required>
                                                         <option value="TOEFL">TOEFL</option>
                                                         <option value="IELTS">IELTS</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group pt-4 pb-4">
-                                                    <label for="tgl">Input Tanggal Ujian : </label>
-                                                    <input type="date" id="tgl" name="tanggal" class="form-control" required>
+                                                <div class="col-md-6">
+                                                    <label>Tanggal Ujian</label>
+                                                    <input type="date" name="tanggal" class="form-control" required/>
                                                 </div>
                                             </div>
-                                            <div class="d-grid d-md-flex justify-content-md-end">
-                                                <button type="submit" class="btn btn-info me-md-2">Simpan</button>
+                                            <div class="text-end mt-3">
+                                                <button type="submit" class="btn btn-info">Simpan</button>
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+
+                                    <!-- Di Luar -->
+                                    <div class="tab-pane fade" id="tlc-diluar">
                                         <form method="post" th:action="@{/kewajiban/mahasiswa/tlc/diluar(bebasKewajiban=${bebasKewajiban.id})}" enctype="multipart/form-data">
-                                            <div class="row row-cols-2">
-                                                <div class="form-group pt-4 pb-2">
-                                                    <label for="tanggal">Input Tanggal Ujian : </label>
-                                                    <input type="date" id="tanggal" name="tanggal" class="form-control" required="required">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label>Tanggal Ujian</label>
+                                                    <input type="date" name="tanggal" class="form-control" required/>
                                                 </div>
-                                                <div class="form-group pt-4 pb-2">
-                                                    <label for="tempat">Tempat Ujian : </label>
-                                                    <input type="text" id="tempat" name="tempat" class="form-control" required="required">
+                                                <div class="col-md-6">
+                                                    <label>Tempat Ujian</label>
+                                                    <input type="text" name="tempat" class="form-control" required/>
                                                 </div>
-                                            </div>
-                                            <div class="row row-cols-2">
-                                                <div class="form-group pb-4">
-                                                    <label for="jenisTes">Jenis Tes : </label>
-                                                    <select name="jenis" id="jenisTes" class="form-control">
-                                                        <option value="" disabled selected>Pilih Jenis</option>
+                                                <div class="col-md-6">
+                                                    <label>Jenis Tes</label>
+                                                    <select name="jenis" class="form-select" required>
                                                         <option value="TOEFL">TOEFL</option>
                                                         <option value="IELTS">IELTS</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group pb-4">
-                                                    <label for="file">Upload Sertifikat : </label>
-                                                    <input type="file" id="file" name="file" class="form-control" required>
+                                                <div class="col-md-6">
+                                                    <label>Upload Sertifikat</label>
+                                                    <input type="file" name="file" class="form-control" required/>
                                                 </div>
                                             </div>
-                                            <div class="d-grid d-md-flex justify-content-md-end">
-                                                <button type="submit" class="btn btn-info me-md-2">Simpan</button>
+                                            <div class="text-end mt-3">
+                                                <button type="submit" class="btn btn-info">Simpan</button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
-                            <br>
-                            <table th:if="${!#lists.isEmpty(listSertifikat)}" class="table table-hover">
+
+                            <!-- Daftar Sertifikat -->
+                            <table th:if="${!#lists.isEmpty(listSertifikat)}" class="table table-hover mt-4">
                                 <thead>
                                 <tr>
-                                    <th>Tanggal Ujian</th>
-                                    <th>Tempat Ujian</th>
+                                    <th>Tanggal</th>
+                                    <th>Tempat</th>
                                     <th>Jenis</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
@@ -334,47 +400,45 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="data, row : ${listSertifikat}">
-                                    <td th:text="${data.tanggalUjian}"></td>
+                                <tr th:each="data : ${listSertifikat}">
+                                    <td th:text="${#temporals.format(data.tanggalUjian, 'dd-MM-yyyy')}"></td>
                                     <td th:text="${data.tempatUjian} ?: '-'"></td>
                                     <td th:text="${data.jenisTes}"></td>
                                     <td th:text="${data.keteranganUjian}"></td>
-                                    <td th:if="${data.keteranganUjian.DILUAR == data.keteranganUjian}">
-                                        <a class="btn btn-sm btn-primary" target="_blank" th:href="@{/kewajiban/{sertifikat}/tlc(sertifikat=${data.id})}">lihat file</a>
-                                    </td>
-                                    <td th:if="${data.keteranganUjian.DIKAMPUS == data.keteranganUjian}">
-                                        -
+                                    <td>
+                                        <a th:if="${data.keteranganUjian == 'DILUAR'}" class="btn btn-sm btn-primary"
+                                           th:href="@{/kewajiban/{id}/tlc(id=${data.id})}" target="_blank">Lihat</a>
+                                        <span th:if="${data.keteranganUjian == 'DIKAMPUS'}">-</span>
                                     </td>
                                     <td th:if="${bebasKewajiban.statusApproveTlc != bebasKewajiban.statusApproveTlc.APPROVED}">
                                         <form method="post" th:action="@{/kewajiban/mahasiswa/tlc/delete(sertifikat=${data.id})}">
-                                            <button type="submit" class="btn btn-sm btn-warning">
-                                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z"/></svg>
-                                            </button>
+                                            <button type="submit" class="btn btn-sm btn-warning">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                            <p th:if="${!#lists.isEmpty(listSertifikat)}" style="color: red;">*Maksimal file upload 1</p>
+                            <p th:if="${!#lists.isEmpty(listSertifikat)}" class="text-danger small">*Maksimal 1 file</p>
                         </div>
-                        <div class="tab-pane fade" id="tqc-tab-pane" role="tabpanel" aria-labelledby="tqc-tab" tabindex="0">
-                            <div th:if="${hTqc != null}">
-                                <b th:text="${#temporals.format(hTqc.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hTqc.statusApprove}"></b>
-                                <p th:text="${hTqc.komentar}"></p>
+
+                        <!-- TQC -->
+                        <div class="tab-pane fade" id="tqc-content">
+                            <div th:if="${hTqc != null}" class="p-3 bg-light rounded mb-3">
+                                <strong th:text="${#temporals.format(hTqc.waktuInput, 'dd-MM-yyyy HH:mm')} + ' : ' + ${hTqc.statusApprove}"></strong>
+                                <p class="mb-0" th:text="${hTqc.komentar}"></p>
                             </div>
+
                             <form method="post" th:action="@{/kewajiban/mahasiswa/tqc/update(bebasKewajiban=${bebasKewajiban.id})}" enctype="multipart/form-data">
-                                <div class="row ">
-                                    <div class="form-group pb-4">
-                                        <label for="file">Upload bukti Ziadah 30 Juz : </label>
-                                        <input type="file" id="file" name="file" class="form-control" required>
-                                    </div>
+                                <div class="mb-3">
+                                    <label>Upload Bukti Ziadah 30 Juz</label>
+                                    <input type="file" name="file" class="form-control" required/>
                                 </div>
-                                <div class="d-grid d-md-flex justify-content-md-end">
-                                    <button type="submit" class="btn btn-info me-md-2">Simpan</button>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-info">Simpan</button>
                                 </div>
                             </form>
-                            <br>
-                            <table th:if="${!#lists.isEmpty(listMutqin)}" class="table table-hover">
+
+                            <table th:if="${!#lists.isEmpty(listMutqin)}" class="table table-hover mt-4">
                                 <thead>
                                 <tr>
                                     <th>Jenis</th>
@@ -384,66 +448,88 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="data, row : ${listMutqin}">
+                                <tr th:each="data : ${listMutqin}">
                                     <td th:text="${data.jenisTes}"></td>
                                     <td th:text="${data.keteranganUjian}"></td>
-                                    <td >
-                                        <a class="btn btn-sm btn-primary" target="_blank" th:href="@{/kewajiban/{sertifikat}/tlc(sertifikat=${data.id})}">lihat file</a>
-                                    </td>
-                                    <td th:if="${data.keteranganUjian.DIKAMPUS == data.keteranganUjian}">
-                                        -
+                                    <td>
+                                        <a class="btn btn-sm btn-primary" th:href="@{/kewajiban/{id}/tlc(id=${data.id})}" target="_blank">Lihat</a>
                                     </td>
                                     <td th:if="${bebasKewajiban.statusApproveTlc != bebasKewajiban.statusApproveTlc.APPROVED}">
                                         <form method="post" th:action="@{/kewajiban/mahasiswa/tlc/delete(sertifikat=${data.id})}">
-                                            <button type="submit" class="btn btn-sm btn-warning">
-                                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z"/></svg>
-                                            </button>
+                                            <button type="submit" class="btn btn-sm btn-warning">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                            <p th:if="${!#lists.isEmpty(listMutqin)}" style="color: red;">*Maksimal file upload 1</p>
+                            <p th:if="${!#lists.isEmpty(listMutqin)}" class="text-danger small">*Maksimal 1 file</p>
                         </div>
                     </div>
+                </div>
 
-                </div>
-                <div class="tab-pane fade" id="v-pills-akademik" role="tabpanel" aria-labelledby="v-pills-akademik-tab" tabindex="0">
-                    <p>Pastikan bahwa nama tersebut telah menyelesaikan tugas kewajiban ke bagian akademik, sebagai berikut: </p>
-                    <p><b>1. Beban studi(SKS) dari bagian akademik.</b></p>
-                    <p><b>2. Menyerahkan kartu mahasiswa (KTM).</b></p>
-                    <div class="d-grid d-md-flex justify-content-md-end">
-                        <a type="button" target="_blank" th:href="@{/kewajiban/mahasiswa/transcript(nim=${bebasKewajiban.mahasiswa.nim})}" class="btn btn-info me-md-2">Lihat Transkrip Nilai</a>
+                <!-- Tab Akademik -->
+                <div class="tab-pane fade" id="v-pills-akademik" role="tabpanel">
+                    <p>Pastikan mahasiswa telah menyelesaikan:</p>
+                    <ul>
+                        <li><strong>Beban studi (SKS)</strong> dari bagian akademik.</li>
+                        <li><strong>Menyerahkan Kartu Tanda Mahasiswa (KTM)</strong>.</li>
+                    </ul>
+                    <div class="text-end">
+                        <a th:href="@{/kewajiban/mahasiswa/transcript(nim=${bebasKewajiban.mahasiswa.nim})}"
+                           target="_blank" class="btn btn-info">Lihat Transkrip Nilai</a>
                     </div>
-                    <br><br>
-                    <div th:if="${hAkademik != null}">
-                        <b th:text="${#temporals.format(hAkademik.waktuInput, 'dd-MM-yyyy HH:mm') + ' : ' + hAkademik.statusApprove}"></b>
-                        <p th:text="${hAkademik.komentar}"></p>
+                    <div th:if="${hAkademik != null}" class="mt-4 p-3 bg-light rounded">
+                        <strong th:text="${#temporals.format(hAkademik.waktuInput, 'dd-MM-yyyy HH:mm')} + ' : ' + ${hAkademik.statusApprove}"></strong>
+                        <p class="mb-0 mt-1" th:text="${hAkademik.komentar}"></p>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="v-pills-complete" role="tabpanel" aria-labelledby="v-pills-complete-tab" tabindex="0">
-                    Step Complete masih dalam proses...
-                    <!-- th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.APPROVED}" -->
-<!--                    <a th:href="@{/cetakSkl (bebasKewajiban=${bebasKewajiban.id})}" class="btn btn-success">Download SKL</a>-->
+
+                <!-- Tab Complete -->
+                <div class="tab-pane fade" id="v-pills-complete" role="tabpanel">
+                    <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.APPROVED}" class="text-center py-5">
+                        <h3 class="text-success mb-4">Bebas Kewajiban <strong>DISETUJUI</strong>!</h3>
+                        <p>Selamat! Anda telah memenuhi semua persyaratan.</p>
+                        <a th:href="@{/kewajiban/cetakSkl(bebasKewajiban=${bebasKewajiban.id})}"
+   class="btn btn-success btn-lg"
+   download>
+    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+        <path d="M.5 9.9a.5.5 0 0 1 .5-.5h4V2a.5.5 0 0 1 1 0v7.5h4a.5.5 0 0 1 .354.854l-4 4a.5.5 0 0 1-.708 0l-4-4A.5.5 0 0 1 .5 9.9z"/>
+        <path d="M15 13.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1 0-1h13a.5.5 0 0 1 .5.5z"/>
+    </svg>
+    Download SKL
+</a>
+                    </div>
+                    <div th:if="${bebasKewajiban.statusApprove != bebasKewajiban.statusApprove.APPROVED}" class="text-center py-5 text-muted">
+                        <h5>Sedang Dalam Proses</h5>
+                        <p>Pengajuan Anda sedang ditinjau. Mohon menunggu persetujuan dari semua unit.</p>
+                    </div>
                 </div>
-<!--                <div class="tab-pane fade" id="v-pills-reject" role="tabpanel" aria-labelledby="v-pills-reject-tab" tabindex="0">-->
-<!--                    Rejected by <div th:text="${#strings.substringAfter(bebasKewajiban.statusApprove,'_')}"></div>-->
-<!--                </div>-->
             </div>
         </div>
     </div>
 </div>
-<div class="mt-5"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-<script>
-    var stat = document.getElementById('status').value;
 
-    document.addEventListener('DOMContentLoaded', function (){
-        setTimeout(function (){
-            const alert = document.getElementById('berhasil');
-            alert.style.display = 'none';
-        }, 3000);
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto hide success alert
+        const alert = document.getElementById('berhasil');
+        if (alert) {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 4000);
+        }
+
+        // Auto open Complete tab jika APPROVED
+        const status = document.getElementById('status').value;
+        if (status === 'APPROVED') {
+            const completeTab = new bootstrap.Tab(document.getElementById('v-pills-complete-tab'));
+            completeTab.show();
+        }
     });
 </script>
+</body>
+</html>

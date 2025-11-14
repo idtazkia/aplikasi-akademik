@@ -135,6 +135,8 @@ public class BebasKewajibanController {
     public void detailBebasKewajiban(Model model, Authentication authentication){
 
         User user = currentUserService.currentUser(authentication);
+
+        System.out.println("user login : " + user);
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
 
         PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findByMahasiswa(mhs);
@@ -320,18 +322,23 @@ public class BebasKewajibanController {
     }
 
     // CETAK SKL
-    @GetMapping("/cetakSkl")
-    public String sklMahasiswa(@RequestParam PendaftaranBebasKewajiban bebasKewajiban, HttpServletResponse response) throws IOException {
+    @GetMapping("/kewajiban/cetakSkl")
+public void cetakSKL(@RequestParam("bebasKewajiban") String bebasKewajibanId, 
+                     HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/pdf");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=SKL "+bebasKewajiban.getMahasiswa().getNim()+"_"+bebasKewajiban.getMahasiswa().getNama()+".pdf";
+    PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findById(bebasKewajibanId)
+            .orElseThrow(() -> new RuntimeException("Data tidak ditemukan"));
 
-        response.setHeader(headerKey, headerValue);
-        bebasKewajibanService.cetakSKL(bebasKewajiban, response);
+    // Set header untuk download
+    String fileName = "SKL_" + bebasKewajiban.getMahasiswa().getNim() + 
+                      "_" + bebasKewajiban.getMahasiswa().getNama().replace(" ", "_") + ".pdf";
 
-        return "redirect:/kewajiban/mahasiswa/detail";
-    }
+    response.setContentType("application/pdf");
+    response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+
+    // Panggil service untuk generate PDF
+    bebasKewajibanService.cetakSKL(bebasKewajiban, response.getOutputStream());
+}
 
     // halaman admin
 
