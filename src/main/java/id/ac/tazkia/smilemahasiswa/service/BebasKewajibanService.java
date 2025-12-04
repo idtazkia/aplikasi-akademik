@@ -53,6 +53,7 @@ public class BebasKewajibanService {
     @Autowired
     BebasKewajibanDao bebasKewajibanDao;
 
+    @Autowired
     KewajibanPerpusDao kewajibanPerpusDao;
 
     @Autowired
