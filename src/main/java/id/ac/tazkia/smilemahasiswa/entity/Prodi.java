@@ -67,4 +67,6 @@ public class Prodi {
         @JoinTable(name = "prodi_program", joinColumns = @JoinColumn(name = "id_prodi"), inverseJoinColumns = @JoinColumn(name = "id_program"))
         private Set<Program> programs;
 
+        private String gelar;
+
 }

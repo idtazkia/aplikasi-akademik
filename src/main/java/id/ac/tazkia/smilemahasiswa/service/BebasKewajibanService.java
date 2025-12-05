@@ -436,7 +436,7 @@ public class BebasKewajibanService {
         p2.add(new Chunk(bebasKewajiban.getMahasiswa().getIdProdi().getFakultas().getNamaFakultas(), fStandard));
         p2.add(new Chunk(" di Universitas Islam Tazkia dan telah dinyatakan ", fStandard));
         p2.add(new Chunk("LULUS ", fontB));
-        p2.add(new Chunk(" untuk menyandang gelar Sarjana Akuntansi (S.Akun)", fStandard));
+        p2.add(new Chunk(" untuk menyandang gelar " + bebasKewajiban.getMahasiswa().getIdProdi().getGelar(), fStandard));
         document.add(p2);
         document.add(new Paragraph("\n"));
 
