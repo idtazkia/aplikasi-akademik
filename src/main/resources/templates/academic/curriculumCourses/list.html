@@ -957,13 +957,9 @@
                             <strong class="text-black">Prodi:</strong> <span class="text-black" th:text="${selected.namaProdi}"></span><br>
                         </div>
                         
-                        <!-- Pilih Semester -->
-                        <div class="form-group">
-                            <label for="syncSemester">Pilih Semester</label>
-                            <select class="form-control" id="syncSemester">
-                                <option value="">Semua Semester</option>
-                                <option th:each="sem : ${availableSemesters}" th:value="${sem}" th:text="'Semester ' + ${sem}"></option>
-                            </select>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i> Sync batch akan memproses <strong>semua</strong> matakuliah kurikulum yang belum di-sync.
+                            <!-- <br><small>Untuk sync per matakuliah, gunakan tombol <span class="badge badge-info"><i class="fas fa-upload"></i></span> di kolom Feeder pada tabel.</small> -->
                         </div>
                         
                         <!-- Progress Section (hidden initially) -->
@@ -1161,7 +1157,7 @@
                 html += '<div class="alert alert-danger"><strong><i class="fas fa-times-circle"></i> Gagal (' + response.failedList.length + '):</strong>';
                 html += '<ul class="mb-0 mt-2" style="max-height: 150px; overflow-y: auto;">';
                 response.failedList.forEach(function(item) {
-                    html += '<li>' + item.kode + ' - ' + item.nama + '<br><small class="text-muted">' + item.error + '</small></li>';
+                    html += '<li>' + item.kode + ' - ' + item.nama + '<br><small class="text-white">' + item.error + '</small></li>';
                 });
                 html += '</ul></div>';
             }

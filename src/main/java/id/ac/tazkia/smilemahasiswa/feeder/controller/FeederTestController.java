@@ -1250,7 +1250,10 @@ public class FeederTestController {
         record.put("semester", semester != null ? semester : 1);
 
         // apakah_wajib diambil dari enum Akses
-        int apakahWajib = akses != null ? akses.getApakahWajib() : 0;
+        int apakahWajib = 0;
+        if (akses != null) {
+            apakahWajib = akses.getApakahWajib();
+        }
         record.put("apakah_wajib", apakahWajib);
 
         log.info("InsertMatkulKurikulum - id_kurikulum: {}, id_matkul: {}, semester: {}, apakah_wajib: {}",
