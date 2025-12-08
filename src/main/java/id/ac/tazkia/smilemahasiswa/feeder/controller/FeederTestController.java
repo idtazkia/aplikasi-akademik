@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -428,7 +429,7 @@ public class FeederTestController {
                         "namaProdi", p.getNamaProdi(),
                         "kodePddikti", p.getKodePddikti() != null ? p.getKodePddikti() : "",
                         "hasKodePddikti", p.getKodePddikti() != null && !p.getKodePddikti().isEmpty()))
-                .toList();
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(Map.of(
                 "total", result.size(),
@@ -462,7 +463,7 @@ public class FeederTestController {
                         "namaKurikulum", k.getNamaKurikulum(),
                         "tahunKurikulum", k.getTahunKurikulum() != null ? k.getTahunKurikulum() : "",
                         "status", k.getStatus().toString()))
-                .toList();
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
@@ -927,8 +928,7 @@ public class FeederTestController {
         if (mk.isSyncedToFeeder()) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
-                    "message", "MatakuliahKurikulum sudah di-sync ke Feeder",
-                    "idPddikti", mk.getIdPddikti()));
+                    "message", "MatakuliahKurikulum sudah di-sync ke Feeder"));
         }
 
         // 2. Validasi kurikulum & prodi
