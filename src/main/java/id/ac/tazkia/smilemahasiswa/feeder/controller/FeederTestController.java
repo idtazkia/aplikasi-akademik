@@ -834,48 +834,24 @@ public class FeederTestController {
     /**
      * Helper: Search matakuliah di Feeder
      * Logika:
-     * 1. Cari dengan prodi dulu (kode + prodi, atau nama + prodi)
-     * 2. Jika tidak ada, cari tanpa prodi dan ambil 1
+     * Cari dengan kombinasi: kode + nama (like) + prodi
+     * Jika tidak ditemukan → harus create baru
      */
     private Map<String, Object> searchMatkulInFeeder(String kode, String nama, String idProdi) {
-        // === Step 1: Cari dengan filter prodi ===
-
-        // Prioritas 1: Search by kode + prodi
-        if (kode != null && !kode.isEmpty()) {
-            String filter = String.format("kode_mata_kuliah='%s' And id_prodi='%s'", kode, idProdi);
-            Map<String, Object> result = executeSearch(filter, "KODE_PRODI");
-            if (result != null)
-                return result;
-        }
-
-        // Prioritas 2: Search by nama + prodi
-        if (nama != null && !nama.isEmpty()) {
+        // Search dengan kombinasi: kode + nama (like) + prodi
+        if (kode != null && !kode.isEmpty() && nama != null && !nama.isEmpty()) {
             String escapedNama = nama.replace("'", "''");
-            String filter = String.format("nama_mata_kuliah like '%%%s%%' And id_prodi='%s'", escapedNama, idProdi);
-            Map<String, Object> result = executeSearch(filter, "NAMA_PRODI");
-            if (result != null)
+            String filter = String.format("kode_mata_kuliah='%s' And nama_mata_kuliah like '%%%s%%' And id_prodi='%s'",
+                    kode, escapedNama, idProdi);
+            log.info("Searching matakuliah with filter: {}", filter);
+            Map<String, Object> result = executeSearch(filter, "KODE_NAMA_PRODI");
+            if (result != null) {
                 return result;
+            }
         }
 
-        // === Step 2: Cari tanpa prodi (ambil 1) ===
-
-        // Prioritas 3: Search by kode saja
-        if (kode != null && !kode.isEmpty()) {
-            String filter = String.format("kode_mata_kuliah='%s'", kode);
-            Map<String, Object> result = executeSearch(filter, "KODE_TANPA_PRODI");
-            if (result != null)
-                return result;
-        }
-
-        // Prioritas 4: Search by nama saja
-        if (nama != null && !nama.isEmpty()) {
-            String escapedNama = nama.replace("'", "''");
-            String filter = String.format("nama_mata_kuliah like '%%%s%%'", escapedNama);
-            Map<String, Object> result = executeSearch(filter, "NAMA_TANPA_PRODI");
-            if (result != null)
-                return result;
-        }
-
+        // Tidak ditemukan → return null (akan di-create baru)
+        log.info("Matakuliah tidak ditemukan di Feeder - kode: {}, nama: {}, prodi: {}", kode, nama, idProdi);
         return null;
     }
 
@@ -929,6 +905,13 @@ public class FeederTestController {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "MatakuliahKurikulum sudah di-sync ke Feeder"));
+        }
+
+        // Cek apakah SKS 0 (tidak perlu di-sync)
+        if (mk.getJumlahSks() == null || mk.getJumlahSks() == 0) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "MatakuliahKurikulum dengan SKS 0 tidak perlu di-sync ke Feeder"));
         }
 
         // 2. Validasi kurikulum & prodi
@@ -998,6 +981,7 @@ public class FeederTestController {
         }
 
         String idMatkulKurikulumFeeder = (String) insertMkResult.get("idMatkulKurikulum");
+        boolean alreadyExistsInFeeder = Boolean.TRUE.equals(insertMkResult.get("alreadyExists"));
 
         // 6. Update statusFeeder di lokal
         mk.setStatusFeeder(StatusRecord.AKTIF);
@@ -1005,7 +989,12 @@ public class FeederTestController {
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("success", true);
-        response.put("message", "Berhasil insert MatkulKurikulum ke Feeder");
+        if (alreadyExistsInFeeder) {
+            response.put("message", "Data sudah ada di Feeder, status lokal diupdate menjadi AKTIF");
+        } else {
+            response.put("message", "Berhasil insert MatkulKurikulum ke Feeder");
+        }
+        response.put("alreadyExistsInFeeder", alreadyExistsInFeeder);
         response.put("matakuliahKurikulum", Map.of(
                 "idLokal", mk.getId(),
                 "statusFeeder", "AKTIF",
@@ -1072,22 +1061,31 @@ public class FeederTestController {
                     StatusRecord.AKTIF, kurikulum);
         }
 
-        // Filter yang belum sync
+        // Filter yang belum sync DAN SKS > 0
         List<MatakuliahKurikulum> unsyncedList = lokalList.stream()
                 .filter(mk -> !mk.isSyncedToFeeder())
+                .filter(mk -> mk.getJumlahSks() != null && mk.getJumlahSks() > 0)
                 .collect(java.util.stream.Collectors.toList());
+
+        // Hitung yang sudah sync dan SKS 0
+        long alreadySyncedCount = lokalList.stream().filter(MatakuliahKurikulum::isSyncedToFeeder).count();
+        long sksZeroCount = lokalList.stream()
+                .filter(mk -> mk.getJumlahSks() == null || mk.getJumlahSks() == 0)
+                .count();
 
         if (unsyncedList.isEmpty()) {
             return ResponseEntity.ok(Map.of(
                     "success", true,
-                    "message", "Semua matakuliah kurikulum sudah di-sync",
+                    "message", "Tidak ada matakuliah kurikulum yang perlu di-sync",
                     "total", lokalList.size(),
-                    "alreadySynced", lokalList.size()));
+                    "alreadySynced", alreadySyncedCount,
+                    "skippedSksZero", sksZeroCount));
         }
 
         // 3. Process batch
         List<Map<String, Object>> successList = new ArrayList<>();
         List<Map<String, Object>> failedList = new ArrayList<>();
+        List<Map<String, Object>> skippedList = new ArrayList<>();
         int matkulInsertedCount = 0;
 
         for (MatakuliahKurikulum mk : unsyncedList) {
@@ -1132,6 +1130,7 @@ public class FeederTestController {
                 }
 
                 String idMatkulKurikulumFeeder = (String) insertMkResult.get("idMatkulKurikulum");
+                boolean alreadyExistsInFeeder = Boolean.TRUE.equals(insertMkResult.get("alreadyExists"));
 
                 // Update lokal
                 mk.setStatusFeeder(StatusRecord.AKTIF);
@@ -1144,6 +1143,7 @@ public class FeederTestController {
                 successItem.put("nama", namaLokal);
                 successItem.put("semester", mk.getSemester());
                 successItem.put("matkulInserted", matkulInserted);
+                successItem.put("alreadyExistsInFeeder", alreadyExistsInFeeder);
                 successList.add(successItem);
 
             } catch (Exception e) {
@@ -1165,7 +1165,8 @@ public class FeederTestController {
         response.put("semester", semester != null ? semester : "ALL");
         response.put("summary", Map.of(
                 "total", lokalList.size(),
-                "alreadySynced", lokalList.size() - unsyncedList.size(),
+                "alreadySynced", alreadySyncedCount,
+                "skippedSksZero", sksZeroCount,
                 "processed", unsyncedList.size(),
                 "success", successList.size(),
                 "failed", failedList.size(),
@@ -1253,11 +1254,14 @@ public class FeederTestController {
         int apakahWajib = 0;
         if (akses != null) {
             apakahWajib = akses.getApakahWajib();
+            log.info("Akses: {} -> getApakahWajib(): {}", akses.name(), apakahWajib);
+        } else {
+            log.info("Akses is NULL, using default apakahWajib = 0");
         }
         record.put("apakah_wajib", apakahWajib);
 
-        log.info("InsertMatkulKurikulum - id_kurikulum: {}, id_matkul: {}, semester: {}, apakah_wajib: {}",
-                idKurikulum, idMatkul, semester, apakahWajib);
+        log.info("InsertMatkulKurikulum - id_kurikulum: {}, id_matkul: {}, semester: {}, akses: {}, apakah_wajib: {}",
+                idKurikulum, idMatkul, semester, akses, apakahWajib);
 
         FeederResponse<Object> response = feederService.insert("InsertMatkulKurikulum", record);
 
@@ -1287,10 +1291,30 @@ public class FeederTestController {
 
             return Map.of(
                     "success", true,
+                    "alreadyExists", false,
                     "idMatkulKurikulum", idMatkulKurikulum != null ? idMatkulKurikulum : "");
         } else {
+            // Cek apakah error karena data sudah ada di Feeder
+            String errorDesc = response.getErrorDesc() != null ? response.getErrorDesc().toLowerCase() : "";
+            boolean alreadyExists = errorDesc.contains("sudah ada") ||
+                    errorDesc.contains("already exist") ||
+                    errorDesc.contains("duplicate") ||
+                    errorDesc.contains("telah ada") ||
+                    errorDesc.contains("sudah terdaftar");
+
+            if (alreadyExists) {
+                log.info(
+                        "Data MatkulKurikulum sudah ada di Feeder (id_kurikulum: {}, id_matkul: {}), marking as success",
+                        idKurikulum, idMatkul);
+                return Map.of(
+                        "success", true,
+                        "alreadyExists", true,
+                        "idMatkulKurikulum", idKurikulum + "_" + idMatkul);
+            }
+
             return Map.of(
                     "success", false,
+                    "alreadyExists", false,
                     "error", response.getErrorDesc() != null ? response.getErrorDesc() : "Unknown error");
         }
     }
