@@ -1250,7 +1250,7 @@ public class FeederTestController {
         record.put("semester", semester != null ? semester : 1);
 
         // apakah_wajib: 1 = Wajib (WAJIB_PRODI), 0 = Tidak Wajib (selain WAJIB_PRODI)
-        int apakahWajib = (akses == Akses.WAJIB_PRODI) ? 1 : 0;
+        int apakahWajib = (akses == Akses.WAJIB_UMUM) ? 1 : 0;
         record.put("apakah_wajib", apakahWajib);
 
         log.info("InsertMatkulKurikulum - id_kurikulum: {}, id_matkul: {}, semester: {}, apakah_wajib: {}",
