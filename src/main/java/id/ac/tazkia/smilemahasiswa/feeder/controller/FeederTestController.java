@@ -1248,12 +1248,12 @@ public class FeederTestController {
         Map<String, Object> record = new LinkedHashMap<>();
         record.put("id_kurikulum", idKurikulum);
         record.put("id_matkul", idMatkul);
-        record.put("semester", semester != null ? semester : 1);
+        record.put("semester", semester != null ? String.valueOf(semester) : "1");
 
-        // apakah_wajib diambil dari enum Akses
-        int apakahWajib = 0;
+        // apakah_wajib diambil dari enum Akses - kirim sebagai String
+        String apakahWajib = "0";
         if (akses != null) {
-            apakahWajib = akses.getApakahWajib();
+            apakahWajib = String.valueOf(akses.getApakahWajib());
             log.info("Akses: {} -> getApakahWajib(): {}", akses.name(), apakahWajib);
         } else {
             log.info("Akses is NULL, using default apakahWajib = 0");
