@@ -1,0 +1,3924 @@
+{
+	"info": {
+		"_postman_id": "192db7fa-7680-46b0-9374-4f73ea5c1011",
+		"name": "DOC API Feeder",
+		"description": "Dokumentasi penggunaan API PDDIKTI Feeder versi 2.1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50064689",
+		"_collection_link": "https://www.postman.com/winter-meteor-495675-1/feeder-unu/collection/3oivat2/doc-api-feeder?action=share&source=collection_link&creator=50064689"
+	},
+	"item": [
+		{
+			"name": "Umum",
+			"item": [
+				{
+					"name": "GetToken",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetToken\",\n\t\"username\": \"061028\",\n\t\"password\": \"19061974\"\n}"
+						},
+						"url": {
+							"raw": "http://103.183.74.122:8100/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"103",
+								"183",
+								"74",
+								"122"
+							],
+							"port": "8100",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{username}:</b> String</li>\n\t<li><b>{password}:</b> String</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetToken",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetToken\",\n\t\"username\": \"user_adminpt\",\n\t\"password\": \"password_adminpt\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "86",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 04:46:50 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"token\":\"12b7250c9029f3c33a1c27e5432e21d9\"}}"
+						}
+					]
+				},
+				{
+					"name": "GetDictionary",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetDictionary\",\n\t\"token\": \"{token}\",\n\t\"fungsi\": \"{namaFungsi}\"\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}:</b> String</li>\n\t<li><b>{namaFungsi}: </b> String</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetDictionary",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetDictionary\",\n\t\"token\": \"12b7250c9029f3c33a1c27e5432e21d9\",\n\t\"fungsi\": \"GetToken\"\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "138",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 04:52:42 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"request\":{\"username\":\"\",\"password\":\"\"},\"response\":{\"error_code\":\"\",\"error_desc\":\"\",\"data\":\"\"}}}"
+						}
+					]
+				},
+				{
+					"name": "GetPeriode",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetPeriode\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}: </b> String</li>\n\t<li><b>{filter}: </b> String</li>\n\t<li><b>{order}: </b> String</li>\n\t<li><b>{limit}: </b> Integer</li>\n\t<li><b>{offset}: </b> Integer</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetPeriode",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetPeriode\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1986",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 05:27:12 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":[{\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\"kode_prodi\":\"41401\",\"nama_program_studi\":\"Mekanisasi Perikanan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20162\"},{\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\"kode_prodi\":\"41401\",\"nama_program_studi\":\"Mekanisasi Perikanan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20163\"},{\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\"kode_prodi\":\"41401\",\"nama_program_studi\":\"Mekanisasi Perikanan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20171\"},{\"id_prodi\":\"5b420e5c-31cc-4c09-8e22-4878f5d7ccdb\",\"kode_prodi\":\"54443\",\"nama_program_studi\":\"Teknik Penangkapan Ikan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20162\"},{\"id_prodi\":\"5b420e5c-31cc-4c09-8e22-4878f5d7ccdb\",\"kode_prodi\":\"54443\",\"nama_program_studi\":\"Teknik Penangkapan Ikan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20163\"},{\"id_prodi\":\"5b420e5c-31cc-4c09-8e22-4878f5d7ccdb\",\"kode_prodi\":\"54443\",\"nama_program_studi\":\"Teknik Penangkapan Ikan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20171\"},{\"id_prodi\":\"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\"kode_prodi\":\"54447\",\"nama_program_studi\":\"Teknik Budidaya Perikanan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20162\"},{\"id_prodi\":\"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\"kode_prodi\":\"54447\",\"nama_program_studi\":\"Teknik Budidaya Perikanan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20163\"},{\"id_prodi\":\"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\"kode_prodi\":\"54447\",\"nama_program_studi\":\"Teknik Budidaya Perikanan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"D3\",\"periode_pelaporan\":\"20171\"},{\"id_prodi\":\"a4028c93-91f2-4b8a-93f6-e0e1dca15457\",\"kode_prodi\":null,\"nama_program_studi\":\"Pranata Laboratorium Pendidikan\",\"status_prodi\":\"A\",\"jenjang_pendidikan\":\"(tidak diisi)\",\"periode_pelaporan\":\"20162\"}]}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "View PT",
+			"item": [
+				{
+					"name": "GetAllPT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetAllPT\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameter</b>\n<ul>\n\t<li><b>{token}</b> : String</li>\n\t<li><b>{filter}</b> : String</li>\n\t<li><b>{order}</b> : String</li>\n\t<li><b>{limit}</b> : Integer</li>\n\t<li><b>{offset}</b> : Integer</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetAllPT",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetAllPT\",\n\t\"token\": \"12b7250c9029f3c33a1c27e5432e21d9\",\n\t\"filter\": \"kode_perguruan_tinggi='344067'\",\n\t\"order\": \"\",\n\t\"limit\": 1,\n\t\"offset\": 0\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "222",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 04:55:59 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error_code\": \"0\",\n    \"error_desc\": \"\",\n    \"data\": [\n        {\n            \"id_perguruan_tinggi\": \"4gf4fcd5-69e0-4eca-b381-db314acdfdsw\",\n            \"kode_perguruan_tinggi\": \"344067  \",\n            \"nama_perguruan_tinggi\": \"Akademi Keperawatan Luwuk\",\n            \"nama_singkat\": \"AKPER Luwuk\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "GetProfilPT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetProfilPT\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}:</b> String</li>\n    <li><b>{filter}:</b> String</li>\n    <li><b>{order}:</b> String</li>\n    <li><b>{limit}:</b> Integer</li>\n    <li><b>{offset}:</b> Integer</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetProfilPT",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetProfilPT\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "908",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 05:03:00 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error_code\": \"0\",\n    \"error_desc\": \"\",\n    \"data\": [\n        {\n            \"id_perguruan_tinggi\": \"4gf4fcd5-69e0-4eca-b381-db314acdfdsw\",\n            \"kode_perguruan_tinggi\": \"344067  \",\n            \"nama_perguruan_tinggi\": \"Akademi Keperawatan Luwuk\",\n            \"telepon\": null,\n            \"faximile\": \"----\",\n            \"email\": null,\n            \"website\": null,\n            \"jalan\": null,\n            \"dusun\": null,\n            \"rt_rw\": null,\n            \"kelurahan\": \"-\",\n            \"kode_pos\": \"94700\",\n            \"id_wilayah\": \"000000  \",\n            \"nama_wilayah\": \"-\",\n            \"lintang_bujur\": null,\n            \"bank\": null,\n            \"unit_cabang\": null,\n            \"nomor_rekening\": null,\n            \"mbs\": \"0\",\n            \"luas_tanah_milik\": \"0\",\n            \"luas_tanah_bukan_milik\": \"0\",\n            \"sk_pendirian\": null,\n            \"tanggal_sk_pendirian\": null,\n            \"id_status_milik\": \"1\",\n            \"nama_status_milik\": \"Pemerintah Pusat\",\n            \"status_perguruan_tinggi\": \"A\",\n            \"sk_izin_operasional\": null,\n            \"tanggal_izin_operasional\": null\n        }\n    ]\n}\n"
+						}
+					]
+				},
+				{
+					"name": "GetCountPerguruanTinggi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetCountPerguruanTinggi\",\n\t\"token\": \"7915e0aef495647fa084c957984f516a\",\n\t\"filter\": \"\"\n}"
+						},
+						"url": {
+							"raw": "https://10.211.55.3/ws/live2.php",
+							"protocol": "https",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "View Prodi",
+			"item": [
+				{
+					"name": "GetAllProdi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetAllProdi\",\n\t\"token\": \"7915e0aef495647fa084c957984f516a\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": \"\",\n\t\"offset\": \"\"\n}"
+						},
+						"url": {
+							"raw": "https://feeder.akper-luwuk.ac.id/ws/live2.php",
+							"protocol": "https",
+							"host": [
+								"feeder",
+								"akper-luwuk",
+								"ac",
+								"id"
+							],
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}: </b> String</li>\n\t<li><b>{filter}: </b> String</li>\n\t<li><b>{order}: </b> String</li>\n\t<li><b>{limit}: </b> Integer</li>\n\t<li><b>{offset}: </b> Integer</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetAllProdi",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetAllProdi\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3606",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 05:23:41 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":[{\"id_perguruan_tinggi\":\"0cddb8be-9a5d-4d6b-a485-1008767660e3\",\"kode_perguruan_tinggi\":\"395001  \",\"nama_perguruan_tinggi\":\"Politeknik Kelautan dan Perikanan Sorong\",\"id_prodi\":\"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\"kode_program_studi\":\"54447\",\"nama_program_studi\":\"Teknik Budidaya Perikanan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"22\",\"nama_jenjang_pendidikan\":\"D3\"},{\"id_perguruan_tinggi\":\"0cddb8be-9a5d-4d6b-a485-1008767660e3\",\"kode_perguruan_tinggi\":\"395001  \",\"nama_perguruan_tinggi\":\"Politeknik Kelautan dan Perikanan Sorong\",\"id_prodi\":\"5b420e5c-31cc-4c09-8e22-4878f5d7ccdb\",\"kode_program_studi\":\"54443\",\"nama_program_studi\":\"Teknik Penangkapan Ikan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"22\",\"nama_jenjang_pendidikan\":\"D3\"},{\"id_perguruan_tinggi\":\"0cddb8be-9a5d-4d6b-a485-1008767660e3\",\"kode_perguruan_tinggi\":\"395001  \",\"nama_perguruan_tinggi\":\"Politeknik Kelautan dan Perikanan Sorong\",\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\"kode_program_studi\":\"41401\",\"nama_program_studi\":\"Mekanisasi Perikanan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"22\",\"nama_jenjang_pendidikan\":\"D3\"},{\"id_perguruan_tinggi\":\"f8dd0a7c-a200-4988-bc60-78951ae95d1e\",\"kode_perguruan_tinggi\":\"091002  \",\"nama_perguruan_tinggi\":\"Universitas Muslim Indonesia\",\"id_prodi\":\"2e816836-c34c-4646-b960-0273398976a5\",\"kode_program_studi\":\"54243\",\"nama_program_studi\":\"Budidaya Perairan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"30\",\"nama_jenjang_pendidikan\":\"S1\"},{\"id_perguruan_tinggi\":\"27532ae3-89d4-4000-b1f0-05952fa8956f\",\"kode_perguruan_tinggi\":\"091005  \",\"nama_perguruan_tinggi\":\"Universitas Kristen Indonesia Tomohon\",\"id_prodi\":\"49770f5a-7a99-46ce-b4d3-b050745b08d4\",\"kode_program_studi\":\"77201\",\"nama_program_studi\":\"Teologi Kristen Protestan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"30\",\"nama_jenjang_pendidikan\":\"S1\"},{\"id_perguruan_tinggi\":\"de2cf910-1b98-4e48-a665-4ca8f6005259\",\"kode_perguruan_tinggi\":\"001005  \",\"nama_perguruan_tinggi\":\"Universitas Hasanuddin\",\"id_prodi\":\"1fe6751d-f9f8-4c9e-915e-a97e5f066de4\",\"kode_program_studi\":\"54246\",\"nama_program_studi\":\"Pemanfaatan Sumber Daya Perikanan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"30\",\"nama_jenjang_pendidikan\":\"S1\"},{\"id_perguruan_tinggi\":\"828fb966-3733-430e-86ff-909b764e2523\",\"kode_perguruan_tinggi\":\"002003  \",\"nama_perguruan_tinggi\":\"Institut Pertanian Bogor\",\"id_prodi\":\"cd4260e7-8aae-4549-ac03-1134a7e35a32\",\"kode_program_studi\":\"54148\",\"nama_program_studi\":\"Teknologi Perikanan Laut\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"35\",\"nama_jenjang_pendidikan\":\"S2\"},{\"id_perguruan_tinggi\":\"828fb966-3733-430e-86ff-909b764e2523\",\"kode_perguruan_tinggi\":\"002003  \",\"nama_perguruan_tinggi\":\"Institut Pertanian Bogor\",\"id_prodi\":\"3c39e53c-c98f-4857-8a3a-c56f682f695c\",\"kode_program_studi\":\"54145\",\"nama_program_studi\":\"Pengelolaan Sumberdaya Pesisir Dan Lautan\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"35\",\"nama_jenjang_pendidikan\":\"S2\"},{\"id_perguruan_tinggi\":\"f4245e44-b1ae-4a7e-a762-041c4b8bd4c2\",\"kode_perguruan_tinggi\":\"141005  \",\"nama_perguruan_tinggi\":\"Universitas Kristen Papua\",\"id_prodi\":\"5ab1f70c-5aca-481f-8dec-d903a4cf1f3b\",\"kode_program_studi\":\"77101\",\"nama_program_studi\":\"Teologi (Akademik)\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"35\",\"nama_jenjang_pendidikan\":\"S2\"},{\"id_perguruan_tinggi\":\"89c82da3-7b28-4305-82c4-347dae042847\",\"kode_perguruan_tinggi\":\"002002  \",\"nama_perguruan_tinggi\":\"Institut Teknologi Sepuluh Nopember\",\"id_prodi\":\"7085c3d0-1964-48ce-88f6-4eb7636382c2\",\"kode_program_studi\":\"21101\",\"nama_program_studi\":\"Teknik Mesin\",\"status\":\"A\",\"id_jenjang_pendidikan\":\"35\",\"nama_jenjang_pendidikan\":\"S2\"}]}"
+						}
+					]
+				},
+				{
+					"name": "GetProdi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetProdi\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}: </b> String</li>\n\t<li><b>{filter}: </b> String</li>\n\t<li><b>{order}: </b> String</li>\n\t<li><b>{limit}: </b> Integer</li>\n\t<li><b>{offset}: </b> Integer</li>\n</ul>"
+					},
+					"response": []
+				},
+				{
+					"name": "GetCountProdi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetCountProdi\",\n\t\"token\": \"7915e0aef495647fa084c957984f516a\",\n\t\"filter\": \"\"\n}"
+						},
+						"url": {
+							"raw": "https://feeder.akper-luwuk.ac.id/ws/live2.php",
+							"protocol": "https",
+							"host": [
+								"feeder",
+								"akper-luwuk",
+								"ac",
+								"id"
+							],
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Mahasiswa",
+			"item": [
+				{
+					"name": "GetListMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetListMahasiswa\",\n\t\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9wZW5nZ3VuYSI6IjI0Njg5MWNiLTlmNWMtNDQyYy05Mzk3LTJhNGEwYTA5NTlkZSIsInVzZXJuYW1lIjoiMDY1MDI0Iiwibm1fcGVuZ2d1bmEiOiJQb2xpdGVrbmlrIEFUTUkiLCJ0ZW1wYXRfbGFoaXIiOiIgIiwidGdsX2xhaGlyIjoiMTg5OS0xMi0zMVQxNjo1Mjo0OC4wMDBaIiwiamVuaXNfa2VsYW1pbiI6IkwiLCJhbGFtYXQiOiIgIiwieW0iOiIgIiwic2t5cGUiOiIgIiwibm9fdGVsIjoiICIsImFwcHJvdmFsX3BlbmdndW5hIjoiMSIsImFfYWt0aWYiOiIxIiwidGdsX2dhbnRpX3B3ZCI6bnVsbCwiaWRfc2RtX3BlbmdndW5hIjpudWxsLCJpZF9wZF9wZW5nZ3VuYSI6bnVsbCwiaWRfd2lsIjoiOTk5OTk5ICAiLCJsYXN0X3VwZGF0ZSI6IjIwMjItMDMtMzBUMTA6MDI6MzAuNzM3WiIsInNvZnRfZGVsZXRlIjoiMCIsImxhc3Rfc3luYyI6IjIwMjItMDMtMzBUMTA6MDI6MzAuNzM3WiIsImlkX3VwZGF0ZXIiOiJmYmVjMGVkZC1iNzk2LTRjZmYtYWIwYi1hY2Q4MGFlNTA3N2QiLCJjc2YiOiIxNzc1MDMwMTcyIiwidG9rZW5fcmVnIjpudWxsLCJqYWJhdGFuIjpudWxsLCJ0Z2xfY3JlYXRlIjoiMTk2OS0xMi0zMVQxNzowMDowMC4wMDBaIiwiaWRfcGVyYW4iOjMsIm5tX3BlcmFuIjoiQWRtaW4gUFQiLCJpZF9zcCI6IjBiZjA2YWFjLWRhY2EtNDU5My05MDQxLTg5YWM2MTNiYzJiOCIsImlhdCI6MTY0ODk2MDc3OSwiZXhwIjoxNjQ4OTYyNTc5fQ.qr8fw3PINYYlBYdyiUaPElwSGRf4-KoDoar9eyJy0hA\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": ,\n\t\"offset\": \n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}: </b> String</li>\n\t<li><b>{filter}: </b> String</li>\n\t<li><b>{order}: </b> String</li>\n\t<li><b>{limit}: </b> Integer</li>\n\t<li><b>{offset}: </b> Integer</li>\n</ul>"
+					},
+					"response": []
+				},
+				{
+					"name": "GetBiodataMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetBiodataMahasiswa\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}: </b> String</li>\n\t<li><b>{filter}: </b> String</li>\n\t<li><b>{order}: </b> String</li>\n\t<li><b>{limit}: </b> Integer</li>\n\t<li><b>{offset}: </b> Integer</li>\n</ul>"
+					},
+					"response": [
+						{
+							"name": "GetBiodataMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetBiodataMahasiswa\",\n\t\"token\": \"{token}\",\n\t\"filter\": \"{filter}\",\n\t\"order\": \"{order}\",\n\t\"limit\": {limit},\n\t\"offset\": {offset}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1713",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 05:50:46 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error_code\": \"0\",\n    \"error_desc\": \"\",\n    \"data\": [\n        {\n            \"nama_mahasiswa\": \"Ridwan Ayuba\",\n            \"jenis_kelamin\": \"L\",\n            \"tempat_lahir\": \"Banggai\",\n            \"tanggal_lahir\": \"1980-11-01\",\n            \"id_mahasiswa\": \"81638332-8d2j-9g1k-ghe6-00901c9b8f4b\",\n            \"id_agama\": \"1\",\n            \"nama_agama\": \"Islam\",\n            \"nik\": \"1234567890123456\",\n            \"nisn\": null,\n            \"npwp\": null,\n            \"id_negara\": \"ID\",\n            \"kewarganegaraan\": \"Indonesia\",\n            \"jalan\": null,\n            \"dusun\": \"Luwuk\",\n            \"rt\": null,\n            \"rw\": null,\n            \"kelurahan\": \"Luwuk\",\n            \"kode_pos\": null,\n            \"id_wilayah\": \"000000  \",\n            \"nama_wilayah\": \"-\",\n            \"id_jenis_tinggal\": \"1\",\n            \"nama_jenis_tinggal\": \"Bersama orang tua\",\n            \"id_alat_transportasi\": \"13\",\n            \"nama_alat_transportasi\": \"Sepeda motor\",\n            \"telepon\": null,\n            \"handphone\": null,\n            \"email\": null,\n            \"penerima_kps\": \"0\",\n            \"nomor_kps\": null,\n            \"nik_ayah\": \"0\",\n            \"nama_ayah\": null,\n            \"tanggal_lahir_ayah\": null,\n            \"id_pendidikan_ayah\": \"6\",\n            \"nama_pendidikan_ayah\": \"SMA / sederajat\",\n            \"id_pekerjaan_ayah\": \"5\",\n            \"nama_pekerjaan_ayah\": \"PNS/TNI/Polri\",\n            \"id_penghasilan_ayah\": \"14\",\n            \"nama_penghasilan_ayah\": \"Rp. 2,000,000 - Rp. 4,999,999\",\n            \"nik_ibu\": \"0\",\n            \"nama_ibu\": \"Ibu Saya\",\n            \"tanggal_lahir_ibu\": \"1976-04-15\",\n            \"id_pendidikan_ibu\": \"3\",\n            \"nama_pendidikan_ibu\": \"Putus SD\",\n            \"id_pekerjaan_ibu\": \"1\",\n            \"nama_pekerjaan_ibu\": \"Tidak bekerja\",\n            \"id_penghasilan_ibu\": null,\n            \"nama_penghasilan_ibu\": null,\n            \"nama_wali\": null,\n            \"tanggal_lahir_wali\": null,\n            \"id_pendidikan_wali\": null,\n            \"nama_pendidikan_wali\": null,\n            \"id_pekerjaan_wali\": null,\n            \"nama_pekerjaan_wali\": null,\n            \"id_penghasilan_wali\": null,\n            \"nama_penghasilan_wali\": null,\n            \"id_kebutuhan_khusus_mahasiswa\": \"0\",\n            \"nama_kebutuhan_khusus_mahasiswa\": \"Tidak ada\",\n            \"id_kebutuhan_khusus_ayah\": \"0\",\n            \"nama_kebutuhan_khusus_ayah\": \"Tidak ada\",\n            \"id_kebutuhan_khusus_ibu\": \"0\",\n            \"nama_kebutuhan_khusus_ibu\": \"Tidak ada\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "InsertBiodataMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"InsertBiodataMahasiswa\",\n\t\"token\": \"a24b6fd935d16df4f0c0db35c6d4e7ce\",\n\t\"record\": {\n\t\t\"nama_mahasiswa\": \"Pangeran Khairan Asshabir Y Ayuba\",\n\t\t\"jenis_kelamin\": \"L\",\n\t\t\"tempat_lahir\": \"Banggai\",\n\t\t\"tanggal_lahir\": \"2009-09-02\",\n\t\t\"id_agama\": 1,\n\t\t\"nik\": \"8208060305400002\",\n\t\t\"nisn\": null,\n\t\t\"npwp\": null,\n\t\t\"kewarganegaraan\": \"ID\",\n\t\t\"jalan\": \"Jl. Burung Mas Kompleks Gorontalo\",\n\t\t\"dusun\": null,\n\t\t\"rt\": 5,\n\t\t\"rw\": 0,\n\t\t\"kelurahan\": \"Kelurahan Tano Bonunungan\",\n\t\t\"kode_pos\": null,\n\t\t\"id_wilayah\": 180102,\n\t\t\"id_jenis_tinggal\": 1,\n\t\t\"id_alat_transportasi\": null,\n\t\t\"telepon\": null,\n\t\t\"handphone\": null,\n\t\t\"email\": null,\n\t\t\"penerima_kps\": 0,\n\t\t\"nomor_kps\": null,\n\t\t\"nik_ayah\": \"8208060305400001\",\n\t\t\"nama_ayah\": \"Yusuf Ayuba\",\n\t\t\"tanggal_lahir_ayah\": \"1980-08-23\",\n\t\t\"id_pendidikan_ayah\": 35,\n\t\t\"id_pekerjaan_ayah\": 6,\n\t\t\"id_penghasilan_ayah\": 13,\n\t\t\"nik_ibu\": \"7207022308800001\",\n\t\t\"nama_ibu_kandung\": \"Isfatian\",\n\t\t\"tanggal_lahir_ibu\": \"1982-11-23\",\n\t\t\"id_pendidikan_ibu\": 20,\n\t\t\"id_pekerjaan_ibu\": 9,\n\t\t\"id_penghasilan_ibu\": 14,\n\t\t\"nama_wali\": null,\n\t\t\"tanggal_lahir_wali\": null,\n\t\t\"id_pendidikan_wali\": null,\n\t\t\"id_pekerjaan_wali\": null,\n\t\t\"id_penghasilan_wali\": null,\n\t\t\"id_kebutuhan_khusus_mahasiswa\": 0,\n\t\t\"id_kebutuhan_khusus_ayah\": 0,\n\t\t\"id_kebutuhan_khusus_ibu\": 0\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBiodataMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBiodataMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"DeleteBiodataMahasiswa\",\n\t\"token\": \"ef99c2446a384fbc918f0b87bb8301d6\",\n\t\"key\": {\n\t\t\"id_mahasiswa\": \"d835a572-4d51-420c-a470-428be55c08b3\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Riwayat Pendidikan Mhs",
+			"item": [
+				{
+					"name": "InsertRiwayatPendidikanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"act\": \"InsertRiwayatPendidikanMahasiswa\",\n  \"token\": \"acf31c0465517c88108aad88d19c6291\",\n  \"record\": {\n    \"id_mahasiswa\": \"ff631c92-fac1-4f1c-b85c-17a2bc5e8566\",\n    \"nim\": \"09827\",\n    \"id_jenis_daftar\": 1,\n    \"id_jalur_daftar\": 5,\n    \"id_periode_masuk\": \"20181\",\n    \"tanggal_daftar\": \"2018-07-23\",\n    \"id_perguruan_tinggi\": \"0cddb8be-9a5d-4d6b-a485-1008767660e3\",\n    \"id_prodi\": \"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\n    \"id_bidang_minat\": \"\",\n    \"sks_diakui\": null,\n    \"id_perguruan_tinggi_asal\": null,\n    \"id_prodi_asal\": null,\n    \"id_pembiayaan\": null,\n    \"biaya_masuk\": 120393\n  }\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteRiwayatPendidikanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"DeleteRiwayatPendidikanMahasiswa\",\n\t\"token\": \"93483343bbe195701f12567140e9eccd\",\n\t\"key\": {\n\t\t\"id_registrasi_mahasiswa\": \"856748fd-63eb-4a4e-9704-aa39c58f13ab\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "DeleteRiwayatPendidikanMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"DeleteRiwayatPendidikanMahasiswa\",\n\t\"token\": \"93483343bbe195701f12567140e9eccd\",\n\t\"key\": {\n\t\t\"id_registrasi_mahasiswa\": \"856748fd-63eb-4a4e-9704-aa39c58f13ab\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "106",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 25 Jul 2018 13:22:49 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_registrasi_mahasiswa='856748fd-63eb-4a4e-9704-aa39c58f13ab'\"}"
+						}
+					]
+				},
+				{
+					"name": "UpdateRiwayatPendidikanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"UpdateRiwayatPendidikanMahasiswa\",\n\t\"token\": \"dcae58ada223e189abb4be3eb41e998f\",\n\t\"key\": {\n\t\t\"id_registrasi_mahasiswa\": \"d63649a3-d6fe-444a-923c-482af4e3f67e\"\n\t},\n\t\"record\": {\n\t\t\"id_mahasiswa\": \"9d97f295-1477-4a93-a235-37bd13ca71e4\",\n\t\t\"nim\": \"20334173\",\n\t\t\"id_jenis_daftar\": 1,\n\t\t\"id_jalur_daftar\": 1,\n\t\t\"id_periode_masuk\": \"20031\",\n\t\t\"tanggal_daftar\": \"2003-09-08\",\n\t\t\"id_perguruan_tinggi\": \"3dd4fcd5-69e0-4eca-b381-db314acdff8c\",\n\t\t\"id_prodi\": \"5d11bdfe-6be6-48c0-85fb-5f4440eef5c4\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "UpdateRiwayatPendidikanMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"UpdateRiwayatPendidikanMahasiswa\",\n\t\"token\": \"3683b44470f66a8fe2500acf8e66b40b\",\n\t\"key\": {\n\t\t\"id_registrasi_mahasiswa\": \"d63649a3-d6fe-444a-923c-482af4e3f67e\"\n\t},\n\t\"record\": {\n\t\t\"id_mahasiswa\": \"9d97f295-1477-4a93-a235-37bd13ca71e4\",\n\t\t\"nim\": \"20334173\",\n\t\t\"id_jenis_daftar\": 1,\n\t\t\"id_jalur_daftar\": 1,\n\t\t\"id_periode_masuk\": \"20031\",\n\t\t\"tanggal_daftar\": \"2003-09-08\",\n\t\t\"id_perguruan_tinggi\": \"3dd4fcd5-69e0-4eca-b381-db314acdff8c\",\n\t\t\"id_prodi\": \"5d11bdfe-6be6-48c0-85fb-5f4440eef5c4\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "106",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Sep 2018 06:15:55 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_registrasi_mahasiswa='d63649a3-d6fe-444a-923c-482af4e3f67e'\"}"
+						}
+					]
+				},
+				{
+					"name": "GetListRiwayatPendidikanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"act\":\"GetListRiwayatPendidikanMahasiswa\",\n    \"token\":\"b1a87f84d0cfc5ad1e827735a8883f4a\",\n    \"filter\":\"kode_mata_kuliah='MKK152'\",\n    \"order\":\"\",\n    \"limit\":null,\n    \"offset\":0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://feeder.unismuhluwuk.ac.id/ws/live2.php",
+							"protocol": "https",
+							"host": [
+								"feeder",
+								"unismuhluwuk",
+								"ac",
+								"id"
+							],
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Kurikulum",
+			"item": [
+				{
+					"name": "UpdateKurikulum",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"act\":\"UpdateKurikulum\",\n    \"token\":\"8230c4f72c065bd5c0cb382334eb8763\",\n    \"key\":{\"id_kurikulum\":\"d1e48667-0d84-4a8f-b168-c05beb95e4ff\"},\n    \"record\":{\n        \"nama_kurikulum\":\"KURIKULUM KKNI 2018\",\n        \"id_prodi\":\"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n        \"id_semester\":\"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n        \"jumlah_sks_lulus\":146,\n        \"jumlah_sks_wajib\":142,\n        \"jumlah_sks_pilihan\":142\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url-feeder}/ws/sandbox2.php",
+							"protocol": "http",
+							"host": [
+								"{{url-feeder}"
+							],
+							"path": [
+								"ws",
+								"sandbox2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertKurikulum",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"act\":\"InsertKurikulum\",\n    \"token\":\"8230c4f72c065bd5c0cb382334eb8763\",\n    \"record\":{\n        \"nama_kurikulum\":\"Kurikulum baru\",\n        \"id_prodi\":\"b3f5ef96-67db-4d1e-9f59-9e4cec4ecab8\",\n        \"id_semester\":\"20211\",\n        \"jumlah_sks_lulus\":\"145\",\n        \"jumlah_sks_wajib\":\"140\",\n        \"jumlah_sks_pilihan\":\"5\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url-feeder}/ws/sandbox2.php",
+							"protocol": "http",
+							"host": [
+								"{{url-feeder}"
+							],
+							"path": [
+								"ws",
+								"sandbox2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteKurikulum",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"act\":\"DeleteKurikulum\",\n    \"token\":\"8230c4f72c065bd5c0cb382334eb8763\",\n    \"key\":{\"id_kurikulum\":\"b1ddc61d-1f28-41e7-8ab7-8e39d895ea26\"}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url-feeder}}/ws/sandbox2.php",
+							"protocol": "http",
+							"host": [
+								"{{url-feeder}}"
+							],
+							"path": [
+								"ws",
+								"sandbox2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mata Kuliah",
+			"item": [
+				{
+					"name": "GetListMataKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetListMataKuliah\",\n\t\"token\": \"8b7ebe30fdeaa306b66a1c33d146c4af\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": 2,\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GetListMataKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetListMataKuliah\",\n\t\"token\": \"8b7ebe30fdeaa306b66a1c33d146c4af\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": 2,\n\t\"offset\": 0\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "700",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jul 2018 03:23:22 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":[{\"id_matkul\":\"806b56eb-12b0-4043-b77f-96d572cc7fdd\",\"kode_mata_kuliah\":\"MP 2.29.5.3\",\"nama_mata_kuliah\":\"Penanganan dan Penyimpanan Ikan Hasil Tangkapan\",\"sks_mata_kuliah\":\"3.00\",\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\"nama_program_studi\":\"D3 Mekanisasi Perikanan\",\"id_jenis_mata_kuliah\":\"A\",\"id_kelompok_mata_kuliah\":\"B\"},{\"id_matkul\":\"bf1c178f-db74-4454-8b87-cfe5d1c7fc96\",\"kode_mata_kuliah\":\"MP 2.30.5.2\",\"nama_mata_kuliah\":\"Mesin Uap dan Turbin Kapal Perikanan\",\"sks_mata_kuliah\":\"2.00\",\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\"nama_program_studi\":\"D3 Mekanisasi Perikanan\",\"id_jenis_mata_kuliah\":\"A\",\"id_kelompok_mata_kuliah\":\"B\"}]}"
+						}
+					]
+				},
+				{
+					"name": "InsertMataKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"InsertMataKuliah\",\n\t\"token\": \"db6058b22021c1bc883d0daeab494d7d\",\n\t\"record\": {\n\t\t\"kode_mata_kuliah\": \"KR001\",\n\t\t\"nama_mata_kuliah\": \"Pendidikan Karakter Berbangsa\",\n\t\t\"id_prodi\": \"b8g3da60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_jenis_mata_kuliah\": \"A\",\n\t\t\"id_kelompok_mata_kuliah\": \"A\",\n\t\t\"sks_mata_kuliah\": 3.00,\n\t\t\"sks_tatap_muka\": 1.00,\n\t\t\"sks_praktek\": 2.00,\n\t\t\"sks_praktek_lapangan\": 0.00,\n\t\t\"sks_simulasi\": 0.00,\n        \"metode_kuliah\": \"\",\n\t\t\"ada_sap\": 0,\n\t\t\"ada_silabus\": 0,\n\t\t\"ada_bahan_ajar\": 0,\n\t\t\"ada_acara_praktek\": 0,\n\t\t\"ada_diktat\": 0,\n\t\t\"tanggal_mulai_efektif\": \"2018-07-22\",\n\t\t\"tanggal_akhir_efektif\": \"2022-07-22\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertMataKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"InsertMataKuliah\",\n\t\"token\": \"db6058b22021c1bc883d0daeab494d7d\",\n\t\"record\": {\n\t\t\"kode_mata_kuliah\": \"KR001\",\n\t\t\"nama_mata_kuliah\": \"Pendidikan Karakter Berbangsa\",\n\t\t\"id_prodi\": \"b8g3da60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_jenis_mata_kuliah\": \"A\",\n\t\t\"id_kelompok_mata_kuliah\": \"A\",\n\t\t\"sks_mata_kuliah\": 3.00,\n\t\t\"sks_tatap_muka\": 1.00,\n\t\t\"sks_praktek\": 2.00,\n\t\t\"sks_praktek_lapangan\": 0.00,\n\t\t\"sks_simulasi\": 0.00,\n\t\t\"ada_sap\": 0,\n\t\t\"ada_silabus\": 0,\n\t\t\"ada_bahan_ajar\": 0,\n\t\t\"ada_acara_praktek\": 0,\n\t\t\"ada_diktat\": 0,\n\t\t\"tanggal_mulai_efektif\": \"2018-07-22\",\n\t\t\"tanggal_akhir_efektif\": \"2022-07-22\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "94",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jul 2018 12:52:28 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_matkul\":\"f0ee2ea0-5734-4ce5-8155-d26da5637d01\"}}"
+						}
+					]
+				},
+				{
+					"name": "UpdateMataKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"UpdateMataKuliah\",\n\t\"token\": \"a477f13efa65a153f0f50b14cbf62017\",\n\t\"key\": {\n\t\t\"id_matkul\": \"a4c4bc65-2b50-4610-9108-35df2492b6bf\"\n\t},\n\t\"record\": {\n\t\t\"kode_mata_kuliah\": \"KR001\",\n\t\t\"nama_mata_kuliah\": \"Pendidikan Karakter Berbangsa dan Bernegara\",\n\t\t\"id_prodi\": \"b8g3da60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_jenis_mata_kuliah\": \"A\",\n\t\t\"id_kelompok_mata_kuliah\": \"A\",\n\t\t\"sks_mata_kuliah\": 3.00,\n\t\t\"sks_tatap_muka\": 1.00,\n\t\t\"sks_praktek\": 2.00,\n\t\t\"sks_praktek_lapangan\": 0.00,\n\t\t\"sks_simulasi\": 0.00,\n\t\t\"ada_sap\": 0,\n\t\t\"ada_silabus\": 0,\n\t\t\"ada_bahan_ajar\": 0,\n\t\t\"ada_acara_praktek\": 0,\n\t\t\"ada_diktat\": 0,\n\t\t\"tanggal_mulai_efektif\": null\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "UpdateMataKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"UpdateMataKuliah\",\n\t\"token\": \"a477f13efa65a153f0f50b14cbf62017\",\n\t\"key\": {\n\t\t\"id_matkul\": \"a4c4bc65-2b50-4610-9108-35df2492b6bf\"\n\t},\n\t\"record\": {\n\t\t\"kode_mata_kuliah\": \"KR001\",\n\t\t\"nama_mata_kuliah\": \"Pendidikan Karakter Berbangsa dan Bernegara\",\n\t\t\"id_prodi\": \"b8g3da60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_jenis_mata_kuliah\": \"A\",\n\t\t\"id_kelompok_mata_kuliah\": \"A\",\n\t\t\"sks_mata_kuliah\": 3.00,\n\t\t\"sks_tatap_muka\": 1.00,\n\t\t\"sks_praktek\": 2.00,\n\t\t\"sks_praktek_lapangan\": 0.00,\n\t\t\"sks_simulasi\": 0.00,\n\t\t\"ada_sap\": 0,\n\t\t\"ada_silabus\": 0,\n\t\t\"ada_bahan_ajar\": 0,\n\t\t\"ada_acara_praktek\": 0,\n\t\t\"ada_diktat\": 0,\n\t\t\"tanggal_mulai_efektif\": null\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "92",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jul 2018 02:04:10 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_matkul='a4c4bc65-2b50-4610-9108-35df2492b6bf'\"}"
+						}
+					]
+				},
+				{
+					"name": "DeleteMataKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"DeleteMataKuliah\",\n\t\"token\":\"185ce29cdff70db6fd6df81b91f4d20f\",\n\t\"key\":{\"id_matkul\":\"a4c4bc65-2b50-4610-9108-35df2492b6bf\"}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "DeleteMataKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"DeleteMataKuliah\",\n\t\"token\":\"185ce29cdff70db6fd6df81b91f4d20f\",\n\t\"key\":{\"id_matkul\":\"a4c4bc65-2b50-4610-9108-35df2492b6bf\"}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "92",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jul 2018 03:01:59 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_matkul='a4c4bc65-2b50-4610-9108-35df2492b6bf'\"}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Kelas Perkuliahan",
+			"item": [
+				{
+					"name": "InsertKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"InsertKelasKuliah\",\n\t\"token\": \"aced622c77459355ff20420c3c4cc348\",\n\t\"record\": {\n\t\t\"id_prodi\": \"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\n\t\t\"id_semester\": \"20171\",\n\t\t\"id_matkul\": \"0220c580-84ed-4ecb-9155-ea06c1f8dd5e\",\n\t\t\"nama_kelas_kuliah\": \"ITBP\",\n\t\t\"bahasan\": null,\n\t\t\"tanggal_mulai_efektif\": null,\n\t\t\"tanggal_akhir_efektif\": null,\n        \"tanggal_tutup_daftar\": null,\n        \"apa_untuk_pditt\": 0,\n        \"kapasitas\": 0,\n        \"lingkup\": 1,\n        \"mode\": \"M\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertKelasKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"InsertKelasKuliah\",\n\t\"token\": \"aced622c77459355ff20420c3c4cc348\",\n\t\"record\": {\n\t\t\"id_prodi\": \"60b4f639-c3be-43f1-916b-3235bfb3fd64\",\n\t\t\"id_semester\": \"20171\",\n\t\t\"id_matkul\": \"0220c580-84ed-4ecb-9155-ea06c1f8dd5e\",\n\t\t\"nama_kelas_kuliah\": \"ITBP\",\n\t\t\"bahasan\": null,\n\t\t\"tanggal_mulai_efektif\": null,\n\t\t\"tanggal_akhir_efektif\": null\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "100",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 26 Jul 2018 02:20:53 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_kelas_kuliah\":\"a1823ceb-1bf6-4654-85ff-b3c9296a7808\"}}"
+						}
+					]
+				},
+				{
+					"name": "GetListKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetListKelasKuliah\",\n\t\"token\": \"83d7e6f2b01578eea5629d4b4060efe5\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": 20,\n\t\"offset\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://116.193.191.92:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"116",
+								"193",
+								"191",
+								"92"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDetailKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetDetailKelasKuliah\",\n\t\"token\": \"83d7e6f2b01578eea5629d4b4060efe5\",\n\t\"filter\": \"kode_mata_kuliah='HKM1406' AND id_semester='20202' AND nama_kelas_kuliah='A'\",\n\t\"order\": \"\",\n\t\"limit\": 20,\n\t\"offset\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://116.193.191.92:8082/ws/sandbox2.php",
+							"protocol": "http",
+							"host": [
+								"116",
+								"193",
+								"191",
+								"92"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"sandbox2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GetDetailKelasKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetDetailKelasKuliah\",\n\t\"token\": \"83d7e6f2b01578eea5629d4b4060efe5\",\n\t\"filter\": \"kode_mata_kuliah='HKM1406' AND id_semester='20202' AND nama_kelas_kuliah='A'\",\n\t\"order\": \"\",\n\t\"limit\": 20,\n\t\"offset\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://116.193.191.92:8082/ws/sandbox2.php",
+									"protocol": "http",
+									"host": [
+										"116",
+										"193",
+										"191",
+										"92"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"sandbox2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 03 Sep 2021 03:11:02 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "610"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error_code\": \"0\",\n    \"error_desc\": \"\",\n    \"data\": [\n        {\n            \"id_kelas_kuliah\": \"01ff13fd-9f40-4bf1-85a7-f986a8fffa11\",\n            \"id_prodi\": \"5e29a4f9-7a66-4664-9e93-a6ad6cd7b000\",\n            \"nama_program_studi\": \"S1 Ilmu Hukum\",\n            \"id_semester\": \"20202\",\n            \"nama_semester\": \"2020/2021 Genap\",\n            \"id_matkul\": \"3b392ae2-7283-41c8-af1f-2cef009e5c0e\",\n            \"kode_mata_kuliah\": \"HKM1406\",\n            \"nama_mata_kuliah\": \"HUKUM ASURANSI\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"bahasan\": null,\n            \"lingkup\": \"1\",\n            \"mode\": \"O\",\n            \"tanggal_mulai_efektif\": \"2021-02-01\",\n            \"tanggal_akhir_efektif\": \"2021-06-08\",\n            \"kapasitas\": null,\n            \"tanggal_tutup_daftar\": null,\n            \"prodi_penyelenggara\": null,\n            \"perguruan_tinggi_penyelenggara\": null\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "KRS - Nilai",
+			"item": [
+				{
+					"name": "InsertPesertaKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"InsertPesertaKelasKuliah\",\n\t\"token\": \"b85cef446a6b851a8adfa9a1d807bac1\",\n\t\"record\": {\n\t\t\"id_kelas_kuliah\": \"e441ba9b-1cea-425f-84e8-29a6900945da\",\n\t\t\"id_registrasi_mahasiswa\": \"bd4d9ba4-0d74-4335-aad7-6af8a7a70948\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertPesertaKelasKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"InsertPesertaKelasKuliah\",\n\t\"token\": \"b85cef446a6b851a8adfa9a1d807bac1\",\n\t\"record\": {\n\t\t\"id_kelas_kuliah\": \"e441ba9b-1cea-425f-84e8-29a6900945da\",\n\t\t\"id_registrasi_mahasiswa\": \"bd4d9ba4-0d74-4335-aad7-6af8a7a70948\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "165",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 26 Jul 2018 03:37:06 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_registrasi_mahasiswa\":\"bd4d9ba4-0d74-4335-aad7-6af8a7a70948\",\"id_kelas_kuliah\":\"e441ba9b-1cea-425f-84e8-29a6900945da\"}}"
+						}
+					]
+				},
+				{
+					"name": "UpdateNilaiPerkuliahanKelas",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"UpdateNilaiPerkuliahanKelas\",\n\t\"token\": \"b85cef446a6b851a8adfa9a1d807bac1\",\n    \"key\": {\n\t\t\"id_registrasi_mahasiswa\": \"a4c4bc65-2b50-4610-9108-35df2492b6bf\",\n        \"id_kelas_kuliah\": \"a4c4bc65-2b50-4610-9108-35df2492b6bf\"\n\t},\n\t\"record\": {\n\t\t\"nilai_angka\": 3,\n        \"nilai_indeks\": 4,\n        \"nilai_huruf\": \"A\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePesertaKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"DeletePesertaKelasKuliah\",\n\t\"token\": \"b85cef446a6b851a8adfa9a1d807bac1\",\n    \"key\": {\n\t\t\"id_registrasi_mahasiswa\": \"a4c4bc65-2b50-4610-9108-35df2492b6bf\",\n        \"id_kelas_kuliah\": \"a4c4bc65-2b50-4610-9108-35df2492b6bf\"\n\t},\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDetailNilaiPerkuliahanKelas",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetDetailNilaiPerkuliahanKelas\",\n\t\"token\": \"05353d30c1b9617d41226223d0b0f9d2\",\n    \"limit\": 30\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://116.193.191.92:8082/ws/sandbox2.php",
+							"protocol": "http",
+							"host": [
+								"116",
+								"193",
+								"191",
+								"92"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"sandbox2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GetDetailNilaiPerkuliahanKelas",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetDetailNilaiPerkuliahanKelas\",\n\t\"token\": \"05353d30c1b9617d41226223d0b0f9d2\",\n    \"limit\": 30\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://116.193.191.92:8082/ws/sandbox2.php",
+									"protocol": "http",
+									"host": [
+										"116",
+										"193",
+										"191",
+										"92"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"sandbox2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 04 Sep 2021 12:17:53 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error_code\": \"0\",\n    \"error_desc\": \"\",\n    \"data\": [\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"ce717b62-d2b1-4f1f-8c49-3d091ce0e6a6\",\n            \"kode_mata_kuliah\": \"PPO021\",\n            \"nama_mata_kuliah\": \"PEMBELAJARAN FUTSAL\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"009755e8-d6f7-4073-875c-c1feec450199\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"9d3e09bc-fdd7-47ab-8f4f-6566accded33\",\n            \"id_mahasiswa\": \"923c63c8-bbe9-44b9-b1c2-d891853a5475\",\n            \"nim\": \"17081040\",\n            \"nama_mahasiswa\": \"ABDUL SISWONO\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2017\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"01e11d21-1589-47b1-9f2d-fc782c2fbeb3\",\n            \"id_mahasiswa\": \"6fbe796b-68ee-4aff-ab3b-666c3f4e45cd\",\n            \"nim\": \"18081020\",\n            \"nama_mahasiswa\": \"MUH HUSAIN A.HI MAHMUD\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"06bfce1a-e008-47f1-9f1c-e0403533af36\",\n            \"id_mahasiswa\": \"486d614b-dcf5-4e6a-b6e9-38cd90fec741\",\n            \"nim\": \"19081027\",\n            \"nama_mahasiswa\": \"MARLINA SA'AMAD\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2019\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"19631b81-b671-4a21-b828-bc1652afaf45\",\n            \"id_mahasiswa\": \"614c6799-04c3-42d4-9dec-bd594d61e21a\",\n            \"nim\": \"18081043\",\n            \"nama_mahasiswa\": \"ADRIANSYAH G. TAMOK\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"1f2d0463-7d15-44be-b983-831f6159ff9f\",\n            \"id_mahasiswa\": \"8dc57438-7c2e-4dd2-883a-fe5f09b6dc36\",\n            \"nim\": \"19081029\",\n            \"nama_mahasiswa\": \"SITI ASTUTI DATU ADAM\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2019\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"297ad3c7-42fa-4721-ab4d-f1a1f3fde0ae\",\n            \"id_mahasiswa\": \"a624855a-cb2b-4b4c-8e1a-7d96b6ab15bc\",\n            \"nim\": \"18081033\",\n            \"nama_mahasiswa\": \"IRSAN\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"30e414e2-3820-43b4-af36-741e4ccd47a4\",\n            \"id_mahasiswa\": \"c1c7e737-1990-4e57-bffd-2b3d9ae997bf\",\n            \"nim\": \"19081020\",\n            \"nama_mahasiswa\": \"SUSTIANA SETE\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2019\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"3c155809-11ac-4e15-8b79-69301619585a\",\n            \"id_mahasiswa\": \"cfc21032-8cbf-474e-8e3f-f6b4613cb54e\",\n            \"nim\": \"18081023\",\n            \"nama_mahasiswa\": \"I GUSTI PUTU OCHSANTO\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"4616a3fe-73d1-4394-8708-8ae6dbaa026b\",\n            \"id_mahasiswa\": \"a1943e2b-1fcf-4c03-a437-77be5be78d86\",\n            \"nim\": \"18081050\",\n            \"nama_mahasiswa\": \"WIRSAN HARUNA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"4a795647-bcf8-4911-9512-53d52eaf9e41\",\n            \"id_mahasiswa\": \"6e9d4027-e39e-4973-ad95-03e76476ce65\",\n            \"nim\": \"18081018\",\n            \"nama_mahasiswa\": \"RIFANDI LAANDI\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"4c166dd7-2f9f-402c-8689-d8764b5ed811\",\n            \"id_mahasiswa\": \"ed89bca1-fd86-4292-ae4a-e29af7092194\",\n            \"nim\": \"17081020\",\n            \"nama_mahasiswa\": \"MOH ZULKARNAIN GANI\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2017\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"4f79fc0f-10a8-47cb-a934-4f7f69ea2a9f\",\n            \"id_mahasiswa\": \"51ef47bd-fc44-491c-96bc-89af52eb4c42\",\n            \"nim\": \"18081021\",\n            \"nama_mahasiswa\": \"JERI ALEN CANDRA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"5544a084-4c5c-4e2f-b607-ab4445d22dc4\",\n            \"id_mahasiswa\": \"921d7424-3590-4944-ae99-2da9a1fffbf8\",\n            \"nim\": \"18018030\",\n            \"nama_mahasiswa\": \"RAMLI LADONGE\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"5ba90baa-631f-4142-b909-bd7236cd8538\",\n            \"id_mahasiswa\": \"dc9e24ec-1dc0-43d7-a231-4ce3e9e6b1c4\",\n            \"nim\": \"18081010\",\n            \"nama_mahasiswa\": \"AMIN RAIS LATINULU\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"5bf74125-db72-4374-b52e-e81c02ab002b\",\n            \"id_mahasiswa\": \"be108dc4-ab4e-4017-aff4-bd8ef66580b0\",\n            \"nim\": \"18081047\",\n            \"nama_mahasiswa\": \"NANDA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"671eb44d-4df2-458b-b0de-b55379449019\",\n            \"id_mahasiswa\": \"35e28941-3eec-42a8-8c84-438d19703970\",\n            \"nim\": \"18081028\",\n            \"nama_mahasiswa\": \"WIRANTO HI. UMAR\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"6ccf1f06-5f5f-4dac-b2db-b566d7029494\",\n            \"id_mahasiswa\": \"d02b85ae-ab61-41c9-97d4-9021201ef183\",\n            \"nim\": \"18081014\",\n            \"nama_mahasiswa\": \"ZULKIFLI R DUKALANG\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"81e96f29-938c-4d91-b2bb-6700e4638489\",\n            \"id_mahasiswa\": \"892a6224-7308-4061-ba55-e1250e8c3ce9\",\n            \"nim\": \"18081046\",\n            \"nama_mahasiswa\": \"MUH FIKRI AGUSTA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"83264da3-67f6-4264-9767-6b9688d3de07\",\n            \"id_mahasiswa\": \"de5838b4-5b3c-489c-95eb-bdcc37a4f399\",\n            \"nim\": \"18081029\",\n            \"nama_mahasiswa\": \"JASTEN BAKAR\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"858b4bbe-2d91-42ed-b7aa-7f4f5a093a6d\",\n            \"id_mahasiswa\": \"9ca6d472-9f30-4996-8ea3-ded6b950a1a4\",\n            \"nim\": \"18081031\",\n            \"nama_mahasiswa\": \"KIPRIAWAN LUANDE\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"2.00\",\n            \"nilai_huruf\": \"C  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"9084aa0e-987a-4548-840b-1b170a46fc91\",\n            \"id_mahasiswa\": \"745ac588-c7e1-4f76-b801-12d3c89ed5c1\",\n            \"nim\": \"19081022\",\n            \"nama_mahasiswa\": \"ROSTINA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2019\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"b2b21c51-8a8e-4abb-834a-01e7829f45f7\",\n            \"id_mahasiswa\": \"8fad6109-78c4-4d39-813c-0b895ec8c96e\",\n            \"nim\": \"18018003\",\n            \"nama_mahasiswa\": \"ZULFIKAR ISIMA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"c56add46-75ab-4fe3-9603-0eb7e424b732\",\n            \"id_mahasiswa\": \"831dd658-6caa-4c93-bf69-5ab552f7d9cf\",\n            \"nim\": \"18081032\",\n            \"nama_mahasiswa\": \"HIDAYAT A. DG RAMLI\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"cb0d056d-101b-4aad-bf91-6a27ae0276cb\",\n            \"id_mahasiswa\": \"fd7c7de7-7200-4a36-b7ab-5a2b3b42d18c\",\n            \"nim\": \"19081025\",\n            \"nama_mahasiswa\": \"RICO\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2019\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"cd9436cb-430d-40dc-a465-42c2fbb097e5\",\n            \"id_mahasiswa\": \"7ecd8538-ae2b-4b11-b507-e41f00608758\",\n            \"nim\": \"18081011\",\n            \"nama_mahasiswa\": \"FRISCHA PRISCILLIA M\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"ce794e02-3f77-4d2c-b1ae-a1121330d71c\",\n            \"id_mahasiswa\": \"1e7fffe3-8af9-40ea-a50e-c363ecee7a29\",\n            \"nim\": \"18081015\",\n            \"nama_mahasiswa\": \"NELSON LAPE\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"2.00\",\n            \"nilai_huruf\": \"C  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"cef0d2f0-6788-4f83-9c7c-03d306fc550e\",\n            \"id_mahasiswa\": \"d2d2ddcb-d6a6-4eb2-b3fe-b84be06a75e3\",\n            \"nim\": \"18081027\",\n            \"nama_mahasiswa\": \"RANALDI HIMRAN\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"d1776061-f355-4da3-9f42-b75990854ea0\",\n            \"id_mahasiswa\": \"55d04585-965e-406f-b6d7-bda849192ff3\",\n            \"nim\": \"18081006\",\n            \"nama_mahasiswa\": \"ELINDA\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"d29966cc-5462-40dc-9e32-2e0869800886\",\n            \"id_mahasiswa\": \"735284a3-41b6-4861-a37c-707c76303fa7\",\n            \"nim\": \"18081025\",\n            \"nama_mahasiswa\": \"YONGKI A HUSNI\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"3.00\",\n            \"nilai_huruf\": \"B  \"\n        },\n        {\n            \"id_prodi\": \"0be5b413-2ce2-47cd-ad2c-cf6e4efd6a6a\",\n            \"nama_program_studi\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"id_semester\": \"20201\",\n            \"nama_semester\": \"2020/2021 Ganjil\",\n            \"id_matkul\": \"fc6b97c7-09ff-472d-baf6-3f99ba5d22aa\",\n            \"kode_mata_kuliah\": \"MKBK 020\",\n            \"nama_mata_kuliah\": \"PEMANDUAN BAKAT\",\n            \"sks_mata_kuliah\": \"2.00\",\n            \"id_kelas_kuliah\": \"170cddb4-8a00-4e7f-b90b-76c9629ff21b\",\n            \"nama_kelas_kuliah\": \"A\",\n            \"id_registrasi_mahasiswa\": \"dcfa1b9e-4a0a-4e79-a85b-fabd08f372c2\",\n            \"id_mahasiswa\": \"bccde5eb-21cd-4526-8198-50b7f881ec90\",\n            \"nim\": \"18081022\",\n            \"nama_mahasiswa\": \"UCHY YOLANDA TAMSUR\",\n            \"jurusan\": \"S1 Pendidikan Jasmani Kesehatan dan Rekreasi\",\n            \"angkatan\": \"2018\",\n            \"nilai_angka\": null,\n            \"nilai_indeks\": \"4.00\",\n            \"nilai_huruf\": \"A  \"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Aktivitas Mahasiswa",
+			"item": [
+				{
+					"name": "InsertAktivitasMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"InsertAktivitasMahasiswa\",\n\t\"token\":\"b8b237510d1ff575ea80b5cb7b21d830\",\n\t\"record\":{\n\t\t\"jenis_anggota\":\"0\",\n\t\t\"id_jenis_aktivitas\":\"1\",\n\t\t\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_semester\":\"20171\",\n\t\t\"judul\":\"Tugas akhir persona\",\n\t\t\"keterangan\": null,\n\t\t\"lokasi\": null,\n\t\t\"sk_tugas\": null,\n\t\t\"tanggal_sk_tugas\":null\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertAktivitasMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"InsertAktivitasMahasiswa\",\n\t\"token\":\"b8b237510d1ff575ea80b5cb7b21d830\",\n\t\"record\":{\n\t\t\"jenis_anggota\":\"0\",\n\t\t\"id_jenis_aktivitas\":\"1\",\n\t\t\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_semester\":\"20171\",\n\t\t\"judul\":\"Tugas akhir persona\",\n\t\t\"keterangan\": null,\n\t\t\"lokasi\": null,\n\t\t\"sk_tugas\": null,\n\t\t\"tanggal_sk_tugas\":null\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "97",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 31 Jul 2018 02:36:46 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_aktivitas\":\"c8084759-21e1-4f07-8e24-260556cc1197\"}}"
+						}
+					]
+				},
+				{
+					"name": "UpdateAktivitasMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"UpdateAktivitasMahasiswa\",\n\t\"token\":\"b8b237510d1ff575ea80b5cb7b21d830\",\n\t\"key\":{\n\t\t\"id_aktivitas\":\"e6c6474d-2185-47db-ab56-780778493b63\"\n\t},\n\t\"record\":{\n\t\t\"jenis_anggota\":\"0\",\n\t\t\"id_jenis_aktivitas\":\"1\",\n\t\t\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_semester\":\"20171\",\n\t\t\"judul\":\"Tugas akhir personal\",\n\t\t\"keterangan\": null,\n\t\t\"lokasi\":\"Kampus Utama Politeknik Kelautan dan Perikanan Sorong\",\n\t\t\"sk_tugas\":\"111/2018\",\n\t\t\"tanggal_sk_tugas\":\"2018-07-03\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "UpdateAktivitasMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"UpdateAktivitasMahasiswa\",\n\t\"token\":\"b8b237510d1ff575ea80b5cb7b21d830\",\n\t\"key\":{\n\t\t\"id_aktivitas\":\"e6c6474d-2185-47db-ab56-780778493b63\"\n\t},\n\t\"record\":{\n\t\t\"jenis_anggota\":\"0\",\n\t\t\"id_jenis_aktivitas\":\"1\",\n\t\t\"id_prodi\":\"c7adda60-60dd-4464-98b2-a8b2863654b2\",\n\t\t\"id_semester\":\"20171\",\n\t\t\"judul\":\"Tugas akhir personal\",\n\t\t\"keterangan\": null,\n\t\t\"lokasi\":\"Kampus Utama Politeknik Kelautan dan Perikanan Sorong\",\n\t\t\"sk_tugas\":\"111/2018\",\n\t\t\"tanggal_sk_tugas\":\"2018-07-03\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "95",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 31 Jul 2018 03:17:28 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_aktivitas='e6c6474d-2185-47db-ab56-780778493b63'\"}"
+						}
+					]
+				},
+				{
+					"name": "GetListAktivitasMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetListAktivitasMahasiswa\",\n\t\"token\": \"88e9e20126d46d03ce86664f6efb8032\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": 20,\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						},
+						"description": "<b>Parameters</b>\n<ul>\n\t<li><b>{token}: </b> String</li>\n\t<li><b>{filter}: </b> String</li>\n\t<li><b>{order}: </b> String</li>\n\t<li><b>{limit}: </b> Integer</li>\n\t<li><b>{offset}: </b> Integer</li>\n</ul>"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Anggota Akt Mhs",
+			"item": [
+				{
+					"name": "InsertAnggotaAktivitasMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"InsertAnggotaAktivitasMahasiswa\",\n\t\"token\":\"48728fec9b899c0309b3a49c641cad2c\",\n\t\"record\":{\n\t\t\"id_aktivitas\":\"592f7d81-9fff-4850-b6d6-a46dc7e39c31\",\n\t\t\"id_registrasi_mahasiswa\":\"73f561aa-4910-4afc-a0ba-7e095c2ca03a\",\n\t\t\"jenis_peran\":\"3\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertAnggotaAktivitasMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"InsertAnggotaAktivitasMahasiswa\",\n\t\"token\":\"48728fec9b899c0309b3a49c641cad2c\",\n\t\"record\":{\n\t\t\"id_aktivitas\":\"592f7d81-9fff-4850-b6d6-a46dc7e39c31\",\n\t\t\"id_registrasi_mahasiswa\":\"73f561aa-4910-4afc-a0ba-7e095c2ca03a\",\n\t\t\"jenis_peran\":\"3\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "95",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 31 Jul 2018 03:55:56 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_anggota\":\"5febbcc1-45af-4a1a-8041-65e7bebc35f0\"}}"
+						}
+					]
+				},
+				{
+					"name": "DeleteAnggotaAktivitasMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"DeleteAnggotaAktivitasMahasiswa\",\n\t\"token\":\"466b43b454d8c31c6a34236b2bb1d427\",\n\t\"key\":{\n\t\t\"id_anggota\":\"5febbcc1-45af-4a1a-8041-65e7bebc35f0\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "DeleteAnggotaAktivitasMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"DeleteAnggotaAktivitasMahasiswa\",\n\t\"token\":\"466b43b454d8c31c6a34236b2bb1d427\",\n\t\"key\":{\n\t\t\"id_anggota\":\"5febbcc1-45af-4a1a-8041-65e7bebc35f0\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "93",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 31 Jul 2018 05:02:54 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_anggota='5febbcc1-45af-4a1a-8041-65e7bebc35f0'\"}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Bimbing Mhs",
+			"item": [
+				{
+					"name": "InsertBimbingMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"InsertBimbingMahasiswa\",\n\t\"token\":\"5c190ba7adeda7803775bb37deb37306\",\n\t\"record\":{\n\t\t\"id_aktivitas\":\"592f7d81-9fff-4850-b6d6-a46dc7e39c31\",\n\t\t\"id_kategori_kegiatan\":110400,\n\t\t\"id_dosen\":\"23497747-16be-47e3-85ca-009e31a962ac\",\n\t\t\"pembimbing_ke\":\"1\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertBimbingMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"InsertBimbingMahasiswa\",\n\t\"token\":\"5c190ba7adeda7803775bb37deb37306\",\n\t\"record\":{\n\t\t\"id_aktivitas\":\"592f7d81-9fff-4850-b6d6-a46dc7e39c31\",\n\t\t\"id_kategori_kegiatan\":110400,\n\t\t\"id_dosen\":\"23497747-16be-47e3-85ca-009e31a962ac\",\n\t\t\"pembimbing_ke\":\"1\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "105",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Aug 2018 01:33:44 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_bimbing_mahasiswa\":\"ab9f7748-cf81-4f07-a01b-625377a7d0ef\"}}"
+						}
+					]
+				},
+				{
+					"name": "DeleteBimbingMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"DeleteBimbingMahasiswa\",\n\t\"token\":\"5c190ba7adeda7803775bb37deb37306\",\n\t\"key\":{\n\t\t\"id_bimbing_mahasiswa\":\"735e16b6-41ac-4a4b-9296-0296a7decfe3\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "DeleteBimbingMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"DeleteBimbingMahasiswa\",\n\t\"token\":\"5c190ba7adeda7803775bb37deb37306\",\n\t\"key\":{\n\t\t\"id_bimbing_mahasiswa\":\"735e16b6-41ac-4a4b-9296-0296a7decfe3\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "103",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Aug 2018 01:55:39 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":\"id_bimbing_mahasiswa='735e16b6-41ac-4a4b-9296-0296a7decfe3'\"}"
+						}
+					]
+				},
+				{
+					"name": "GetListBimbingMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetListBimbingMahasiswa\",\n\t\"token\": \"81d86f800bb57e46ce920430cc0e854d\",\n\t\"filter\": null,\n\t\"order\": null,\n\t\"limit\": 10,\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dosen Penguji",
+			"item": [
+				{
+					"name": "InsertUjiMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"InsertUjiMahasiswa\",\n\t\"token\":\"5c190ba7adeda7803775bb37deb37306\",\n\t\"record\":{\n\t\t\"id_aktivitas\":\"592f7d81-9fff-4850-b6d6-a46dc7e39c31\",\n\t\t\"id_kategori_kegiatan\":110400,\n\t\t\"id_dosen\":\"2d3408cb-14ca-4cf9-add1-0e35fee15533\",\n\t\t\"penguji_ke\":\"1\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertUjiMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"InsertUjiMahasiswa\",\n\t\"token\":\"5c190ba7adeda7803775bb37deb37306\",\n\t\"record\":{\n\t\t\"id_aktivitas\":\"592f7d81-9fff-4850-b6d6-a46dc7e39c31\",\n\t\t\"id_kategori_kegiatan\":110400,\n\t\t\"id_dosen\":\"2d3408cb-14ca-4cf9-add1-0e35fee15533\",\n\t\t\"penguji_ke\":\"1\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "91",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Aug 2018 02:18:46 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_uji\":\"4bb3c818-529e-4aaa-bad0-bba94552c471\"}}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Aktivitas Kuliah Mahasiswa",
+			"item": [
+				{
+					"name": "InsertPerkuliahanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"InsertPerkuliahanMahasiswa\",\n\t\"token\":\"cdbcc1b197f383cbcd44dc4d6d2e65c1\",\n\t\"record\":{\n\t\t\"id_registrasi_mahasiswa\":\"73f561aa-4910-4afc-a0ba-7e095c2ca03a\",\n\t\t\"id_semester\":\"20171\",\n\t\t\"id_status_mahasiswa\":\"A\",\n\t\t\"ips\":\"3.56\",\n\t\t\"ipk\":\"2.75\",\n\t\t\"sks_semester\":\"12\",\n\t\t\"total_sks\":\"24\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePerkuliahanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"DeletePerkuliahanMahasiswa\",\n\t\"token\":\"e553eb2271417c1ea7baa3333a62abb7\",\n\t\"key\":{\n\t\t\"id_registrasi_mahasiswa\":\"20171\",\n\t\t\"id_semester\":\"bd4d9ba4-0d74-4335-aad7-6af8a7a70948\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdatePerkuliahanMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"UpdatePerkuliahanMahasiswa\",\n\t\"token\":\"e553eb2271417c1ea7baa3333a62abb7\",\n\t\"key\":{\n\t\t\"id_registrasi_mahasiswa\":\"bd4d9ba4-0d74-4335-aad7-6af8a7a70948\",\n\t\t\"id_semester\":\"20172\"\n\t},\n\t\"record\":{\n\t\t\"id_status_mahasiswa\":\"C\",\n\t\t\"ips\":\"1\",\n\t\t\"ipk\":\"2.57\",\n\t\t\"sks_semester\":\"0\",\n\t\t\"total_sks\":\"12\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "UpdatePerkuliahanMahasiswa",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"UpdatePerkuliahanMahasiswa\",\n\t\"token\":\"e553eb2271417c1ea7baa3333a62abb7\",\n\t\"key\":{\n\t\t\"id_registrasi_mahasiswa\":\"bd4d9ba4-0d74-4335-aad7-6af8a7a70948\",\n\t\t\"id_semester\":\"20172\"\n\t},\n\t\"record\":{\n\t\t\"id_status_mahasiswa\":\"C\",\n\t\t\"ips\":\"1\",\n\t\t\"ipk\":\"2.57\",\n\t\t\"sks_semester\":\"0\",\n\t\t\"total_sks\":\"12\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "132",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Aug 2018 01:09:05 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error_code\": \"0\",\n    \"error_desc\": \"\",\n    \"data\": \"id_semester= '20172' and id_registrasi_mahasiswa= 'bd4d9ba4-0d74-4335-aad7-6af8a7a70948'\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Aktivitas Ajar Dosen",
+			"item": [
+				{
+					"name": "InsertDosenPengajarKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\":\"InsertDosenPengajarKelasKuliah\",\n\t\"token\":\"20b2cea900be58ee7c6096c777ef3c8e\",\n\t\"record\":{\n\t\t\"id_registrasi_dosen\":\"a6d25496-7bcb-40ee-aa0e-4e50bde7bc3d\",\n\t\t\"id_kelas_kuliah\":\"73765f0b-2258-44e4-8e55-e8e5f9aa01b7\",\n\t\t\"id_substansi\":null,\n\t\t\"sks_substansi_total\":\"2.00\",\n\t\t\"rencana_tatap_muka\":\"8\",\n\t\t\"realisasi_tatap_muka\":\"8\",\n\t\t\"id_jenis_evaluasi\":1\n\t}\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "InsertDosenPengajarKelasKuliah",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\":\"InsertDosenPengajarKelasKuliah\",\n\t\"token\":\"20b2cea900be58ee7c6096c777ef3c8e\",\n\t\"record\":{\n\t\t\"id_registrasi_dosen\":\"a6d25496-7bcb-40ee-aa0e-4e50bde7bc3d\",\n\t\t\"id_kelas_kuliah\":\"73765f0b-2258-44e4-8e55-e8e5f9aa01b7\",\n\t\t\"id_substansi\":null,\n\t\t\"sks_substansi_total\":\"2.00\",\n\t\t\"rencana_tatap_muka\":\"8\",\n\t\t\"realisasi_tatap_muka\":\"8\",\n\t\t\"id_jenis_evaluasi\":1\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "106",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Aug 2018 03:37:22 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":{\"id_aktivitas_mengajar\":\"bd73eab9-1cbd-4d70-bee5-e299d3cbdb28\"}}"
+						}
+					]
+				},
+				{
+					"name": "GetDosenPengajarKelasKuliah",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"act\":\"GetDetailMataKuliah\",\n    \"token\":\"b1a87f84d0cfc5ad1e827735a8883f4a\",\n    \"filter\":\"kode_mata_kuliah='$kode_mk'\",\n    \"order\":\"\",\n    \"limit\":1,\n    \"offset\":0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://116.193.191.92:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"116",
+								"193",
+								"191",
+								"92"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Referensi",
+			"item": [
+				{
+					"name": "GetPembiayaan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetPembiayaan\",\n\t\"token\": \"acf31c0465517c88108aad88d19c6291\"\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GetPembiayaan",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetPembiayaan\",\n\t\"token\": \"acf31c0465517c88108aad88d19c6291\"\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "213",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 25 Jul 2018 02:47:15 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":[{\"id_pembiayaan\":\"1\",\"nama_pembiayaan\":\"Mandiri\"},{\"id_pembiayaan\":\"2\",\"nama_pembiayaan\":\"Beasiswa Tidak Penuh\"},{\"id_pembiayaan\":\"3\",\"nama_pembiayaan\":\"Beasiswa Penuh\"}]}"
+						}
+					]
+				},
+				{
+					"name": "GetKategoriKegiatan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetKategoriKegiatan\",\n\t\"token\": \"e4410c8aa2f664c75f8e63bad20d4990\",\n\t\"filter\": null\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GetKategoriKegiatan",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"act\": \"GetKategoriKegiatan\",\n\t\"token\": \"e4410c8aa2f664c75f8e63bad20d4990\",\n\t\"filter\": null\n}"
+								},
+								"url": {
+									"raw": "http://10.211.55.3:8082/ws/live2.php",
+									"protocol": "http",
+									"host": [
+										"10",
+										"211",
+										"55",
+										"3"
+									],
+									"port": "8082",
+									"path": [
+										"ws",
+										"live2.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "Keep-Alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1889",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Aug 2018 01:30:58 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100",
+									"name": "Keep-Alive",
+									"description": "Custom header"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.23 (Win64) PHP/5.6.24",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\"error_code\":\"0\",\"error_desc\":\"\",\"data\":[{\"id_kategori_kegiatan\":\"110100\",\"nama_kategori_kegiatan\":\"Melaksanakan perkuliahan\\/tutorial\\/perkuliahan praktikum dan membimbing, menguji serta menyelenggarakan pendidikan di laboratorium, praktik keguruan, bengkel\\/studio\\/kebun percobaan\\/teknologi pengajaran dan praktik lapangan\"},{\"id_kategori_kegiatan\":\"110200\",\"nama_kategori_kegiatan\":\"Membimbing seminar mahasiswa\"},{\"id_kategori_kegiatan\":\"110300\",\"nama_kategori_kegiatan\":\"Membimbing kuliah kerja nyata, praktik kerja nyata, atau praktik kerja lapangan\"},{\"id_kategori_kegiatan\":\"110400\",\"nama_kategori_kegiatan\":\"Membimbing dan ikut membimbing dalam menghasilkan disertasi, tesis, skripsi, dan laporan akhir studi yang sesuai dengan bidang penugasannya\"},{\"id_kategori_kegiatan\":\"110500\",\"nama_kategori_kegiatan\":\"Bertugas sebagai penguji pada ujian akhir\"},{\"id_kategori_kegiatan\":\"110600\",\"nama_kategori_kegiatan\":\"Membina kegiatan mahasiswa di bidang akademik dan kemahasiswaan\"},{\"id_kategori_kegiatan\":\"110700\",\"nama_kategori_kegiatan\":\"Mengembangkan program kuliah yang mempunyai nilai kebaharuan metode atau substansi\"},{\"id_kategori_kegiatan\":\"110800\",\"nama_kategori_kegiatan\":\"Mengembangkan bahan pengajaran\\/bahan kuliah yang mempunyai nilai kebaharuan\"},{\"id_kategori_kegiatan\":\"110900\",\"nama_kategori_kegiatan\":\"Menyampaikan orasi ilmiah di tingkat perguruan tinggi\"},{\"id_kategori_kegiatan\":\"111000\",\"nama_kategori_kegiatan\":\"Menduduki jabatan pimpinan perguruan tinggi \"},{\"id_kategori_kegiatan\":\"111100\",\"nama_kategori_kegiatan\":\"Membimbing dosen yang mempunyai jabatan akademik lebih rendah\"},{\"id_kategori_kegiatan\":\"111200\",\"nama_kategori_kegiatan\":\"Melaksanakan kegiatan detasering dan pencangkokan di luar institusi tempat bekerja\"},{\"id_kategori_kegiatan\":\"111300\",\"nama_kategori_kegiatan\":\"Melakukan kegiatan pengembangan diri untuk meningkatkan kompetensi\"}]}"
+						}
+					]
+				},
+				{
+					"name": "GetJenisPendaftaran",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetJenisPendaftaran\",\n\t\"token\": \"6228da9f282144eaa43de941bee33871\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": 20,\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Export Data",
+			"item": [
+				{
+					"name": "ExportDataMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"ExportDataMahasiswa\",\n\t\"token\": \"5ca99465c7ecfa1a10feb011483414fe\"\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dosen",
+			"item": [
+				{
+					"name": "GetListDosen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetListDosen\",\n\t\"token\": \"fd8e91d6dcbe1a5787067d3acdc18ed6\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": 2,\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DetailBiodataDosen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"DetailBiodataDosen\",\n\t\"token\": \"fd8e91d6dcbe1a5787067d3acdc18ed6\",\n\t\"filter\": \"id_dosen='07038517-57b4-4c72-9483-e1dc2d36db68'\",\n\t\"order\": \"\",\n\t\"limit\": \"\",\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://10.211.55.3:8082/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"10",
+								"211",
+								"55",
+								"3"
+							],
+							"port": "8082",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transkrip Nilai",
+			"item": [
+				{
+					"name": "GetTranskripMahasiswa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"act\": \"GetTranskripMahasiswa\",\n\t\"token\": \"b03db45164dbfe6e5732315493eaeae6\",\n\t\"filter\": \"\",\n\t\"order\": \"\",\n\t\"limit\": \"\",\n\t\"offset\": 0\n}"
+						},
+						"url": {
+							"raw": "http://103.183.74.122:8100/ws/live2.php",
+							"protocol": "http",
+							"host": [
+								"103",
+								"183",
+								"74",
+								"122"
+							],
+							"port": "8100",
+							"path": [
+								"ws",
+								"live2.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

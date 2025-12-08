@@ -51,6 +51,7 @@
                             <div class="col text-right" th:if="${selected != null}">
                                 <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id})}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                                 <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-copy"></i> Salin Matakuliah Kurikulum</button>
+                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#syncFeederModal"><i class="fas fa-sync"></i> Sync ke Feeder</button>
                             </div>
                         </div>
                     </div>
@@ -115,8 +116,8 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
-                                                    <th scope="col">Pras</th>
-                                                    <th scope="col"></th>
+                                                    <th scope="col" class="text-center">Feeder</th>
+                                                    <th scope="col">Aksi</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -126,6 +127,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -167,9 +178,6 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
-
-                                                    </td>
                                                 </tr>
 
                                                 </tbody>
@@ -196,6 +204,7 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
                                                     <th scope="col"></th>
                                                 </tr>
@@ -207,6 +216,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -274,6 +293,7 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
                                                     <th scope="col"></th>
                                                 </tr>
@@ -285,6 +305,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -352,6 +382,7 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
                                                     <th scope="col"></th>
                                                 </tr>
@@ -363,6 +394,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -430,6 +471,7 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
                                                     <th scope="col"></th>
                                                 </tr>
@@ -441,6 +483,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -509,6 +561,7 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
                                                     <th scope="col"></th>
                                                 </tr>
@@ -520,6 +573,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -561,9 +624,6 @@
                                                             </div>
                                                         </div>
                                                     </td>
-
-                                                    <td>
-                                                    </td>
                                                 </tr>
 
                                                 </tbody>
@@ -590,6 +650,7 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
                                                     <th scope="col"></th>
                                                 </tr>
@@ -601,6 +662,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -669,8 +740,8 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
-                                                    <th scope="col"></th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -681,6 +752,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -748,8 +829,8 @@
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Singkatan</th>
                                                     <th scope="col">SKS</th>
+                                                    <th scope="col" class="text-center">Feeder</th>
                                                     <th scope="col">Pras</th>
-                                                    <th scope="col"></th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -760,6 +841,16 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
+                                                    <td class="text-center">
+                                                        <span th:if="${data.statusFeeder != null and data.statusFeeder.name() == 'AKTIF'}" 
+                                                              class="badge badge-success" title="Sudah sync ke Feeder">
+                                                            <i class="fas fa-check-circle"></i> Synced
+                                                        </span>
+                                                        <span th:if="${data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF'}" 
+                                                              class="badge badge-warning" title="Belum sync ke Feeder">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
                                                         <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
@@ -847,6 +938,62 @@
             </div>
         </div>
 
+        <!-- Modal Sync Feeder -->
+        <div class="modal fade" id="syncFeederModal" tabindex="-1" role="dialog" aria-labelledby="syncFeederModalLabel" aria-hidden="true" th:if="${kurikulumSelected != null}">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-gradient-info">
+                        <h5 class="modal-title text-black" id="syncFeederModalLabel">
+                            <i class="fas fa-sync"></i> Sync Matakuliah Kurikulum ke Feeder
+                        </h5>
+                        <button type="button" class="close text-black" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Info Kurikulum -->
+                        <div class="alert alert-info">
+                            <strong class="text-black">Kurikulum:</strong> <span class="text-black" th:text="${kurikulumSelected.namaKurikulum}"></span><br>
+                            <strong class="text-black">Prodi:</strong> <span class="text-black" th:text="${selected.namaProdi}"></span><br>
+                        </div>
+                        
+                        <!-- Pilih Semester -->
+                        <div class="form-group">
+                            <label for="syncSemester">Pilih Semester</label>
+                            <select class="form-control" id="syncSemester">
+                                <option value="">Semua Semester</option>
+                                <option th:each="sem : ${availableSemesters}" th:value="${sem}" th:text="'Semester ' + ${sem}"></option>
+                            </select>
+                        </div>
+                        
+                        <!-- Progress Section (hidden initially) -->
+                        <div id="syncProgressSection" style="display: none;">
+                            <hr>
+                            <h6>Progress Sync</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" id="syncProgressBar" style="width: 0%"></div>
+                            </div>
+                            <div id="syncStatus" class="text-muted small"></div>
+                        </div>
+                        
+                        <!-- Result Section (hidden initially) -->
+                        <div id="syncResultSection" style="display: none;">
+                            <hr>
+                            <h6>Hasil Sync</h6>
+                            <div id="syncResultContent"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseSync">Tutup</button>
+                        <button type="button" class="btn btn-info" id="btnStartSync" th:data-kurikulum="${kurikulumSelected.id}">
+                            <i class="fas fa-play"></i> Mulai Sync
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </div>
@@ -904,4 +1051,142 @@
     function myKurikulum(){
 
     }
+    
+    // Sync Feeder functionality
+    $('#btnStartSync').on('click', function() {
+        var kurikulumId = $(this).data('kurikulum');
+        var semester = $('#syncSemester').val();
+        
+        // Disable button & show progress
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Syncing...');
+        $('#syncProgressSection').show();
+        $('#syncResultSection').hide();
+        $('#syncProgressBar').css('width', '10%');
+        $('#syncStatus').text('Memulai sync ke Feeder...');
+        
+        // Build URL
+        var url = '/api/feeder/insert/matkul-kurikulum/batch?kurikulumId=' + kurikulumId;
+        if (semester) {
+            url += '&semester=' + semester;
+        }
+        
+        // Call API
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            beforeSend: function() {
+                $('#syncProgressBar').css('width', '30%');
+                $('#syncStatus').text('Mengirim data ke Feeder...');
+            },
+            success: function(response) {
+                $('#syncProgressBar').css('width', '100%').removeClass('progress-bar-animated');
+                $('#syncStatus').text('Sync selesai!');
+                
+                // Show result
+                displaySyncResult(response);
+                
+                // Re-enable button
+                $('#btnStartSync').prop('disabled', false).html('<i class="fas fa-play"></i> Mulai Sync');
+            },
+            error: function(xhr, status, error) {
+                $('#syncProgressBar').css('width', '100%')
+                    .removeClass('progress-bar-animated')
+                    .removeClass('bg-info')
+                    .addClass('bg-danger');
+                $('#syncStatus').text('Error: ' + error);
+                
+                // Show error
+                var errorMsg = 'Terjadi kesalahan saat sync.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+                $('#syncResultSection').show();
+                $('#syncResultContent').html(
+                    '<div class="alert alert-danger">' +
+                    '<i class="fas fa-times-circle"></i> ' + errorMsg +
+                    '</div>'
+                );
+                
+                // Re-enable button
+                $('#btnStartSync').prop('disabled', false).html('<i class="fas fa-play"></i> Mulai Sync');
+            }
+        });
+    });
+    
+    function displaySyncResult(response) {
+        $('#syncResultSection').show();
+        
+        var html = '';
+        
+        if (response.success) {
+            var summary = response.summary;
+            
+            // Summary cards
+            html += '<div class="row text-center mb-3">';
+            html += '<div class="col"><div class="card bg-light"><div class="card-body py-2">';
+            html += '<h4 class="mb-0">' + summary.total + '</h4><small class="text-muted">Total</small>';
+            html += '</div></div></div>';
+            
+            html += '<div class="col"><div class="card bg-secondary text-white"><div class="card-body py-2">';
+            html += '<h4 class="mb-0">' + summary.alreadySynced + '</h4><small>Sudah Sync</small>';
+            html += '</div></div></div>';
+            
+            html += '<div class="col"><div class="card bg-success text-white"><div class="card-body py-2">';
+            html += '<h4 class="mb-0">' + summary.success + '</h4><small>Berhasil</small>';
+            html += '</div></div></div>';
+            
+            html += '<div class="col"><div class="card bg-danger text-white"><div class="card-body py-2">';
+            html += '<h4 class="mb-0">' + summary.failed + '</h4><small>Gagal</small>';
+            html += '</div></div></div>';
+            
+            html += '<div class="col"><div class="card bg-info text-white"><div class="card-body py-2">';
+            html += '<h4 class="mb-0">' + summary.matkulInserted + '</h4><small>Matkul Baru</small>';
+            html += '</div></div></div>';
+            html += '</div>';
+            
+            // Success list
+            if (response.successList && response.successList.length > 0) {
+                html += '<div class="alert alert-success"><strong><i class="fas fa-check-circle"></i> Berhasil (' + response.successList.length + '):</strong>';
+                html += '<ul class="mb-0 mt-2" style="max-height: 150px; overflow-y: auto;">';
+                response.successList.forEach(function(item) {
+                    var badge = item.matkulInserted ? '<span class="badge badge-info">Matkul Baru</span>' : '';
+                    html += '<li>' + item.kode + ' - ' + item.nama + ' (Sem ' + item.semester + ') ' + badge + '</li>';
+                });
+                html += '</ul></div>';
+            }
+            
+            // Failed list
+            if (response.failedList && response.failedList.length > 0) {
+                html += '<div class="alert alert-danger"><strong><i class="fas fa-times-circle"></i> Gagal (' + response.failedList.length + '):</strong>';
+                html += '<ul class="mb-0 mt-2" style="max-height: 150px; overflow-y: auto;">';
+                response.failedList.forEach(function(item) {
+                    html += '<li>' + item.kode + ' - ' + item.nama + '<br><small class="text-muted">' + item.error + '</small></li>';
+                });
+                html += '</ul></div>';
+            }
+            
+            // Reload notice
+            if (summary.success > 0) {
+                html += '<div class="alert alert-warning mb-0"><i class="fas fa-info-circle"></i> Refresh halaman untuk melihat status terbaru.</div>';
+            }
+        } else {
+            html = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> ' + response.message + '</div>';
+        }
+        
+        $('#syncResultContent').html(html);
+    }
+    
+    // Reset modal on close
+    $('#syncFeederModal').on('hidden.bs.modal', function () {
+        $('#syncProgressSection').hide();
+        $('#syncResultSection').hide();
+        $('#syncProgressBar').css('width', '0%')
+            .addClass('progress-bar-animated')
+            .removeClass('bg-danger')
+            .addClass('bg-info');
+        $('#syncStatus').text('');
+        $('#syncResultContent').html('');
+        $('#btnStartSync').prop('disabled', false).html('<i class="fas fa-play"></i> Mulai Sync');
+    });
 </script>

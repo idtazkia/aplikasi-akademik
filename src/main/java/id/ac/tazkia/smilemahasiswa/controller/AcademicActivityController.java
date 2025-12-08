@@ -1,20 +1,32 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
-import id.ac.tazkia.smilemahasiswa.dto.BaseResponseDto;
-import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
-import id.ac.tazkia.smilemahasiswa.dto.konversi.RequestKonversiNilai;
-import id.ac.tazkia.smilemahasiswa.dto.ploting.DataPlotingDto;
-import id.ac.tazkia.smilemahasiswa.dto.ploting.ValidasiSesi;
-import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
-import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
-import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.*;
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,22 +45,103 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionOldDao;
+import id.ac.tazkia.smilemahasiswa.dao.GedungDao;
+import id.ac.tazkia.smilemahasiswa.dao.GradeDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalUjianDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KelasDao;
+import id.ac.tazkia.smilemahasiswa.dao.KonsentrasiDao;
+import id.ac.tazkia.smilemahasiswa.dao.KonversiDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.KurikulumDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.MataKuliahSetaraDao;
+import id.ac.tazkia.smilemahasiswa.dao.MatakuliahDao;
+import id.ac.tazkia.smilemahasiswa.dao.MatakuliahKurikulumDao;
+import id.ac.tazkia.smilemahasiswa.dao.PrasyaratDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
+import id.ac.tazkia.smilemahasiswa.dao.RuanganDao;
+import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
+import id.ac.tazkia.smilemahasiswa.dao.SesiDao;
+import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponseDto;
+import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
+import id.ac.tazkia.smilemahasiswa.dto.konversi.RequestKonversiNilai;
+import id.ac.tazkia.smilemahasiswa.dto.ploting.DataPlotingDto;
+import id.ac.tazkia.smilemahasiswa.dto.ploting.ValidasiSesi;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.DataPloting;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.DetailPlotinng;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.JadwalRequest;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.ListJadwalUjian;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.ListPlotingDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.RecordPloting;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.RequestJadwal;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.RoomDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.TableJadwalUjian;
+import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
+import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
+import id.ac.tazkia.smilemahasiswa.entity.Akses;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Gedung;
+import id.ac.tazkia.smilemahasiswa.entity.Grade;
+import id.ac.tazkia.smilemahasiswa.entity.Hari;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.JadwalDosen;
+import id.ac.tazkia.smilemahasiswa.entity.JadwalUjian;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.Kelas;
+import id.ac.tazkia.smilemahasiswa.entity.Konsentrasi;
+import id.ac.tazkia.smilemahasiswa.entity.Konversi;
+import id.ac.tazkia.smilemahasiswa.entity.Krs;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Kurikulum;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Matakuliah;
+import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
+import id.ac.tazkia.smilemahasiswa.entity.MatakuliahSetara;
+import id.ac.tazkia.smilemahasiswa.entity.Prasyarat;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Program;
+import id.ac.tazkia.smilemahasiswa.entity.Ruangan;
+import id.ac.tazkia.smilemahasiswa.entity.Sesi;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
+import id.ac.tazkia.smilemahasiswa.entity.StatusPresensi;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.JadwalService;
+import id.ac.tazkia.smilemahasiswa.service.KrsService;
+import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
+import id.ac.tazkia.smilemahasiswa.service.PresensiService;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
@@ -621,6 +714,11 @@ public class AcademicActivityController {
             model.addAttribute("sembilan",
                     matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(
                             Arrays.asList(StatusRecord.HAPUS), kurikulum, prodi, 9));
+
+            // Get available semesters for sync modal
+            List<Integer> availableSemesters = matakuliahKurikulumDao.findDistinctSemesterByKurikulumAndStatus(
+                    kurikulum, StatusRecord.AKTIF);
+            model.addAttribute("availableSemesters", availableSemesters);
         }
     }
 
