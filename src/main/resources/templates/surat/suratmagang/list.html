@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Surat Magang</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Surat Magang </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data Surat Magang</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/surat/suratmagang/form}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-plus"></i> Tambah Baru
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Section -->
+                    <div class="card-body">
+                        <form th:action="@{/surat/suratmagang/list}" method="get">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="search" class="form-control-label">Cari</label>
+                                        <input type="text" class="form-control"
+                                               name="search" id="search"
+                                               th:value="${search}"
+                                               placeholder="Cari mahasiswa atau perusahaan...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="namaPerusahaan" class="form-control-label">Nama Perusahaan</label>
+                                        <input type="text" class="form-control"
+                                               name="namaPerusahaan" id="namaPerusahaan"
+                                               th:value="${namaPerusahaan}"
+                                               placeholder="Filter nama perusahaan">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-info btn-sm">
+                                        <i class="fas fa-filter"></i> Filter
+                                    </button>
+                                    <a th:href="@{/surat/suratmagang/list}" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-times"></i> Reset
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Mahasiswa</th>
+                                <th scope="col">Nama Perusahaan</th>
+                                <th scope="col">Divisi</th>
+                                <th scope="col">Alamat</th>
+                                <th scope="col">Tanggal Mulai</th>
+                                <th scope="col">Tanggal Selesai</th>
+                                <th scope="col" class="text-center">Aksi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="surat, iterStat : ${data.content}">
+                                <td th:text="${iterStat.count + data.number * data.size}">1</td>
+                                <td th:text="${surat.mahasiswa != null ? surat.mahasiswa.nama : '-'}">Nama Mahasiswa</td>
+                                <td th:text="${surat.namaPerusahaan}">Nama Perusahaan</td>
+                                <td th:text="${surat.divisi}">Divisi</td>
+                                <td th:text="${surat.alamat}">Alamat</td>
+                                <td th:text="${surat.tanggalMulaiMagang}">Tanggal Mulai</td>
+                                <td th:text="${surat.tanggalSelesaiMagang}">Tanggal Selesai</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a th:href="@{/surat/suratmagang/view/{id}(id=${surat.id})}"
+                                           class="btn btn-sm btn-info" title="Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/surat/suratmagang/form?id={id}(id=${surat.id})}"
+                                           class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form th:action="@{/surat/suratmagang/delete/{id}(id=${surat.id})}"
+                                              method="post" style="display:inline;"
+                                              onsubmit="return confirm('Apakah Anda yakin menghapus data ini?')">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        <a th:href="@{/surat/suratmagang/download/{id}(id=${surat.id})}"
+                                           class="btn btn-sm btn-success" title="Download Surat">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer py-4" th:if="${data.totalPages > 0}">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0">
+                                <!-- First Page -->
+                                <li class="page-item" th:classappend="${data.first ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{/surat/suratmagang/list(page=0)}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Previous Page -->
+                                <li class="page-item" th:classappend="${!data.hasPrevious() ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{/surat/suratmagang/list=${data.number - 1)}" th:if="${data.hasPrevious()}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Page Numbers -->
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, data.totalPages - 1)}"
+                                    th:classappend="${i == data.number ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{/surat/suratmagang/list(page=${i})}" th:text="${i + 1}">1</a>
+                                </li>
+
+                                <!-- Next Page -->
+                                <li class="page-item" th:classappend="${!data.hasNext() ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{/surat/suratmagang/list(page=${data.number + 1})}" th:if="${data.hasNext()}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Last Page -->
+                                <li class="page-item" th:classappend="${data.last ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{/surat/suratmagang/list(page=${data.totalPages - 1})}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <div class="mt-2 text-muted text-sm" th:if="${data.totalElements > 0}">
+                            Menampilkan <span th:text="${data.size * data.number + 1}">1</span> -
+                            <span th:text="${(data.size * data.number + data.size) < data.totalElements ? (data.size * data.number + data.size) : data.totalElements}">10</span>
+                            dari <span th:text="${data.totalElements}">0</span> data
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

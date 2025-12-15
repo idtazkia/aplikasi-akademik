@@ -49,11 +49,12 @@ public class MahasiswaRestController {
         MahasiswaResponseDto response = new MahasiswaResponseDto();
         response.setNim(mahasiswa.getNim());
         response.setName(mahasiswa.getNama());
-        
+        response.setId(mahasiswa.getId()); // Add ID to response
+
         // Program Study
         if (mahasiswa.getIdProdi() != null) {
             response.setProgramStudy(mahasiswa.getIdProdi().getNamaProdi());
-            
+
             // Faculty
             if (mahasiswa.getIdProdi().getFakultas() != null) {
                 response.setFaculty(mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
@@ -84,7 +85,7 @@ public class MahasiswaRestController {
         response.setStatus(status);
 
         LOGGER.info("Successfully retrieved mahasiswa data for NIM: {}", nim);
-        
+
         return ResponseEntity.ok(response);
     }
 

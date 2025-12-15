@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Form Surat Magang</title>
+    <style>
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .text-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .badge-pill {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+
+        .avatar-lg {
+            font-size: 1.5rem;
+        }
+    </style>
+    </head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Surat Magang </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Form -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0" th:text="${suratMagang.id != null ? 'Edit Surat Magang' : 'Tambah Surat Magang'}">
+                                    Form Surat Magang
+                                </h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/surat/suratmagang/list}" class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form th:object="${suratMagang}"
+                              th:action="@{/surat/suratmagang/form}"
+                              method="post"
+                              autocomplete="off">
+
+                            <input type="hidden" th:field="*{id}" />
+
+                            <!-- Mahasiswa -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="nimMahasiswa" class="form-control-label">
+                                            NIM Mahasiswa <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="nimMahasiswa"
+                                                   placeholder="Masukkan NIM mahasiswa..."
+                                                   required>
+                                            <input type="hidden" th:field="*{mahasiswa}" id="mahasiswaId">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-primary" id="btnSearchMahasiswa">
+                                                    <i class="fas fa-search"></i> Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">Masukkan NIM lalu klik tombol "Cari" untuk mencari data mahasiswa</small>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('mahasiswa')}">
+                                            <span th:errors="*{mahasiswa}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mahasiswa Info Display -->
+                            <div class="row" id="mahasiswaInfo" style="display: none;">
+                                <div class="col-12">
+                                    <div class="card bg-white border-left-success border-3 shadow-sm">
+                                        <div class="card-body p-0">
+                                            <!-- Header dengan Avatar dan Nama -->
+                                            <div class="d-flex align-items-center p-4 text-white rounded-top" style="background: linear-gradient(135deg, #1B3C53 0%, #456882 100%);">
+                                                <div class="avatar-lg bg-white text-primary rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 60px; height: 60px;">
+                                                    <i class="fas fa-user-graduate fa-2x"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-0 text-white font-weight-bold" id="infoNama">-</h5>
+                                                    <p class="mb-0 small text-white opacity-75">Data Mahasiswa Ditemukan</p>
+                                                </div>
+                                                <div class="ml-auto">
+                                                    <span class="badge badge-pill text-white font-weight-bold" id="infoStatus" style="background-color: #28a745;">
+                                                        <i class="fas fa-check-circle mr-1"></i>Aktif
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Info Grid -->
+                                            <div class="p-4">
+                                                <div class="row">
+                                                    <!-- Program Studi -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="icon icon-shape bg-primary text-white rounded-circle mr-3" style="width: 40px; height: 40px;">
+                                                                <i class="fas fa-university"></i>
+                                                            </div>
+                                                            <div>
+                                                                <small class="text-muted d-block">Program Studi</small>
+                                                                <strong class="text-dark" id="infoProdi">-</strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Fakultas -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="icon icon-shape bg-info text-white rounded-circle mr-3" style="width: 40px; height: 40px;">
+                                                                <i class="fas fa-building"></i>
+                                                            </div>
+                                                            <div>
+                                                                <small class="text-muted d-block">Fakultas</small>
+                                                                <strong class="text-dark" id="infoFakultas">-</strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Email -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="icon icon-shape bg-warning text-white rounded-circle mr-3" style="width: 40px; height: 40px;">
+                                                                <i class="fas fa-envelope"></i>
+                                                            </div>
+                                                            <div>
+                                                                <small class="text-muted d-block">Email</small>
+                                                                <strong class="text-dark text-truncate" id="infoEmail" style="max-width: 200px; display: inline-block;">-</strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Angkatan -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="icon icon-shape bg-secondary text-white rounded-circle mr-3" style="width: 40px; height: 40px;">
+                                                                <i class="fas fa-calendar-alt"></i>
+                                                            </div>
+                                                            <div>
+                                                                <small class="text-muted d-block">Angkatan</small>
+                                                                <strong class="text-dark" id="infoAngkatan">-</strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr class="my-4">
+                                </div>
+                            </div>
+
+                            <!-- Nama Perusahaan -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="namaPerusahaan" class="form-control-label">
+                                            Nama Perusahaan <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text"
+                                               class="form-control"
+                                               th:field="*{namaPerusahaan}"
+                                               id="namaPerusahaan"
+                                               placeholder="Masukkan nama perusahaan"
+                                               required>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('namaPerusahaan')}">
+                                            <span th:errors="*{namaPerusahaan}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Divisi dan Alamat -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="divisi" class="form-control-label">Divisi</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               th:field="*{divisi}"
+                                               id="divisi"
+                                               placeholder="Masukkan divisi/department">
+                                        <small class="text-danger" th:if="${#fields.hasErrors('divisi')}">
+                                            <span th:errors="*{divisi}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="alamat" class="form-control-label">Alamat</label>
+                                        <textarea class="form-control"
+                                                  th:field="*{alamat}"
+                                                  id="alamat"
+                                                  rows="2"
+                                                  placeholder="Masukkan alamat perusahaan"></textarea>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('alamat')}">
+                                            <span th:errors="*{alamat}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tanggal -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="tanggalMulaiMagang" class="form-control-label">
+                                            Tanggal Mulai Magang <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date"
+                                               class="form-control"
+                                               th:field="*{tanggalMulaiMagang}"
+                                               id="tanggalMulaiMagang"
+                                               required>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('tanggalMulaiMagang')}">
+                                            <span th:errors="*{tanggalMulaiMagang}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="tanggalSelesaiMagang" class="form-control-label">
+                                            Tanggal Selesai Magang <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date"
+                                               class="form-control"
+                                               th:field="*{tanggalSelesaiMagang}"
+                                               id="tanggalSelesaiMagang"
+                                               required>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('tanggalSelesaiMagang')}">
+                                            <span th:errors="*{tanggalSelesaiMagang}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="text-right">
+                                        <a th:href="@{/surat/suratmagang/list}" class="btn btn-secondary">
+                                            <i class="fas fa-times"></i> Batal
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Simpan
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-success"
+                                                th:if="${suratMagang.id != null}"
+                                                th:onclick="'window.location.href=\'/surat/suratmagang/download/' + ${suratMagang.id} + '\''">
+                                            <i class="fas fa-download"></i> Download Surat
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+<script>
+    let currentMahasiswaId = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Setup mahasiswa search
+        setupMahasiswaSearch();
+
+        // Load initial data if editing
+        loadInitialMahasiswaData();
+    });
+
+    function setupMahasiswaSearch() {
+        console.log('Setting up mahasiswa search...');
+
+        const nimInput = document.getElementById('nimMahasiswa');
+        const searchButton = document.getElementById('btnSearchMahasiswa');
+        const mahasiswaInfo = document.getElementById('mahasiswaInfo');
+        const mahasiswaIdInput = document.getElementById('mahasiswaId');
+
+        console.log('Elements found:', {
+            nimInput: !!nimInput,
+            searchButton: !!searchButton,
+            mahasiswaInfo: !!mahasiswaInfo,
+            mahasiswaIdInput: !!mahasiswaIdInput
+        });
+
+        if (!searchButton) {
+            console.error('Search button not found!');
+            return;
+        }
+
+        // Event listener untuk tombol search
+        searchButton.addEventListener('click', function(e) {
+            console.log('Search button clicked!');
+            e.preventDefault();
+
+            const nim = nimInput.value.trim();
+            console.log('NIM entered:', nim);
+
+            if (nim.length > 0) {
+                searchMahasiswa(nim);
+            } else {
+                console.log('NIM is empty');
+                showNotification('Silakan masukkan NIM terlebih dahulu', 'warning');
+                nimInput.focus();
+            }
+        });
+
+        // Event listener untuk Enter key di input field
+        nimInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                const nim = this.value.trim();
+                if (nim.length > 0) {
+                    searchMahasiswa(nim);
+                } else {
+                    showNotification('Silakan masukkan NIM terlebih dahulu', 'warning');
+                }
+            }
+        });
+
+        // Hide mahasiswa info when NIM is cleared
+        nimInput.addEventListener('input', function() {
+            const nim = this.value.trim();
+            if (nim.length === 0) {
+                hideMahasiswaInfo();
+                mahasiswaIdInput.value = '';
+                currentMahasiswaId = null;
+            }
+        });
+    }
+
+    function searchMahasiswa(nim) {
+        console.log('Searching for mahasiswa with NIM:', nim);
+
+        // Show loading state
+        showLoadingMahasiswa();
+
+        const apiUrl = `/api/mahasiswa/${nim}`;
+        console.log('Making API call to:', apiUrl);
+
+        fetch(apiUrl)
+            .then(response => {
+                console.log('API Response status:', response.status);
+                console.log('API Response ok:', response.ok);
+
+                if (!response.ok) {
+                    throw new Error('Mahasiswa tidak ditemukan');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API Response data:', data);
+                displayMahasiswaInfo(data);
+
+                // Set mahasiswa ID from API response
+                if (data.id) {
+                    document.getElementById('mahasiswaId').value = data.id;
+                    currentMahasiswaId = data.id;
+                    console.log('Mahasiswa ID set to:', data.id);
+                } else {
+                    console.warn('Mahasiswa ID not found in response');
+                    showNotification('ID mahasiswa tidak ditemukan', 'warning');
+                }
+            })
+            .catch(error => {
+                console.error('Error during API call:', error);
+                hideMahasiswaInfo();
+                showNotification('Mahasiswa tidak ditemukan atau tidak aktif', 'danger');
+                document.getElementById('mahasiswaId').value = '';
+                currentMahasiswaId = null;
+            });
+    }
+
+    function showLoadingMahasiswa() {
+        const mahasiswaInfo = document.getElementById('mahasiswaInfo');
+        document.getElementById('infoNama').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+        document.getElementById('infoProdi').textContent = '-';
+        document.getElementById('infoFakultas').textContent = '-';
+        document.getElementById('infoEmail').textContent = '-';
+        document.getElementById('infoAngkatan').textContent = '-';
+        document.getElementById('infoStatus').textContent = '-';
+        mahasiswaInfo.style.display = 'block';
+    }
+
+    function displayMahasiswaInfo(data) {
+        document.getElementById('infoNama').textContent = data.name || '-';
+        document.getElementById('infoProdi').textContent = data.programStudy || '-';
+        document.getElementById('infoFakultas').textContent = data.faculty || '-';
+        document.getElementById('infoEmail').textContent = data.email || '-';
+        document.getElementById('infoAngkatan').textContent = data.angkatan || '-';
+
+        // Update status badge with color
+        const statusBadge = document.getElementById('infoStatus');
+        const status = data.status || 'AKTIF';
+
+        // Reset classes
+        statusBadge.className = 'badge badge-pill text-white font-weight-bold';
+
+        // Add appropriate color based on status with explicit background colors
+        let bgColor = '#28a745'; // green (default for AKTIF)
+        let statusIcon = 'fa-check-circle';
+
+        switch(status.toUpperCase()) {
+            case 'AKTIF':
+                bgColor = '#28a745'; // Hijau terang
+                statusIcon = 'fa-check-circle';
+                break;
+            case 'NONAKTIF':
+            case 'NON AKTIF':
+                bgColor = '#ffc107'; // Kuning terang
+                statusIcon = 'fa-pause-circle';
+                break;
+            case 'CUTI':
+                bgColor = '#17a2b8'; // Biru cyan terang
+                statusIcon = 'fa-pause';
+                break;
+            case 'LULUS':
+                bgColor = '#007bff'; // Biru terang
+                statusIcon = 'fa-graduation-cap';
+                break;
+            case 'KELUAR':
+            case 'MENGUNDURKAN DIRI':
+                bgColor = '#dc3545'; // Merah terang
+                statusIcon = 'fa-times-circle';
+                break;
+            case 'DROP OUT':
+            case 'DO':
+                bgColor = '#343a40'; // Hitam terang
+                statusIcon = 'fa-user-times';
+                break;
+        }
+
+        statusBadge.style.backgroundColor = bgColor;
+        statusBadge.innerHTML = `<i class="fas ${statusIcon} mr-1"></i>${status.toUpperCase()}`;
+
+        const mahasiswaInfo = document.getElementById('mahasiswaInfo');
+        mahasiswaInfo.style.display = 'block';
+
+        // Animate entrance
+        mahasiswaInfo.querySelector('.card').style.animation = 'slideDown 0.3s ease-out';
+
+        setTimeout(() => {
+            mahasiswaInfo.querySelector('.card').style.animation = '';
+        }, 300);
+    }
+
+    function hideMahasiswaInfo() {
+        document.getElementById('mahasiswaInfo').style.display = 'none';
+    }
+
+    function loadInitialMahasiswaData() {
+        // Jika mode edit, load data mahasiswa yang sudah ada
+        const mahasiswaIdInput = document.getElementById('mahasiswaId');
+        if (mahasiswaIdInput && mahasiswaIdInput.value) {
+            // Load existing mahasiswa data if editing
+            // This would require another API call or passing initial data from controller
+            console.log('Loading initial mahasiswa data for ID:', mahasiswaIdInput.value);
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        // Simple notification system
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+</script>
+</th:block>
+</body>
+</html>
