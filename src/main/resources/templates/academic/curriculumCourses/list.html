@@ -132,11 +132,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -230,11 +230,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -328,11 +328,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -426,11 +426,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -524,11 +524,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -623,11 +623,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -721,11 +721,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -820,11 +820,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
@@ -918,11 +918,11 @@
                                                               class="badge badge-success" title="Sudah sync ke Feeder">
                                                             <i class="fas fa-check-circle"></i> Synced
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks == 0}" 
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and (data.jumlahSks == null or data.jumlahSks == 0)}" 
                                                               class="badge badge-warning" title="SKS 0 - Tidak perlu sync">
                                                             <i class="fas fa-minus-circle"></i> SKS 0
                                                         </span>
-                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks > 0}">
+                                                        <span th:if="${(data.statusFeeder == null or data.statusFeeder.name() != 'AKTIF') and data.jumlahSks != null and data.jumlahSks > 0}">
                                                             <button type="button" class="btn btn-info btn-sm btn-sync-single" 
                                                                     th:data-id="${data.id}" 
                                                                     th:data-kode="${data.matakuliah.kodeMatakuliah}"
