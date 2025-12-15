@@ -1,27 +1,33 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Data;
 
 @Entity
 @Data
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class KrsDetail extends Auditable {
 
     @Id
-    @GeneratedValue(generator = "uuid" )
+    @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
@@ -61,7 +67,8 @@ public class KrsDetail extends Auditable {
     @JsonBackReference
     private String finalisasi;
 
-    @NotNull @Enumerated(EnumType.STRING)
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @JsonBackReference
     private StatusRecord status = StatusRecord.AKTIF;
 
@@ -69,19 +76,24 @@ public class KrsDetail extends Auditable {
     private BigDecimal bobot;
     private String grade;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     private Integer jumlahKehadiran;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     private Integer jumlahTerlambat;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     private Integer jumlahMangkir;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     private Integer jumlahSakit;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     @JsonBackReference
     private Integer jumlahIzin;
 
@@ -123,9 +135,40 @@ public class KrsDetail extends Auditable {
     @JsonBackReference
     private BigDecimal nilaiUasFinal = BigDecimal.ZERO;
 
-//    @OneToMany(mappedBy = "krsDetail")
-//    private List<NilaiTugas> nilaiTugasList = new ArrayList<>();
+    // @OneToMany(mappedBy = "krsDetail")
+    // private List<NilaiTugas> nilaiTugasList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private StatusRecord requestKonversi;
+
+    /**
+     * Status sync ke PDDIKTI Feeder untuk peserta kelas
+     * AKTIF = sudah di-sync ke Feeder
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_feeder")
+    private StatusRecord statusFeeder;
+
+    /**
+     * Check apakah peserta kelas sudah di-sync ke Feeder
+     */
+    public boolean isSyncedToFeeder() {
+        return statusFeeder != null && statusFeeder == StatusRecord.AKTIF;
+    }
+
+    /**
+     * Custom setter untuk statusFeeder - sekali AKTIF tidak bisa diubah
+     * IMMUTABLE setelah AKTIF
+     */
+    public void setStatusFeeder(StatusRecord statusFeeder) {
+        if (this.statusFeeder == StatusRecord.AKTIF) {
+            if (statusFeeder != StatusRecord.AKTIF) {
+                throw new IllegalStateException(
+                        "statusFeeder tidak dapat diubah setelah AKTIF. " +
+                                "Data sudah ter-sync ke Feeder.");
+            }
+            return;
+        }
+        this.statusFeeder = statusFeeder;
+    }
 }
