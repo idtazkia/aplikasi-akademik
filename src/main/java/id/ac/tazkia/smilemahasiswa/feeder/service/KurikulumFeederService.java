@@ -108,8 +108,8 @@ public class KurikulumFeederService {
         List<FeederKurikulumDto> kurikulumList = getKurikulumByProdi(prodi);
 
         return kurikulumList.stream()
-                .filter(k -> k.getNama_kurikulum() != null &&
-                        k.getNama_kurikulum().equalsIgnoreCase(namaKurikulum))
+                .filter(k -> k.getNamaKurikulum() != null &&
+                        k.getNamaKurikulum().equalsIgnoreCase(namaKurikulum))
                 .findFirst()
                 .orElse(null);
     }
@@ -172,7 +172,7 @@ public class KurikulumFeederService {
 
         // Jika belum, cari di Feeder
         FeederKurikulumDto feederKurikulum = findByKurikulumLokal(kurikulumLokal);
-        return feederKurikulum != null ? feederKurikulum.getId_kurikulum() : null;
+        return feederKurikulum != null ? feederKurikulum.getIdKurikulum() : null;
     }
 
     /**
@@ -191,9 +191,9 @@ public class KurikulumFeederService {
 
         // Map feeder by nama (normalized)
         Map<String, FeederKurikulumDto> feederMap = feederList.stream()
-                .filter(k -> k.getNama_kurikulum() != null)
+                .filter(k -> k.getNamaKurikulum() != null)
                 .collect(Collectors.toMap(
-                        k -> normalizeString(k.getNama_kurikulum()),
+                        k -> normalizeString(k.getNamaKurikulum()),
                         k -> k,
                         (a, b) -> a));
 
@@ -213,10 +213,10 @@ public class KurikulumFeederService {
             FeederKurikulumDto feeder = feederMap.get(key);
 
             if (feeder != null) {
-                k.setIdPddikti(feeder.getId_kurikulum());
+                k.setIdPddikti(feeder.getIdKurikulum());
                 kurikulumDao.save(k);
                 updated++;
-                updatedList.add(k.getNamaKurikulum() + " -> " + feeder.getId_kurikulum());
+                updatedList.add(k.getNamaKurikulum() + " -> " + feeder.getIdKurikulum());
             } else {
                 notFound++;
                 notFoundList.add(k.getNamaKurikulum());
@@ -271,9 +271,9 @@ public class KurikulumFeederService {
                         (a, b) -> a));
 
         Map<String, FeederKurikulumDto> feederMap = feederKurikulumList.stream()
-                .filter(k -> k.getNama_kurikulum() != null)
+                .filter(k -> k.getNamaKurikulum() != null)
                 .collect(Collectors.toMap(
-                        k -> normalizeString(k.getNama_kurikulum()),
+                        k -> normalizeString(k.getNamaKurikulum()),
                         k -> k,
                         (a, b) -> a));
 
@@ -302,7 +302,7 @@ public class KurikulumFeederService {
 
         // 5. Cari yang ada di Feeder tapi tidak di lokal
         for (FeederKurikulumDto feeder : feederKurikulumList) {
-            String key = normalizeString(feeder.getNama_kurikulum());
+            String key = normalizeString(feeder.getNamaKurikulum());
             if (!localMap.containsKey(key)) {
                 result.getMissingInLocal().add(convertFeederKurikulumToMap(feeder));
             }
@@ -324,9 +324,9 @@ public class KurikulumFeederService {
 
         // Bandingkan nama
         if (!normalizeString(local.getNamaKurikulum()).equalsIgnoreCase(
-                normalizeString(feeder.getNama_kurikulum()))) {
+                normalizeString(feeder.getNamaKurikulum()))) {
             differences.add(String.format("Nama berbeda: '%s' vs '%s'",
-                    local.getNamaKurikulum(), feeder.getNama_kurikulum()));
+                    local.getNamaKurikulum(), feeder.getNamaKurikulum()));
         }
 
         return differences;
@@ -373,12 +373,12 @@ public class KurikulumFeederService {
 
     private Map<String, Object> convertFeederKurikulumToMap(FeederKurikulumDto feeder) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("id_kurikulum", feeder.getId_kurikulum());
-        map.put("nama_kurikulum", feeder.getNama_kurikulum());
-        map.put("id_semester", feeder.getId_semester());
-        map.put("nama_semester", feeder.getNama_semester());
-        map.put("jumlah_sks_lulus", feeder.getJumlah_sks_lulus());
-        map.put("nama_program_studi", feeder.getNama_program_studi());
+        map.put("id_kurikulum", feeder.getIdKurikulum());
+        map.put("nama_kurikulum", feeder.getNamaKurikulum());
+        map.put("id_semester", feeder.getIdSemester());
+        map.put("nama_semester", feeder.getNamaSemester());
+        map.put("jumlah_sks_lulus", feeder.getJumlahSksLulus());
+        map.put("nama_program_studi", feeder.getNamaProgramStudi());
         return map;
     }
 }

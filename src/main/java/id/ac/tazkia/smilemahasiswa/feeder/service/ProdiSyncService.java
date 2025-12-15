@@ -78,7 +78,7 @@ public class ProdiSyncService {
                 .collect(Collectors.toMap(Prodi::getKodePddikti, p -> p, (a, b) -> a));
 
         Map<String, FeederProdiDto> feederProdiMap = feederProdiList.stream()
-                .collect(Collectors.toMap(FeederProdiDto::getKode_program_studi, p -> p, (a, b) -> a));
+                .collect(Collectors.toMap(FeederProdiDto::getKodeProgramStudi, p -> p, (a, b) -> a));
 
         // 4. Bandingkan data
         for (Prodi local : localProdiList) {
@@ -108,7 +108,7 @@ public class ProdiSyncService {
 
         // 5. Cari yang ada di Feeder tapi tidak ada di lokal
         for (FeederProdiDto feeder : feederProdiList) {
-            if (!localProdiMap.containsKey(feeder.getKode_program_studi())) {
+            if (!localProdiMap.containsKey(feeder.getKodeProgramStudi())) {
                 result.getMissingInLocal().add(convertFeederProdiToMap(feeder));
             }
         }
@@ -139,7 +139,7 @@ public class ProdiSyncService {
 
         List<FeederProdiDto> feederProdiList = convertToFeederProdiList(feederResponse.getData());
         Set<String> feederKodes = feederProdiList.stream()
-                .map(FeederProdiDto::getKode_program_studi)
+                .map(FeederProdiDto::getKodeProgramStudi)
                 .collect(Collectors.toSet());
 
         return localProdiList.stream()
@@ -167,7 +167,7 @@ public class ProdiSyncService {
         List<FeederProdiDto> feederProdiList = convertToFeederProdiList(feederResponse.getData());
 
         return feederProdiList.stream()
-                .filter(p -> !localIds.contains(p.getKode_program_studi()))
+                .filter(p -> !localIds.contains(p.getKodeProgramStudi()))
                 .collect(Collectors.toList());
     }
 
@@ -187,19 +187,19 @@ public class ProdiSyncService {
 
         // Bandingkan nama (dengan normalisasi)
         String localNama = normalizeString(local.getNamaProdi());
-        String feederNama = normalizeString(feeder.getNama_program_studi());
+        String feederNama = normalizeString(feeder.getNamaProgramStudi());
 
         if (!localNama.equalsIgnoreCase(feederNama)) {
             differences.add(
-                    String.format("Nama berbeda: '%s' vs '%s'", local.getNamaProdi(), feeder.getNama_program_studi()));
+                    String.format("Nama berbeda: '%s' vs '%s'", local.getNamaProdi(), feeder.getNamaProgramStudi()));
         }
 
         // Bandingkan kodePddikti lokal dengan kode_program_studi Feeder
         // (Seharusnya sama karena kita matching berdasarkan ini, tapi double check)
-        if (local.getKodePddikti() != null && feeder.getKode_program_studi() != null) {
-            if (!local.getKodePddikti().equals(feeder.getKode_program_studi())) {
+        if (local.getKodePddikti() != null && feeder.getKodeProgramStudi() != null) {
+            if (!local.getKodePddikti().equals(feeder.getKodeProgramStudi())) {
                 differences.add(String.format("Kode PDDIKTI berbeda: '%s' vs '%s'",
-                        local.getKodePddikti(), feeder.getKode_program_studi()));
+                        local.getKodePddikti(), feeder.getKodeProgramStudi()));
             }
         }
 
@@ -251,11 +251,11 @@ public class ProdiSyncService {
 
     private Map<String, Object> convertFeederProdiToMap(FeederProdiDto feeder) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("id_prodi", feeder.getId_prodi());
-        map.put("kode_program_studi", feeder.getKode_program_studi());
-        map.put("nama_program_studi", feeder.getNama_program_studi());
+        map.put("id_prodi", feeder.getIdProdi());
+        map.put("kode_program_studi", feeder.getKodeProgramStudi());
+        map.put("nama_program_studi", feeder.getNamaProgramStudi());
         map.put("status", feeder.getStatus());
-        map.put("jenjang", feeder.getNama_jenjang_pendidikan());
+        map.put("jenjang", feeder.getNamaJenjangPendidikan());
         return map;
     }
 }
