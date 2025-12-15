@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.feeder.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,34 +17,51 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FeederProdiDto {
 
-    // Primary key di Feeder
-    private String id_prodi;
+    /** Primary key di Feeder */
+    @JsonProperty("id_prodi")
+    private String idProdi;
 
-    // Kode program studi
-    private String kode_program_studi;
+    /** Kode program studi */
+    @JsonProperty("kode_program_studi")
+    private String kodeProgramStudi;
 
-    // Nama program studi
-    private String nama_program_studi;
+    /** Nama program studi */
+    @JsonProperty("nama_program_studi")
+    private String namaProgramStudi;
 
-    // Status (A = Aktif, N = Non-aktif, dll)
+    /** Status (A = Aktif, N = Non-aktif, dll) */
+    @JsonProperty("status")
     private String status;
 
     // Jenjang pendidikan
-    private String id_jenjang_pendidikan;
-    private String nama_jenjang_pendidikan;
+    @JsonProperty("id_jenjang_pendidikan")
+    private String idJenjangPendidikan;
 
-    // Tanggal berdiri
-    private String tanggal_berdiri;
+    @JsonProperty("nama_jenjang_pendidikan")
+    private String namaJenjangPendidikan;
+
+    /** Tanggal berdiri */
+    @JsonProperty("tanggal_berdiri")
+    private String tanggalBerdiri;
 
     // SK Penyelenggaraan
-    private String sk_penyelenggaraan;
-    private String tanggal_sk_penyelenggaraan;
+    @JsonProperty("sk_penyelenggaraan")
+    private String skPenyelenggaraan;
 
-    // Akreditasi
-    private String id_status_milik;
-    private String nama_status_milik;
+    @JsonProperty("tanggal_sk_penyelenggaraan")
+    private String tanggalSkPenyelenggaraan;
 
-    // Lainnya
-    private String id_perguruan_tinggi;
-    private String nama_perguruan_tinggi;
+    // Akreditasi/Status Milik
+    @JsonProperty("id_status_milik")
+    private String idStatusMilik;
+
+    @JsonProperty("nama_status_milik")
+    private String namaStatusMilik;
+
+    // Perguruan Tinggi
+    @JsonProperty("id_perguruan_tinggi")
+    private String idPerguruanTinggi;
+
+    @JsonProperty("nama_perguruan_tinggi")
+    private String namaPerguruanTinggi;
 }

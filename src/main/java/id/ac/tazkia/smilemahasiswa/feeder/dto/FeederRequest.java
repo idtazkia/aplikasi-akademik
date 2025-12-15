@@ -127,4 +127,15 @@ public class FeederRequest {
                 .offset(offset)
                 .build();
     }
+
+    /**
+     * Create an Insert/Update request with record
+     */
+    public static FeederRequest createInsertRequest(String act, String token, Map<String, Object> record) {
+        return FeederRequest.builder()
+                .act(act)
+                .token(token)
+                .record(record)
+                .build();
+    }
 }

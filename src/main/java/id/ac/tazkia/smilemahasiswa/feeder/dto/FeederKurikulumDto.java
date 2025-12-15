@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.feeder.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,38 +17,63 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FeederKurikulumDto {
 
-    // Primary key di Feeder
-    private String id_kurikulum;
+    /** Primary key di Feeder */
+    @JsonProperty("id_kurikulum")
+    private String idKurikulum;
 
-    // Nama kurikulum
-    private String nama_kurikulum;
+    /** Nama kurikulum */
+    @JsonProperty("nama_kurikulum")
+    private String namaKurikulum;
 
     // Program Studi
-    private String id_prodi;
-    private String nama_program_studi;
+    @JsonProperty("id_prodi")
+    private String idProdi;
+
+    @JsonProperty("nama_program_studi")
+    private String namaProgramStudi;
 
     // Jenjang
-    private String id_jenjang_pendidikan;
-    private String nama_jenjang_pendidikan;
+    @JsonProperty("id_jenjang_pendidikan")
+    private String idJenjangPendidikan;
+
+    @JsonProperty("nama_jenjang_pendidikan")
+    private String namaJenjangPendidikan;
 
     // Semester mulai berlaku
-    private String id_semester;
-    private String nama_semester;
+    @JsonProperty("id_semester")
+    private String idSemester;
+
+    @JsonProperty("nama_semester")
+    private String namaSemester;
 
     // Jumlah SKS
-    private String jumlah_sks_lulus;
-    private String jumlah_sks_wajib;
-    private String jumlah_sks_pilihan;
+    @JsonProperty("jumlah_sks_lulus")
+    private String jumlahSksLulus;
+
+    @JsonProperty("jumlah_sks_wajib")
+    private String jumlahSksWajib;
+
+    @JsonProperty("jumlah_sks_pilihan")
+    private String jumlahSksPilihan;
 
     // Jumlah semester
-    private String jumlah_semester;
+    @JsonProperty("jumlah_semester")
+    private String jumlahSemester;
 
     // Capaian Pembelajaran Lulusan
-    private String cpl_sikap;
-    private String cpl_pengetahuan;
-    private String cpl_keterampilan_umum;
-    private String cpl_keterampilan_khusus;
+    @JsonProperty("cpl_sikap")
+    private String cplSikap;
 
-    // Keterangan
+    @JsonProperty("cpl_pengetahuan")
+    private String cplPengetahuan;
+
+    @JsonProperty("cpl_keterampilan_umum")
+    private String cplKeterampilanUmum;
+
+    @JsonProperty("cpl_keterampilan_khusus")
+    private String cplKeterampilanKhusus;
+
+    /** Keterangan */
+    @JsonProperty("keterangan")
     private String keterangan;
 }
