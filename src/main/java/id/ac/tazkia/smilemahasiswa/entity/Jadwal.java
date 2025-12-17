@@ -200,7 +200,15 @@ public class Jadwal extends Auditable {
 
     /**
      * Generate nama kelas untuk Feeder (max 5 karakter)
-     * Format: [kode_prodi][angkatan][kelas_suffix]
+     * 
+     * Format nama kelas lokal yang didukung:
+     * 1. MES-25-REG-IBM → M25IB (prodi=M, angkatan=25, suffix=IB dari IBM)
+     * 2. MES-25-REG-IWM → M25IW (prodi=M, angkatan=25, suffix=IW dari IWM)
+     * 3. MBS-A-22-A → M22AA (prodi=M, angkatan=22, kelas=A, suffix=A)
+     * 4. HES-22 → H22AA (prodi=H, angkatan=22, default)
+     * 
+     * Strategy: Gunakan 2 karakter pertama dari part terakhir untuk membedakan
+     * 
      * Satu kelas lokal = satu nama feeder (untuk semua jadwal di kelas tersebut)
      */
     public String generateNamaKelasFeeder() {
@@ -211,57 +219,80 @@ public class Jadwal extends Auditable {
         String kodeProdi = prodi.getKodeProdi() != null ? prodi.getKodeProdi() : "A";
         String angkatanRaw = kelas.getAngkatan() != null ? kelas.getAngkatan() : "1";
 
-        // Ambil 2 digit terakhir dari angkatan (2021 → 21)
+        // Ambil 1 karakter pertama dari kode prodi
+        String prodiCode = kodeProdi.length() >= 1 ? kodeProdi.substring(0, 1).toUpperCase() : "A";
+
+        // Ambil 2 digit terakhir dari angkatan (2021 → 21, 2025 → 25)
         String angkatan = angkatanRaw.length() >= 2 ? angkatanRaw.substring(angkatanRaw.length() - 2) : angkatanRaw;
 
-        // Extract suffix dari nama kelas dengan smart parsing
-        String kelasSuffix = "";
-        if (kelas.getNamaKelas() != null && !kelas.getNamaKelas().isEmpty()) {
-            String namaKelas = kelas.getNamaKelas();
+        // Extract suffix dari nama kelas - gunakan 2 karakter dari part terakhir
+        String kelasSuffix = "AA"; // Default
 
-            // Split untuk analisis
+        if (kelas.getNamaKelas() != null && !kelas.getNamaKelas().isEmpty()) {
+            String namaKelas = kelas.getNamaKelas().toUpperCase().trim();
             String[] parts = namaKelas.split("-");
 
-            if (parts.length >= 3) {
-                // Format: MBS-21-KWS-A → ambil "A"
-                kelasSuffix = parts[parts.length - 1].trim().toUpperCase();
-            } else if (parts.length == 2) {
-                // Format: HES-22 atau TAZ-25
-                String part2 = parts[1].trim().toUpperCase();
-
-                // Jika part2 adalah angka dan sama dengan angkatan, generate suffix unik
-                if (part2.equals(angkatan) || part2.equals(angkatanRaw)) {
-                    // Format: HES-22, TAZ-25 → generate suffix unik berdasarkan hash nama kelas
-                    kelasSuffix = generateUniqueSuffix(namaKelas, kodeProdi);
-                } else if (part2.matches("[A-Za-z]")) {
-                    // Jika part2 adalah huruf tunggal
-                    kelasSuffix = part2;
+            if (parts.length >= 4) {
+                // Format: MES-25-REG-IBM atau MBS-A-22-KWS
+                // Ambil 2 karakter pertama dari part terakhir untuk suffix
+                String lastPart = parts[parts.length - 1].trim();
+                if (lastPart.length() >= 2) {
+                    kelasSuffix = lastPart.substring(0, 2);
+                } else if (lastPart.length() == 1) {
+                    // Jika part terakhir hanya 1 karakter, cek part sebelumnya
+                    String prevPart = parts[parts.length - 2].trim();
+                    if (prevPart.matches("\\d+")) {
+                        // part sebelumnya adalah angka (angkatan), gunakan lastPart + hash
+                        kelasSuffix = lastPart + generateUniqueSuffix(namaKelas, kodeProdi);
+                    } else {
+                        // Gabungkan karakter pertama dari 2 part terakhir
+                        kelasSuffix = prevPart.substring(0, 1) + lastPart;
+                    }
                 } else {
-                    // Default suffix
-                    kelasSuffix = "A";
+                    kelasSuffix = "AA";
+                }
+            } else if (parts.length == 3) {
+                // Format: MBS-A-22 atau MBS-22-A atau MES-25-REG
+                String part1 = parts[1].trim();
+                String part2 = parts[2].trim();
+
+                if (part1.matches("\\d+")) {
+                    // Format: MBS-22-A → angkatan di tengah, kelas di akhir
+                    kelasSuffix = part2.length() >= 2 ? part2.substring(0, 2) : part2 + "A";
+                } else if (part2.matches("\\d+")) {
+                    // Format: MBS-A-22 → kelas di tengah, angkatan di akhir
+                    kelasSuffix = part1.length() >= 2 ? part1.substring(0, 2) : part1 + "A";
+                } else {
+                    // Keduanya bukan angka, gunakan part terakhir
+                    kelasSuffix = part2.length() >= 2 ? part2.substring(0, 2) : part2 + "A";
+                }
+            } else if (parts.length == 2) {
+                // Format: HES-22 atau TAZ-A
+                String part1 = parts[1].trim();
+
+                if (part1.matches("\\d+")) {
+                    // Format: HES-22 → tidak ada info kelas, generate dari hash
+                    kelasSuffix = generateUniqueSuffix(namaKelas, kodeProdi) + "A";
+                } else {
+                    // Format: TAZ-A → parts[1] adalah kelas
+                    kelasSuffix = part1.length() >= 2 ? part1.substring(0, 2) : part1 + "A";
                 }
             } else {
-                // Format tanpa dash: ambil karakter terakhir
-                kelasSuffix = namaKelas.substring(namaKelas.length() - 1).toUpperCase();
+                // Format tanpa dash: ambil 2 karakter terakhir
+                if (namaKelas.length() >= 2) {
+                    kelasSuffix = namaKelas.substring(namaKelas.length() - 2);
+                } else {
+                    kelasSuffix = namaKelas + "A";
+                }
             }
         }
 
-        // Build result: [kode_prodi][angkatan][kelas_suffix]
-        String result = kodeProdi + angkatan + kelasSuffix;
+        // Build result: [prodiCode_1][angkatan_2][kelasSuffix_2] = 5 karakter
+        String result = prodiCode + angkatan + kelasSuffix;
 
-        // Jika kepanjangan (>5), optimize
+        // Jika kepanjangan (>5), truncate ke 5 karakter
         if (result.length() > 5) {
-            // Priority 1: 2 kode prodi + 2 angkatan + 1 kelas = 5 karakter
-            String prodiCode = kodeProdi.length() >= 2 ? kodeProdi.substring(0, 2) : kodeProdi;
-            String angkatanCode = angkatan.length() >= 2 ? angkatan.substring(angkatan.length() - 2) : angkatan;
-            String kelasOptimized = kelasSuffix.length() >= 1 ? kelasSuffix.substring(0, 1) : "";
-
-            result = prodiCode + angkatanCode + kelasOptimized;
-
-            // Jika masih >5, truncate ke 5
-            if (result.length() > 5) {
-                result = result.substring(0, 5);
-            }
+            result = result.substring(0, 5);
         }
 
         // Jika masih kurang dari 3, tambahkan padding

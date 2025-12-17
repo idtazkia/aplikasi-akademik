@@ -102,7 +102,11 @@ public class FeederKelasKuliahController {
             // Filter jadwal yang sudah sync dan yang belum
             int alreadySynced = 0;
             int incompleteSchedule = 0;
+            int duplicateNamaKelas = 0;
             List<Map<String, Object>> readyToSync = new ArrayList<>();
+
+            // Track nama kelas yang sudah digunakan untuk detect duplikat
+            Map<String, List<String>> namaKelasUsage = new HashMap<>(); // namaKelasFeeder -> list of jadwalIds
 
             for (Jadwal jadwal : allJadwal) {
                 Map<String, Object> jadwalInfo = new HashMap<>();
@@ -118,7 +122,16 @@ public class FeederKelasKuliahController {
                 }
                 jadwalInfo.put("namaKelas", jadwal.getKelas() != null ? jadwal.getKelas().getNamaKelas() : "");
                 jadwalInfo.put("kapasitas", jadwal.getKapasitas());
-                jadwalInfo.put("namaKelasFeeder", jadwal.generateNamaKelasFeeder());
+
+                String namaKelasFeeder = jadwal.generateNamaKelasFeeder();
+                jadwalInfo.put("namaKelasFeeder", namaKelasFeeder);
+
+                // Track penggunaan nama kelas feeder untuk detect duplikat
+                String namaKelasKey = namaKelasFeeder + "_" +
+                        (jadwal.getMatakuliahKurikulum() != null
+                                ? jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah()
+                                : "");
+                namaKelasUsage.computeIfAbsent(namaKelasKey, k -> new ArrayList<>()).add(jadwal.getId());
 
                 // Debug info for nama kelas generation
                 Map<String, Object> debugInfo = new HashMap<>();
@@ -159,20 +172,73 @@ public class FeederKelasKuliahController {
                 }
             }
 
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "tahunAkademik", Map.of(
-                            "id", ta.getId(),
-                            "nama", ta.getNamaTahunAkademik()),
-                    "prodi", Map.of(
-                            "id", p.getId(),
-                            "nama", p.getNamaProdi(),
-                            "kodePddikti", p.getKodePddikti()),
-                    "total", allJadwal.size(),
-                    "readyToSync", readyToSync.size(),
-                    "alreadySynced", alreadySynced,
-                    "incompleteSchedule", incompleteSchedule,
-                    "data", readyToSync));
+            // Detect duplikat nama kelas feeder
+            List<Map<String, Object>> duplicates = new ArrayList<>();
+            for (Map.Entry<String, List<String>> entry : namaKelasUsage.entrySet()) {
+                if (entry.getValue().size() > 1) {
+                    duplicateNamaKelas += entry.getValue().size();
+                    String[] keyParts = entry.getKey().split("_", 2);
+                    duplicates.add(Map.of(
+                            "namaKelasFeeder", keyParts[0],
+                            "kodeMatkul", keyParts.length > 1 ? keyParts[1] : "",
+                            "jadwalIds", entry.getValue(),
+                            "count", entry.getValue().size()));
+                }
+            }
+
+            // Mark duplikat di readyToSync
+            // Duplikat adalah jadwal dengan nama kelas Feeder SAMA untuk matakuliah SAMA
+            // Ini bisa terjadi jika ada bug di generateNamaKelasFeeder() atau nama kelas
+            // lokal identik
+            for (Map<String, Object> item : readyToSync) {
+                String namaKelasFeeder = (String) item.get("namaKelasFeeder");
+                String kodeMatkul = (String) item.get("kodeMatkul");
+                String key = namaKelasFeeder + "_" + kodeMatkul;
+
+                if (namaKelasUsage.containsKey(key) && namaKelasUsage.get(key).size() > 1) {
+                    item.put("isDuplicate", true);
+                    item.put("duplicateWith", namaKelasUsage.get(key));
+                    // Tetap bisa sync - yang pertama akan insert, sisanya akan pakai ID sama
+                    item.put("canSync", true);
+                    item.put("statusFeeder", "READY_TO_SYNC_SHARED");
+                    item.put("warning", "Nama kelas Feeder '" + namaKelasFeeder +
+                            "' sama dengan jadwal lain. Akan menggunakan ID kelas yang sama di Feeder.");
+                }
+            }
+
+            // Semua yang ready bisa sync
+            long actualReadyToSync = readyToSync.size();
+
+            // Hitung unique kelas yang akan dibuat (exclude duplikat)
+            long uniqueKelasCount = namaKelasUsage.size();
+
+            // Build response dengan LinkedHashMap untuk menjaga urutan
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("success", true);
+            response.put("tahunAkademik", Map.of(
+                    "id", ta.getId(),
+                    "nama", ta.getNamaTahunAkademik()));
+            response.put("prodi", Map.of(
+                    "id", p.getId(),
+                    "nama", p.getNamaProdi(),
+                    "kodePddikti", p.getKodePddikti()));
+            response.put("total", allJadwal.size());
+            response.put("readyToSync", actualReadyToSync);
+            response.put("uniqueKelasToCreate", uniqueKelasCount);
+            response.put("alreadySynced", alreadySynced);
+            response.put("incompleteSchedule", incompleteSchedule);
+            response.put("sharedKelasCount", duplicateNamaKelas);
+
+            if (!duplicates.isEmpty()) {
+                response.put("sharedKelasDetails", duplicates);
+                response.put("sharedKelasNote", "Terdapat " + duplicates.size() +
+                        " kombinasi nama kelas Feeder yang akan di-share oleh beberapa jadwal. " +
+                        "Ini normal jika jadwal-jadwal tersebut memang satu kelas yang sama.");
+            }
+
+            response.put("data", readyToSync);
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             log.error("Error preparing insert kelas kuliah", e);
@@ -238,9 +304,24 @@ public class FeederKelasKuliahController {
                         .build());
             }
 
+            // Detect duplikat nama kelas feeder SEBELUM proses insert
+            Map<String, List<Jadwal>> namaKelasGroups = new HashMap<>();
+            for (Jadwal j : jadwals) {
+                String namaKelasFeeder = j.generateNamaKelasFeeder();
+                String kodeMatkul = j.getMatakuliahKurikulum() != null
+                        ? j.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah()
+                        : "";
+                String key = namaKelasFeeder + "_" + kodeMatkul;
+                namaKelasGroups.computeIfAbsent(key, k -> new ArrayList<>()).add(j);
+            }
+
+            // Track nama kelas yang sudah di-insert ke Feeder (untuk handle duplikat)
+            Map<String, String> insertedKelasMap = new HashMap<>(); // namaKelasKey -> idKelasKuliahFeeder
+
             int successCount = 0;
             int failedCount = 0;
             int notFoundCount = 0;
+            int skippedDuplicate = 0;
             List<String> errorMessages = new ArrayList<>();
 
             for (Jadwal jadwal : jadwals) {
@@ -249,6 +330,24 @@ public class FeederKelasKuliahController {
                     String kodeMatkul = jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah();
                     String namaMatkul = jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
                     MatakuliahKurikulum mk = jadwal.getMatakuliahKurikulum();
+
+                    // Generate key untuk tracking duplikat
+                    String namaKelasFeeder = jadwal.generateNamaKelasFeeder();
+                    String namaKelasKey = namaKelasFeeder + "_" + kodeMatkul;
+                    String idSemesterFeeder = ta.getKodeTahunAkademik();
+
+                    // Check apakah nama kelas ini sudah di-insert sebelumnya dalam batch ini
+                    if (insertedKelasMap.containsKey(namaKelasKey)) {
+                        // Sudah ada yang insert dengan nama kelas yang sama, gunakan ID yang existing
+                        String existingIdKelas = insertedKelasMap.get(namaKelasKey);
+                        jadwal.setIdKelasKuliahFeeder(existingIdKelas);
+                        jadwal.setStatusKelasFeeder(StatusRecord.AKTIF);
+                        jadwalDao.save(jadwal);
+                        skippedDuplicate++;
+                        log.info("Jadwal {} menggunakan kelas existing {} (duplikat nama: {})",
+                                jadwal.getId(), existingIdKelas, namaKelasFeeder);
+                        continue;
+                    }
 
                     Map<String, Object> matkulFeeder = searchMatkulInFeeder(kodeMatkul, namaMatkul, idProdiFeeder);
                     String idMatkulFeeder = null;
@@ -286,9 +385,24 @@ public class FeederKelasKuliahController {
                         continue;
                     }
 
-                    // Insert kelas kuliah
-                    String namaKelasFeeder = jadwal.generateNamaKelasFeeder();
-                    String idSemesterFeeder = ta.getKodeTahunAkademik(); // Misal: "20241"
+                    // Check apakah kelas kuliah sudah ada di Feeder (dari sync sebelumnya atau
+                    // prodi lain)
+                    String existingIdKelas = searchKelasKuliahInFeeder(idProdiFeeder, idSemesterFeeder,
+                            idMatkulFeeder, namaKelasFeeder);
+
+                    if (existingIdKelas != null) {
+                        // Kelas sudah ada di Feeder, gunakan ID existing
+                        jadwal.setIdKelasKuliahFeeder(existingIdKelas);
+                        jadwal.setStatusKelasFeeder(StatusRecord.AKTIF);
+                        jadwalDao.save(jadwal);
+                        insertedKelasMap.put(namaKelasKey, existingIdKelas);
+                        successCount++;
+                        log.info("Kelas kuliah sudah ada di Feeder, menggunakan ID: {} untuk jadwal: {}",
+                                existingIdKelas, jadwal.getId());
+                        continue;
+                    }
+
+                    // Insert kelas kuliah baru
 
                     FeederResponse<String> insertResponse = feederService.insertKelasKuliah(
                             idProdiFeeder, idSemesterFeeder, idMatkulFeeder,
@@ -296,9 +410,13 @@ public class FeederKelasKuliahController {
 
                     if (insertResponse.isSuccess() && insertResponse.getData() != null) {
                         // Update jadwal dengan ID dari feeder
-                        jadwal.setIdKelasKuliahFeeder(insertResponse.getData());
+                        String newIdKelas = insertResponse.getData();
+                        jadwal.setIdKelasKuliahFeeder(newIdKelas);
                         jadwal.setStatusKelasFeeder(StatusRecord.AKTIF);
                         jadwalDao.save(jadwal);
+
+                        // Track untuk handle duplikat dalam batch yang sama
+                        insertedKelasMap.put(namaKelasKey, newIdKelas);
                         successCount++;
 
                         log.info("Successfully inserted kelas kuliah for jadwal: {}", jadwal.getId());
@@ -324,6 +442,7 @@ public class FeederKelasKuliahController {
                     .matchedCount(successCount)
                     .mismatchedCount(failedCount)
                     .missingInFeederCount(notFoundCount)
+                    .skippedCount(skippedDuplicate)
                     .build();
 
             // Add error messages to mismatched items
@@ -601,6 +720,43 @@ public class FeederKelasKuliahController {
                     "success", false,
                     "error", response.getErrorDesc() != null ? response.getErrorDesc() : "Unknown error");
         }
+    }
+
+    /**
+     * Helper: Search kelas kuliah di Feeder
+     * Digunakan untuk check apakah kelas dengan nama yang sama sudah ada
+     * 
+     * @return id_kelas_kuliah jika ditemukan, null jika tidak ada
+     */
+    private String searchKelasKuliahInFeeder(String idProdi, String idSemester,
+            String idMatkul, String namaKelas) {
+        try {
+            String filter = FeederFilterBuilder.builder()
+                    .eq("id_prodi", idProdi)
+                    .eq("id_semester", idSemester)
+                    .eq("id_matkul", idMatkul)
+                    .eq("nama_kelas_kuliah", namaKelas)
+                    .build();
+
+            log.debug("Searching kelas kuliah in Feeder: {}", filter);
+
+            FeederResponse<Object> response = feederService.execute("GetListKelasKuliah", filter);
+
+            if (response.isSuccess() && response.getData() != null) {
+                List<?> dataList = (List<?>) response.getData();
+                if (!dataList.isEmpty()) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> first = (Map<String, Object>) dataList.get(0);
+                    String idKelas = first.get("id_kelas_kuliah") != null ? first.get("id_kelas_kuliah").toString()
+                            : null;
+                    log.info("Kelas kuliah ditemukan di Feeder - nama: {}, id: {}", namaKelas, idKelas);
+                    return idKelas;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Error searching kelas kuliah in Feeder: {}", e.getMessage());
+        }
+        return null;
     }
 
     /**

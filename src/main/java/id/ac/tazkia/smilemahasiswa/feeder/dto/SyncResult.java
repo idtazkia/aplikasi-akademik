@@ -28,6 +28,7 @@ public class SyncResult<T> {
     private int mismatchedCount;
     private int missingInFeederCount;
     private int missingInLocalCount;
+    private int skippedCount; // Jumlah yang di-skip (misal: duplikat yang menggunakan ID existing)
 
     @Builder.Default
     private List<SyncItem<T>> matched = new ArrayList<>();
