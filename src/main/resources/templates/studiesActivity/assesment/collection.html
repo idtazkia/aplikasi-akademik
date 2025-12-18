@@ -148,7 +148,11 @@
 														style="min-width: 100px"
 														th:if="${(jadwaltugas.kategoriTugas.name() == 'UTS' or jadwaltugas.kategoriTugas.name() == 'UAS') and data.statusMangkir == 'MELEBIHI BATAS'}"
 													>
-														<span class="badge badge-danger" th:text="${'Mangkir: ' + data.mangkir}">Melebihi Batas</span>
+														<span
+															class="badge badge-danger"
+															th:text="${'Mangkir: ' + data.mangkir}"
+															>Melebihi Batas</span
+														>
 													</td>
 													<td th:text="${data.waktu}"></td>
 													<td>
