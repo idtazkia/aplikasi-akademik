@@ -1536,10 +1536,10 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
         JumlahSKSIPKDto ipkSksTotal(String idMahasiswa);
 
         @Query(value = "SELECT \n" +
-                        "    z.mangkir, b.id_jadwal AS jadwal, e.id AS jawaban, nim, nama,\n" +
+                        "    z.mangkir, b.id_jadwal AS jadwal, e.id AS jawaban, d.nim, d.nama,\n" +
                         "    COALESCE(e.jawaban_teks, '-') AS teks, COALESCE(e.file, 'none') AS file,\n" +
-                        "    COALESCE(e.nama_file, 'none') AS filename, COALESCE(nilai, 0) AS nilai,\n" +
-                        "    COALESCE(waktu_pengumpulan, '-') AS waktu,\n" +
+                        "    COALESCE(e.nama_file, 'none') AS filename, COALESCE(e.nilai, 0) AS nilai,\n" +
+                        "    COALESCE(e.waktu_pengumpulan, '-') AS waktu,\n" +
                         "    CASE \n" +
                         "        WHEN e.waktu_pengumpulan > a.tenggat_waktu THEN \n" +
                         "            CASE \n" +
@@ -1555,7 +1555,19 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         +
                         "            END \n" +
                         "        ELSE 'Ontime' \n" +
-                        "    END AS telat\n" +
+                        "    END AS telat,\n" +
+                        "    CASE \n" +
+                        "        WHEN d.id_program = '3abf660c-e801-4ca3-b6d6-e69f67b9f09c' THEN \n" +
+                        "            CASE \n" +
+                        "                WHEN z.mangkir > 4 THEN 'MELEBIHI BATAS' \n" +
+                        "                ELSE 'AMAN' \n" +
+                        "            END \n" +
+                        "        ELSE \n" +
+                        "            CASE \n" +
+                        "                WHEN z.mangkir > 3 THEN 'MELEBIHI BATAS' \n" +
+                        "                ELSE 'AMAN' \n" +
+                        "            END \n" +
+                        "    END AS status_mangkir \n" +
                         "FROM jadwal_tugas a\n" +
                         "JOIN sesi_kuliah b ON a.id_sesi_kuliah = b.id \n" +
                         "    AND a.id = ?1 AND a.status = 'AKTIF'\n" +

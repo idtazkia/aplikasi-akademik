@@ -122,11 +122,11 @@
 															>Tidak ada file diupload</a
 														>
 													</td>
-													<!-- Input nilai: tampil jika kategori TUGAS, atau jika UTS/UAS dan mangkir <= 3 -->
+													<!-- Input nilai: tampil jika kategori TUGAS, atau jika statusMangkir AMAN -->
 													<td
 														class="text-nowrap"
 														style="min-width: 100px"
-														th:if="${jadwaltugas.kategoriTugas.name() == 'TUGAS' or data.mangkir == null or data.mangkir <= 3}"
+														th:if="${jadwaltugas.kategoriTugas.name() == 'TUGAS' or data.statusMangkir == 'AMAN'}"
 													>
 														<div class="input-group">
 															<input
@@ -142,13 +142,13 @@
 															/>
 														</div>
 													</td>
-													<!-- Tidak bisa input nilai: hanya untuk UTS/UAS jika mangkir > 3 -->
+													<!-- Tidak bisa input nilai: hanya untuk UTS/UAS jika statusMangkir MELEBIHI BATAS -->
 													<td
 														class="text-nowrap text-center"
 														style="min-width: 100px"
-														th:if="${(jadwaltugas.kategoriTugas.name() == 'UTS' or jadwaltugas.kategoriTugas.name() == 'UAS') and data.mangkir != null and data.mangkir > 3}"
+														th:if="${(jadwaltugas.kategoriTugas.name() == 'UTS' or jadwaltugas.kategoriTugas.name() == 'UAS') and data.statusMangkir == 'MELEBIHI BATAS'}"
 													>
-														<span class="badge badge-danger">Mangkir > 3</span>
+														<span class="badge badge-danger" th:text="${'Mangkir: ' + data.mangkir}">Melebihi Batas</span>
 													</td>
 													<td th:text="${data.waktu}"></td>
 													<td>

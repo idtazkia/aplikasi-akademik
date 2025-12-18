@@ -22,4 +22,6 @@ public interface ListPenilaianMahasiswa {
     String getWaktu();
 
     String getTelat();
+
+    String getStatusMangkir();
 }
