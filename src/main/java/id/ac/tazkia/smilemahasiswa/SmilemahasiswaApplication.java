@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
@@ -22,6 +23,7 @@ import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableScheduling
+@EnableAsync
 @EnableCaching
 public class SmilemahasiswaApplication {
 

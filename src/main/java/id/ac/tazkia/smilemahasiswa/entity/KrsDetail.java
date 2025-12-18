@@ -150,10 +150,40 @@ public class KrsDetail extends Auditable {
     private StatusRecord statusFeeder;
 
     /**
+     * Status sync nilai ke PDDIKTI Feeder
+     * AKTIF = nilai sudah di-sync ke Feeder
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_nilai_feeder")
+    private StatusRecord statusNilaiFeeder;
+
+    /**
      * Check apakah peserta kelas sudah di-sync ke Feeder
      */
     public boolean isSyncedToFeeder() {
         return statusFeeder != null && statusFeeder == StatusRecord.AKTIF;
+    }
+
+    /**
+     * Check apakah nilai sudah di-sync ke Feeder
+     */
+    public boolean isNilaiSyncedToFeeder() {
+        return statusNilaiFeeder != null && statusNilaiFeeder == StatusRecord.AKTIF;
+    }
+
+    /**
+     * Check apakah KRS ini ready untuk sync nilai ke Feeder
+     * Syarat:
+     * 1. Peserta sudah di-sync ke Feeder (statusFeeder = AKTIF)
+     * 2. Nilai sudah final (finalisasi = "FINAL")
+     * 3. Grade sudah ada
+     * 4. Nilai belum di-sync (statusNilaiFeeder != AKTIF)
+     */
+    public boolean isReadyForNilaiSync() {
+        return isSyncedToFeeder()
+                && "FINAL".equals(finalisasi)
+                && grade != null && !grade.trim().isEmpty()
+                && !isNilaiSyncedToFeeder();
     }
 
     /**
@@ -170,5 +200,20 @@ public class KrsDetail extends Auditable {
             return;
         }
         this.statusFeeder = statusFeeder;
+    }
+
+    /**
+     * Custom setter untuk statusNilaiFeeder
+     * - Nilai bisa di-update ulang (re-sync) jika ada perubahan nilai
+     * - Tapi tidak boleh di-set ke null setelah pernah AKTIF
+     */
+    public void setStatusNilaiFeeder(StatusRecord statusNilaiFeeder) {
+        // Jika sudah pernah AKTIF, tidak boleh di-set ke null
+        if (this.statusNilaiFeeder == StatusRecord.AKTIF && statusNilaiFeeder == null) {
+            throw new IllegalStateException(
+                    "statusNilaiFeeder tidak dapat di-set ke null setelah AKTIF. " +
+                            "Nilai sudah pernah ter-sync ke Feeder.");
+        }
+        this.statusNilaiFeeder = statusNilaiFeeder;
     }
 }

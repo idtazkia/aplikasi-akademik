@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import id.ac.tazkia.smilemahasiswa.feeder.client.FeederApiClient;
@@ -572,6 +573,7 @@ public class FeederService {
      * @param nidn NIDN dosen
      * @return id_registrasi_dosen atau null jika tidak ditemukan
      */
+    @Cacheable(value = "feederIdRegistrasiDosen", key = "#nidn", unless = "#result == null")
     public String getIdRegistrasiDosen(String nidn) {
         if (nidn == null || nidn.trim().isEmpty()) {
             log.warn("NIDN kosong, tidak bisa mencari id_registrasi_dosen");
@@ -898,5 +900,143 @@ public class FeederService {
         }
 
         return false;
+    }
+
+    // =====================================================
+    // Nilai Perkuliahan Methods
+    // =====================================================
+
+    /**
+     * Update nilai perkuliahan kelas ke Feeder
+     * 
+     * @param idRegistrasiMahasiswa ID registrasi mahasiswa dari Feeder
+     * @param idKelasKuliah         ID kelas kuliah dari Feeder
+     * @param nilaiAngka            Nilai angka (0-100)
+     * @param nilaiIndeks           Nilai indeks/bobot (0-4)
+     * @param nilaiHuruf            Nilai huruf (A, B, C, D, E)
+     * @return FeederResponse
+     */
+    public FeederResponse<Object> updateNilaiPerkuliahanKelas(
+            String idRegistrasiMahasiswa,
+            String idKelasKuliah,
+            Double nilaiAngka,
+            Double nilaiIndeks,
+            String nilaiHuruf) {
+
+        log.info("Updating nilai perkuliahan to Feeder - idMhs: {}, idKelas: {}, nilai: {} ({})",
+                idRegistrasiMahasiswa, idKelasKuliah, nilaiAngka, nilaiHuruf);
+
+        // Validasi required fields
+        if (idRegistrasiMahasiswa == null || idRegistrasiMahasiswa.isEmpty()) {
+            return createErrorResponse(-1, "ID Registrasi Mahasiswa tidak boleh kosong");
+        }
+
+        if (idKelasKuliah == null || idKelasKuliah.isEmpty()) {
+            return createErrorResponse(-1, "ID Kelas Kuliah tidak boleh kosong");
+        }
+
+        if (nilaiHuruf == null || nilaiHuruf.trim().isEmpty()) {
+            return createErrorResponse(-1, "Nilai Huruf tidak boleh kosong");
+        }
+
+        // Build key untuk update
+        Map<String, Object> key = new java.util.LinkedHashMap<>();
+        key.put("id_registrasi_mahasiswa", idRegistrasiMahasiswa);
+        key.put("id_kelas_kuliah", idKelasKuliah);
+
+        // Build record dengan nilai
+        Map<String, Object> record = new java.util.LinkedHashMap<>();
+        record.put("nilai_angka", nilaiAngka != null ? nilaiAngka : 0);
+        record.put("nilai_indeks", nilaiIndeks != null ? nilaiIndeks : 0);
+        record.put("nilai_huruf", nilaiHuruf.trim());
+
+        log.debug("Feeder UpdateNilaiPerkuliahanKelas key: {}, record: {}", key, record);
+
+        FeederResponse<Object> response = update("UpdateNilaiPerkuliahanKelas", key, record);
+
+        if (response.isSuccess()) {
+            log.info("Nilai perkuliahan updated successfully - idMhs: {}, idKelas: {}", 
+                    idRegistrasiMahasiswa, idKelasKuliah);
+        } else {
+            log.error("Failed to update nilai perkuliahan: {}", response.getErrorDesc());
+        }
+
+        return response;
+    }
+
+    /**
+     * Get detail nilai perkuliahan kelas dari Feeder
+     * 
+     * @param idKelasKuliah ID kelas kuliah dari Feeder
+     * @return List of nilai data
+     */
+    public List<Map<String, Object>> getDetailNilaiPerkuliahanKelas(String idKelasKuliah) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        if (idKelasKuliah == null || idKelasKuliah.isEmpty()) {
+            return result;
+        }
+
+        String filter = String.format("id_kelas_kuliah='%s'", idKelasKuliah);
+        log.debug("Fetching nilai perkuliahan from Feeder with filter: {}", filter);
+
+        FeederResponse<Object> response = execute("GetDetailNilaiPerkuliahanKelas", filter);
+
+        if (response.isSuccess() && response.getData() != null) {
+            List<?> dataList = (List<?>) response.getData();
+            for (Object item : dataList) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> nilai = (Map<String, Object>) item;
+                result.add(nilai);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Get detail nilai perkuliahan untuk multiple kelas (BATCH)
+     * 
+     * @param kelasKuliahIds List ID kelas kuliah Feeder
+     * @return Map dari id_kelas_kuliah ke Map<id_registrasi_mahasiswa, nilai_data>
+     */
+    public Map<String, Map<String, Map<String, Object>>> getDetailNilaiPerkuliahanKelasBatch(
+            List<String> kelasKuliahIds) {
+        
+        Map<String, Map<String, Map<String, Object>>> result = new HashMap<>();
+
+        if (kelasKuliahIds == null || kelasKuliahIds.isEmpty()) {
+            return result;
+        }
+
+        // Build filter dengan OR untuk semua kelas kuliah
+        String filter = kelasKuliahIds.stream()
+                .map(id -> String.format("id_kelas_kuliah='%s'", id))
+                .collect(java.util.stream.Collectors.joining(" OR "));
+
+        log.info("Batch fetching nilai perkuliahan from Feeder for {} kelas", kelasKuliahIds.size());
+        log.debug("Filter: {}", filter);
+
+        FeederResponse<Object> response = execute("GetDetailNilaiPerkuliahanKelas", filter);
+
+        if (response.isSuccess() && response.getData() != null) {
+            List<?> dataList = (List<?>) response.getData();
+            log.info("Found {} nilai records from Feeder", dataList.size());
+
+            for (Object item : dataList) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> nilai = (Map<String, Object>) item;
+                String idKelas = (String) nilai.get("id_kelas_kuliah");
+                String idMahasiswa = (String) nilai.get("id_registrasi_mahasiswa");
+
+                if (idKelas != null && idMahasiswa != null) {
+                    result.computeIfAbsent(idKelas, k -> new HashMap<>())
+                          .put(idMahasiswa, nilai);
+                }
+            }
+        }
+
+        log.info("Found nilai data for {} kelas", result.size());
+        return result;
     }
 }

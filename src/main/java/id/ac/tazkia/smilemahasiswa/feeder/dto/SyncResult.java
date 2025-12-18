@@ -30,6 +30,14 @@ public class SyncResult<T> {
     private int missingInLocalCount;
     private int skippedCount; // Jumlah yang di-skip (misal: duplikat yang menggunakan ID existing)
 
+    // Pagination fields untuk batch processing
+    private boolean hasMore; // Apakah masih ada data yang perlu di-sync
+    private int totalData; // Total data yang harus di-sync
+    private int nextOffset; // Offset untuk request selanjutnya
+
+    @Builder.Default
+    private List<String> errors = new ArrayList<>(); // Pesan error untuk debugging
+
     @Builder.Default
     private List<SyncItem<T>> matched = new ArrayList<>();
 

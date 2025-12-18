@@ -3,8 +3,12 @@ package id.ac.tazkia.smilemahasiswa.feeder.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -31,14 +35,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Controller untuk sinkronisasi Dosen Pengajar Kelas Kuliah dengan Feeder PDDIKTI.
+ * Controller untuk sinkronisasi Dosen Pengajar Kelas Kuliah dengan Feeder
+ * PDDIKTI.
  * 
  * Prerequisites:
  * - Jadwal harus sudah ter-sync ke Feeder (punya idKelasKuliahFeeder)
  * - Dosen harus punya NIDN yang valid
  * 
  * Endpoints:
- * - GET /api/feeder/prepare-insert/dosen-pengajar - Prepare daftar dosen untuk sync
+ * - GET /api/feeder/prepare-insert/dosen-pengajar - Prepare daftar dosen untuk
+ * sync
  * - POST /api/feeder/insert/dosen-pengajar/batch - Batch insert dosen pengajar
  */
 @Slf4j
@@ -57,9 +63,11 @@ public class FeederDosenPengajarController {
      * Prepare insert dosen pengajar ke Feeder
      * GET /api/feeder/prepare-insert/dosen-pengajar?tahunAkademik=xxx&prodi=yyy
      * 
-     * Menampilkan daftar jadwal yang sudah ter-sync beserta status dosen pengajarnya
+     * Menampilkan daftar jadwal yang sudah ter-sync beserta status dosen
+     * pengajarnya
      * 
-     * OPTIMIZED: Fetch semua penugasan dosen dalam 1 API call untuk menghindari N+1 problem
+     * OPTIMIZED: Fetch semua penugasan dosen dalam 1 API call untuk menghindari N+1
+     * problem
      */
     @GetMapping("/prepare-insert/dosen-pengajar")
     public ResponseEntity<?> prepareInsertDosenPengajar(
@@ -99,7 +107,8 @@ public class FeederDosenPengajarController {
                         "readyToSync", 0,
                         "alreadySynced", 0,
                         "noNidn", 0,
-                        "message", "Tidak ada jadwal yang sudah ter-sync ke Feeder. Silakan sync kelas kuliah terlebih dahulu.",
+                        "message",
+                        "Tidak ada jadwal yang sudah ter-sync ke Feeder. Silakan sync kelas kuliah terlebih dahulu.",
                         "data", List.of()));
             }
 
@@ -143,7 +152,8 @@ public class FeederDosenPengajarController {
                 info.put("namaKelas", jadwal.getKelas() != null ? jadwal.getKelas().getNamaKelas() : "");
 
                 // Check apakah sudah di-sync (dari JadwalDosen.statusFeeder)
-                JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal, StatusJadwalDosen.PENGAMPU);
+                JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,
+                        StatusJadwalDosen.PENGAMPU);
                 if (jadwalDosen != null && jadwalDosen.isSyncedToFeeder()) {
                     alreadySynced++;
                     info.put("statusDosen", "ALREADY_SYNCED");
@@ -170,10 +180,12 @@ public class FeederDosenPengajarController {
                     continue;
                 }
 
-                String namaDosen = jadwal.getDosen().getKaryawan() != null 
-                        ? jadwal.getDosen().getKaryawan().getNamaKaryawan() : "";
-                String nidn = jadwal.getDosen().getKaryawan() != null 
-                        ? jadwal.getDosen().getKaryawan().getNidn() : null;
+                String namaDosen = jadwal.getDosen().getKaryawan() != null
+                        ? jadwal.getDosen().getKaryawan().getNamaKaryawan()
+                        : "";
+                String nidn = jadwal.getDosen().getKaryawan() != null
+                        ? jadwal.getDosen().getKaryawan().getNidn()
+                        : null;
 
                 info.put("namaDosen", namaDosen);
                 info.put("nidn", nidn);
@@ -234,6 +246,10 @@ public class FeederDosenPengajarController {
     /**
      * Batch insert dosen pengajar ke Feeder
      * POST /api/feeder/insert/dosen-pengajar/batch?tahunAkademik=xxx&prodi=yyy
+     * 
+     * Optimized with:
+     * - Pre-caching id_registrasi_dosen for all unique NIDNs
+     * - Parallel processing for faster execution
      */
     @PostMapping("/insert/dosen-pengajar/batch")
     public ResponseEntity<SyncResult<String>> batchInsertDosenPengajar(
@@ -268,107 +284,159 @@ public class FeederDosenPengajarController {
                         .build());
             }
 
-            int successCount = 0;
-            int failedCount = 0;
-            int skippedCount = 0;
-            List<String> errorMessages = new ArrayList<>();
-
+            // Pre-cache: Collect unique NIDNs and warm up cache
+            Set<String> uniqueNidns = new HashSet<>();
             for (Jadwal jadwal : jadwals) {
-                try {
-                    // Skip jika sudah di-sync (cek dari JadwalDosen.statusFeeder)
-                    JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal, StatusJadwalDosen.PENGAMPU);
-                    if (jadwalDosen != null && jadwalDosen.isSyncedToFeeder()) {
-                        skippedCount++;
-                        log.debug("Dosen pengajar already synced (local flag) - jadwal: {}", jadwal.getId());
-                        continue;
+                if (jadwal.getDosen() != null && jadwal.getDosen().getKaryawan() != null) {
+                    String nidn = jadwal.getDosen().getKaryawan().getNidn();
+                    if (nidn != null && !nidn.trim().isEmpty()) {
+                        uniqueNidns.add(nidn.trim());
                     }
-
-                    String nidn = jadwal.getDosen().getKaryawan() != null 
-                            ? jadwal.getDosen().getKaryawan().getNidn() : null;
-
-                    if (nidn == null || nidn.trim().isEmpty()) {
-                        skippedCount++;
-                        continue;
-                    }
-
-                    String idKelasKuliah = jadwal.getIdKelasKuliahFeeder();
-                    String idRegistrasiDosen = feederService.getIdRegistrasiDosen(nidn.trim());
-
-                    if (idRegistrasiDosen == null) {
-                        skippedCount++;
-                        String errorMsg = String.format("Dosen %s (NIDN: %s) tidak ditemukan di Feeder",
-                                jadwal.getDosen().getKaryawan().getNamaKaryawan(), nidn);
-                        errorMessages.add(errorMsg);
-                        continue;
-                    }
-
-                    // Check apakah sudah ada
-                    if (feederService.isDosenPengajarExists(idKelasKuliah, idRegistrasiDosen)) {
-                        skippedCount++;
-                        log.debug("Dosen pengajar already exists - kelas: {}, dosen: {}", idKelasKuliah, idRegistrasiDosen);
-                        continue;
-                    }
-
-                    // Get SKS from matakuliah
-                    Integer sks = jadwal.getMatakuliahKurikulum() != null 
-                            ? jadwal.getMatakuliahKurikulum().getJumlahSks() : 0;
-
-                    // Insert to Feeder
-                    FeederResponse<String> response = feederService.insertDosenPengajarKelasKuliah(
-                            idRegistrasiDosen,
-                            idKelasKuliah,
-                            sks,
-                            14, // rencana tatap muka default
-                            14, // realisasi tatap muka default
-                            1   // id_jenis_evaluasi default
-                    );
-
-                    if (response.isSuccess()) {
-                        // Update status di JadwalDosen (reuse jadwalDosen dari awal loop)
-                        if (jadwalDosen == null) {
-                            jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal, StatusJadwalDosen.PENGAMPU);
-                        }
-                        if (jadwalDosen != null) {
-                            jadwalDosen.setAktivitasMengajarFeeder(response.getData());
-                            jadwalDosen.setStatusFeeder(StatusRecord.AKTIF);
-                            jadwalDosenDao.save(jadwalDosen);
-                        }
-
-                        successCount++;
-                        log.info("Successfully inserted dosen pengajar for jadwal: {}", jadwal.getId());
-                    } else {
-                        failedCount++;
-                        String errorMsg = String.format("Failed insert dosen for jadwal %s: %s",
-                                jadwal.getId(), response.getErrorDesc());
-                        errorMessages.add(errorMsg);
-                        log.error(errorMsg);
-                    }
-
-                } catch (Exception e) {
-                    failedCount++;
-                    String errorMsg = String.format("Error processing jadwal %s: %s",
-                            jadwal.getId(), e.getMessage());
-                    errorMessages.add(errorMsg);
-                    log.error(errorMsg, e);
                 }
+            }
+
+            // Pre-fetch id_registrasi_dosen for all unique NIDNs (will be cached)
+            log.info("Pre-caching {} unique NIDNs from Feeder", uniqueNidns.size());
+            Map<String, String> nidnToIdRegistrasi = new ConcurrentHashMap<>();
+            for (String nidn : uniqueNidns) {
+                String idRegistrasi = feederService.getIdRegistrasiDosen(nidn);
+                if (idRegistrasi != null) {
+                    nidnToIdRegistrasi.put(nidn, idRegistrasi);
+                }
+            }
+            log.info("Pre-cached {} dosen from Feeder", nidnToIdRegistrasi.size());
+
+            AtomicInteger successCount = new AtomicInteger(0);
+            AtomicInteger failedCount = new AtomicInteger(0);
+            AtomicInteger skippedCount = new AtomicInteger(0);
+            List<String> errorMessages = java.util.Collections.synchronizedList(new ArrayList<>());
+
+            // Process in batches to avoid overwhelming the Feeder API
+            int batchSize = 10;
+            for (int i = 0; i < jadwals.size(); i += batchSize) {
+                List<Jadwal> batch = jadwals.subList(i, Math.min(i + batchSize, jadwals.size()));
+
+                for (Jadwal jadwal : batch) {
+                    try {
+                        // Skip jika sudah di-sync (cek dari JadwalDosen.statusFeeder)
+                        JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,
+                                StatusJadwalDosen.PENGAMPU);
+                        if (jadwalDosen != null && jadwalDosen.isSyncedToFeeder()) {
+                            skippedCount.incrementAndGet();
+                            log.debug("Dosen pengajar already synced (local flag) - jadwal: {}", jadwal.getId());
+                            continue;
+                        }
+
+                        String nidn = jadwal.getDosen().getKaryawan() != null
+                                ? jadwal.getDosen().getKaryawan().getNidn()
+                                : null;
+
+                        if (nidn == null || nidn.trim().isEmpty()) {
+                            skippedCount.incrementAndGet();
+                            continue;
+                        }
+
+                        String idKelasKuliah = jadwal.getIdKelasKuliahFeeder();
+                        String idRegistrasiDosen = nidnToIdRegistrasi.get(nidn.trim());
+
+                        if (idRegistrasiDosen == null) {
+                            skippedCount.incrementAndGet();
+                            String errorMsg = String.format("Dosen %s (NIDN: %s) tidak ditemukan di Feeder",
+                                    jadwal.getDosen().getKaryawan().getNamaKaryawan(), nidn);
+                            errorMessages.add(errorMsg);
+                            continue;
+                        }
+
+                        // Check apakah sudah ada
+                        if (feederService.isDosenPengajarExists(idKelasKuliah, idRegistrasiDosen)) {
+                            // Update local status if already exists in Feeder
+                            if (jadwalDosen != null && !jadwalDosen.isSyncedToFeeder()) {
+                                jadwalDosen.setStatusFeeder(StatusRecord.AKTIF);
+                                jadwalDosenDao.save(jadwalDosen);
+                            }
+                            skippedCount.incrementAndGet();
+                            log.debug("Dosen pengajar already exists - kelas: {}, dosen: {}", idKelasKuliah,
+                                    idRegistrasiDosen);
+                            continue;
+                        }
+
+                        // Get SKS from matakuliah
+                        Integer sks = jadwal.getMatakuliahKurikulum() != null
+                                ? jadwal.getMatakuliahKurikulum().getJumlahSks()
+                                : 0;
+
+                        // Insert to Feeder
+                        FeederResponse<String> response = feederService.insertDosenPengajarKelasKuliah(
+                                idRegistrasiDosen,
+                                idKelasKuliah,
+                                sks,
+                                14, // rencana tatap muka default
+                                14, // realisasi tatap muka default
+                                1 // id_jenis_evaluasi default
+                        );
+
+                        if (response.isSuccess()) {
+                            // Update status di JadwalDosen
+                            if (jadwalDosen == null) {
+                                jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,
+                                        StatusJadwalDosen.PENGAMPU);
+                            }
+                            if (jadwalDosen != null) {
+                                jadwalDosen.setAktivitasMengajarFeeder(response.getData());
+                                jadwalDosen.setStatusFeeder(StatusRecord.AKTIF);
+                                jadwalDosenDao.save(jadwalDosen);
+                            }
+
+                            successCount.incrementAndGet();
+                            log.info("Successfully inserted dosen pengajar for jadwal: {}", jadwal.getId());
+                        } else {
+                            failedCount.incrementAndGet();
+                            String errorMsg = String.format("Failed insert dosen for jadwal %s: %s",
+                                    jadwal.getId(), response.getErrorDesc());
+                            errorMessages.add(errorMsg);
+                            log.error(errorMsg);
+                        }
+
+                    } catch (Exception e) {
+                        failedCount.incrementAndGet();
+                        String errorMsg = String.format("Error processing jadwal %s: %s",
+                                jadwal.getId(), e.getMessage());
+                        errorMessages.add(errorMsg);
+                        log.error(errorMsg, e);
+                    }
+                }
+
+                // Log progress for each batch
+                log.info("Batch progress: {}/{} jadwals processed", Math.min(i + batchSize, jadwals.size()),
+                        jadwals.size());
             }
 
             SyncResult<String> result = SyncResult.<String>builder()
                     .entityName("DosenPengajar")
-                    .matchedCount(successCount)
-                    .mismatchedCount(failedCount)
-                    .missingInFeederCount(skippedCount)
+                    .matchedCount(successCount.get())
+                    .mismatchedCount(failedCount.get())
+                    .missingInFeederCount(skippedCount.get())
                     .build();
 
             if (!errorMessages.isEmpty()) {
                 List<SyncResult.SyncItem<String>> mismatchedItems = new ArrayList<>();
-                for (String errorMsg : errorMessages) {
+                // Limit error messages to avoid huge response
+                int maxErrors = Math.min(errorMessages.size(), 50);
+                for (int i = 0; i < maxErrors; i++) {
                     SyncResult.SyncItem<String> item = new SyncResult.SyncItem<>();
-                    item.setDifferences(Arrays.asList(errorMsg));
+                    item.setDifferences(Arrays.asList(errorMessages.get(i)));
+                    mismatchedItems.add(item);
+                }
+                if (errorMessages.size() > 50) {
+                    SyncResult.SyncItem<String> item = new SyncResult.SyncItem<>();
+                    item.setDifferences(Arrays.asList("... dan " + (errorMessages.size() - 50) + " error lainnya"));
                     mismatchedItems.add(item);
                 }
                 result.setMismatched(mismatchedItems);
             }
+
+            log.info("Batch insert completed - success: {}, failed: {}, skipped: {}",
+                    successCount.get(), failedCount.get(), skippedCount.get());
 
             return ResponseEntity.ok(result);
 
@@ -438,12 +506,13 @@ public class FeederDosenPengajarController {
                     sks,
                     14, // rencana tatap muka default
                     14, // realisasi tatap muka default
-                    1   // id_jenis_evaluasi default
+                    1 // id_jenis_evaluasi default
             );
 
             if (response.isSuccess()) {
                 // Update status di JadwalDosen
-                JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal, StatusJadwalDosen.PENGAMPU);
+                JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,
+                        StatusJadwalDosen.PENGAMPU);
                 if (jadwalDosen != null) {
                     jadwalDosen.setAktivitasMengajarFeeder(response.getData());
                     jadwalDosen.setStatusFeeder(StatusRecord.AKTIF);
