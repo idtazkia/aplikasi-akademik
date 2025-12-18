@@ -52,9 +52,16 @@ public class SuratMagangService {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("en"));
         String hijriah = islamicDate.format(fmt)
                 .replace("Jumada I", "Jumadil Awal")
+                .replace("Jumada I", "Jumadil Awal") // Double replacement untuk memastikan
                 .replace("Jumada II", "Jumadil Akhir")
+                .replace("Jumada al-Akhir", "Jumadil Akhir")
+                .replace("Jumada al-Awwal", "Jumadil Awal")
                 .replace("Rabiʻ I", "Rabi'ul Awal")
-                .replace("Rabiʻ II", "Rabi'ul Akhir");
+                .replace("Rabiʻ II", "Rabi'ul Akhir")
+                .replace("Rabi al-Akhir", "Rabi'ul Akhir")
+                .replace("Rabi al-Awwal", "Rabi'ul Awal")
+                .replace("Jumadil AwalI", "Jumadil Awal") // Fix untuk kasus khusus
+                .replace("Jumadil AkhirI", "Jumadil Akhir"); // Fix untuk kasus khusus
 
         // === HELPER: Load Image dengan Error Handling ===
         java.util.function.BiFunction<String, Float, Image> loadImage = (filename, scale) -> {
@@ -93,12 +100,12 @@ public class SuratMagangService {
             document.add(logoTazkia);
         }
 
-        document.add(new Paragraph("\n\n\n\n\n\n"));
+        document.add(new Paragraph("\n\n\n\n\n"));
 
        
 
         Paragraph tanggalCetak = new Paragraph(formatTanggalCetak(),
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
+                FontFactory.getFont(FontFactory.TIMES_ROMAN, 11));
         tanggalCetak.setAlignment(Element.ALIGN_JUSTIFIED);
         tanggalCetak.setIndentationLeft(50);
         tanggalCetak.setIndentationRight(50);
@@ -107,27 +114,53 @@ public class SuratMagangService {
 
         document.add(new Paragraph("\n"));
 
-        // === NOMOR SURAT ===
+       // === NOMOR & HAL (SEJAJAR) ===
         String nomorSurat = generateNomorSurat(suratMagang);
-        Paragraph nomorSuratParagraph = new Paragraph(
-                "Nomor: " + nomorSurat,
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
-        nomorSuratParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
-        nomorSuratParagraph.setIndentationLeft(50);
-        nomorSuratParagraph.setIndentationRight(50);
-        document.add(nomorSuratParagraph);
+        Font fontSurat = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11);
 
-        Paragraph hal = new Paragraph(
-                "Hal: Permohonan Magang",
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
-        hal.setAlignment(Element.ALIGN_JUSTIFIED);
-        hal.setIndentationLeft(50);
-        hal.setIndentationRight(50);
-        document.add(hal);
+        PdfPTable wrapperTable = new PdfPTable(1);
+        wrapperTable.setWidthPercentage(100);
+
+        PdfPTable headerTable = new PdfPTable(new float[]{2f, 0.3f, 6f});
+        headerTable.setWidthPercentage(70);
+        headerTable.setSpacingBefore(5);
+
+        PdfPCell cell;
+
+        cell = new PdfPCell(new Phrase("Nomor", fontSurat));
+        cell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(cell);
+
+        cell = new PdfPCell(new Phrase(":", fontSurat));
+        cell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(cell);
+
+        cell = new PdfPCell(new Phrase(nomorSurat, fontSurat));
+        cell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("Hal", fontSurat));
+        cell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(cell);
+
+        cell = new PdfPCell(new Phrase(":", fontSurat));
+        cell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("Permohonan Magang", fontSurat));
+        cell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(cell);
+
+        PdfPCell wrapperCell = new PdfPCell(headerTable);
+        wrapperCell.setBorder(Rectangle.NO_BORDER);
+        wrapperCell.setPaddingLeft(50);
+        wrapperTable.addCell(wrapperCell);
+
+        document.add(wrapperTable);
 
         Paragraph kepada = new Paragraph(
                 "Kepada Yth.\nPimpinan " + suratMagang.getNamaPerusahaan(),
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
+                FontFactory.getFont(FontFactory.TIMES_BOLD, 11));
         kepada.setAlignment(Element.ALIGN_JUSTIFIED);
         kepada.setIndentationLeft(50);
         kepada.setIndentationRight(50);
@@ -135,7 +168,7 @@ public class SuratMagangService {
 
         Paragraph alamat = new Paragraph(
                 suratMagang.getAlamat(),
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 10)
+                FontFactory.getFont(FontFactory.TIMES_ROMAN, 11)
         );
         alamat.setAlignment(Element.ALIGN_JUSTIFIED);
         alamat.setIndentationLeft(50);
@@ -153,22 +186,22 @@ public class SuratMagangService {
             pSalam.add(new Chunk(salam, 0, -5, true));
             document.add(pSalam);
         }
-        document.add(new Paragraph("\n"));
 
         // === SALAM ISLAMIYAH ===
-        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 10);
+        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11);
+        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 11);
 
         Paragraph salamIslami = new Paragraph("السـلام عـلـيكم ورحـمة الله وبركا تــه", fStandard);
         salamIslami.setAlignment(Element.ALIGN_RIGHT);
         document.add(salamIslami);
 
-        Paragraph perkenalan = new Paragraph("Pertama-tama perkenankan kami menghaturkan Tahiyyah Islamiyah semoga Pimpinan dan Staf "
-                + suratMagang.getNamaPerusahaan() + " senantiasa berada dalam lindungan Allah SWT, Amin.", fStandard);
+        Paragraph perkenalan = new Paragraph();
         perkenalan.setAlignment(Element.ALIGN_JUSTIFIED);
         perkenalan.setIndentationLeft(50);
         perkenalan.setIndentationRight(50);
-        perkenalan.setAlignment(Element.ALIGN_JUSTIFIED);
+        perkenalan.add(new Chunk("Pertama-tama perkenankan kami menghaturkan Tahiyyah Islamiyah semoga Pimpinan dan Staf ", fStandard));
+        perkenalan.add(new Chunk(suratMagang.getNamaPerusahaan(), fontB));
+        perkenalan.add(new Chunk(" senantiasa berada dalam lindungan Allah SWT, Amin.", fStandard));
         document.add(perkenalan);
         document.add(new Paragraph("\n"));
 
@@ -183,7 +216,7 @@ public class SuratMagangService {
         isi.add(new Chunk(formatDate(suratMagang.getTanggalSelesaiMagang()), fontB));
         isi.add(new Chunk(" atau selama ", fStandard));
         isi.add(new Chunk(String.valueOf(calculateHari(suratMagang.getTanggalMulaiMagang(), suratMagang.getTanggalSelesaiMagang())), fontB));
-        isi.add(new Chunk(" (delapan puluh) hari kerja. Adapun Mahasiswanya yaitu:", fStandard));
+        isi.add(new Chunk(" (" + konversiAngkaKeTerbilang(calculateHari(suratMagang.getTanggalMulaiMagang(), suratMagang.getTanggalSelesaiMagang())) + ") hari kerja. Adapun Mahasiswanya yaitu:", fStandard));
         document.add(isi);
         document.add(new Paragraph("\n"));
 
@@ -229,14 +262,7 @@ public class SuratMagangService {
             document.add(pWassalam);
         }
 
-        // === TANGGAL ===
-        Paragraph tanggal = new Paragraph();
-        tanggal.setIndentationLeft(50);
-        tanggal.add(new Chunk("Bogor, ", fStandard));
-        tanggal.add(new Chunk(LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M", fStandard));
-        tanggal.add(new Chunk(" / ", fStandard));
-        tanggal.add(new Chunk(hijriah + " H", fStandard));
-        document.add(tanggal);
+       
 
         // === JABATAN, BARCODE, DAN TTD DIGITAL ===
         PdfPTable signTable = new PdfPTable(1);
@@ -247,13 +273,11 @@ public class SuratMagangService {
         leftCell.setBorder(Rectangle.NO_BORDER);
         leftCell.setPaddingLeft(50);
 
-        Paragraph jabatan = new Paragraph("Hormat kami,", fontB);
-        jabatan.setSpacingAfter(10);
+        Paragraph jabatan = new Paragraph("Hormat kami,", fStandard);
         leftCell.addElement(jabatan);
 
         Paragraph koordinator = new Paragraph(
-                "Koordinator Program Studi " + suratMagang.getMahasiswa().getIdProdi().getNamaProdi(), fontB);
-        koordinator.setSpacingBefore(10);
+                "Koordinator Program Studi " + suratMagang.getMahasiswa().getIdProdi().getNamaProdi(), fStandard);
         leftCell.addElement(koordinator);
 
         try {
@@ -300,9 +324,10 @@ public class SuratMagangService {
     private String generateNomorSurat(SuratMagang suratMagang) {
         LocalDate today = LocalDate.now();
         String kodeProdi = getKodeProdi(suratMagang.getMahasiswa().getIdProdi().getNamaProdi());
+        String romawiBulan = getRomawiBulan(today.getMonthValue());
 
-        return String.format("%03d-B/Universitas-Tazkia/Prodi-%s/%s",
-                getUrutanSurat(today), kodeProdi, today.getYear());
+        return String.format("%03d-B/Universitas-Tazkia/Prodi-%s/%s/%s",
+                getUrutanSurat(today), kodeProdi, romawiBulan, today.getYear());
     }
 
     private Integer getUrutanSurat(LocalDate today) {
@@ -310,12 +335,35 @@ public class SuratMagangService {
         return 44; // Mock number, replace with actual sequence logic
     }
 
-    
+    private String getRomawiBulan(int bulan) {
+        String[] romawi = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
+        return romawi[bulan - 1];
+    }
+
+    private String konversiAngkaKeTerbilang(Integer angka) {
+        if (angka == null) return "nol";
+
+        String[] terbilang = {"", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh",
+                             "sebelas", "dua belas", "tiga belas", "empat belas", "lima belas", "enam belas", "tujuh belas", "delapan belas", "sembilan belas",
+                             "dua puluh", "dua puluh satu", "dua puluh dua", "dua puluh tiga", "dua puluh empat", "dua puluh lima", "dua puluh enam", "dua puluh tujuh", "dua puluh delapan", "dua puluh sembilan",
+                             "tiga puluh", "tiga puluh satu", "tiga puluh dua", "tiga puluh tiga", "tiga puluh empat", "tiga puluh lima", "tiga puluh enam", "tiga puluh tujuh", "tiga puluh delapan", "tiga puluh sembilan",
+                             "empat puluh", "empat puluh satu", "empat puluh dua", "empat puluh tiga", "empat puluh empat", "empat puluh lima", "empat puluh enam",
+                             "empat puluh tujuh", "empat puluh delapan", "empat puluh sembilan", "lima puluh"};
+
+        if (angka >= 0 && angka < terbilang.length) {
+            return terbilang[angka];
+        }
+
+        // Default untuk angka di atas 100
+        return String.valueOf(angka);
+    }
+
+
     private String getKodeProdi(String namaProdi) {
         // Generate kode prodi dari nama prodi
         if (namaProdi.toLowerCase().contains("komunikasi")) return "KPI";
-        if (namaProdi.toLowerCase().contains("sistem informasi")) return "SI";
-        if (namaProdi.toLowerCase().contains("manajemen")) return "MAN";
+        if (namaProdi.toLowerCase().contains("akuntansi")) return "AS";
+        if (namaProdi.toLowerCase().contains("manajemen")) return "MBS";
         return "PRO";
     }
 
@@ -324,9 +372,16 @@ public class SuratMagangService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("en"));
         String hijriah = islamicDate.format(formatter)
                 .replace("Jumada I", "Jumadil Awal")
+                .replace("Jumada I", "Jumadil Awal") // Double replacement untuk memastikan
                 .replace("Jumada II", "Jumadil Akhir")
+                .replace("Jumada al-Akhir", "Jumadil Akhir")
+                .replace("Jumada al-Awwal", "Jumadil Awal")
                 .replace("Rabiʻ I", "Rabi'ul Awal")
-                .replace("Rabiʻ II", "Rabi'ul Akhir");
+                .replace("Rabiʻ II", "Rabi'ul Akhir")
+                .replace("Rabi al-Akhir", "Rabi'ul Akhir")
+                .replace("Rabi al-Awwal", "Rabi'ul Awal")
+                .replace("Jumadil AwalI", "Jumadil Awal") // Fix untuk kasus khusus
+                .replace("Jumadil AkhirI", "Jumadil Akhir"); // Fix untuk kasus khusus
         return hijriah + " H.";
     }
 
