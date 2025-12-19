@@ -389,6 +389,23 @@ public class FeederDosenPengajarController {
 
                             successCount.incrementAndGet();
                             log.info("Successfully inserted dosen pengajar for jadwal: {}", jadwal.getId());
+                        } else if (response.getErrorDesc() != null && response.getErrorDesc().toLowerCase().contains("sudah ada")) {
+                            // Treat 'Data Dosen Pengajar sudah ada' as success
+                            if (jadwalDosen == null) {
+                                jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,
+                                        StatusJadwalDosen.PENGAMPU);
+                            }
+                            if (jadwalDosen != null) {
+                                jadwalDosen.setStatusFeeder(StatusRecord.AKTIF);
+                                // Optionally, clear/set aktivitasMengajarFeeder if you can get the ID from Feeder
+                                jadwalDosenDao.save(jadwalDosen);
+                            }
+                            if (jadwal.getStatusKelasFeeder() != StatusRecord.AKTIF) {
+                                jadwal.setStatusKelasFeeder(StatusRecord.AKTIF);
+                                jadwalDao.save(jadwal);
+                            }
+                            successCount.incrementAndGet();
+                            log.info("Dosen pengajar already exists in Feeder, updated local status for jadwal: {}", jadwal.getId());
                         } else {
                             failedCount.incrementAndGet();
                             String errorMsg = String.format("Failed insert dosen for jadwal %s: %s",

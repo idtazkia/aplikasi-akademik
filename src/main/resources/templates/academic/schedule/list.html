@@ -3103,6 +3103,16 @@
 								<i class="fas fa-users mr-1"></i> Peserta Kelas
 							</a>
 						</li>
+						<li class="nav-item mx-1">
+							<a
+								class="nav-link sync-type-tab"
+								href="#"
+								data-sync-type="nilai-perkuliahan"
+								onclick="switchSyncType('nilai-perkuliahan')"
+							>
+								<i class="fas fa-graduation-cap mr-1"></i> Nilai
+							</a>
+						</li>
 					</ul>
 				</div>
 
@@ -3506,6 +3516,98 @@
 				);
 			},
 		},
+		"nilai-perkuliahan": {
+			title: "Sync Nilai Perkuliahan ke PDDIKTI Feeder",
+			prepareUrl: "/api/feeder/prepare-update/nilai-perkuliahan",
+			batchUrl: "/api/feeder/update/nilai-perkuliahan/batch",
+			singleUrl: "/api/feeder/update/nilai-perkuliahan/jadwal",
+			icon: "fa-graduation-cap",
+			itemName: "nilai",
+			tableHeaders: [
+				"#",
+				"Matakuliah",
+				"Kelas",
+				"Peserta",
+				"Ready",
+				"Synced",
+				"Not Final",
+				"Not Synced",
+				"Status",
+				"Aksi",
+			],
+			renderRow: function (item, index) {
+				var statusBadge = "";
+				if (item.canSync) {
+					statusBadge = '<span class="badge badge-success"><i class="fas fa-check"></i> Ready</span>';
+				} else if (item.notFinal > 0) {
+					statusBadge =
+						'<span class="badge badge-warning" title="Nilai belum final"><i class="fas fa-edit"></i> Not Final</span>';
+				} else if (item.notSyncedPeserta > 0) {
+					statusBadge =
+						'<span class="badge badge-info" title="Peserta belum di-sync ke Feeder"><i class="fas fa-users"></i> Sync Peserta</span>';
+				} else if (item.alreadySynced === item.totalPeserta && item.totalPeserta > 0) {
+					statusBadge =
+						'<span class="badge badge-secondary"><i class="fas fa-check-double"></i> All Synced</span>';
+				} else {
+					statusBadge = '<span class="badge badge-light"><i class="fas fa-minus"></i> No Data</span>';
+				}
+				var actionBtn = item.canSync
+					? '<button class="btn btn-sm btn-success btn-sync-single" data-index="' +
+					  index +
+					  '" data-type="nilai-perkuliahan" data-id="' +
+					  item.jadwalId +
+					  '"><i class="fas fa-sync-alt"></i></button>'
+					: '<button class="btn btn-sm btn-secondary" disabled title="' +
+					  (item.notFinal > 0
+							? "Nilai belum final"
+							: item.notSyncedPeserta > 0
+							? "Sync peserta dulu"
+							: "Tidak ada data") +
+					  '"><i class="fas fa-ban"></i></button>';
+				return (
+					"<tr data-jadwal-id='" +
+					item.jadwalId +
+					"'" +
+					(item.canSync ? "" : ' class="table-secondary"') +
+					">" +
+					'<td class="text-muted">' +
+					(index + 1) +
+					"</td>" +
+					"<td>" +
+					(item.matakuliah || "-") +
+					"</td>" +
+					'<td><span class="badge badge-primary">' +
+					(item.kelas || "-") +
+					"</span></td>" +
+					'<td class="text-center"><span class="badge badge-info">' +
+					(item.totalPeserta || 0) +
+					"</span></td>" +
+					'<td class="text-center"><span class="badge badge-success">' +
+					(item.readyToSync || 0) +
+					"</span></td>" +
+					'<td class="text-center"><span class="badge badge-secondary">' +
+					(item.alreadySynced || 0) +
+					"</span></td>" +
+					'<td class="text-center">' +
+					(item.notFinal > 0
+						? '<span class="badge badge-warning">' + item.notFinal + "</span>"
+						: '<span class="badge badge-light">0</span>') +
+					"</td>" +
+					'<td class="text-center">' +
+					(item.notSyncedPeserta > 0
+						? '<span class="badge badge-danger">' + item.notSyncedPeserta + "</span>"
+						: '<span class="badge badge-light">0</span>') +
+					"</td>" +
+					'<td class="text-center">' +
+					statusBadge +
+					"</td>" +
+					'<td class="text-center">' +
+					actionBtn +
+					"</td>" +
+					"</tr>"
+				);
+			},
+		},
 	};
 
 	function switchSyncType(type) {
@@ -3763,6 +3865,69 @@
 					'<div class="stat-label text-dark">No Dosen</div>' +
 					"</div></div>" +
 					"</div>";
+			} else if (currentSyncType === "nilai-perkuliahan") {
+				// Special stats layout for nilai-perkuliahan
+				var notFinalCount = data.notFinal || 0;
+				var notSyncedPesertaCount = data.notSyncedPeserta || 0;
+				html =
+					'<div class="row mb-4">' +
+					'<div class="col-md-2">' +
+					'<div class="sync-stat-card bg-light border">' +
+					'<div class="stat-value text-primary">' +
+					(data.totalJadwal || 0) +
+					"</div>" +
+					'<div class="stat-label text-muted">Jadwal</div>' +
+					"</div></div>" +
+					'<div class="col-md-2">' +
+					'<div class="sync-stat-card bg-info border border-info" style="background-color: #d1ecf1;">' +
+					'<div class="stat-value text-black">' +
+					(data.totalPeserta || 0) +
+					"</div>" +
+					'<div class="stat-label text-black">Total Peserta</div>' +
+					"</div></div>" +
+					'<div class="col-md-2">' +
+					'<div class="sync-stat-card bg-success-light border border-success" style="background-color: #d4edda;">' +
+					'<div class="stat-value text-success">' +
+					readyCount +
+					"</div>" +
+					'<div class="stat-label text-success">Siap Sync</div>' +
+					"</div></div>" +
+					'<div class="col-md-2">' +
+					'<div class="sync-stat-card bg-secondary-light border border-secondary" style="background-color: #e9ecef;">' +
+					'<div class="stat-value text-secondary">' +
+					syncedCount +
+					"</div>" +
+					'<div class="stat-label text-secondary">Sudah Sync</div>' +
+					"</div></div>" +
+					'<div class="col-md-2">' +
+					'<div class="sync-stat-card bg-warning-light border border-warning" style="background-color: #fff3cd;">' +
+					'<div class="stat-value text-warning">' +
+					notFinalCount +
+					"</div>" +
+					'<div class="stat-label text-warning">Not Final</div>' +
+					"</div></div>" +
+					'<div class="col-md-2">' +
+					'<div class="sync-stat-card bg-danger-light border border-danger" style="background-color: #f8d7da;">' +
+					'<div class="stat-value text-danger">' +
+					notSyncedPesertaCount +
+					"</div>" +
+					'<div class="stat-label text-danger">Peserta Blm Sync</div>' +
+					"</div></div>" +
+					"</div>";
+
+				// Show estimation and recommendation if available
+				if (data.estimatedTime || data.recommendation) {
+					html +=
+						'<div class="alert alert-warning border-0 shadow-sm mb-3">' +
+						'<div class="d-flex align-items-start">' +
+						'<i class="fas fa-clock fa-lg mr-3 mt-1"></i>' +
+						"<div>" +
+						(data.estimatedTime ? "<strong>Estimasi Waktu:</strong> " + data.estimatedTime + "<br>" : "") +
+						(data.recommendation ? "<small class='text-muted'>" + data.recommendation + "</small>" : "") +
+						"</div>" +
+						"</div>" +
+						"</div>";
+				}
 			} else {
 				html =
 					'<div class="row mb-4">' +
@@ -4036,7 +4201,34 @@
 				jadwalId: jadwalId,
 			},
 			success: function (response) {
-				if (response.success) {
+				// Handle both response formats:
+				// 1. {success: true/false, ...} for kelas, dosen, peserta
+				// 2. SyncResult {matchedCount, mismatchedCount, ...} for nilai
+				var isSuccess = false;
+				var message = "";
+
+				if (typeof response.success !== "undefined") {
+					// Format lama: {success: true/false}
+					isSuccess = response.success;
+					message = response.message || "";
+				} else if (typeof response.matchedCount !== "undefined") {
+					// Format SyncResult untuk nilai-perkuliahan
+					isSuccess = response.matchedCount > 0 && response.mismatchedCount === 0;
+					if (response.matchedCount > 0) {
+						message = "Berhasil sync " + response.matchedCount + " nilai";
+						if (response.mismatchedCount > 0) {
+							message += ", gagal " + response.mismatchedCount;
+						}
+					} else if (response.errors && response.errors.length > 0) {
+						message = response.errors[0];
+					} else {
+						message = "Tidak ada data yang di-sync";
+					}
+					// Consider partial success as success for UI
+					isSuccess = response.matchedCount > 0;
+				}
+
+				if (isSuccess) {
 					// Success - update row to show synced
 					$row.removeClass("table-warning").addClass("table-success");
 					$btn.removeClass("btn-success")
@@ -4053,7 +4245,10 @@
 					item.canSync = false;
 					item.statusDosen = "SYNCED";
 
-					showNotification("Berhasil sync: " + (item.namaMatkul || item.kodeMatkul || "item"), "success");
+					showNotification(
+						"Berhasil sync: " + (item.namaMatkul || item.matakuliah || item.kodeMatkul || "item"),
+						"success"
+					);
 				} else {
 					// Failed
 					$row.removeClass("table-warning").addClass("table-danger");
@@ -4061,9 +4256,9 @@
 						.removeClass("btn-success")
 						.addClass("btn-danger")
 						.prop("disabled", false)
-						.attr("title", response.message || "Gagal sync");
+						.attr("title", message || "Gagal sync");
 
-					showNotification("Gagal: " + (response.message || "Unknown error"), "danger");
+					showNotification("Gagal: " + (message || "Unknown error"), "danger");
 				}
 			},
 			error: function (xhr) {
