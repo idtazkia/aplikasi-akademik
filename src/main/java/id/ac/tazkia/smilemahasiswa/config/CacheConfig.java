@@ -22,7 +22,8 @@ public class CacheConfig {
         // Definisikan nama-nama cache yang akan digunakan
         cacheManager.setCacheNames(java.util.Arrays.asList(
                 "detailTahunAkademik",
-                "detailTahunAkademikByTahun"));
+                "detailTahunAkademikByTahun",
+                "feederIdRegistrasiDosen"));
 
         // Aktifkan dynamic cache creation
         cacheManager.setAllowNullValues(false);
