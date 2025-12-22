@@ -19,9 +19,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -57,7 +59,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.lowagie.text.DocumentException;
+
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.core.document.DocumentKind;
@@ -3074,6 +3078,14 @@ public class GraduationController {
     @GetMapping("/graduation/magang")
     public String pendaftaranMagang(Model model, Authentication authentication,
             @RequestParam(required = false) String id) {
+        // Redirect ke success page pada 22 December 2025 jam 16:00 - 23:59
+        LocalDateTime now = LocalDateTime.now().plusHours(7);
+        LocalDateTime startRedirect = LocalDateTime.of(2025, 12, 22, 16, 0);
+        LocalDateTime endRedirect = LocalDateTime.of(2025, 12, 23, 0, 0);
+        if ((now.isAfter(startRedirect) || now.isEqual(startRedirect)) && now.isBefore(endRedirect)) {
+            return "redirect:/graduation/alert-magang";
+        }
+
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
@@ -3095,9 +3107,17 @@ public class GraduationController {
         }
     }
 
+    @GetMapping("/graduation/alert-magang")
+    public String alertMagang() {
+
+        return "graduation/magang/mahasiswa/alert";
+
+    }
+
     @GetMapping("/graduation/waiting-magang")
     public String listMagang(Model model, Authentication authentication,
             @RequestParam(required = false) String id) {
+
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
