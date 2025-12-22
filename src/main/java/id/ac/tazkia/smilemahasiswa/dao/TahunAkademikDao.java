@@ -16,6 +16,8 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
         List<TahunAkademik> findAllByOrderByStatusAscKodeTahunAkademikDesc();
 
+        List<TahunAkademik> findByIdIn(List<String> ids);
+
         TahunAkademik findByStatus(StatusRecord aktif);
 
         TahunAkademik findByStatusNotInAndKodeTahunAkademik(List<StatusRecord> status, String kode);
@@ -86,4 +88,6 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
         @Query(value = "SELECT count(*) FROM tahun_akademik WHERE status NOT IN ('HAPUS') AND jenis NOT IN ('GENAP', 'PENDEK') ORDER BY kode_tahun_akademik DESC", nativeQuery = true)
         Integer countTahunAkademik();
+
+        TahunAkademik findFirstByKodeTahunAkademikLessThanAndStatusNotInOrderByKodeTahunAkademikDesc(String kode, List<StatusRecord> status);
 }

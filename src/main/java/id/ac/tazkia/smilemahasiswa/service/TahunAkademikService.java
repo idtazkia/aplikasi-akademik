@@ -837,4 +837,21 @@ public class TahunAkademikService {
 
         return desc.toString();
     }
+
+    /**
+     * Mendapatkan tahun akademik sebelumnya untuk referensi
+     * Logic:
+     * - Jika sekarang GANJIL, cari GENAP tahun sebelumnya (contoh: 2024/2025 Ganjil -> 2023/2024 Genap)
+     * - Jika sekarang GENAP, cari GANJIL tahun yang sama (contoh: 2023/2024 Genap -> 2023/2024 Ganjil)
+     * - Skip tahun PENDEK
+     */
+    public TahunAkademik getPreviousTahunForReference(TahunAkademik currentTahun) {
+        if (currentTahun == null) {
+            return null;
+        }
+
+        // Fallback untuk kasus lain (termasuk PENDEK)
+        return tahunAkademikDao.findFirstByKodeTahunAkademikLessThanAndStatusNotInOrderByKodeTahunAkademikDesc(
+            currentTahun.getKodeTahunAkademik(), Arrays.asList(StatusRecord.HAPUS));
+    }
 }

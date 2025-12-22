@@ -333,4 +333,14 @@ public class KrsService {
         praKrsSpDao.save(pks);
     }
 
+    public void setStatusKrs(Mahasiswa mahasiswa, StatusRecord status) {
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mahasiswa, StatusRecord.AKTIF);
+        if (krs == null) {
+            krs = createKrs(mahasiswa, tahunAkademik);
+        }
+        krs.setStatus(status);
+        krsDao.save(krs);
+    }
+
 }

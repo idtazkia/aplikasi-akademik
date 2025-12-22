@@ -35,7 +35,7 @@ public class NilaiJenisTagihan {
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_prodi")
     private Prodi prodi;
 
@@ -43,7 +43,7 @@ public class NilaiJenisTagihan {
     @JoinColumn(name = "id_beasiswa")
     private Beasiswa beasiswa;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_program")
     private Program program;
 

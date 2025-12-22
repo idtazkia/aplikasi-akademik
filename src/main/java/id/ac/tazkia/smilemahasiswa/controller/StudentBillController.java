@@ -19,6 +19,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import id.ac.tazkia.smilemahasiswa.service.TahunAkademikService;
 import id.ac.tazkia.smilemahasiswa.service.api.akuntansi.ApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -96,6 +97,9 @@ public class StudentBillController {
 
     @Autowired
     private ProdiDao prodiDao;
+
+    @Autowired
+    private TahunAkademikService tahunAkademikService;
 
     @Autowired
     private TahunProdiDao tahunProdiDao;
@@ -425,6 +429,64 @@ public class StudentBillController {
         nilaiJenisTagihan.setStatus(StatusRecord.HAPUS);
         nilaiJenisTagihanDao.save(nilaiJenisTagihan);
         return "redirect:list";
+    }
+
+    @GetMapping("/studentBill/valueType/references")
+    @ResponseBody
+    public Map<String, Object> getReferenceData(@RequestParam String tahunAkademikId,
+                                                @RequestParam(required = false) String prodiId,
+                                                @RequestParam(required = false) String programId,
+                                                @RequestParam(required = false) String angkatan) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            TahunAkademik currentTahun = tahunAkademikDao.findById(tahunAkademikId).orElse(null);
+            if (currentTahun == null) {
+                response.put("success", false);
+                response.put("message", "Tahun akademik tidak ditemukan");
+                return response;
+            }
+
+            // Gunakan service untuk mendapatkan tahun akademik sebelumnya dengan logic yang benar
+            TahunAkademik previousTahun = tahunAkademikService.getPreviousTahunForReference(currentTahun);
+
+            if (previousTahun == null) {
+                response.put("success", false);
+                response.put("message", "Tidak ada tahun akademik sebelumnya");
+                return response;
+            }
+
+            List<NilaiJenisTagihan> referenceData = new ArrayList<>();
+
+            if (prodiId != null && programId != null && angkatan != null) {
+                Prodi prodi = prodiDao.findById(prodiId).orElse(null);
+                Program program = programDao.findById(programId).orElse(null);
+
+                referenceData = nilaiJenisTagihanDao.findByTahunAkademikAndProdiAndProgramAndAngkatanAndStatusNotIn(
+                        previousTahun, prodi, program, angkatan, Arrays.asList(StatusRecord.HAPUS));
+            } else if (prodiId != null && programId != null) {
+                Prodi prodi = prodiDao.findById(prodiId).orElse(null);
+                Program program = programDao.findById(programId).orElse(null);
+
+                referenceData = nilaiJenisTagihanDao.findByTahunAkademikAndProdiAndProgramAndStatusNotIn(
+                        previousTahun, prodi, program, Arrays.asList(StatusRecord.HAPUS));
+            } else {
+                // Jika tidak ada filter, ambil semua data dari tahun sebelumnya
+                referenceData = nilaiJenisTagihanDao.findByTahunAkademikAndStatusNotIn(
+                        previousTahun, Arrays.asList(StatusRecord.HAPUS));
+            }
+
+
+            response.put("success", true);
+            response.put("previousTahun", previousTahun);
+            response.put("referenceData", referenceData);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error: " + e.getMessage());
+        }
+
+        return response;
     }
 
     // LIST TAGIHAN DAFTAR ULANG

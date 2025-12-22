@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.objenesis.instantiator.basic.NewInstanceInstantiator;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -45,5 +45,14 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
     NilaiJenisTagihan findByJenisTagihanKodeAndTahunAkademikAndProgramAndProdiAndAngkatanAndStatus(String kode, TahunAkademik tahunAkademik,
                                                                                                   Program program, Prodi prodi, String angkatan,
                                                                                                   StatusRecord statusRecord);
+
+    List<NilaiJenisTagihan> findByTahunAkademikAndProdiAndProgramAndAngkatanAndStatusNotIn(
+            TahunAkademik tahunAkademik, Prodi prodi, Program program, String angkatan, List<StatusRecord> statusRecords);
+
+    List<NilaiJenisTagihan> findByTahunAkademikAndProdiAndProgramAndStatusNotIn(
+            TahunAkademik tahunAkademik, Prodi prodi, Program program, List<StatusRecord> statusRecords);
+
+    List<NilaiJenisTagihan> findByTahunAkademikAndStatusNotIn(
+            TahunAkademik tahunAkademik, List<StatusRecord> statusRecords);
 
 }

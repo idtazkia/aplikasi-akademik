@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import id.ac.tazkia.smilemahasiswa.service.KrsService;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -116,6 +117,9 @@ public class MahasiswaController {
 
     @Autowired
     private MahasiswaService mahasiswaService;
+
+    @Autowired
+    private KrsService krsService;
 
     @Autowired
     private AyahDao ayahDao;
@@ -541,6 +545,9 @@ public class MahasiswaController {
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("NONAKTIF");
         mahasiswaDao.save(mahasiswa);
+
+        krsService.setStatusKrs(mahasiswa, StatusRecord.NONAKTIF);
+
         return "redirect:list?search=" + mahasiswa.getNama();
     }
 
@@ -581,6 +588,9 @@ public class MahasiswaController {
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("LULUS");
         mahasiswaDao.save(mahasiswa);
+
+        krsService.setStatusKrs(mahasiswa, StatusRecord.LULUS);
+
         return "redirect:list?search=" + mahasiswa.getNama();
     }
 
@@ -590,6 +600,9 @@ public class MahasiswaController {
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("CUTI");
         mahasiswaDao.save(mahasiswa);
+
+        krsService.setStatusKrs(mahasiswa, StatusRecord.CUTI);
+
         return "redirect:list?search=" + mahasiswa.getNama();
     }
 
@@ -608,6 +621,8 @@ public class MahasiswaController {
         Mahasiswa mahasiswa = mahasiswaDao.findById(cuti.getMahasiswa().getId()).get();
         mahasiswa.setStatusAktif("CUTI");
         mahasiswaDao.save(mahasiswa);
+
+        krsService.setStatusKrs(mahasiswa, StatusRecord.CUTI);
         return "redirect:list?search=" + mahasiswa.getNama();
     }
 
@@ -617,6 +632,9 @@ public class MahasiswaController {
         mahasiswa.setStatusUpdateUser(user.getUsername());
         mahasiswa.setStatusAktif("KELUAR");
         mahasiswaDao.save(mahasiswa);
+
+        krsService.setStatusKrs(mahasiswa, StatusRecord.KELUAR);
+
         return "redirect:list";
     }
 
