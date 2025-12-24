@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Data;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 
@@ -47,4 +48,16 @@ public class SuratMagang {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord statusApproval = StatusRecord.WAITING;
+
+    @ManyToOne
+    @JoinColumn(name = "user_approval")
+    private Dosen userApproval;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime tanggalApproval;
+
+
 }
