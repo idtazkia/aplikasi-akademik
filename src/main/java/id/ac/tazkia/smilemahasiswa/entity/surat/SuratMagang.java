@@ -31,6 +31,11 @@ public class SuratMagang {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
+    @Enumerated(EnumType.STRING)
+    private JenisMagang jenisMagang;
+
+    private Integer sksKonversi;
+
     private String namaPerusahaan;
 
     private String divisi;

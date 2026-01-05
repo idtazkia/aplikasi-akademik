@@ -52,6 +52,16 @@
                 </div>
             </div>
 
+            <!-- Error Message -->
+            <div class="row" th:if="${error != null}">
+                <div class="col-md-12 col-xs-12">
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span th:text="${error}"></span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Mahasiswa Info Card -->
             <div class="row">
                 <div class="col-md-12 col-xs-12">
@@ -69,12 +79,30 @@
                                                     <p><strong>Nama:</strong> <span th:text="${mahasiswa.nama}">-</span></p>
                                                     <p><strong>NIM:</strong> <span th:text="${mahasiswa.nim}">-</span></p>
                                                     <p><strong>Program Studi:</strong> <span th:text="${mahasiswa.idProdi.namaProdi}">-</span></p>
+                                                    <p><strong>Total SKS:</strong> <span th:text="${totalSks}">0</span> SKS</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKS Warning Alert -->
+            <div class="row" th:if="${!sksMemenuhi}">
+                <div class="col-md-12 col-xs-12">
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <div class="text-center">
+                            <h4><i class="fa fa-exclamation-triangle"></i> <strong>Perhatian!</strong></h4>
+                            <p style="font-size: 16px; margin: 10px 0;">
+                                Anda belum dapat mengajukan surat magang. Total SKS Anda saat ini: <strong><span th:text="${totalSks}">0</span></strong> SKS.
+                                <br>Minimal SKS yang diperlukan untuk mengajukan surat magang adalah <strong>100 SKS</strong>.
+                            </p>
+                            <p style="font-size: 14px; margin: 0;">Silakan lengkapi SKS Anda terlebih dahulu.</p>
                         </div>
                     </div>
                 </div>
@@ -95,6 +123,27 @@
 
                                 <input type="hidden" th:field="*{id}" />
                                 <input type="hidden" th:field="*{mahasiswa}" />
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="jenisMagang">Jenis Magang <span class="text-danger">*</span></label>
+                                            <select class="form-control"
+                                                    th:field="*{jenisMagang}"
+                                                    id="jenisMagang"
+                                                    required>
+                                                <option value="">-- Pilih Jenis Magang --</option>
+                                                <option th:each="jenis : ${T(id.ac.tazkia.smilemahasiswa.entity.surat.JenisMagang).values()}"
+                                                        th:value="${jenis}"
+                                                        th:text="${jenis.label}">
+                                                </option>
+                                            </select>
+                                            <small class="text-danger" th:if="${#fields.hasErrors('jenisMagang')}">
+                                                <span th:errors="*{jenisMagang}"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="row">
                                     <div class="col-md-12">
@@ -173,13 +222,37 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="sksKonversi">SKS yang akan dikonversi</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   th:field="*{sksKonversi}"
+                                                   id="sksKonversi"
+                                                   placeholder="Masukkan jumlah SKS yang akan dikonversi"
+                                                   min="1">
+                                            <small class="form-text text-muted">
+                                                <i class="fa fa-info-circle"></i> Isi hanya untuk Magang MBKM atau Magang Tugas Akhir
+                                            </small>
+                                            <small class="text-danger" th:if="${#fields.hasErrors('sksKonversi')}">
+                                                <span th:errors="*{sksKonversi}"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
                                         <div class="alert alert-info">
                                             <i class="fa fa-info-circle"></i> <strong>Informasi:</strong>
                                             Surat magang yang diajukan akan melalui proses persetujuan oleh dosen wali terlebih dahulu.
                                             Download surat hanya tersedia setelah disetujui.
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary notika-btn-primary">
+                                            <button type="submit"
+                                                    class="btn btn-primary notika-btn-primary"
+                                                    th:disabled="${!sksMemenuhi}"
+                                                    th:classappend="${!sksMemenuhi} ? 'disabled' : ''"
+                                                    th:style="${!sksMemenuhi} ? 'cursor: not-allowed; opacity: 0.6;' : ''">
                                                 <i class="fa fa-save"></i> Ajukan Surat
                                             </button>
                                             <a th:href="@{/}" class="btn btn-danger notika-btn-danger">
@@ -208,8 +281,10 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Tanggal Pengajuan</th>
+                                        <th>Jenis Magang</th>
                                         <th>Nama Perusahaan</th>
                                         <th>Divisi</th>
+                                        <th>SKS Konversi</th>
                                         <th>Periode Magang</th>
                                         <th>Status Persetujuan</th>
                                         <th>Tanggal Approval</th>
@@ -220,8 +295,16 @@
                                     <tr th:each="surat, rowStat : ${listSurat}">
                                         <td th:text="${rowStat.index + 1}">-</td>
                                         <td th:text="${#temporals.format(surat.tanggalDibuat, 'dd-MM-yyyy HH:mm')}">-</td>
+                                        <td>
+                                            <span class="badge badge-info" th:if="${surat.jenisMagang != null}" th:text="${surat.jenisMagang.label}">-</span>
+                                            <span th:if="${surat.jenisMagang == null}">-</span>
+                                        </td>
                                         <td th:text="${surat.namaPerusahaan}">-</td>
                                         <td th:text="${surat.divisi != null ? surat.divisi : '-'}">-</td>
+                                        <td>
+                                            <span th:if="${surat.sksKonversi != null}" th:text="${surat.sksKonversi + ' SKS'}">-</span>
+                                            <span th:if="${surat.sksKonversi == null}">-</span>
+                                        </td>
                                         <td>
                                             <span th:text="${#temporals.format(surat.tanggalMulaiMagang, 'dd MMM yyyy')}">-</span>
                                             s/d

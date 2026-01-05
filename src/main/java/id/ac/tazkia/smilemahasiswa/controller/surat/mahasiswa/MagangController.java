@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller.surat.mahasiswa;
 
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.surat.SuratMagangDao;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
@@ -32,6 +33,9 @@ public class MagangController {
     private MahasiswaDao mahasiswaDao;
 
     @Autowired
+    private KrsDetailDao krsDetailDao;
+
+    @Autowired
     private CurrentUserService currentUserService;
 
     @GetMapping("/surat/form")
@@ -50,9 +54,15 @@ public class MagangController {
         // Get list of surat magang for this mahasiswa
         List<SuratMagang> listSurat = suratMagangDao.findByMahasiswaNimOrderByTanggalDibuatDesc(mahasiswa.getNim());
 
+        // Get total SKS for this mahasiswa
+        Long totalSks = krsDetailDao.totalSks(mahasiswa);
+        boolean sksMemenuhi = totalSks != null && totalSks >= 100;
+
         model.addAttribute("suratMagang", suratMagang);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("listSurat", listSurat);
+        model.addAttribute("totalSks", totalSks != null ? totalSks : 0);
+        model.addAttribute("sksMemenuhi", sksMemenuhi);
         model.addAttribute("title", "Form Surat Magang");
 
         return "study/surat/magang-form";
@@ -73,6 +83,13 @@ public class MagangController {
             Mahasiswa mahasiswa = getCurrentMahasiswa(authentication);
             suratMagang.setMahasiswa(mahasiswa);
             suratMagang.setUserApproval(mahasiswa.getIdProdi().getDosen());
+        }
+
+        // Check if SKS meets minimum requirement
+        Long totalSks = krsDetailDao.totalSks(suratMagang.getMahasiswa());
+        if (totalSks == null || totalSks < 100) {
+            attributes.addFlashAttribute("error", "Maaf, Anda belum dapat mengajukan surat magang. Total SKS Anda saat ini: " + (totalSks != null ? totalSks : 0) + ". Minimal SKS yang diperlukan: 100 SKS.");
+            return "redirect:/surat/form";
         }
 
         if (suratMagang.getTanggalDibuat() == null) {
