@@ -293,7 +293,7 @@ public class BebasKewajibanService {
         PendaftaranBebasKewajiban getNomorUrut = bebasKewajibanDao
                 .findTopByTahunOrderByNomorUrutDesc(String.valueOf(LocalDate.now().getYear()));
         log.info("Bebas Kewajiban : {}", getNomorUrut);
-        if (getNomorUrut.getNomorUrut() == null) {
+        if (getNomorUrut == null || getNomorUrut.getNomorUrut() == null) {
             urutan = 1;
         } else {
             urutan = getNomorUrut.getNomorUrut() + 1;
