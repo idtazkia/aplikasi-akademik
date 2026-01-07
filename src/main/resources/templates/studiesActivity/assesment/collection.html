@@ -89,21 +89,21 @@
 									<table class="table align-items-center table-flush table-striped">
 										<thead class="thead-light">
 											<tr>
-												<th scope="col">#</th>
-												<th scope="col">NIM</th>
-												<th scope="col">Mahasiswa</th>
-												<th scope="col">File</th>
+												<th scope="col" style="width: 50px">#</th>
+												<th scope="col" style="width: 150px">NIM</th>
+												<th scope="col" style="width: 200px">Mahasiswa</th>
+												<th scope="col" style="width: 250px">File</th>
 												<th scope="col">Nilai</th>
-												<th scope="col">Waktu pengumpulan</th>
-												<th scope="col">Status</th>
+												<th scope="col" style="width: 200px">Waktu pengumpulan</th>
+												<th scope="col" style="width: 100px">Status</th>
 												<th></th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr th:each="data,row : ${tugasmahasiswa}">
-												<td th:text="${(row.index + 1)}">1</td>
-												<td th:text="${data.nim}">Basic Econometrics</td>
-												<td th:text="${data.nama}">Aam Slamet Rusydiana</td>
+												<td th:text="${(row.index + 1)}" style="width: 50px">1</td>
+												<td th:text="${data.nim}" style="width: 150px">Basic Econometrics</td>
+												<td th:text="${data.nama}" style="width: 200px; white-space: normal;">Aam Slamet Rusydiana</td>
 												<span th:if="${data.jawaban == null}">
 													<td colspan="5" class="text-center">
 														<strong>Belum mengumpulkan tugas</strong>
@@ -111,7 +111,7 @@
 												</span>
 
 												<span th:if="${data.jawaban != null}">
-													<td>
+													<td style="width: 250px; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
 														<a
 															th:if="${data.filename != 'none'}"
 															target="_blank"
@@ -154,8 +154,8 @@
 															>Melebihi Batas</span
 														>
 													</td>
-													<td th:text="${data.waktu}"></td>
-													<td>
+													<td th:text="${data.waktu}" style="width: 200px"></td>
+													<td style="width: 100px">
 														<span
 															th:if="${data.telat == 'Ontime'}"
 															class="badge badge-success"
