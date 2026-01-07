@@ -93,7 +93,7 @@
 												<th scope="col" style="width: 150px">NIM</th>
 												<th scope="col" style="width: 200px">Mahasiswa</th>
 												<th scope="col" style="width: 250px">File</th>
-												<th scope="col">Nilai</th>
+												<th scope="col" style="width: 200px">Nilai</th>
 												<th scope="col" style="width: 200px">Waktu pengumpulan</th>
 												<th scope="col" style="width: 100px">Status</th>
 												<th></th>
@@ -125,7 +125,7 @@
 													<!-- Input nilai: tampil jika kategori TUGAS, atau jika statusMangkir AMAN -->
 													<td
 														class="text-nowrap"
-														style="min-width: 100px"
+														style="min-width: 100px; max-width: 200px;"
 														th:if="${jadwaltugas.kategoriTugas.name() == 'TUGAS' or data.statusMangkir == 'AMAN'}"
 													>
 														<div class="input-group">
