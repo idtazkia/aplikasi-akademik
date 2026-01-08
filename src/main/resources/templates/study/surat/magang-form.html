@@ -311,32 +311,32 @@
                                             <span th:text="${#temporals.format(surat.tanggalSelesaiMagang, 'dd MMM yyyy')}">-</span>
                                         </td>
                                         <td>
-                                            <span class="badge badge-warning" th:if="${surat.statusApproval == 'WAITING'}">
+                                            <span class="badge badge-warning" th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}">
                                                 <i class="fa fa-clock-o"></i> Menunggu Persetujuan
                                             </span>
-                                            <span class="badge badge-success" th:if="${surat.statusApproval == 'APPROVED'}">
+                                            <span class="badge badge-success" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED'}">
                                                 <i class="fa fa-check-circle"></i> Disetujui
                                             </span>
-                                            <span class="badge badge-danger" th:if="${surat.statusApproval == 'REJECTED'}">
+                                            <span class="badge badge-danger" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'REJECTED'}">
                                                 <i class="fa fa-times-circle"></i> Ditolak
                                             </span>
                                         </td>
                                         <td>
-                                            <span th:if="${surat.statusApproval == 'APPROVED' and surat.tanggalApproval != null}"
+                                            <span th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED' and surat.tanggalApproval != null}"
                                                   th:text="${#temporals.format(surat.tanggalApproval, 'dd-MM-yyyy HH:mm')}">-</span>
-                                            <span th:if="${surat.statusApproval == 'WAITING'}" class="text-muted">-</span>
-                                            <span th:if="${surat.statusApproval == 'REJECTED'}" class="text-danger">-</span>
+                                            <span th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}" class="text-muted">-</span>
+                                            <span th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'REJECTED'}" class="text-danger">-</span>
                                         </td>
                                         <td>
                                             <a th:href="@{/surat/suratmagang/download/{id}(id=${surat.id})}"
                                                class="btn btn-success btn-sm"
-                                               th:if="${surat.id != null and surat.statusApproval == 'APPROVED'}">
+                                               th:if="${surat.id != null and surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED'}">
                                                 <i class="fa fa-download"></i> Download
                                             </a>
-                                            <span class="text-muted" th:if="${surat.statusApproval == 'WAITING'}">
+                                            <span class="text-muted" th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}">
                                                 <i class="fa fa-clock-o"></i> Menunggu
                                             </span>
-                                            <span class="text-danger" th:if="${surat.statusApproval == 'REJECTED'}">
+                                            <span class="text-danger" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'REJECTED'}">
                                                 <i class="fa fa-times-circle"></i> Ditolak
                                             </span>
                                         </td>
