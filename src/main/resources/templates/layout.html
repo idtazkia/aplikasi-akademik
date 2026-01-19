@@ -143,6 +143,13 @@
                                     <li><a th:href="@{/graduation/daftar-magang}">Laporan Magang</a></li>
                                 </ul>
                             </li>
+                            <li><a th:href="@{/dokumen/mahasiswa}">Documents</a></li>
+                            <li><a data-toggle="collapse" data-target="#suratMenu" href="#">Surat</a>
+                                <ul id="suratMenu" class="collapse dropdown-header-top">
+                                    <li><a th:href="@{/surat/mahasiswa}">Daftar Surat</a></li>
+                                    <li><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -169,6 +176,8 @@
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#gra"><i class="fa fa-graduation-cap"></i> Graduation</a>
                     </li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/dokumen/mahasiswa}"><i class="fa fa-archive"></i> Documents</a></li>
+                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#surat"><i class="fa fa-envelope"></i> Surat</a>
+                    </li>
                 </ul>
                 <div class="tab-content custom-menu-content">
                     <div id="Study" class="tab-pane notika-tab-menu-bg animated flipInX">
@@ -209,6 +218,12 @@
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a>
                             </li>
+                        </ul>
+                    </div>
+                    <div id="surat" class="tab-pane notika-tab-menu-bg animated flipInX">
+                        <ul class="notika-main-menu-dropdown">
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/form}">Daftar Surat Magang</a></li>
+                            <!-- <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a></li> -->
                         </ul>
                     </div>
                 </div>
