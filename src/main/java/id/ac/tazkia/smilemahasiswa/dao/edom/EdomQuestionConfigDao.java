@@ -14,8 +14,10 @@ import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestionConfig;
 public interface EdomQuestionConfigDao
                 extends PagingAndSortingRepository<EdomQuestionConfig, String> {
 
-        List<EdomQuestionConfig> findByTargetTypeAndTahunAkademik(String string, TahunAkademik tahunAkademik);
+        @Query("SELECT eqc FROM EdomQuestionConfig eqc WHERE eqc.targetType = :targetType AND eqc.tahunAkademik = :tahunAkademik AND eqc.question.status <> 'HAPUS'")
+        List<EdomQuestionConfig> findByTargetTypeAndTahunAkademik(String targetType, TahunAkademik tahunAkademik);
 
+        @Query("SELECT eqc FROM EdomQuestionConfig eqc WHERE eqc.targetType = :targetType AND eqc.tahunAkademik = :tahunAkademik AND eqc.question.edomCategory = :edomCategory AND eqc.question.status <> 'HAPUS' ORDER BY eqc.question.createdTime ASC")
         List<EdomQuestionConfig> findByTargetTypeAndTahunAkademikAndQuestionEdomCategoryOrderByQuestionCreatedTimeAsc(
                         String targetType, TahunAkademik tahunAkademik, EdomCategory edomCategory);
 
@@ -24,6 +26,7 @@ public interface EdomQuestionConfigDao
                         "JOIN edom_question eq ON eqc.id_question = eq.id " +
                         "WHERE eqc.id_tahun_akademik = ?2 " +
                         "AND eq.id_category = ?3 " +
+                        "AND eq.status <> 'HAPUS' " +
                         "AND NOT EXISTS ( " +
                         "  SELECT 1 FROM edom_general_response eg " +
                         "  JOIN edom_evaluation_target et ON eg.id_evaluation_target = et.id " +

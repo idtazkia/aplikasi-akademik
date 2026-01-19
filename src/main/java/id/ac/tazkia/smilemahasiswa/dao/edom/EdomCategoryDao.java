@@ -20,6 +20,7 @@ public interface EdomCategoryDao extends PagingAndSortingRepository<EdomCategory
                         "JOIN edom_question_config eqc ON eqc.id_question = eq.id " +
                         "WHERE eqc.id_tahun_akademik = ?2 " +
                         "AND ec.active = 1 AND ec.id NOT IN ('1')" +
+                        "AND eq.status <> 'HAPUS' " +
                         "AND NOT EXISTS ( " +
                         "SELECT 1 FROM edom_general_response eg " +
                         "JOIN edom_evaluation_target et ON eg.id_evaluation_target = et.id " +

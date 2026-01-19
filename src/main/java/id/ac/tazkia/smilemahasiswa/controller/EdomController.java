@@ -83,11 +83,19 @@ public class EdomController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,
-                tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa, tahunAkademik);
         if (detailEdoms.isEmpty()) {
-            log.info("Tidak ada data evaluasi yang tersedia untuk mahasiswa: {}", mahasiswa.getNim());
-            return "redirect:../../dashboard";
+            log.info("Tidak ada data evaluasi dosen yang tersedia untuk mahasiswa: {} di tahun akademik: {}",
+                    mahasiswa.getNim(), tahunAkademik != null ? tahunAkademik.getId() : "NULL");
+
+            // Redirect ke halaman tujuan jika ada parameter redirect
+            if (redirect != null && !redirect.isEmpty()) {
+                if ("transcript".equals(redirect) || "transkrip".equals(redirect)) {
+                    return "redirect:/report/" + redirect;
+                }
+                return "redirect:/report/" + redirect + "?tahunAkademik=" + (tahunAkademik != null ? tahunAkademik.getId() : "");
+            }
+            return "redirect:/dashboard";
 
         } else {
             model.addAttribute("redirect", redirect);
@@ -108,13 +116,26 @@ public class EdomController {
             @RequestParam(required = false) String redirect) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        Optional<EdomEvaluationTarget> target = edomEvaluationTargetDao
-                .findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, "OPEN");
 
+        // 1. Cek apakah sudah COMPLETED
+        Optional<EdomEvaluationTarget> completedTarget = edomEvaluationTargetDao
+                .findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik, "COMPLETED");
+
+        if (completedTarget.isPresent()) {
+            // Sudah selesai EDOM facilities → lanjut ke dosen
+            return "redirect:/edom/eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
+        }
+
+        // 2. Cek apakah ada pertanyaan sarpras yang belum diisi
         List<EdomCategory> categories = edomCategoryDao
                 .findCategoriesWithQuestionsWithoutResponsesForMahasiswaAndTahunAkademik(mahasiswa, tahunAkademik);
-        model.addAttribute("listSarpras", categories);
 
+        if (categories.isEmpty()) {
+            // Tidak ada pertanyaan sarpras → lanjut ke dosen
+            return "redirect:/edom/eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
+        }
+
+        // 3. Ada pertanyaan → tampilkan form
         Map<String, List<EdomQuestionConfig>> configPerCategory = new HashMap<>();
         for (EdomCategory category : categories) {
             List<EdomQuestionConfig> configs = edomQuestionConfigDao
@@ -122,15 +143,12 @@ public class EdomController {
                             mahasiswa, tahunAkademik, category);
             configPerCategory.put(category.getId(), configs);
         }
+
+        model.addAttribute("listSarpras", categories);
         model.addAttribute("configPerCategory", configPerCategory);
         model.addAttribute("redirect", redirect);
         model.addAttribute("tahunAkademik", tahunAkademik);
-        if (target.isEmpty()) {
-            return "setting/edom/evaluation/facilities";
-        } else {
-            return "redirect:eval-dosen?tahunAkademik=" + tahunAkademik.getId() + "&redirect=" + redirect;
-
-        }
+        return "setting/edom/evaluation/facilities";
 
     }
 
