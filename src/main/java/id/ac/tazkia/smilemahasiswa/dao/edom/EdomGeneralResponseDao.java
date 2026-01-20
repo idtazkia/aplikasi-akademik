@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao.edom;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -8,10 +9,33 @@ import org.springframework.data.repository.query.Param;
 
 import id.ac.tazkia.smilemahasiswa.dto.edom.RekapEdomDto;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomEvaluationTarget;
 import id.ac.tazkia.smilemahasiswa.entity.edom.EdomGeneralResponse;
+import id.ac.tazkia.smilemahasiswa.entity.edom.EdomQuestion;
 
 public interface EdomGeneralResponseDao extends PagingAndSortingRepository<EdomGeneralResponse, String> {
+
+    /**
+     * Cek apakah response sudah ada untuk kombinasi evaluationTarget, question,
+     * jadwal, dan dosen.
+     * Digunakan untuk menghindari data duplikat saat resume EDOM.
+     */
+    Optional<EdomGeneralResponse> findByEvaluationTargetAndQuestionAndJadwalAndDosen(
+            EdomEvaluationTarget evaluationTarget,
+            EdomQuestion question,
+            Jadwal jadwal,
+            Dosen dosen);
+
+    /**
+     * Cek apakah response sudah ada berdasarkan evaluationTarget dan question
+     * (untuk SARPRAS).
+     */
+    Optional<EdomGeneralResponse> findByEvaluationTargetAndQuestion(
+            EdomEvaluationTarget evaluationTarget,
+            EdomQuestion question);
+
     @Query("select distinct d from EdomGeneralResponse r join r.evaluationTarget t join r.dosen d join d.karyawan k where r.target = 'DOSEN' and t.tahunAkademik = :tahunAkademik order by k.namaKaryawan asc")
     List<Dosen> findListDosenTahunAkademik(@Param("tahunAkademik") TahunAkademik tahunAkademik);
 

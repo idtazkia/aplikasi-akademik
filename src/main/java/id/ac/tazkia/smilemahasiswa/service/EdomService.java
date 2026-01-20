@@ -1,6 +1,9 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,6 +60,10 @@ public class EdomService {
 
         edomEvaluationTargetDao.save(target);
 
+        // Kumpulkan semua krsDetail yang perlu di-update status EDOM-nya
+        Set<KrsDetail> krsDetailsToUpdate = new HashSet<>();
+        String targetStatus = null;
+
         for (Map.Entry<String, String> entry : formData.entrySet()) {
             String key = entry.getKey();
             if (!key.startsWith("evaluasi["))
@@ -68,7 +75,6 @@ public class EdomService {
             String jadwalId = null;
             String questionId;
             String dosenId = null;
-            String targetStatus;
             Dosen dosen = null;
 
             if (targetType.equals("DOSEN")) {
@@ -113,23 +119,51 @@ public class EdomService {
                 }
             }
 
-            EdomGeneralResponse response = new EdomGeneralResponse();
-            response.setTarget(targetType);
-            response.setEvaluationTarget(target);
-            response.setDosen(dosen);
-            response.setQuestion(edomQuestion);
-            response.setResponseValue(String.valueOf(nilai));
-            response.setJadwal(jadwal);
-            response.setKrsDetail(krsDetail);
-            edomGeneralResponseDao.save(response);
-
-            if (krsDetail != null) {
-                krsDetail.setStatusEdom(StatusRecord.DONE);
-                krsDetailDao.save(krsDetail);
+            // Cek apakah response sudah ada untuk mencegah duplikat
+            Optional<EdomGeneralResponse> existingResponse;
+            if (targetType.equals("DOSEN")) {
+                existingResponse = edomGeneralResponseDao.findByEvaluationTargetAndQuestionAndJadwalAndDosen(
+                        target, edomQuestion, jadwal, dosen);
+            } else {
+                existingResponse = edomGeneralResponseDao.findByEvaluationTargetAndQuestion(target, edomQuestion);
             }
 
-            target.setStatus(targetStatus);
+            EdomGeneralResponse response;
+            if (existingResponse.isPresent()) {
+                // Update response yang sudah ada (jangan buat duplikat)
+                response = existingResponse.get();
+                response.setResponseValue(String.valueOf(nilai));
+                log.info("Updating existing response for question: {}, jadwal: {}, dosen: {}", 
+                        questionId, jadwalId, dosenId);
+            } else {
+                // Buat response baru
+                response = new EdomGeneralResponse();
+                response.setTarget(targetType);
+                response.setEvaluationTarget(target);
+                response.setDosen(dosen);
+                response.setQuestion(edomQuestion);
+                response.setResponseValue(String.valueOf(nilai));
+                response.setJadwal(jadwal);
+                response.setKrsDetail(krsDetail);
+            }
+            edomGeneralResponseDao.save(response);
 
+            // Kumpulkan krsDetail untuk update status EDOM nanti (di luar loop)
+            if (krsDetail != null) {
+                krsDetailsToUpdate.add(krsDetail);
+            }
+        }
+
+        // Update status EDOM secara ATOMIC setelah semua response berhasil disimpan
+        // Ini mencegah issue #2: status_edom=DONE tapi tabel edom kosong
+        for (KrsDetail krsDetail : krsDetailsToUpdate) {
+            krsDetail.setStatusEdom(StatusRecord.DONE);
+            krsDetailDao.save(krsDetail);
+        }
+
+        // Update target status
+        if (targetStatus != null) {
+            target.setStatus(targetStatus);
             edomEvaluationTargetDao.save(target);
         }
     }
