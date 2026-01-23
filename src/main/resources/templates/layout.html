@@ -146,8 +146,8 @@
                             <li><a th:href="@{/dokumen/mahasiswa}">Documents</a></li>
                             <li><a data-toggle="collapse" data-target="#suratMenu" href="#">Surat</a>
                                 <ul id="suratMenu" class="collapse dropdown-header-top">
-                                    <li><a th:href="@{/surat/mahasiswa}">Daftar Surat</a></li>
-                                    <li><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a></li>
+                                    <li><a th:href="@{/surat/form}">Surat Magang</a></li>
+                                    <li><a th:href="@{/surat/penelitian/form}">Surat Penelitian</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -222,7 +222,8 @@
                     </div>
                     <div id="surat" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
-                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/form}">Daftar Surat Magang</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/form}">Surat Magang</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/penelitian/form}">Surat Penelitian</a></li>
                             <!-- <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a></li> -->
                         </ul>
                     </div>

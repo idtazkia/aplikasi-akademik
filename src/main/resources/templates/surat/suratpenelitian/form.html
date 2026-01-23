@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title th:text="${title}">Form Surat Penelitian</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0" th:text="${title}">
+													Form Surat Penelitian
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col-xl-12 order-xl-1">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<div class="row align-items-center">
+									<div class="col-8">
+										<h3 class="mb-0" th:text="${title}">Form Surat Penelitian</h3>
+									</div>
+									<div class="col-4 text-right">
+										<a th:href="@{/surat/suratpenelitian/list}" class="btn btn-sm btn-primary">
+											<i class="fas fa-arrow-left"></i> Kembali
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<form
+									th:object="${suratPenelitian}"
+									th:action="@{/surat/suratpenelitian/form}"
+									method="post"
+									autocomplete="off"
+								>
+									<input type="hidden" th:field="*{id}" />
+									<input type="hidden" th:field="*{status}" />
+
+									<h6 class="heading-small text-muted mb-4">Informasi Mahasiswa</h6>
+									<div class="pl-lg-4">
+										<div class="row">
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label class="form-control-label" for="input-mahasiswa">Mahasiswa</label>
+													<select
+														class="form-control"
+														th:field="*{mahasiswa}"
+														id="input-mahasiswa"
+														required
+													>
+														<option value="">Pilih Mahasiswa</option>
+														<!-- Assuming you'll add mahasiswa list later -->
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<hr class="my-4" />
+
+									<h6 class="heading-small text-muted mb-4">Informasi Penelitian</h6>
+									<div class="pl-lg-4">
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<label class="form-control-label" for="input-judul">Judul Skripsi</label>
+													<input
+														type="text"
+														class="form-control"
+														th:field="*{judulSkripsi}"
+														id="input-judul"
+														placeholder="Judul Skripsi"
+														required
+													/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label class="form-control-label" for="input-perusahaan">Nama Perusahaan/Institusi</label>
+													<input
+														type="text"
+														class="form-control"
+														th:field="*{namaPerusahaan}"
+														id="input-perusahaan"
+														placeholder="Nama Perusahaan/Institusi"
+														required
+													/>
+												</div>
+											</div>
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label class="form-control-label" for="input-divisi">Divisi/Department</label>
+													<input
+														type="text"
+														class="form-control"
+														th:field="*{divisi}"
+														id="input-divisi"
+														placeholder="Contoh: Divisi PTIP dan Bapak Budi Santoso, S.H., M.H. (Ketua PTIP)"
+													/>
+													<small class="form-text text-muted">
+														Masukkan nama divisi beserta nama jabatan yang menangani
+													</small>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label class="form-control-label" for="input-telepon">Nomor Telepon</label>
+													<input
+														type="text"
+														class="form-control"
+														th:field="*{nomorTelepon}"
+														id="input-telepon"
+														placeholder="Nomor Telepon"
+														required
+													/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<label class="form-control-label" for="input-alamat">Alamat Perusahaan/Institusi</label>
+													<textarea
+														class="form-control"
+														th:field="*{alamat}"
+														id="input-alamat"
+														rows="3"
+														placeholder="Alamat Perusahaan/Institusi"
+													></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<hr class="my-4" />
+
+									<h6 class="heading-small text-muted mb-4">Status Approval</h6>
+									<div class="pl-lg-4">
+										<div class="row">
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label class="form-control-label" for="input-status-approval">Status Approval</label>
+													<select
+														class="form-control"
+														th:field="*{statusApproval}"
+														id="input-status-approval"
+													>
+														<option value="WAITING">Waiting</option>
+														<option value="APPROVED">Approved</option>
+														<option value="REJECTED">Rejected</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label class="form-control-label" for="input-tanggal-approval">Tanggal Approval</label>
+													<input
+														type="date"
+														class="form-control"
+														th:field="*{tanggalApproval}"
+														id="input-tanggal-approval"
+													/>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="pl-lg-4">
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="form-group">
+													<button type="submit" class="btn btn-primary">
+														<i class="fas fa-save"></i> Simpan
+													</button>
+													<a
+														th:href="@{/surat/suratpenelitian/list}"
+														class="btn btn-secondary"
+													>
+														<i class="fas fa-times"></i> Batal
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<footer class="footer">
+					<div class="row align-items-center justify-content-xl-between">
+						<div class="col-xl-6">
+							<div class="copyright text-center text-xl-left text-muted">
+								&copy; 2020 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Smile</a>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>
