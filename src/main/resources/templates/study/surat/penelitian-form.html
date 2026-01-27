@@ -169,9 +169,16 @@
                                             <i class="fa fa-info-circle"></i> <strong>Informasi:</strong>
                                             Surat yang diajukan akan melalui proses persetujuan oleh Koordinator Program Studi terlebih dahulu. Fitur download surat hanya tersedia setelah surat disetujui.
                                         </div>
+                                        <div class="alert alert-warning" th:if="${!sudahAmbilSkripsi}">
+                                            <i class="fa fa-exclamation-triangle"></i> <strong>Perhatian:</strong>
+                                            Anda belum dapat mengajukan surat penelitian. Silakan mengambil KRS Skripsi terlebih dahulu.
+                                        </div>
                                         <div class="form-group">
                                             <button type="submit"
-                                                    class="btn btn-primary notika-btn-primary">
+                                                    class="btn btn-primary notika-btn-primary"
+                                                    th:disabled="${!sudahAmbilSkripsi}"
+                                                    th:classappend="${!sudahAmbilSkripsi} ? 'disabled' : ''"
+                                                    th:style="${!sudahAmbilSkripsi} ? 'cursor: not-allowed; opacity: 0.6;' : ''">
                                                 <i class="fa fa-save"></i> Ajukan Surat
                                             </button>
                                             <a th:href="@{/}" class="btn btn-danger notika-btn-danger">

@@ -54,15 +54,14 @@ public class PenelitianController {
         // Get list of surat penelitian for this mahasiswa
         List<SuratPenelitian> listSurat = suratPenelitianDao.findByMahasiswaNimOrderByTanggalDibuatDesc(mahasiswa.getNim());
 
-        // Get total SKS for this mahasiswa
-        Long totalSks = krsDetailDao.totalSks(mahasiswa);
-        boolean sksMemenuhi = totalSks != null && totalSks >= 100;
+        // Check if mahasiswa has taken skripsi course
+        boolean sudahAmbilSkripsi = krsDetailDao.existsByMahasiswaAndMatakuliahSkripsi(mahasiswa);
 
         model.addAttribute("suratPenelitian", suratPenelitian);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("listSurat", listSurat);
-        model.addAttribute("totalSks", totalSks != null ? totalSks : 0);
-        model.addAttribute("sksMemenuhi", sksMemenuhi);
+        model.addAttribute("sudahAmbilSkripsi", sudahAmbilSkripsi);
+        log.info("Skripsi taken: {}", sudahAmbilSkripsi);
         model.addAttribute("title", "Form Surat Penelitian");
 
         return "study/surat/penelitian-form";
@@ -85,10 +84,10 @@ public class PenelitianController {
             suratPenelitian.setUserApproval(mahasiswa.getIdProdi().getDosen());
         }
 
-        // Check if SKS meets minimum requirement
-        Long totalSks = krsDetailDao.totalSks(suratPenelitian.getMahasiswa());
-        if (totalSks == null || totalSks < 100) {
-            attributes.addFlashAttribute("error", "Maaf, Anda belum dapat mengajukan surat penelitian. Total SKS Anda saat ini: " + (totalSks != null ? totalSks : 0) + ". Minimal SKS yang diperlukan: 100 SKS.");
+        // Check if mahasiswa has taken skripsi course
+        boolean sudahAmbilSkripsi = krsDetailDao.existsByMahasiswaAndMatakuliahSkripsi(suratPenelitian.getMahasiswa());
+        if (!sudahAmbilSkripsi) {
+            attributes.addFlashAttribute("error", "Maaf, Anda belum dapat mengajukan surat penelitian. Anda harus sudah mengambil KRS Skripsi terlebih dahulu.");
             return "redirect:/surat/penelitian/form";
         }
 
