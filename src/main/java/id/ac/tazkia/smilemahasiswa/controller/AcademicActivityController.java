@@ -920,80 +920,158 @@ public class AcademicActivityController {
             @RequestParam(required = false) TahunAkademik tahun) {
 
         model.addAttribute("listKelas", kelasDao.kelasPloting());
-        if (tahun != null) {
-            List<String> kelasList = new ArrayList<>();
-            List<Kelas> pilihanKelas = new ArrayList<>();
-            for (String s : kelas) {
-                Kelas k = kelasDao.findById(s).get();
-                kelasList.add(k.getId());
-                pilihanKelas.add(k);
-            }
+        if (tahun != null && kelas != null && kelas.length > 0) {
+            List<String> kelasList = Arrays.asList(kelas);
 
+            // Single query to get all selected Kelas - fix N+1
+            List<Kelas> pilihanKelas = (List<Kelas>) kelasDao.findAllById(kelasList);
+
+            // Get ploting data based on semester type
+            List<ListPlotingDto> listPloting;
             if (tahun.getJenis() == StatusRecord.GANJIL) {
-                List<ListPlotingDto> plotingGanjil = matakuliahKurikulumDao.plotingDosenGanjil(tahun, kelasList);
-                model.addAttribute("listPloting", plotingGanjil);
-
+                listPloting = matakuliahKurikulumDao.plotingDosenGanjil(tahun, kelasList);
+            } else if (tahun.getJenis() == StatusRecord.GENAP) {
+                listPloting = matakuliahKurikulumDao.plotingDosenGenap(tahun, kelasList);
+            } else {
+                // Handle PENDEK semester - get both ganjil and genap
+                listPloting = matakuliahKurikulumDao.plotingDosenGanjil(tahun, kelasList);
+                listPloting.addAll(matakuliahKurikulumDao.plotingDosenGenap(tahun, kelasList));
             }
-            if (tahun.getJenis() == StatusRecord.GENAP) {
-                List<ListPlotingDto> plotinggenap = matakuliahKurikulumDao.plotingDosenGenap(tahun, kelasList);
-                model.addAttribute("listPloting", plotinggenap);
 
-            }
-
+            model.addAttribute("listPloting", listPloting);
             model.addAttribute("selectedTahun", tahun);
             model.addAttribute("selectedKelas", kelasList);
             model.addAttribute("pilihanKelas", pilihanKelas);
-
         }
     }
 
     @PostMapping("/academic/ploting/save")
     @ResponseBody
-    public BaseResponse prosesPloting(@RequestBody PlotingDto plotingDto, @RequestParam TahunAkademik tahun) {
+    @Transactional
+    public ResponseEntity<BaseResponse> prosesPloting(@RequestBody PlotingDto plotingDto,
+            @RequestParam TahunAkademik tahun) {
+        BaseResponse response = new BaseResponse();
 
-        if (plotingDto.getId() == null) {
+        // Validate required fields
+        if (plotingDto.getIdDosen() == null || plotingDto.getIdDosen().isEmpty()) {
+            response.setMessage("Dosen harus dipilih");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Get dosen with proper error handling
+        Dosen dosen = dosenDao.findById(plotingDto.getIdDosen()).orElse(null);
+        if (dosen == null) {
+            response.setMessage("Dosen tidak ditemukan");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Backend SKS validation
+        SelectDosen dosenDetail = dosenDao.detailDosen(tahun, dosen);
+        if (dosenDetail != null && dosenDetail.getMaksimalSks() != null) {
+            int currentSks = dosenDetail.getTotal() != null ? dosenDetail.getTotal() : 0;
+            int newSks = 0;
+
+            if (plotingDto.getMatakuliah() != null) {
+                MatakuliahKurikulum mk = matakuliahKurikulumDao.findById(plotingDto.getMatakuliah()).orElse(null);
+                if (mk != null) {
+                    newSks = mk.getJumlahSks();
+                    // Skip validation for Thesis
+                    if (!"Thesis".equals(mk.getMatakuliah().getNamaMatakuliahEnglish())) {
+                        if (currentSks + newSks > dosenDetail.getMaksimalSks()) {
+                            response.setMessage(
+                                    "Melebihi batas maksimal SKS (" + dosenDetail.getMaksimalSks() + " SKS)");
+                            return ResponseEntity.badRequest().body(response);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (plotingDto.getId() == null || plotingDto.getId().isEmpty()) {
+            // Validate kelas and matakuliah for new jadwal
+            if (plotingDto.getKelas() == null || plotingDto.getMatakuliah() == null) {
+                response.setMessage("Kelas dan Matakuliah harus dipilih");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            Kelas kelas = kelasDao.findById(plotingDto.getKelas()).orElse(null);
+            MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(plotingDto.getMatakuliah())
+                    .orElse(null);
+
+            if (kelas == null || matakuliahKurikulum == null) {
+                response.setMessage("Kelas atau Matakuliah tidak ditemukan");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Check for duplicate jadwal
+            Jadwal existingJadwal = jadwalDao.findByTahunAkademikAndKelasAndMatakuliahKurikulumAndStatus(
+                    tahun, kelas, matakuliahKurikulum, StatusRecord.AKTIF);
+            if (existingJadwal != null) {
+                // Update existing instead of creating duplicate
+                existingJadwal.setDosen(dosen);
+                existingJadwal.setAksesUas(dosen);
+                existingJadwal.setAksesUts(dosen);
+                jadwalDao.save(existingJadwal);
+
+                response.setId(existingJadwal.getId());
+                response.setMessage("Jadwal sudah ada, dosen diupdate");
+                return ResponseEntity.ok(response);
+            }
+
+            // Create new jadwal
             Jadwal jadwal = new Jadwal();
             jadwal.setJumlahSesi(1);
             jadwal.setBobotUts(BigDecimal.ZERO);
             jadwal.setBobotUas(BigDecimal.ZERO);
             jadwal.setBobotPresensi(BigDecimal.ZERO);
             jadwal.setBobotTugas(BigDecimal.ZERO);
-            jadwal.setKelas(kelasDao.findById(plotingDto.getKelas()).get());
-            jadwal.setProdi(kelasDao.findById(plotingDto.getKelas()).get().getIdProdi());
-            jadwal.setDosen(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setKelas(kelas);
+            jadwal.setProdi(kelas.getIdProdi());
+            jadwal.setDosen(dosen);
             jadwal.setTahunAkademik(tahun);
-            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, jadwal.getProdi());
-            jadwal.setTahunAkademikProdi(tahunAkademikProdi);
-            jadwal.setMatakuliahKurikulum(matakuliahKurikulumDao.findById(plotingDto.getMatakuliah()).get());
+            jadwal.setTahunAkademikProdi(tahunProdiDao.findByTahunAkademikAndProdi(tahun, kelas.getIdProdi()));
+            jadwal.setMatakuliahKurikulum(matakuliahKurikulum);
             jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
             jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
-            jadwal.setProgram(programDao.findById("01").get());
+            jadwal.setProgram(programDao.findById("01").orElse(null));
             jadwal.setAkses(Akses.PRODI);
-            jadwal.setAksesUas(dosenDao.findById(plotingDto.getIdDosen()).get());
-            jadwal.setAksesUts(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setAksesUas(dosen);
+            jadwal.setAksesUts(dosen);
             jadwal.setFormatUas("Dicetak");
             jadwal.setFormatUts("Dicetak");
             jadwalDao.save(jadwal);
 
-            BaseResponse response = new BaseResponse();
             response.setId(jadwal.getId());
             response.setMessage("Berhasil disimpan");
+            log.info("Ploting baru: Jadwal {} - Dosen {} - Kelas {} - Matakuliah {}",
+                    jadwal.getId(), dosen.getKaryawan().getNamaKaryawan(),
+                    kelas.getNamaKelas(), matakuliahKurikulum.getMatakuliah().getNamaMatakuliah());
 
-            return response;
+            return ResponseEntity.ok(response);
         } else {
-            Jadwal jadwal = jadwalDao.findById(plotingDto.getId()).get();
-            jadwal.setDosen(dosenDao.findById(plotingDto.getIdDosen()).get());
-            jadwal.setAksesUas(dosenDao.findById(plotingDto.getIdDosen()).get());
-            jadwal.setAksesUts(dosenDao.findById(plotingDto.getIdDosen()).get());
+            // Update existing jadwal
+            Jadwal jadwal = jadwalDao.findById(plotingDto.getId()).orElse(null);
+            if (jadwal == null) {
+                response.setMessage("Jadwal tidak ditemukan");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            Dosen dosenLama = jadwal.getDosen();
+            jadwal.setDosen(dosen);
+            jadwal.setAksesUas(dosen);
+            jadwal.setAksesUts(dosen);
             jadwalDao.save(jadwal);
 
-            BaseResponse response = new BaseResponse();
             response.setId(jadwal.getId());
             response.setMessage("Berhasil disimpan");
+            log.info("Ploting update: Jadwal {} - Dosen {} -> {} - Kelas {}",
+                    jadwal.getId(),
+                    dosenLama != null ? dosenLama.getKaryawan().getNamaKaryawan() : "-",
+                    dosen.getKaryawan().getNamaKaryawan(),
+                    jadwal.getKelas().getNamaKelas());
 
-            return response;
+            return ResponseEntity.ok(response);
         }
-
     }
 
     @ResponseBody

@@ -1,5 +1,15 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+
 import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
@@ -14,22 +24,27 @@ import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
 import id.ac.tazkia.smilemahasiswa.dto.tlc.jadwal.JadwalTlc;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
-
-import java.math.BigDecimal;
-import java.util.List;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Hari;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.Kelas;
+import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Ruangan;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 
 public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
         @Query("select sum (j.matakuliahKurikulum.jumlahSks)from Jadwal j where j.id in (:id)")
         Long totalSks(@Param("id") String[] id);
 
         Jadwal findByStatusAndId(StatusRecord statusRecord, String id);
+
+        // Check for duplicate jadwal
+        Jadwal findByTahunAkademikAndKelasAndMatakuliahKurikulumAndStatus(
+                        TahunAkademik tahunAkademik, Kelas kelas, MatakuliahKurikulum matakuliahKurikulum,
+                        StatusRecord status);
 
         Jadwal findByStatusAndIdNumberElearningAndId(StatusRecord statusRecord, String idNumberElearning,
                         String idJadwal);

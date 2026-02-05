@@ -1,1018 +1,1135 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
-<head>
-    <meta charset="UTF-8">
-    <title>PLoting Dosen</title>
-</head>
-<link th:href="@{/css/style.css}" rel="stylesheet">
+<!doctype html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>PLoting Dosen</title>
+	</head>
+	<link th:href="@{/css/style.css}" rel="stylesheet" />
+	<style>
+		/* Fix Select2 width in table */
+		.select2-container {
+			width: 100% !important;
+			min-width: 200px;
+		}
+		.dosen-select,
+		.team-select {
+			width: 100% !important;
+		}
+		table td .select2-container {
+			display: block;
+		}
+		.select2-selection--single {
+			height: 38px !important;
+			padding: 5px !important;
+		}
+		.select2-selection__arrow {
+			height: 36px !important;
+		}
+	</style>
 
-<body>
-<th:block layout:fragment="script">
-    <script th:inline="javascript">
-        var selectedKelas = /*[[${selectedKelas}]]*/ ["001"];
+	<body>
+		<th:block layout:fragment="script">
+			<script th:inline="javascript">
+				var selectedKelas = /*[[${selectedKelas}]]*/ ["001"];
 
-        $(document).ready(function () {
-            $('#table_id').DataTable({
-                "pageLength": 1000,
-                "lengthChange": false
-            });
+				$(document).ready(function () {
+					$("#table_id").DataTable({
+						pageLength: 1000,
+						lengthChange: false,
+					});
 
-            $('#selectKelas').select2({});
+					$("#selectKelas").select2({});
 
+					var kelasId = [];
+					for (var i = 0; i < selectedKelas.length; i++) {
+						kelasId.push(selectedKelas[i]);
+					}
+					console.log(kelasId);
 
-            var kelasId = [];
-            for (var i = 0; i < selectedKelas.length; i++) {
-                kelasId.push(selectedKelas[i]);
-            }
-            console.log(kelasId);
+					$("#selectKelas").val(kelasId);
+					$("#selectKelas").trigger("change");
 
-            $('#selectKelas').val(kelasId);
-            $('#selectKelas').trigger("change");
+					var values = [];
+					$.each($("#selectKelas").val(), function (index, value) {
+						values.push(value);
+					});
+				});
+			</script>
+		</th:block>
+		<div layout:fragment="main">
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+												<span class="h2 font-weight-bold mb-0">Ploting Dosen </span>
+											</div>
+											<div class="col-auto">
+												<div
+													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
+												>
+													<i class="fas fa-list"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid mt--7">
+				<!-- Table -->
+				<div class="row">
+					<div class="col">
+						<div class="card shadow">
+							<div class="card-header border-0">
+								<div class="row align-items-center">
+									<div class="col">
+										<h3 class="mb-0">Data List</h3>
+									</div>
+									<div class="col text-right"></div>
+								</div>
+							</div>
+							<div class="card-body">
+								<form method="get">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Tahun Akademik</label>
+														<select name="tahun" class="form-control">
+															<option
+																th:each="data : ${tahunAkademik}"
+																th:selected="(${data} == *{selectedTahun})"
+																th:text="${data.namaTahunAkademik}"
+																th:value="${data.id}"
+															>
+																sdasd
+															</option>
+														</select>
+													</div>
+												</div>
 
-            var values = [];
-            $.each($('#selectKelas').val(), function (index, value) {
-                values.push(value);
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>Kelas</label>
+														<select
+															name="kelas"
+															id="selectKelas"
+															multiple="multiple"
+															class="form-control"
+														>
+															<option
+																th:each="data : ${listKelas}"
+																th:selected="(${data} == *{selectedKelas})"
+																th:text="${data[1]}"
+																th:value="${data[0]}"
+															>
+																sdasd
+															</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12" style="text-align: center">
+													<div class="form-group">
+														<button class="btn btn-info">
+															<i class="fa fa-search"></i> Cari
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
 
-            });
+								<!--                        <form th:action="@{/academic/ploting/list (prodi = ${selectedProdi.id}, semester = ${selectedSemester}, angkatan = ${selectedAngkatan})}" method="post" th:if="${selectedProdi != null}">-->
+								<div class="row" th:if="${selectedTahun != null}">
+									<input type="hidden" id="tahun" name="tahun" th:value="${selectedTahun.id}" />
+									<div class="col-md-12">
+										<div class="card shadow">
+											<div class="card-header border-0">
+												<button
+													class="btn btn-default btn-sm"
+													data-toggle="modal"
+													data-target="#addPloting"
+												>
+													<i class="fas fa-plus-circle"></i> Tambah</button
+												>&nbsp;
+												<a
+													th:href="@{/academic/schedule/download(tahunAkademik = ${selectedTahun.id})}"
+												>
+													<button class="btn btn-success btn-sm">
+														<i class="fas fa-download"></i>
+														Download
+													</button>
+												</a>
+											</div>
+											<div class="card-body">
+												<div class="table-responsive">
+													<table id="table_id" class="display" style="width: 100%">
+														<thead>
+															<tr>
+																<th style="width: 40px">#</th>
+																<th style="width: 100px">Kelas</th>
+																<th style="width: 200px">Matakuliah</th>
+																<th style="width: 50px">SKS</th>
+																<th style="min-width: 250px">Dosen</th>
+																<th style="min-width: 200px">Team</th>
+																<th>Total SKS dosen</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr
+																th:each="data,row : ${listPloting}"
+																th:id="${'row-' + row.index}"
+																th:data-row-index="${row.index}"
+																th:data-matkur="${data.mkkur}"
+																th:data-course="${data.course}"
+																th:data-kelas="${data.idKelas}"
+																th:data-sks="${data.sks}"
+																th:data-validasi="${data.validasi}"
+																th:data-jadwal="${data.jadwal}"
+																th:data-id-dosen="${data.idDos}"
+															>
+																<td th:text="${row.index + 1}">Row 1 Data 1</td>
+																<td th:text="${data.kelas}">Row 1 Data 2</td>
+																<td th:text="${data.matkul}">Row 1 Data 2</td>
+																<td th:text="${data.sks}">Row 1 Data 2</td>
+																<td>
+																	<select
+																		name="dosen"
+																		th:id="${'dosen-select-' + row.index}"
+																		style="width: 100% !important"
+																		th:data-row-index="${row.index}"
+																		th:data-has-dosen="${data.dosen != null}"
+																		class="dosen-select form-control"
+																	>
+																		<option
+																			th:if="${data.dosen != null}"
+																			selected
+																			th:value="${data.idDos}"
+																			th:text="${data.dosen}"
+																		></option>
+																	</select>
+																</td>
+																<td>
+																	<select
+																		name="team"
+																		th:id="${'team-select-' + row.index}"
+																		style="width: 100% !important"
+																		th:data-row-index="${row.index}"
+																		th:disabled="${data.dosen == null}"
+																		class="team-select form-control"
+																	>
+																		<option
+																			th:if="${data.team != null}"
+																			th:value="${data.team}"
+																			th:text="${data.teamNama}"
+																		></option>
+																	</select>
+																</td>
+																<td>
+																	<input
+																		type="text"
+																		readonly
+																		th:id="${'total-sks-' + row.index}"
+																		th:data-row-index="${row.index}"
+																		th:data-id-dosen="${data.idDos}"
+																		th:class="${'form-control sks-input' + (data.idDos != null ? ' dosen-sks-' + data.idDos : '')}"
+																		th:value="${data.dosen != null ? data.totsks : '-'}"
+																	/>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--                        </form>-->
+							</div>
+						</div>
+					</div>
+				</div>
 
+				<div
+					class="modal fade"
+					id="exampleModal"
+					role="dialog"
+					aria-labelledby="exampleModalLabel"
+					aria-hidden="true"
+				>
+					<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Ploting Jadwal1</h5>
+							</div>
+							<div class="modal-body">
+								<div class="card shadow">
+									<div class="card-body">
+										<div
+											class="alert alert-danger alert-with-icon"
+											id="alertSave"
+											style="display: none"
+										>
+											<button
+												type="button"
+												aria-hidden="true"
+												class="close"
+												data-dismiss="alert"
+												aria-label="Close"
+											>
+												<i class="fas fa-warning"></i>
+											</button>
+											<span data-notify="icon" class="tim-icons icon-trophy"></span>
+											<span id="textAlert"
+												><b> Oops! - </b> There was internal server error.</span
+											>
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group has-success">
+													<input
+														type="text"
+														id="kelas"
+														placeholder="Kelas"
+														readonly
+														class="form-control is-valid"
+													/>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group has-success">
+													<input
+														type="text"
+														id="matakuliah"
+														placeholder="Matakuliah"
+														readonly
+														class="form-control is-valid"
+													/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-group">
+													<label>Dosen</label>
+													<select
+														id="dosenList1"
+														name="dosen"
+														style="width: 100% !important"
+														class="js-example-basic-multiple js-states form-control js-data-example-ajax"
+													>
+														<option value=""></option>
+													</select>
+												</div>
+											</div>
+											<input
+												type="hidden"
+												id="idDosen"
+												name="idDosen"
+												class="form-control"
+												readonly
+											/>
+											<input
+												type="hidden"
+												id="jadwal"
+												name="jadwal"
+												class="form-control"
+												readonly
+											/>
+											<input type="hidden" id="sks" name="sks" class="form-control" readonly />
+											<input
+												type="hidden"
+												id="idKelas"
+												name="idKelas"
+												class="form-control"
+												readonly
+											/>
+											<input
+												type="hidden"
+												id="idMatkur"
+												name="idMatkur"
+												class="form-control"
+												readonly
+											/>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label>Total SKS</label>
+													<input
+														type="text"
+														id="sksDosen"
+														readonly
+														name="sksDosen"
+														class="form-control"
+													/>
+												</div>
+											</div>
+										</div>
+										<br />
+										<div class="row float-md-right">
+											<center>
+												<button id="saveData" class="btn btn-success">Simpan</button>
+												<button id="closemodal" class="btn btn-danger">Tutup</button>
+											</center>
+										</div>
+									</div>
 
-        });
-    </script>
-</th:block>
-<div layout:fragment="main">
-    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-        <div class="container-fluid">
-            <div class="header-body">
-                <!-- Card stats -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card card-stats mb-4 mb-xl-0">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Ploting Dosen </span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                            <i class="fas fa-list"></i>
-                                        </div>
-                                    </div>
-                                </div>
+									<div class="modal-footer"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Dark table -->
+				</div>
 
-                            </div>
-                        </div>
-                    </div>
+				<div
+					class="modal fade"
+					id="addPloting"
+					role="dialog"
+					aria-labelledby="exampleModalLabel"
+					aria-hidden="true"
+				>
+					<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Ploting Jadwal</h5>
+							</div>
+							<div class="modal-body">
+								<div class="card shadow">
+									<div class="card-body">
+										<div
+											class="alert alert-danger alert-with-icon"
+											id="alertAdd"
+											style="display: none"
+										>
+											<button
+												type="button"
+												aria-hidden="true"
+												class="close"
+												data-dismiss="alert"
+												aria-label="Close"
+											>
+												<i class="fas fa-warning"></i>
+											</button>
+											<span data-notify="icon" class="tim-icons icon-trophy"></span>
+											<span><b> Oops! - </b> There was internal server error.</span>
+										</div>
+										<div class="row">
+											<input type="hidden" id="selectedKelasInput" th:value="${selectedKelas}" />
+											<div class="col-md-12">
+												<div class="form-group">
+													<select
+														id="matkulList"
+														name="matakuliah"
+														style="width: 100% !important"
+														class="js-example-basic-multiple js-states form-control js-data-example-ajax"
+													></select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>Dosen</label>
+													<select
+														id="optionDosen"
+														name="dosen"
+														style="width: 100% !important"
+														class="js-example-basic-multiple js-states form-control js-data-example-ajax"
+													>
+														<option value=""></option>
+													</select>
+												</div>
+											</div>
+											<input
+												type="hidden"
+												id="idDosen1"
+												name="idDosen"
+												class="form-control"
+												readonly
+											/>
+											<input
+												type="hidden"
+												id="jadwal1"
+												name="jadwal"
+												class="form-control"
+												readonly
+											/>
+											<input
+												type="hidden"
+												id="course1"
+												name="jadwal"
+												class="form-control"
+												readonly
+											/>
+											<input type="hidden" id="sks1" name="sks" class="form-control" readonly />
+											<input
+												type="hidden"
+												id="idKelas1"
+												name="idKelas"
+												class="form-control"
+												readonly
+											/>
+											<input
+												type="hidden"
+												id="idMatkur1"
+												name="idMatkur"
+												class="form-control"
+												readonly
+											/>
+											<div class="col-md-3" style="display: none">
+												<div class="form-group">
+													<label>Total SKS</label>
+													<input
+														type="text"
+														id="sksDosen1"
+														readonly
+														name="sksDosen"
+														class="form-control"
+													/>
+												</div>
+											</div>
+										</div>
+										<br />
+										<div class="row float-md-right">
+											<center>
+												<button id="addData" class="btn btn-success">Save</button>
+												<button id="closemodal1" class="btn btn-danger">Tutup</button>
+											</center>
+										</div>
+									</div>
 
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid mt--7">
-        <!-- Table -->
-        <div class="row">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="mb-0">Data List</h3>
-                            </div>
-                            <div class="col text-right">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Tahun Akademik</label>
-                                                <select name="tahun" class="form-control">
-                                                    <option th:each="data : ${tahunAkademik}"
-                                                            th:selected="(${data} == *{selectedTahun})"
-                                                            th:text="${data.namaTahunAkademik}"
-                                                            th:value="${data.id}">sdasd
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Kelas</label>
-                                                <select name="kelas" id="selectKelas" multiple="multiple"
-                                                        class="form-control">
-                                                    <option th:each="data : ${listKelas}"
-                                                            th:selected="(${data} == *{selectedKelas})"
-                                                            th:text="${data[1]}"
-                                                            th:value="${data[0]}">sdasd
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12" style="text-align: center;">
-                                            <div class="form-group">
-                                                <button class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </form>
-
-                        <!--                        <form th:action="@{/academic/ploting/list (prodi = ${selectedProdi.id}, semester = ${selectedSemester}, angkatan = ${selectedAngkatan})}" method="post" th:if="${selectedProdi != null}">-->
-                        <div class="row" th:if="${selectedTahun != null}">
-                            <input type="hidden" id="tahun" name="tahun" th:value="${selectedTahun.id}">
-                            <div class="col-md-12">
-                                <div class="card shadow">
-                                    <div class="card-header border-0">
-                                        <button class="btn btn-default btn-sm" data-toggle="modal"
-                                                data-target="#addPloting"><i class="fas fa-plus-circle"></i> Tambah
-                                        </button>&nbsp;
-                                        <a th:href="@{/academic/schedule/download(tahunAkademik = ${selectedTahun.id})}">
-                                            <button class="btn btn-success btn-sm"><i class="fas fa-download"></i>
-                                                Download
-                                            </button>
-                                        </a>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="table_id" class="display">
-                                                <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Kelas</th>
-                                                    <th>Matakuliah</th>
-                                                    <th>SKS</th>
-                                                    <th>Dosen</th>
-                                                    <th>Team</th>
-                                                    <th>Total SKS dosen</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr th:each="data,row : ${listPloting}">
-                                                    <input type="hidden" th:id="${'matkur-'+ data.validasi}"
-                                                           th:value="${data.mkkur}">
-                                                    <input type="hidden" th:id="${'course-'+ data.validasi}"
-                                                           th:value="${data.course}">
-                                                    <input type="hidden" th:id="${'kelas-'+ data.validasi}"
-                                                           th:value="${data.idKelas}">
-                                                    <input type="hidden" th:id="${'sks-'+ data.validasi}"
-                                                           th:value="${data.sks}">
-                                                    <td th:text="${row.index + 1}">Row 1 Data 1</td>
-                                                    <td th:text="${data.kelas}">Row 1 Data 2</td>
-                                                    <td th:text="${data.matkul}">Row 1 Data 2</td>
-                                                    <td th:text="${data.sks}">Row 1 Data 2</td>
-                                                    <td>
-                                                        <select th:if="${data.dosen == null}" name="dosen"
-                                                                th:id="${data.validasi}" style="width: 100%!important;"
-                                                                onchange="simpanPloting(this)"
-                                                                class="select2 js-example-basic-multiple js-states form-control js-data-example-ajax">
-                                                        </select>
-                                                        <select th:if="${data.dosen != null}" name="dosen"
-                                                                th:id="${data.jadwal}" style="width: 100%!important;"
-                                                                onchange="simpanPloting(this)"
-                                                                class="select2 js-example-basic-multiple js-states form-control js-data-example-ajax">
-
-                                                            <option th:if="${data.dosen != null}" selected
-                                                                    th:value="${data.idDos}"
-                                                                    th:text="${data.dosen}"></option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <select th:if="${data.dosen == null}" disabled name="dosen"
-                                                                th:id="${'team-'+data.validasi}"
-                                                                style="width: 100%!important;"
-                                                                onchange="simpanTeam(this)"
-                                                                class="team js-example-basic-multiple js-states form-control js-data-example-ajax">
-                                                        </select>
-                                                        <select th:if="${data.dosen != null}" name="dosen"
-                                                                th:id="${'team-'+data.jadwal}"
-                                                                style="width: 100%!important;"
-                                                                onchange="simpanTeam(this)"
-                                                                class="team js-example-basic-multiple js-states form-control js-data-example-ajax">
-
-                                                            <option th:if="${data.team != null}" th:value="${data.team}"
-                                                                    th:text="${data.teamNama}"></option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" readonly th:if="${data.dosen != null}"
-                                                               th:id="${'dosen-' + data.jadwal}"
-                                                               th:class="${'form-control dosen-' + data.idDos}"
-                                                               th:value="${data.totsks}">
-                                                        <input type="text" readonly th:if="${data.dosen == null}"
-                                                               th:id="${'dosen-' + data.validasi}"
-                                                               th:class="${'form-control total-sks-' + data.validasi}"
-                                                               value="-">
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--                        </form>-->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ploting Jadwal1</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card shadow">
-                            <div class="card-body">
-                                <div class="alert alert-danger alert-with-icon" id="alertSave" style="display: none">
-                                    <button type="button" aria-hidden="true" class="close" data-dismiss="alert"
-                                            aria-label="Close">
-                                        <i class="fas fa-warning"></i>
-                                    </button>
-                                    <span data-notify="icon" class="tim-icons icon-trophy"></span>
-                                    <span id="textAlert"><b> Oops! - </b> There was internal server error.</span>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group has-success">
-                                            <input type="text" id="kelas" placeholder="Kelas" readonly
-                                                   class="form-control is-valid"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group has-success">
-                                            <input type="text" id="matakuliah" placeholder="Matakuliah" readonly
-                                                   class="form-control is-valid"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <div class="form-group">
-                                            <label>Dosen</label>
-                                            <select id="dosenList1" name="dosen" style="width: 100%!important;"
-                                                    class="js-example-basic-multiple js-states form-control js-data-example-ajax">
-                                                <option value=""></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="idDosen" name="idDosen" class="form-control" readonly>
-                                    <input type="hidden" id="jadwal" name="jadwal" class="form-control" readonly>
-                                    <input type="hidden" id="sks" name="sks" class="form-control" readonly>
-                                    <input type="hidden" id="idKelas" name="idKelas" class="form-control" readonly>
-                                    <input type="hidden" id="idMatkur" name="idMatkur" class="form-control" readonly>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Total SKS</label>
-                                            <input type="text" id="sksDosen" readonly name="sksDosen"
-                                                   class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row float-md-right">
-                                    <center>
-                                        <button id="saveData" class="btn btn-success">Simpan</button>
-                                        <button id="closemodal" class="btn btn-danger">Tutup</button>
-                                    </center>
-                                </div>
-                            </div>
-
-
-                            <div class="modal-footer">
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Dark table -->
-
-
-        </div>
-
-        <div class="modal fade" id="addPloting" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Ploting Jadwal</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card shadow">
-                            <div class="card-body">
-                                <div class="alert alert-danger alert-with-icon" id="alertAdd" style="display: none">
-                                    <button type="button" aria-hidden="true" class="close" data-dismiss="alert"
-                                            aria-label="Close">
-                                        <i class="fas fa-warning"></i>
-                                    </button>
-                                    <span data-notify="icon" class="tim-icons icon-trophy"></span>
-                                    <span><b> Oops! - </b> There was internal server error.</span>
-                                </div>
-                                <div class="row">
-                                    <input type="hidden" id="selectedKelasInput" th:value="${selectedKelas}">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <select id="matkulList" name="matakuliah" style="width: 100%!important;"
-                                                    class="js-example-basic-multiple js-states form-control js-data-example-ajax">
-                                            </select>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Dosen</label>
-                                            <select id="optionDosen" name="dosen" style="width: 100%!important;"
-                                                    class="js-example-basic-multiple js-states form-control js-data-example-ajax">
-                                                <option value=""></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="idDosen1" name="idDosen" class="form-control" readonly>
-                                    <input type="hidden" id="jadwal1" name="jadwal" class="form-control" readonly>
-                                    <input type="hidden" id="course1" name="jadwal" class="form-control" readonly>
-                                    <input type="hidden" id="sks1" name="sks" class="form-control" readonly>
-                                    <input type="hidden" id="idKelas1" name="idKelas" class="form-control" readonly>
-                                    <input type="hidden" id="idMatkur1" name="idMatkur" class="form-control" readonly>
-                                    <div class="col-md-3" style="display:none;">
-                                        <div class="form-group">
-                                            <label>Total SKS</label>
-                                            <input type="text" id="sksDosen1" readonly name="sksDosen"
-                                                   class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row float-md-right">
-                                    <center>
-                                        <button id="addData" class="btn btn-success">Save</button>
-                                        <button id="closemodal1" class="btn btn-danger">Tutup</button>
-                                    </center>
-                                </div>
-                            </div>
-
-
-                            <div class="modal-footer">
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Dark table -->
-
-
-        </div>
-
-    </div>
-</div>
-</body>
+									<div class="modal-footer"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Dark table -->
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(".select2").select2(
-        {
-            placeholder: 'Cari Dosen',
-            minimumInputLength: 3,
-            ajax: {
-                url: function (params) {
-                    return '/select2/lecture?search=' + params.term + '&tahun=' + $('#tahun').val();
-                },
-                dataType: 'json',
-                type: "GET",
-                delay: 300,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = {id: data[i].id, text: data[i].dosen, value: data[i].id}
-                    }
-                    return {
-                        results: data
-                    };
-                }
-            },
+	// Initialize Select2 for dosen selection
+	function initDosenSelect2() {
+		$(".dosen-select").each(function () {
+			var $select = $(this);
+			if ($select.hasClass("select2-hidden-accessible")) {
+				return; // Already initialized
+			}
 
-        });
+			$select.select2({
+				placeholder: "Cari Dosen",
+				allowClear: true,
+				width: "100%",
+				minimumInputLength: 3,
+				ajax: {
+					url: function (params) {
+						return "/select2/lecture?search=" + params.term + "&tahun=" + $("#tahun").val();
+					},
+					dataType: "json",
+					type: "GET",
+					delay: 300,
+					data: function (params) {
+						return { q: params.term };
+					},
+					processResults: function (data) {
+						return {
+							results: data.map(function (item) {
+								return {
+									id: item.id,
+									text: item.dosen + " (" + item.total + " SKS)",
+									total: item.total,
+								};
+							}),
+						};
+					},
+				},
+			});
 
-    $(".team").select2(
-        {
-            placeholder: 'Cari Dosen',
-            minimumInputLength: 3,
-            ajax: {
-                url: function (params) {
-                    return '/select2/lecture?search=' + params.term + '&tahun=' + $('#tahun').val();
-                },
-                dataType: 'json',
-                type: "GET",
-                delay: 300,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = {id: data[i].id, text: data[i].dosen, value: data[i].id}
-                    }
-                    return {
-                        results: data
-                    };
-                }
-            },
+			// Bind change event
+			$select.off("change.ploting").on("change.ploting", function (e) {
+				simpanPloting(this);
+			});
+		});
+	}
 
-        });
+	// Initialize Select2 for team selection
+	function initTeamSelect2() {
+		$(".team-select").each(function () {
+			var $select = $(this);
+			if ($select.hasClass("select2-hidden-accessible")) {
+				return; // Already initialized
+			}
 
-    var kelasInput = $('#selectedKelasInput').val();
-    mystring = kelasInput.replace('[', '');
-    valid = mystring.replace(']', '')
-    $("#matkulList").select2(
-        {
-            dropdownParent: $('#addPloting'),
-            placeholder: 'Cari Matakuliah',
-            minimumInputLength: 3,
-            ajax: {
-                url: function (params) {
-                    return '/search/ploting?tahunAkademik=' + $('#tahun').val() + '&kelas=' + valid + '&search=' + params.term;
-                },
-                dataType: 'json',
-                type: "GET",
-                delay: 300,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = {
-                            id: data[i].idKelas,
-                            text: data[i].kelas + ' ( ' + data[i].matkul + ' )',
-                            value: data[i].mkkur
-                        }
-                    }
-                    return {
-                        results: data
-                    };
-                }
-            },
+			$select.select2({
+				placeholder: "Cari Team",
+				allowClear: true,
+				width: "100%",
+				minimumInputLength: 3,
+				ajax: {
+					url: function (params) {
+						return "/select2/lecture?search=" + params.term + "&tahun=" + $("#tahun").val();
+					},
+					dataType: "json",
+					type: "GET",
+					delay: 300,
+					data: function (params) {
+						return { q: params.term };
+					},
+					processResults: function (data) {
+						return {
+							results: data.map(function (item) {
+								return {
+									id: item.id,
+									text: item.dosen,
+									total: item.total,
+								};
+							}),
+						};
+					},
+				},
+			});
 
-        });
+			// Bind change event
+			$select.off("change.team").on("change.team", function (e) {
+				simpanTeam(this);
+			});
+		});
+	}
 
-    $('#matkulList').on('select2:selecting', function (e) {
-        var dosen = $('#idDosen1').val();
-        // $('#jadwal1').val(e.params.args.data.value);
-        $('#idKelas1').val(e.params.args.data.id);
-        $('#idMatkur1').val(e.params.args.data.value);
-        var sksDosen = $('#sksDosen1').val(null);
+	// Get row data from data attributes
+	function getRowData(element) {
+		var $row = $(element).closest("tr");
+		return {
+			rowIndex: $row.data("row-index"),
+			matkur: $row.data("matkur"),
+			course: $row.data("course"),
+			kelas: $row.data("kelas"),
+			sks: $row.data("sks"),
+			validasi: $row.data("validasi"),
+			jadwal: $row.data("jadwal"),
+			idDosen: $row.data("id-dosen"),
+		};
+	}
 
-        const url = '/detail/matkur?search=' + e.params.args.data.value;
-        $.getJSON(url, function (data) {
-            $('#sks1').val(data.jumlahSks);
-            $('#course1').val(data.matakuliah.namaMatakuliahEnglish);
-        });
+	// Update row data attribute
+	function updateRowData($row, key, value) {
+		$row.data(key, value);
+		$row.attr("data-" + key.replace(/([A-Z])/g, "-$1").toLowerCase(), value);
+	}
 
+	// Update all SKS displays for a dosen
+	function updateDosenSks(dosenId) {
+		if (!dosenId) return;
 
-    });
+		const url = "/detail/lecture?search=" + dosenId + "&tahun=" + $("#tahun").val();
+		$.getJSON(url, function (data) {
+			$(".dosen-sks-" + dosenId).val(data.total);
+		});
+	}
 
-    $("#optionDosen").select2(
-        {
-            dropdownParent: $('#addPloting'),
-            placeholder: 'Cari Dosen',
-            minimumInputLength: 3,
-            ajax: {
-                url: function (params) {
-                    return '/select2/lecture?search=' + params.term + '&tahun=' + $('#tahun').val();
-                },
-                dataType: 'json',
-                type: "GET",
-                delay: 300,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = {
-                            id: data[i].id,
-                            text: data[i].dosen + ' ( ' + data[i].total + ' )',
-                            value: data[i].id
-                        }
-                    }
-                    return {
-                        results: data
-                    };
-                }
-            },
+	// Simpan Ploting - refactored
+	function simpanPloting(element) {
+		var $select = $(element);
+		var rowData = getRowData(element);
+		var dosenBaru = $select.val();
+		var dosenLama = rowData.idDosen;
+		var rowIndex = rowData.rowIndex;
+		var $row = $select.closest("tr");
 
-        });
+		if (!dosenBaru) return;
 
-    $('#optionDosen').on('select2:selecting', function (e) {
-        const url = '/detail/lecture?search=' + e.params.args.data.id + '&tahun=' + $('#tahun').val();
-        var sksMatkul = $('#sks1').val();
-        $.getJSON(url, function (data) {
-            $('#idDosen1').val(data.id);
-        });
+		var token = $("input[name='_csrf']").val();
+		var url = "/academic/ploting/save";
 
-    });
+		// Check SKS limit
+		const urlDetailDosen = "/detail/lecture?search=" + dosenBaru + "&tahun=" + $("#tahun").val();
+		$.getJSON(urlDetailDosen, function (dosenData) {
+			var totalSksBaru = parseInt(dosenData.total || 0) + parseInt(rowData.sks || 0);
+			var maksimalSks = parseInt(dosenData.maksimalSks || 999);
 
-    $("#addData").click(function (e) {
-        var token = $("input[name='_csrf']").val();
-        var matkul = $('#idMatkur1').val();
-        var dosen = $('#idDosen1').val();
-        var kelas = $('#idKelas1').val();
-        var url = "/academic/ploting/save";
-        e.preventDefault();
+			// Allow if Thesis or within limit
+			if (totalSksBaru > maksimalSks && rowData.course !== "Thesis") {
+				Swal.fire({
+					position: "top-end",
+					icon: "error",
+					title: "Melebihi Batas Maksimal SKS (" + maksimalSks + " SKS)",
+					showConfirmButton: false,
+					timer: 2000,
+				});
 
-        const urlDetailDosen = '/detail/lecture?search=' + dosen + '&tahun=' + $('#tahun').val()
-        $.getJSON(urlDetailDosen, function (data) {
-            if (parseInt(data.maksimalSks) <= +data.total + +$('#sks1').val()) {
-                if ($('#course1') == 'Thesis') {
-                    $.ajax({
-                        url: url + '?tahun=' + $('#tahun').val(),
-                        contentType: "application/json;charset=UTF-8",
-                        headers: {"X-CSRF-TOKEN": token},
-                        method: 'post',
-                        dataType: 'JSON',
-                        data: JSON.stringify({
-                            "id": null,
-                            "kodeMatakuliah": null,
-                            "matakuliah": matkul,
-                            "course": null,
-                            "kelas": kelas,
-                            "sks": null,
-                            "idDosen": dosen,
-                            "dosen": null,
-                            "idKelas": null
-                        }), success: function (data) {
-                            $('#addPloting').modal('hide');
-                            resetModalAdd();
-                            const urlDetail = '/detail/lecture?search=' + dosen + '&tahun=' + $('#tahun').val()
-                            $.getJSON(urlDetail, function (data1) {
-                                $('.dosen-' + dosen).val(data1.total);
-                            });
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'Data Ploting Tersimpan  ',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
+				// Reset selection
+				if (dosenLama) {
+					// Refetch old dosen name
+					const urlOld = "/detail/lecture?search=" + dosenLama + "&tahun=" + $("#tahun").val();
+					$.getJSON(urlOld, function (oldData) {
+						var newOption = new Option(oldData.nama, dosenLama, true, true);
+						$select.empty().append(newOption).trigger("change.select2");
+					});
+				} else {
+					$select.val(null).trigger("change.select2");
+				}
+				return;
+			}
 
+			// Prepare request data
+			var requestData = {
+				matakuliah: rowData.matkur,
+				kelas: rowData.kelas,
+				idDosen: dosenBaru,
+			};
 
-                        }
-                    })
-                } else {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
-            } else {
-                $.ajax({
-                    url: url + '?tahun=' + $('#tahun').val(),
-                    contentType: "application/json;charset=UTF-8",
-                    headers: {"X-CSRF-TOKEN": token},
-                    method: 'post',
-                    dataType: 'JSON',
-                    data: JSON.stringify({
-                        "id": null,
-                        "kodeMatakuliah": null,
-                        "matakuliah": matkul,
-                        "course": null,
-                        "kelas": kelas,
-                        "sks": null,
-                        "idDosen": dosen,
-                        "dosen": null,
-                        "idKelas": null
-                    }), success: function (data) {
-                        $('#addPloting').modal('hide');
-                        resetModalAdd();
-                        const urlDetail = '/detail/lecture?search=' + dosen + '&tahun=' + $('#tahun').val()
-                        $.getJSON(urlDetail, function (data1) {
-                            $('.dosen-' + dosen).val(data1.total);
-                        });
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Data Ploting Tersimpan  ',
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
+			// If already has jadwal, include id for update
+			if (rowData.jadwal) {
+				requestData.id = rowData.jadwal;
+			}
 
+			$.ajax({
+				url: url + "?tahun=" + $("#tahun").val(),
+				contentType: "application/json;charset=UTF-8",
+				headers: { "X-CSRF-TOKEN": token },
+				method: "post",
+				dataType: "JSON",
+				data: JSON.stringify(requestData),
+				success: function (response) {
+					Swal.fire({
+						position: "top-end",
+						icon: "success",
+						title: "Data Ploting tersimpan",
+						showConfirmButton: false,
+						timer: 2000,
+					});
 
-                    }
-                })
-            }
-        });
+					// Update row data
+					updateRowData($row, "jadwal", response.id);
+					updateRowData($row, "id-dosen", dosenBaru);
 
-    });
+					// Update SKS input class and value
+					var $sksInput = $("#total-sks-" + rowIndex);
+					$sksInput.removeClass(function (index, className) {
+						return (className.match(/(^|\s)dosen-sks-\S+/g) || []).join(" ");
+					});
+					$sksInput.addClass("dosen-sks-" + dosenBaru);
+					$sksInput.data("id-dosen", dosenBaru);
 
+					// Enable team select
+					var $teamSelect = $("#team-select-" + rowIndex);
+					$teamSelect.prop("disabled", false);
 
-    function openModal(idKelas, matkur, matkul, kelas, sks, jadwal, idDos, dosen, totsks) {
-        $('#kelas').val(kelas);
-        $('#matakuliah').val(matkul);
-        $('#idKelas').val(idKelas);
-        $('#idMatkur').val(matkur);
-        $('#jadwal').val(jadwal);
-        $('#sks').val(sks);
-        $('#idDosen').val(idDos);
+					// Update SKS for both old and new dosen
+					updateDosenSks(dosenBaru);
+					if (dosenLama && dosenLama !== dosenBaru) {
+						updateDosenSks(dosenLama);
+					}
+				},
+				error: function (xhr) {
+					Swal.fire({
+						position: "top-end",
+						icon: "error",
+						title: "Gagal menyimpan data",
+						showConfirmButton: false,
+						timer: 2000,
+					});
+				},
+			});
+		});
+	}
 
-        var data = {
-            id: idDos,
-            text: dosen + ' ( ' + totsks + ' )'
-        };
+	// Simpan Team - refactored
+	function simpanTeam(element) {
+		var $select = $(element);
+		var rowData = getRowData(element);
+		var dosenTeam = $select.val();
 
-        var newOption = new Option(data.text, data.id, false, false);
-        $('#dosenList').append(newOption).trigger('change');
+		if (!dosenTeam || !rowData.jadwal) return;
 
-        $("#exampleModal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
+		var token = $("input[name='_csrf']").val();
+		var url = "/academic/ploting-team/save/" + rowData.jadwal + "?dosen=" + dosenTeam;
 
-    $("#dosenList").select2(
-        {
-            placeholder: 'Cari Dosen',
-            minimumInputLength: 3,
-            ajax: {
-                url: function (params) {
-                    return '/select2/lecture?search=' + params.term + '&tahun=' + $('#tahun').val();
-                },
-                dataType: 'json',
-                type: "GET",
-                delay: 300,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = {
-                            id: data[i].id,
-                            text: data[i].dosen + ' ( ' + data[i].total + ' )',
-                            value: data[i].id
-                        }
-                    }
-                    return {
-                        results: data
-                    };
-                }
-            },
+		$.ajax({
+			url: url,
+			contentType: "application/json;charset=UTF-8",
+			headers: { "X-CSRF-TOKEN": token },
+			method: "post",
+			success: function () {
+				Swal.fire({
+					position: "top-end",
+					icon: "success",
+					title: "Team berhasil disimpan",
+					showConfirmButton: false,
+					timer: 1500,
+				});
+			},
+			error: function () {
+				Swal.fire({
+					position: "top-end",
+					icon: "error",
+					title: "Gagal menyimpan team",
+					showConfirmButton: false,
+					timer: 2000,
+				});
+			},
+		});
+	}
 
-        });
+	// Initialize on document ready
+	$(document).ready(function () {
+		// Small delay to ensure DOM is fully ready
+		setTimeout(function () {
+			initDosenSelect2();
+			initTeamSelect2();
+		}, 100);
+	});
 
-    $('#dosenList').on('select2:selecting', function (e) {
-        const url = '/detail/lecture?search=' + e.params.args.data.id + '&tahun=' + $('#tahun').val();
-        var sksMatkul = $('#sks').val();
-        $('#sksDosen').val(null);
-        console.log(sksMatkul);
-        console.log(e.params.args.data.id);
-        $.getJSON(url, function (data) {
-            $('#idDosen').val(data.id);
-            $('#sksDosen').val(+data.total + +sksMatkul);
-        });
-    });
+	var kelasInput = $("#selectedKelasInput").val();
+	mystring = kelasInput.replace("[", "");
+	valid = mystring.replace("]", "");
+	$("#matkulList").select2({
+		dropdownParent: $("#addPloting"),
+		placeholder: "Cari Matakuliah",
+		minimumInputLength: 3,
+		ajax: {
+			url: function (params) {
+				return (
+					"/search/ploting?tahunAkademik=" + $("#tahun").val() + "&kelas=" + valid + "&search=" + params.term
+				);
+			},
+			dataType: "json",
+			type: "GET",
+			delay: 300,
+			data: function (params) {
+				return {
+					q: params.term,
+				};
+			},
+			processResults: function (data) {
+				for (var i = 0; i < data.length; i++) {
+					data[i] = {
+						id: data[i].idKelas,
+						text: data[i].kelas + " ( " + data[i].matkul + " )",
+						value: data[i].mkkur,
+					};
+				}
+				return {
+					results: data,
+				};
+			},
+		},
+	});
 
+	$("#matkulList").on("select2:selecting", function (e) {
+		var dosen = $("#idDosen1").val();
+		// $('#jadwal1').val(e.params.args.data.value);
+		$("#idKelas1").val(e.params.args.data.id);
+		$("#idMatkur1").val(e.params.args.data.value);
+		var sksDosen = $("#sksDosen1").val(null);
 
-    $('#closemodal').click(function () {
-        $('#exampleModal').modal('hide');
-        resetModal();
-    });
+		const url = "/detail/matkur?search=" + e.params.args.data.value;
+		$.getJSON(url, function (data) {
+			$("#sks1").val(data.jumlahSks);
+			$("#course1").val(data.matakuliah.namaMatakuliahEnglish);
+		});
+	});
 
-    $('#closemodal1').click(function () {
-        $('#addPloting').modal('hide');
-        resetModalAdd();
-    });
+	$("#optionDosen").select2({
+		dropdownParent: $("#addPloting"),
+		placeholder: "Cari Dosen",
+		minimumInputLength: 3,
+		ajax: {
+			url: function (params) {
+				return "/select2/lecture?search=" + params.term + "&tahun=" + $("#tahun").val();
+			},
+			dataType: "json",
+			type: "GET",
+			delay: 300,
+			data: function (params) {
+				return {
+					q: params.term,
+				};
+			},
+			processResults: function (data) {
+				for (var i = 0; i < data.length; i++) {
+					data[i] = {
+						id: data[i].id,
+						text: data[i].dosen + " ( " + data[i].total + " )",
+						value: data[i].id,
+					};
+				}
+				return {
+					results: data,
+				};
+			},
+		},
+	});
 
-    function resetModal() {
+	$("#optionDosen").on("select2:selecting", function (e) {
+		const url = "/detail/lecture?search=" + e.params.args.data.id + "&tahun=" + $("#tahun").val();
+		var sksMatkul = $("#sks1").val();
+		$.getJSON(url, function (data) {
+			$("#idDosen1").val(data.id);
+		});
+	});
 
-        $('#kelas').val(null);
-        $('#matakuliah').val(null);
-        $('#dosenList').val(null).trigger('change');
-        $('#idDosen').val(null);
-        $('#idKelas').val(null);
-        $('#idMatkur').val(null);
-        $('#sksDosen').val(null);
-        $('#sks').val(null);
-    }
+	$("#addData").click(function (e) {
+		var token = $("input[name='_csrf']").val();
+		var matkul = $("#idMatkur1").val();
+		var dosen = $("#idDosen1").val();
+		var kelas = $("#idKelas1").val();
+		var course = $("#course1").val();
+		var sks = parseInt($("#sks1").val()) || 0;
+		var url = "/academic/ploting/save";
+		e.preventDefault();
 
-    function resetModalAdd() {
+		if (!matkul || !dosen || !kelas) {
+			Swal.fire({
+				position: "top-end",
+				icon: "warning",
+				title: "Pilih Matakuliah dan Dosen terlebih dahulu",
+				showConfirmButton: false,
+				timer: 2000,
+			});
+			return;
+		}
 
-        $('#idKelas1').val(null);
-        $('#optionDosen').val(null).trigger('change');
-        $('#matkulList').val(null).trigger('change');
-        $('#idDosen1').val(null);
-        $('#idMatkur1').val(null);
-        $('#sksDosen1').val(null);
-        $('#sks1').val(null);
-        $('#course1').val(null);
-    }
+		const urlDetailDosen = "/detail/lecture?search=" + dosen + "&tahun=" + $("#tahun").val();
+		$.getJSON(urlDetailDosen, function (data) {
+			var totalSksBaru = parseInt(data.total || 0) + sks;
+			var maksimalSks = parseInt(data.maksimalSks || 999);
 
-    $("#saveData").click(function (e) {
-        var token = $("input[name='_csrf']").val();
-        var matkul = $('#idMatkur').val();
-        var dosen = $('#idDosen').val();
-        var kelas = $('#idKelas').val();
-        var jadwal = $('#jadwal').val();
-        var url = "/academic/ploting/save";
-        e.preventDefault();
+			// Check SKS limit - allow for Thesis
+			if (totalSksBaru > maksimalSks && course !== "Thesis") {
+				Swal.fire({
+					position: "top-end",
+					icon: "error",
+					title: "Melebihi Batas Maksimal SKS (" + maksimalSks + " SKS)",
+					showConfirmButton: false,
+					timer: 2000,
+				});
+				return;
+			}
 
-        if (dosen == null) {
-            console.log("null");
-        }
-        $.ajax({
-            url: url + '?tahun=' + $('#tahun').val(),
-            contentType: "application/json;charset=UTF-8",
-            headers: {"X-CSRF-TOKEN": token},
-            method: 'post',
-            dataType: 'JSON',
-            data: JSON.stringify({
-                "id": jadwal,
-                "kodeMatakuliah": null,
-                "matakuliah": matkul,
-                "course": null,
-                "kelas": kelas,
-                "sks": null,
-                "idDosen": dosen,
-                "dosen": null,
-                "idKelas": null
-            }), error: function (data) {
-                if (data.status == "500") {
-                    document.getElementById('alertSave').style.display = "block";
-                    setTimeout(function () {
-                        document.getElementById('alertSave').style.display = "none";
-                    }, 5000);
-                }
+			$.ajax({
+				url: url + "?tahun=" + $("#tahun").val(),
+				contentType: "application/json;charset=UTF-8",
+				headers: { "X-CSRF-TOKEN": token },
+				method: "post",
+				dataType: "JSON",
+				data: JSON.stringify({
+					matakuliah: matkul,
+					kelas: kelas,
+					idDosen: dosen,
+				}),
+				success: function (response) {
+					$("#addPloting").modal("hide");
+					resetModalAdd();
 
-                if (data.status == "200") {
-                    $('#exampleModal').modal('hide');
-                    resetModal();
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Data tersimpan, data otomatis terupdate setiap 8 detik',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+					// Update all SKS inputs for this dosen
+					updateDosenSks(dosen);
 
+					Swal.fire({
+						position: "top-end",
+						icon: "success",
+						title: "Data Ploting Tersimpan. Refresh halaman untuk melihat data baru.",
+						showConfirmButton: false,
+						timer: 3000,
+					});
+				},
+				error: function () {
+					Swal.fire({
+						position: "top-end",
+						icon: "error",
+						title: "Gagal menyimpan data",
+						showConfirmButton: false,
+						timer: 2000,
+					});
+				},
+			});
+		});
+	});
 
-            }
-        })
+	function openModal(idKelas, matkur, matkul, kelas, sks, jadwal, idDos, dosen, totsks) {
+		$("#kelas").val(kelas);
+		$("#matakuliah").val(matkul);
+		$("#idKelas").val(idKelas);
+		$("#idMatkur").val(matkur);
+		$("#jadwal").val(jadwal);
+		$("#sks").val(sks);
+		$("#idDosen").val(idDos);
 
-    });
+		var data = {
+			id: idDos,
+			text: dosen + " ( " + totsks + " )",
+		};
 
-    function simpanPloting(arg) {
-        var id = arg.getAttribute('id');
-        var value = arg.value;
+		var newOption = new Option(data.text, data.id, false, false);
+		$("#dosenList").append(newOption).trigger("change");
 
-        const urlJadwal = '/detail-ploting?id=' + id;
+		$("#exampleModal").modal({
+			show: true,
+			backdrop: "static",
+		});
+	}
 
-        $.getJSON(urlJadwal, function (jadwal) {
-            if (jadwal.id == '-') {
-                var token = $("input[name='_csrf']").val();
-                var matkul = document.getElementById('matkur-' + jadwal.validasi).value
-                var course = document.getElementById('course-' + jadwal.validasi).value
-                var dosen = value
-                var kelas = document.getElementById('kelas-' + jadwal.validasi).value
-                var sksMatkul = document.getElementById('sks-' + jadwal.validasi).value;
-                var url = "/academic/ploting/save";
+	$("#dosenList").select2({
+		placeholder: "Cari Dosen",
+		minimumInputLength: 3,
+		ajax: {
+			url: function (params) {
+				return "/select2/lecture?search=" + params.term + "&tahun=" + $("#tahun").val();
+			},
+			dataType: "json",
+			type: "GET",
+			delay: 300,
+			data: function (params) {
+				return {
+					q: params.term,
+				};
+			},
+			processResults: function (data) {
+				for (var i = 0; i < data.length; i++) {
+					data[i] = {
+						id: data[i].id,
+						text: data[i].dosen + " ( " + data[i].total + " )",
+						value: data[i].id,
+					};
+				}
+				return {
+					results: data,
+				};
+			},
+		},
+	});
 
-                const urlDetailDosen = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
-                $.getJSON(urlDetailDosen, function (data) {
-                    console.log(data.total + sksMatkul)
-                    if (parseInt(data.maksimalSks) <= data.total + parseInt(sksMatkul)) {
-                        if (course == 'Thesis') {
-                            $.ajax({
-                                url: url + '?tahun=' + $('#tahun').val(),
-                                contentType: "application/json;charset=UTF-8",
-                                headers: {"X-CSRF-TOKEN": token},
-                                method: 'post',
-                                dataType: 'JSON',
-                                data: JSON.stringify({
-                                    "matakuliah": matkul,
-                                    "kelas": kelas,
-                                    "idDosen": dosen,
-                                }), success: function (data) {
-                                    Swal.fire({
-                                        position: 'top-end',
-                                        icon: 'success',
-                                        title: 'Data Ploting terupdate ',
-                                        showConfirmButton: false,
-                                        timer: 2000
-                                    })
+	$("#dosenList").on("select2:selecting", function (e) {
+		const url = "/detail/lecture?search=" + e.params.args.data.id + "&tahun=" + $("#tahun").val();
+		var sksMatkul = $("#sks").val();
+		$("#sksDosen").val(null);
+		console.log(sksMatkul);
+		console.log(e.params.args.data.id);
+		$.getJSON(url, function (data) {
+			$("#idDosen").val(data.id);
+			$("#sksDosen").val(+data.total + +sksMatkul);
+		});
+	});
 
-                                    document.getElementById('dosen-' + jadwal.validasi).className = 'form-control dosen-' + value;
-                                    document.getElementById('dosen-' + jadwal.validasi).id = 'dosen-' + data.id;
-                                    document.getElementById('team-' + jadwal.validasi).id = 'team-' + data.id;
-                                    $('#team-' + data.id).prop('disabled', false);
-                                    const urlDetail = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
-                                    $.getJSON(urlDetail, function (data) {
-                                        $('.dosen-' + value).val(data.total);
-                                        console.log(data.total)
-                                    });
-                                }
-                            })
-                        } else {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                            $("#" + jadwal.validasi).empty().trigger('change')
-                        }
-                    } else {
-                        $.ajax({
-                            url: url + '?tahun=' + $('#tahun').val(),
-                            contentType: "application/json;charset=UTF-8",
-                            headers: {"X-CSRF-TOKEN": token},
-                            method: 'post',
-                            dataType: 'JSON',
-                            data: JSON.stringify({
-                                "matakuliah": matkul,
-                                "kelas": kelas,
-                                "idDosen": dosen,
-                            }), success: function (data) {
-                                Swal.fire({
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data Ploting terupdate ',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                })
+	$("#closemodal").click(function () {
+		$("#exampleModal").modal("hide");
+		resetModal();
+	});
 
-                                document.getElementById('dosen-' + jadwal.validasi).className = 'form-control dosen-' + value;
-                                document.getElementById('dosen-' + jadwal.validasi).id = 'dosen-' + data.id;
-                                document.getElementById('team-' + jadwal.validasi).id = 'team-' + data.id;
-                                $('#team-' + data.id).prop('disabled', false);
-                                const urlDetail = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
-                                $.getJSON(urlDetail, function (data) {
-                                    $('.dosen-' + value).val(data.total);
-                                    console.log(data.total)
-                                });
-                            }
-                        })
-                    }
-                });
-            } else {
+	$("#closemodal1").click(function () {
+		$("#addPloting").modal("hide");
+		resetModalAdd();
+	});
 
-                var token = $("input[name='_csrf']").val();
-                var matkul = jadwal.matkul
-                var id = jadwal.id
-                var dosen = value
-                var dosenSebelum = jadwal.idDosen
-                var url = "/academic/ploting/save";
+	function resetModal() {
+		$("#kelas").val(null);
+		$("#matakuliah").val(null);
+		$("#dosenList").val(null).trigger("change");
+		$("#idDosen").val(null);
+		$("#idKelas").val(null);
+		$("#idMatkur").val(null);
+		$("#sksDosen").val(null);
+		$("#sks").val(null);
+	}
 
-                const urlDetailDosen = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
-                $.getJSON(urlDetailDosen, function (data) {
-                    if (parseInt(data.maksimalSks) <= +data.total + +jadwal.sks) {
+	function resetModalAdd() {
+		$("#idKelas1").val(null);
+		$("#optionDosen").val(null).trigger("change");
+		$("#matkulList").val(null).trigger("change");
+		$("#idDosen1").val(null);
+		$("#idMatkur1").val(null);
+		$("#sksDosen1").val(null);
+		$("#sks1").val(null);
+		$("#course1").val(null);
+	}
 
-                        if (jadwal.course == 'Thesis') {
-                            $.ajax({
-                                url: url + '?tahun=' + $('#tahun').val(),
-                                contentType: "application/json;charset=UTF-8",
-                                headers: {"X-CSRF-TOKEN": token},
-                                method: 'post',
-                                dataType: 'JSON',
-                                data: JSON.stringify({
-                                    "id": id,
-                                    "matakuliah": matkul,
-                                    "idDosen": dosen,
-                                }), success: function (data) {
-                                    Swal.fire({
-                                        position: 'top-end',
-                                        icon: 'success',
-                                        title: 'Data Ploting tersimpan ',
-                                        showConfirmButton: false,
-                                        timer: 2000
-                                    })
+	$("#saveData").click(function (e) {
+		var token = $("input[name='_csrf']").val();
+		var matkul = $("#idMatkur").val();
+		var dosen = $("#idDosen").val();
+		var kelas = $("#idKelas").val();
+		var jadwal = $("#jadwal").val();
+		var sks = parseInt($("#sks").val()) || 0;
+		var url = "/academic/ploting/save";
+		e.preventDefault();
 
-                                    document.getElementById('dosen-' + jadwal.id).className = 'form-control dosen-' + value;
-                                    const urlDetail = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
-                                    const urlDetailDosen = '/detail/lecture?search=' + dosenSebelum + '&tahun=' + $('#tahun').val()
-                                    $.getJSON(urlDetail, function (data1) {
-                                        $('.dosen-' + value).val(data1.total);
-                                    });
+		if (!dosen) {
+			Swal.fire({
+				position: "top-end",
+				icon: "warning",
+				title: "Pilih Dosen terlebih dahulu",
+				showConfirmButton: false,
+				timer: 2000,
+			});
+			return;
+		}
 
-                                    $.getJSON(urlDetailDosen, function (data2) {
-                                        console.log(data2)
-                                        $('.dosen-' + data2.id).val(data2.total);
-                                    });
+		$.ajax({
+			url: url + "?tahun=" + $("#tahun").val(),
+			contentType: "application/json;charset=UTF-8",
+			headers: { "X-CSRF-TOKEN": token },
+			method: "post",
+			dataType: "JSON",
+			data: JSON.stringify({
+				id: jadwal,
+				matakuliah: matkul,
+				kelas: kelas,
+				idDosen: dosen,
+			}),
+			success: function (response) {
+				$("#exampleModal").modal("hide");
+				resetModal();
 
-                                }
-                            })
-                        } else {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                            var newOption = new Option(jadwal.dosen, jadwal.id, true, true);
-                            $('#' + jadwal.id).append(newOption);
-                        }
+				// Update SKS for the dosen
+				updateDosenSks(dosen);
 
-                    } else {
-                        $.ajax({
-                            url: url + '?tahun=' + $('#tahun').val(),
-                            contentType: "application/json;charset=UTF-8",
-                            headers: {"X-CSRF-TOKEN": token},
-                            method: 'post',
-                            dataType: 'JSON',
-                            data: JSON.stringify({
-                                "id": id,
-                                "matakuliah": matkul,
-                                "idDosen": dosen,
-                            }), success: function (data) {
-                                Swal.fire({
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data Ploting tersimpan ',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                })
+				Swal.fire({
+					position: "top-end",
+					icon: "success",
+					title: "Data tersimpan",
+					showConfirmButton: false,
+					timer: 2000,
+				});
+			},
+			error: function (xhr) {
+				if (xhr.status == 500) {
+					document.getElementById("alertSave").style.display = "block";
+					setTimeout(function () {
+						document.getElementById("alertSave").style.display = "none";
+					}, 5000);
+				}
+			},
+		});
+	});
 
-                                document.getElementById('dosen-' + jadwal.id).className = 'form-control dosen-' + value;
-                                const urlDetail = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
-                                const urlDetailDosen = '/detail/lecture?search=' + dosenSebelum + '&tahun=' + $('#tahun').val()
-                                $.getJSON(urlDetail, function (data1) {
-                                    $('.dosen-' + value).val(data1.total);
-                                });
-
-                                $.getJSON(urlDetailDosen, function (data2) {
-                                    console.log(data2)
-                                    $('.dosen-' + data2.id).val(data2.total);
-                                });
-
-                            }
-                        })
-                    }
-                });
-            }
-        });
-
-    }
-
-    function simpanTeam(arg) {
-        var id = arg.getAttribute('id');
-        var value = arg.value;
-        var idjadwal = id.slice(5);
-
-        var token = $("input[name='_csrf']").val();
-        var url = "/academic/ploting-team/save/" + idjadwal + '?dosen=' + value;
-
-        $.ajax({
-            url: url,
-            contentType: "application/json;charset=UTF-8",
-            headers: {"X-CSRF-TOKEN": token},
-            method: 'post',
-            dataType: 'JSON',
-            success: function (data) {
-                // document.getElementById('team-' + jadwal.validasi).id = 'dosen-' + data.id;
-            }
-        })
-    }
-
-    $('[data-dismiss=closeModal]').on('click', function (e) {
-        $("#exampleModal").modal('hide');
-        $("#updateModal").modal('hide');
-        $('.validation').trigger("reset");
-        $('.update-validation').trigger("reset");
-
-    })
+	$("[data-dismiss=closeModal]").on("click", function (e) {
+		$("#exampleModal").modal("hide");
+		$("#updateModal").modal("hide");
+		$(".validation").trigger("reset");
+		$(".update-validation").trigger("reset");
+	});
 </script>
