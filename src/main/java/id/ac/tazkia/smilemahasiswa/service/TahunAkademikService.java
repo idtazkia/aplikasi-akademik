@@ -517,11 +517,9 @@ public class TahunAkademikService {
             model.addAttribute("prodi", prodiDao.findById(detailTahunAkademik.getProdi().getId()).get());
             model.addAttribute("programList", programDao.findAll());
 
-            List<String> availableAngkatan = getAvailableAngkatanForDetail(
-                    detailTahunAkademik.getProdi(),
-                    detailTahunAkademik.getProgram(),
-                    detailTahunAkademik.getId());
-            model.addAttribute("angkatanList", availableAngkatan);
+            // Get all distinct angkatan (without filtering used ones)
+            List<String> allAngkatan = mahasiswaDao.findAllDistinctAngkatan();
+            model.addAttribute("angkatanList", allAngkatan);
         } else {
             model.addAttribute("programList", new ArrayList<>());
             model.addAttribute("angkatanList", new ArrayList<>());
@@ -535,9 +533,8 @@ public class TahunAkademikService {
 
         if (prodi != null) {
             model.addAttribute("programList", programDao.findAll());
-            // For create mode, we don't have a program selected yet, so show all angkatan
-            model.addAttribute("angkatanList",
-                    mahasiswaDao.findDistinctAngkatanByJenjang(prodi.getIdJenjang().getId()));
+            // Get all distinct angkatan (without filtering by jenjang)
+            model.addAttribute("angkatanList", mahasiswaDao.findAllDistinctAngkatan());
         } else {
             model.addAttribute("programList", new ArrayList<>());
             model.addAttribute("angkatanList", new ArrayList<>());
@@ -690,29 +687,12 @@ public class TahunAkademikService {
 
     /**
      * Get available angkatan for AJAX call when program is selected
+     * Returns all distinct angkatan without filtering
      */
     public List<String> getAvailableAngkatanByProdiAndProgram(String prodiId, String programId,
             String currentDetailId) {
-        if (prodiId == null) {
-            return new ArrayList<>();
-        }
-
-        Optional<Prodi> prodiOpt = prodiDao.findById(prodiId);
-        if (!prodiOpt.isPresent()) {
-            return new ArrayList<>();
-        }
-
-        Prodi prodi = prodiOpt.get();
-        Program program = null;
-
-        if (programId != null) {
-            Optional<Program> programOpt = programDao.findById(programId);
-            if (programOpt.isPresent()) {
-                program = programOpt.get();
-            }
-        }
-
-        return getAvailableAngkatanForDetail(prodi, program, currentDetailId);
+        // Simply return all distinct angkatan - no filtering needed
+        return mahasiswaDao.findAllDistinctAngkatan();
     }
 
     public void validateDetailTahunAkademikDynamic(DetailTahunAkademik newDetail) {

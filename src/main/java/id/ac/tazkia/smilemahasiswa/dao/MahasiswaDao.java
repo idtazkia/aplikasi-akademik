@@ -31,6 +31,15 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, Stri
         @Query(value = "SELECT DISTINCT angkatan FROM mahasiswa m  inner join prodi p on m.id_prodi = p.id WHERE p.id_jenjang = :idJenjang ORDER BY angkatan DESC", nativeQuery = true)
         List<String> findDistinctAngkatanByJenjang(@Param("idJenjang") String idJenjang);
 
+        /**
+         * Get all distinct angkatan without jenjang filter
+         * Sorting: 4-digit years first (DESC), then 2-digit years (DESC)
+         * e.g., 2025, 2024, 2023, 2022, 2021, 25, 24, 23, 22, 21
+         */
+        @Query(value = "SELECT DISTINCT angkatan FROM mahasiswa " +
+                        "ORDER BY LENGTH(angkatan) DESC, angkatan DESC", nativeQuery = true)
+        List<String> findAllDistinctAngkatan();
+
         Mahasiswa findByIbu(Ibu ibu);
 
         Mahasiswa findByAyah(Ayah ayah);
