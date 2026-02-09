@@ -78,6 +78,18 @@ public interface DetailTahunAkademikDao extends JpaRepository<DetailTahunAkademi
                         StatusRecord status);
 
         /**
+         * Query untuk validasi dinamis - cari data existing berdasarkan tahun akademik,
+         * prodi dan program
+         * Filter by TahunAkademik untuk memastikan overlap check hanya dalam tahun
+         * akademik yang sama
+         */
+        List<DetailTahunAkademik> findByTahunAkademikAndProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(
+                        TahunAkademik tahunAkademik,
+                        Prodi prodi,
+                        Program program,
+                        StatusRecord status);
+
+        /**
          * Method untuk debugging - menampilkan semua rule yang match tanpa filter
          * prioritas
          */

@@ -716,47 +716,52 @@ public class TahunAkademikService {
     }
 
     public void validateDetailTahunAkademikDynamic(DetailTahunAkademik newDetail) {
-        if (newDetail.getProdi() == null) {
-            return; // No validation needed if prodi is not set
+        if (newDetail.getProdi() == null || newDetail.getTahunAkademik() == null) {
+            return; // No validation needed if prodi or tahunAkademik is not set
         }
 
         // Get existing details that could conflict with new detail
+        // IMPORTANT: Only check within the SAME TahunAkademik - different academic
+        // years should not conflict
         List<DetailTahunAkademik> existingDetails = new ArrayList<>();
+        TahunAkademik tahunAkademik = newDetail.getTahunAkademik();
 
         if (newDetail.getProgram() == null) {
             // New detail applies to ALL programs - check conflicts with:
             // 1. Other rules that apply to all programs (program = null)
             // 2. Any rules for specific programs in this prodi
+            // Only within the SAME tahun akademik
 
-            // Rules for all programs
+            // Rules for all programs in the same tahun akademik
             List<DetailTahunAkademik> generalRules = detailTahunAkademikDao
-                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), null,
-                            StatusRecord.AKTIF);
+                    .findByTahunAkademikAndProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(
+                            tahunAkademik, newDetail.getProdi(), null, StatusRecord.AKTIF);
             existingDetails.addAll(generalRules);
 
-            // Rules for specific programs
+            // Rules for specific programs in the same tahun akademik
             List<Program> programs = newDetail.getProdi().getPrograms() == null ? new ArrayList<>()
                     : new ArrayList<>(newDetail.getProdi().getPrograms());
             for (Program program : programs) {
                 List<DetailTahunAkademik> programRules = detailTahunAkademikDao
-                        .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), program,
-                                StatusRecord.AKTIF);
+                        .findByTahunAkademikAndProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(
+                                tahunAkademik, newDetail.getProdi(), program, StatusRecord.AKTIF);
                 existingDetails.addAll(programRules);
             }
 
         } else {
             // New detail applies to specific program - check conflicts with:
-            // 1. Rules for same prodi+program combination
-            // 2. Rules that apply to all programs (program = null) in this prodi
+            // 1. Rules for same prodi+program combination in the same tahun akademik
+            // 2. Rules that apply to all programs (program = null) in this prodi and tahun
+            // akademik
 
             List<DetailTahunAkademik> programRules = detailTahunAkademikDao
-                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), newDetail.getProgram(),
-                            StatusRecord.AKTIF);
+                    .findByTahunAkademikAndProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(
+                            tahunAkademik, newDetail.getProdi(), newDetail.getProgram(), StatusRecord.AKTIF);
             existingDetails.addAll(programRules);
 
             List<DetailTahunAkademik> generalRules = detailTahunAkademikDao
-                    .findByProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(newDetail.getProdi(), null,
-                            StatusRecord.AKTIF);
+                    .findByTahunAkademikAndProdiAndProgramAndStatusOrderByAngkatanMulaiAsc(
+                            tahunAkademik, newDetail.getProdi(), null, StatusRecord.AKTIF);
             existingDetails.addAll(generalRules);
         }
 
@@ -841,8 +846,10 @@ public class TahunAkademikService {
     /**
      * Mendapatkan tahun akademik sebelumnya untuk referensi
      * Logic:
-     * - Jika sekarang GANJIL, cari GENAP tahun sebelumnya (contoh: 2024/2025 Ganjil -> 2023/2024 Genap)
-     * - Jika sekarang GENAP, cari GANJIL tahun yang sama (contoh: 2023/2024 Genap -> 2023/2024 Ganjil)
+     * - Jika sekarang GANJIL, cari GENAP tahun sebelumnya (contoh: 2024/2025 Ganjil
+     * -> 2023/2024 Genap)
+     * - Jika sekarang GENAP, cari GANJIL tahun yang sama (contoh: 2023/2024 Genap
+     * -> 2023/2024 Ganjil)
      * - Skip tahun PENDEK
      */
     public TahunAkademik getPreviousTahunForReference(TahunAkademik currentTahun) {
@@ -852,6 +859,6 @@ public class TahunAkademikService {
 
         // Fallback untuk kasus lain (termasuk PENDEK)
         return tahunAkademikDao.findFirstByKodeTahunAkademikLessThanAndStatusNotInOrderByKodeTahunAkademikDesc(
-            currentTahun.getKodeTahunAkademik(), Arrays.asList(StatusRecord.HAPUS));
+                currentTahun.getKodeTahunAkademik(), Arrays.asList(StatusRecord.HAPUS));
     }
 }
