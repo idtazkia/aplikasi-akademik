@@ -76,9 +76,34 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Prodi</label>
+                                        <select name="prodi" class="form-control">
+                                            <option value="">-- Semua Prodi --</option>
+                                            <option th:each="data : ${prodi}"
+                                                    th:text="${data.namaProdi}"
+                                                    th:selected="(${data} == *{selectedProdi})"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Program</label>
+                                        <select name="program" class="form-control">
+                                            <option value="">-- Semua Program --</option>
+                                            <option th:each="data : ${program}"
+                                                    th:text="${data.namaProgram}"
+                                                    th:selected="(${data} == *{selectedProgram})"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary">Search</button>
+                                    <a th:href="@{/report/recapitulation/ipk}" class="btn btn-secondary">Reset</a>
                                 </div>
                             </div>
                         </form>
@@ -89,7 +114,7 @@
                             <div class="card-header border-0">
                                 <h3 class="mb-0">"Search Result"</h3>
                                 <div class="col text-right">
-                                    <a th:href="@{/report/recapitulation/downloadipk (tahunAkademik =${selectedTahun.id}, angkatan =${selectedAngkatan})}" class="btn btn-warning btn-sm"><i class="fa fa-download"></i> Download</a>
+                                    <a th:href="@{/report/recapitulation/downloadipk (tahunAkademik=${selectedTahun.id}, angkatan=${selectedAngkatan}, prodi=${selectedProdi?.id}, program=${selectedProgram?.id})}" class="btn btn-warning btn-sm"><i class="fa fa-download"></i> Download</a>
                                 </div>
                             </div>
                             <div class="table-responsive ex1">
@@ -100,6 +125,7 @@
                                             <th>Nim</th>
                                             <th>Nama</th>
                                             <th>Nama Prodi</th>
+                                            <th>Program</th>
                                             <th>Tahun Akademik</th>
                                             <th>Status</th>
                                             <th>Sks Semester</th>
@@ -114,12 +140,13 @@
                                         <td th:text="${data[0]}"></td>
                                         <td th:text="${data[1]}"></td>
                                         <td th:text="${data[2]}"></td>
+                                        <td th:text="${data[3]}"></td>
                                         <td th:text="${selectedTahun.namaTahunAkademik}"></td>
-                                        <td th:text="${data[4]}"></td>
                                         <td th:text="${data[5]}"></td>
                                         <td th:text="${data[6]}"></td>
                                         <td th:text="${data[7]}"></td>
                                         <td th:text="${data[8]}"></td>
+                                        <td th:text="${data[9]}"></td>
                                     </tr>
                                     </tbody>
                                 </table>

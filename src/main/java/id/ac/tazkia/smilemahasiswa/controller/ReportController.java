@@ -83,6 +83,9 @@ public class ReportController {
     private ProdiDao prodiDao;
 
     @Autowired
+    private ProgramDao programDao;
+
+    @Autowired
     private EdomMahasiswaDao edomMahasiswaDao;
 
     @Autowired
@@ -155,6 +158,11 @@ public class ReportController {
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
         return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
+    }
+
+    @ModelAttribute("program")
+    public Iterable<Program> program() {
+        return programDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
 
     @GetMapping("/report/recapitulation/lecturer")
@@ -363,25 +371,30 @@ public class ReportController {
 
     @GetMapping("/report/recapitulation/ipk")
     public void rekapSks(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-            @RequestParam(required = false) String angkatan) {
+            @RequestParam(required = false) String angkatan, @RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) Program program) {
+
+        model.addAttribute("selectedAngkatan", angkatan);
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("selectedProgram", program);
 
         if (tahunAkademik != null) {
-            model.addAttribute("selectedAngkatan", angkatan);
-            model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("ipk",
-                    krsDetailDao.cariIpk(tahunAkademik, angkatan, tahunAkademik.getKodeTahunAkademik()));
+                    krsDetailDao.cariIpk(tahunAkademik, angkatan, tahunAkademik.getKodeTahunAkademik(), prodi, program));
         }
     }
 
     @GetMapping("/report/recapitulation/downloadipk")
     public void listPerMatkul(@RequestParam(required = false) TahunAkademik tahunAkademik,
-            @RequestParam(required = false) String angkatan, HttpServletResponse response) throws IOException {
+            @RequestParam(required = false) String angkatan, @RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) Program program, HttpServletResponse response) throws IOException {
 
         List<Object[]> listDownload = krsDetailDao.cariIpk(tahunAkademik, angkatan,
-                tahunAkademik.getKodeTahunAkademik());
+                tahunAkademik.getKodeTahunAkademik(), prodi, program);
 
-        String[] columns = { "No", "Nim", "Nama", "Prodi", "Tahun Akademik", "SKS Semester", "SKS Total", "IP Semester",
-                "IPK" };
+        String[] columns = { "No", "Nim", "Nama", "Prodi", "Program", "Tahun Akademik", "SKS Semester", "IP Semester",
+                "SKS Total", "IPK" };
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List Ipk Angkatan " + angkatan);
@@ -411,11 +424,12 @@ public class ReportController {
             row.createCell(1).setCellValue(list[0].toString());
             row.createCell(2).setCellValue(list[1].toString());
             row.createCell(3).setCellValue(list[2].toString());
-            row.createCell(4).setCellValue(tahunAkademik.getNamaTahunAkademik());
-            row.createCell(5).setCellValue(list[5].toString());
-            row.createCell(6).setCellValue(list[7].toString());
-            row.createCell(7).setCellValue(list[6].toString());
+            row.createCell(4).setCellValue(list[3].toString());
+            row.createCell(5).setCellValue(tahunAkademik.getNamaTahunAkademik());
+            row.createCell(6).setCellValue(list[6].toString());
+            row.createCell(7).setCellValue(list[7].toString());
             row.createCell(8).setCellValue(list[8].toString());
+            row.createCell(9).setCellValue(list[9].toString());
         }
 
         for (int i = 0; i < columns.length; i++) {
