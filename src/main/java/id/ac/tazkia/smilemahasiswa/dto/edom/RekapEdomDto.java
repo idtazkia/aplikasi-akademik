@@ -11,6 +11,8 @@ public interface RekapEdomDto {
 
     String getNamaMatakuliah();
 
+    String getNamaKelas();
+
     Long getTotalMahasiswa();
 
     Long getTotalMengisi();

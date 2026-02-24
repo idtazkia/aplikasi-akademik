@@ -1,32 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.graduation.RekapTugasAkhir;
-import id.ac.tazkia.smilemahasiswa.dto.report.*;
-import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
-import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.TugasMateriService;
-import net.bytebuddy.asm.Advice;
-import nz.net.ultraq.thymeleaf.layoutdialect.models.extensions.IModelExtensions;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -38,8 +11,111 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import id.ac.tazkia.smilemahasiswa.dao.BebasKewajibanDao;
+import id.ac.tazkia.smilemahasiswa.dao.BobotTugasDao;
+import id.ac.tazkia.smilemahasiswa.dao.CutiDao;
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.EdomMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.EdomQuestionOldDao;
+import id.ac.tazkia.smilemahasiswa.dao.HariDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.JadwalTugasDao;
+import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
+import id.ac.tazkia.smilemahasiswa.dao.KelasMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDosenWaliDao;
+import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
+import id.ac.tazkia.smilemahasiswa.dao.NoteDao;
+import id.ac.tazkia.smilemahasiswa.dao.PembinaanDao;
+import id.ac.tazkia.smilemahasiswa.dao.PembinaanDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.PendaftaranMbkmDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.PresensiMahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
+import id.ac.tazkia.smilemahasiswa.dao.ProgramDao;
+import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
+import id.ac.tazkia.smilemahasiswa.dao.SesiKuliahFotoDao;
+import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dao.SoalDao;
+import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.UjianTahfidzKompreDao;
+import id.ac.tazkia.smilemahasiswa.dao.edom.EdomGeneralResponseDao;
+import id.ac.tazkia.smilemahasiswa.dto.edom.DetailEdomDto;
+import id.ac.tazkia.smilemahasiswa.dto.edom.RekapEdomDto;
+import id.ac.tazkia.smilemahasiswa.dto.edom.RekapEdomSarprasDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.RekapTugasAkhir;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.ReportUjianDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.SalaryDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
+import id.ac.tazkia.smilemahasiswa.entity.Cuti;
+import id.ac.tazkia.smilemahasiswa.entity.Dosen;
+import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.JenisPembinaanMatrikulasi;
+import id.ac.tazkia.smilemahasiswa.entity.JenisPembinaanMatrikulasiDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
+import id.ac.tazkia.smilemahasiswa.entity.KelasMahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.KrsDetail;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.entity.Note;
+import id.ac.tazkia.smilemahasiswa.entity.PendaftaranMbkm;
+import id.ac.tazkia.smilemahasiswa.entity.Prodi;
+import id.ac.tazkia.smilemahasiswa.entity.Program;
+import id.ac.tazkia.smilemahasiswa.entity.Seminar;
+import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.Soal;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.TugasMateriService;
 
 @Controller
 public class ReportController {
@@ -90,6 +166,9 @@ public class ReportController {
 
     @Autowired
     private EdomQuestionOldDao edomQuestionOldDao;
+
+    @Autowired
+    private EdomGeneralResponseDao edomGeneralResponseDao;
 
     @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
@@ -167,37 +246,41 @@ public class ReportController {
 
     @GetMapping("/report/recapitulation/lecturer")
     public void rekapDosen(Model model, @RequestParam(required = false) TahunAkademik ta,
-                           @PageableDefault(size = Integer.MAX_VALUE) Pageable page) {
+            @PageableDefault(size = Integer.MAX_VALUE) Pageable page) {
         if (ta == null) {
             ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         }
 
         model.addAttribute("selectedTahun", ta);
 
-//        Page<RekapJadwalDosenDto> rekap = jadwalDosenDao.rekapJadwalDosen2(ta.getId(), page);
-//
-//        Map<String, RekapSksDosenDto> rekapJumlahSks = new LinkedHashMap<>();
-//        Map<String, List<RekapJadwalDosenDto>> detailJadwalPerDosen = new LinkedHashMap<>();
-//
-//        for (RekapJadwalDosenDto r : rekap.getContent()) {
-//            // Hitung total SKS
-//            RekapSksDosenDto rsks = rekapJumlahSks.computeIfAbsent(r.getIdDosen(), id -> {
-//                RekapSksDosenDto newRsks = new RekapSksDosenDto();
-//                newRsks.setNamaDosen(r.getNamaDosen());
-//                newRsks.setIdDosen(r.getIdDosen());
-//                newRsks.setTotalSks(0);
-//                return newRsks;
-//            });
-//
-//            rsks.tambahSks(r.getSks());
-//
-//            // Jadwal per dosen
-//            detailJadwalPerDosen.computeIfAbsent(r.getIdDosen(), id -> new ArrayList<>()).add(r);
-//        }
+        // Page<RekapJadwalDosenDto> rekap =
+        // jadwalDosenDao.rekapJadwalDosen2(ta.getId(), page);
+        //
+        // Map<String, RekapSksDosenDto> rekapJumlahSks = new LinkedHashMap<>();
+        // Map<String, List<RekapJadwalDosenDto>> detailJadwalPerDosen = new
+        // LinkedHashMap<>();
+        //
+        // for (RekapJadwalDosenDto r : rekap.getContent()) {
+        // // Hitung total SKS
+        // RekapSksDosenDto rsks = rekapJumlahSks.computeIfAbsent(r.getIdDosen(), id ->
+        // {
+        // RekapSksDosenDto newRsks = new RekapSksDosenDto();
+        // newRsks.setNamaDosen(r.getNamaDosen());
+        // newRsks.setIdDosen(r.getIdDosen());
+        // newRsks.setTotalSks(0);
+        // return newRsks;
+        // });
+        //
+        // rsks.tambahSks(r.getSks());
+        //
+        // // Jadwal per dosen
+        // detailJadwalPerDosen.computeIfAbsent(r.getIdDosen(), id -> new
+        // ArrayList<>()).add(r);
+        // }
 
         List<Object[]> result = jadwalDosenDao.rekapJadwalDosen3(ta.getId());
 
-// Konversi hasil query ke DTO
+        // Konversi hasil query ke DTO
         List<RekapJadwalDosenDto> dtos = result.stream()
                 .map(row -> {
                     RekapJadwalDosenDto dto = new RekapJadwalDosenDto();
@@ -221,11 +304,11 @@ public class ReportController {
                 })
                 .collect(Collectors.toList());
 
-// Inisialisasi map untuk rekap SKS dan jadwal per dosen
+        // Inisialisasi map untuk rekap SKS dan jadwal per dosen
         Map<String, RekapSksDosenDto> rekapJumlahSks = new LinkedHashMap<>();
         Map<String, List<RekapJadwalDosenDto>> detailJadwalPerDosen = new LinkedHashMap<>();
 
-// Iterasi untuk penghitungan total SKS dan detail jadwal
+        // Iterasi untuk penghitungan total SKS dan detail jadwal
         for (RekapJadwalDosenDto r : dtos) {
             // Rekap total SKS per dosen
             RekapSksDosenDto rsks = rekapJumlahSks.computeIfAbsent(r.getIdDosen(), id -> {
@@ -248,16 +331,17 @@ public class ReportController {
         model.addAttribute("rekapJadwalPerDosen", detailJadwalPerDosen);
     }
 
-
     @GetMapping("/report/recapitulation/detail")
-    public void detailJadwal(Model model, @RequestParam Jadwal jadwal){
+    public void detailJadwal(Model model, @RequestParam Jadwal jadwal) {
 
         // Halaman presensi
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("detail", presensiDosenDao.listPresensiDosen(jadwal));
-        model.addAttribute("jadwalTugas", jadwalTugasDao.findByStatusAndSesiKuliahJadwalOrderBySesiKuliahPertemuanKe(StatusRecord.AKTIF,jadwal));
-        model.addAttribute("sesiKuliahFoto", sesiKuliahFotoDao.findByStatusAndJadwalOrderBySesiKuliahPertemuan(StatusRecord.AKTIF,jadwal));
+        model.addAttribute("jadwalTugas",
+                jadwalTugasDao.findByStatusAndSesiKuliahJadwalOrderBySesiKuliahPertemuanKe(StatusRecord.AKTIF, jadwal));
+        model.addAttribute("sesiKuliahFoto",
+                sesiKuliahFotoDao.findByStatusAndJadwalOrderBySesiKuliahPertemuan(StatusRecord.AKTIF, jadwal));
 
         // Halaman penilaian
         model.addAttribute("krsDetail", krsDetailDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF));
@@ -292,9 +376,10 @@ public class ReportController {
         LocalDate m = LocalDate.parse(masuk);
         LocalDate s = LocalDate.parse(selesai);
 
-        String[] column = {"No", "Dosen", "Status Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal Offline", "Tanggal Online", "Tidak Mengajar"};
+        String[] column = { "No", "Dosen", "Status Dosen", "Matakuliah", "SKS", "Kelas", "Tanggal Offline",
+                "Tanggal Online", "Tidak Mengajar" };
 
-        List<SalaryDto> list = presensiDosenDao.rekapSalary(m,s);
+        List<SalaryDto> list = presensiDosenDao.rekapSalary(m, s);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Rekap Salary");
@@ -319,7 +404,7 @@ public class ReportController {
 
         Row headerRow = sheet.createRow(0);
 
-        for (int i = 0; i < column.length; i++){
+        for (int i = 0; i < column.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(column[i]);
             cell.setCellStyle(styleHeader);
@@ -328,7 +413,7 @@ public class ReportController {
         int rowNum = 1;
         int barus = 1;
 
-        for (SalaryDto salary : list){
+        for (SalaryDto salary : list) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(barus++);
             row.createCell(1).setCellValue(salary.getNama());
@@ -351,12 +436,12 @@ public class ReportController {
             row.getCell(8).setCellStyle(isiStyleCenter);
         }
 
-        for (int i = 0; i<column.length; i++){
+        for (int i = 0; i < column.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Salary_"+m+"-"+s+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Salary_" + m + "-" + s + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
@@ -381,7 +466,8 @@ public class ReportController {
 
         if (tahunAkademik != null) {
             model.addAttribute("ipk",
-                    krsDetailDao.cariIpk(tahunAkademik, angkatan, tahunAkademik.getKodeTahunAkademik(), prodi, program));
+                    krsDetailDao.cariIpk(tahunAkademik, angkatan, tahunAkademik.getKodeTahunAkademik(), prodi,
+                            program));
         }
     }
 
@@ -449,33 +535,36 @@ public class ReportController {
             @RequestParam(required = false) Prodi prodi) {
 
         if (tahunAkademik != null) {
-            List<Object[]> headerEdom = edomMahasiswaDao.headerEdomMahasiswa(tahunAkademik, prodi);
-            model.addAttribute("headerEdom", headerEdom);
-            if (headerEdom != null) {
-                List<Object[]> detailEdom = edomQuestionOldDao.detailEdom(tahunAkademik, prodi);
-                model.addAttribute("detailEdom", detailEdom);
+            // === DOSEN ===
+            List<RekapEdomDto> rekapEdom;
+            List<DetailEdomDto> detailEdom;
 
-                // EdomQuestion edomQuestion1 =
-                // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
-                // EdomQuestion edomQuestion2 =
-                // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
-                // EdomQuestion edomQuestion3 =
-                // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
-                // EdomQuestion edomQuestion4 =
-                // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
-                // EdomQuestion edomQuestion5 =
-                // edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
-                // model.addAttribute("edomQuestion1",edomQuestion1);
-                // model.addAttribute("edomQuestion2",edomQuestion2);
-                // model.addAttribute("edomQuestion3",edomQuestion3);
-                // model.addAttribute("edomQuestion4",edomQuestion4);
-                // model.addAttribute("edomQuestion5",edomQuestion5);
+            if (prodi != null) {
+                rekapEdom = edomGeneralResponseDao.findRekapEdomByProdi(tahunAkademik.getId(), prodi.getId());
+                detailEdom = edomGeneralResponseDao.findDetailEdomByProdi(tahunAkademik.getId(), prodi.getId());
             } else {
-                model.addAttribute("questionNull", "Pertanyaan edom untuk tahun akademik ini belum dibuat");
+                rekapEdom = edomGeneralResponseDao.findRekapEdomAll(tahunAkademik.getId());
+                detailEdom = Collections.emptyList();
             }
+
+            // === SARPRAS ===
+            List<RekapEdomSarprasDto> rekapSarpras = edomGeneralResponseDao.findRekapEdomSarpras(tahunAkademik.getId());
+
+            // Group SARPRAS by category
+            Map<String, List<RekapEdomSarprasDto>> sarprasPerCategory = new LinkedHashMap<>();
+            for (RekapEdomSarprasDto s : rekapSarpras) {
+                sarprasPerCategory.computeIfAbsent(s.getCategoryName(), k -> new ArrayList<>()).add(s);
+            }
+
+            if (rekapEdom.isEmpty() && rekapSarpras.isEmpty()) {
+                model.addAttribute("questionNull", "Data edom untuk tahun akademik ini belum tersedia");
+            }
+
+            model.addAttribute("headerEdom", rekapEdom);
+            model.addAttribute("detailEdom", detailEdom);
+            model.addAttribute("sarprasPerCategory", sarprasPerCategory);
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
-            model.addAttribute("rekapEdom", krsDetailDao.rekapEdom(tahunAkademik, prodi));
         }
 
     }
@@ -484,10 +573,10 @@ public class ReportController {
     public void downloadEdom(@RequestParam(required = false) TahunAkademik tahunAkademik, HttpServletResponse response)
             throws IOException {
 
-        List<Object[]> listEdom = edomMahasiswaDao.downloadEdom(tahunAkademik);
+        List<RekapEdomDto> listEdom = edomGeneralResponseDao.findRekapEdomAll(tahunAkademik.getId());
 
-        String[] columns = { "No", "NIDN", "Nama Dosen", "Status Dosen", "Nama Prodi", "Email", "Nama Matakuliah",
-                "Semester", "Nama Kelas", "Jumlah Mengisi Edom", "Jumlah Mahasiswa Kelas", "Nilai Edom" };
+        String[] columns = { "No", "Nama Dosen", "Nama Matakuliah", "Nama Kelas",
+                "Jumlah Mahasiswa", "Jumlah Mengisi Edom", "Nilai Edom" };
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List Edom tahun akademik " + tahunAkademik.getKodeTahunAkademik());
@@ -511,20 +600,15 @@ public class ReportController {
         int rowNum = 3;
         int baris = 1;
 
-        for (Object[] list : listEdom) {
+        for (RekapEdomDto edom : listEdom) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
-            row.createCell(1).setCellValue(list[1].toString());
-            row.createCell(2).setCellValue(list[2].toString());
-            row.createCell(3).setCellValue(list[3].toString());
-            row.createCell(4).setCellValue(list[4].toString());
-            row.createCell(5).setCellValue(list[5].toString());
-            row.createCell(6).setCellValue(list[6].toString());
-            row.createCell(7).setCellValue(list[7].toString());
-            row.createCell(8).setCellValue(list[8].toString());
-            row.createCell(9).setCellValue(list[10].toString());
-            row.createCell(10).setCellValue(list[9].toString());
-            row.createCell(11).setCellValue(list[11].toString());
+            row.createCell(1).setCellValue(edom.getNamaDosen() != null ? edom.getNamaDosen() : "-");
+            row.createCell(2).setCellValue(edom.getNamaMatakuliah() != null ? edom.getNamaMatakuliah() : "-");
+            row.createCell(3).setCellValue(edom.getNamaKelas() != null ? edom.getNamaKelas() : "-");
+            row.createCell(4).setCellValue(edom.getTotalMahasiswa() != null ? edom.getTotalMahasiswa() : 0);
+            row.createCell(5).setCellValue(edom.getTotalMengisi() != null ? edom.getTotalMengisi() : 0);
+            row.createCell(6).setCellValue(edom.getRataRata() != null ? edom.getRataRata().doubleValue() : 0);
         }
 
         for (int i = 0; i < columns.length; i++) {
@@ -551,10 +635,10 @@ public class ReportController {
 
             String tlc = "staftlc";
 
-            if (tlc.equals(user.getRole().getId())){
+            if (tlc.equals(user.getRole().getId())) {
                 List<ScheduleDto> jadwal = jadwalDao.lecturerAssesmentAll(StatusRecord.AKTIF, tahunAkademik);
                 model.addAttribute("jadwal", jadwal);
-            }else{
+            } else {
                 List<ScheduleDto> jadwal = jadwalDao.lecturerAssesment(dosen, StatusRecord.AKTIF, tahunAkademik);
                 model.addAttribute("jadwal", jadwal);
 
@@ -626,17 +710,22 @@ public class ReportController {
     }
 
     @GetMapping("/report/cuti")
-    public void mahasiswaCuti(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable pageable) {
+    public void mahasiswaCuti(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @PageableDefault(size = 10) Pageable pageable) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         if (tahunAkademik == null) {
-            model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, tahun, pageable));
-        }else {
-            model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, tahunAkademik, pageable));
+            model.addAttribute("listCutiMahasiswa", cutiDao
+                    .findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, tahun, pageable));
+        } else {
+            model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(
+                    StatusRecord.AKTIF, tahunAkademik, pageable));
             model.addAttribute("selectedTahun", tahunAkademik);
         }
 
-//        model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
+        // model.addAttribute("listCutiMahasiswa",
+        // cutiDao.findByStatusAndTahunAkademikOrderByStatusPengajuaanDesc(StatusRecord.AKTIF,
+        // pageable));
     }
 
     @PostMapping("/proses/cuti")
@@ -1603,32 +1692,33 @@ public class ReportController {
     // MBKM
 
     @GetMapping("/report/mbkm")
-    public void reportMBKM(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik){
+    public void reportMBKM(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik) {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         if (tahunAkademik == null) {
-            List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahun);
+            List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao
+                    .findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahun);
             model.addAttribute("listMbkm", mbkm);
             model.addAttribute("selectedTahun", tahun);
-        }else {
-            List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao.findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahunAkademik);
+        } else {
+            List<PendaftaranMbkm> mbkm = pendaftaranMbkmDao
+                    .findByStatusAndTahunAkademikOrderByStatusApprovalDesc(StatusRecord.AKTIF, tahunAkademik);
             model.addAttribute("listMbkm", mbkm);
             model.addAttribute("selectedTahun", tahunAkademik);
         }
-
 
     }
 
     // Laporan Ujian
     @GetMapping("/report/ujian")
     public String reportUjian(Model model, @RequestParam(required = false) TahunAkademik ta,
-                              @RequestParam(required = false) Prodi prodi,
-                              @RequestParam(required = false) String ujian){
+            @RequestParam(required = false) Prodi prodi,
+            @RequestParam(required = false) String ujian) {
 
         model.addAttribute("selectTahunAkademik", ta);
         model.addAttribute("selectedProdi", prodi);
         model.addAttribute("ujian", ujian);
-        if (ta != null){
+        if (ta != null) {
             model.addAttribute("listReportUjian", presensiDosenDao.reportUjian(ta, prodi, ujian));
         }
         return "report/recapitulation/ujian";
@@ -1636,11 +1726,11 @@ public class ReportController {
 
     @GetMapping("/report/ujian/excel")
     public void reportUjianExcel(@RequestParam TahunAkademik tahunAkademik,
-                                 @RequestParam Prodi prodi,
-                                 @RequestParam String ujian,
-                                 HttpServletResponse response)throws IOException{
+            @RequestParam Prodi prodi,
+            @RequestParam String ujian,
+            HttpServletResponse response) throws IOException {
 
-        String[] column = {"No", "Dosen", "Kelas", "Matakuliah", "Detail Pertemuan"};
+        String[] column = { "No", "Dosen", "Kelas", "Matakuliah", "Detail Pertemuan" };
 
         List<ReportUjianDto> reportUjianDtoList = presensiDosenDao.reportUjian(tahunAkademik, prodi, ujian);
 
@@ -1657,7 +1747,7 @@ public class ReportController {
 
         Row headerRow = sheet.createRow(0);
 
-        for(int i = 0; i < column.length; i++){
+        for (int i = 0; i < column.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(column[i]);
             cell.setCellStyle(headerCellStyle);
@@ -1666,25 +1756,26 @@ public class ReportController {
         int rowNum = 1;
         int baris = 1;
 
-        for (ReportUjianDto data: reportUjianDtoList){
+        for (ReportUjianDto data : reportUjianDtoList) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(data.getDosen());
             row.createCell(2).setCellValue(data.getKelas());
             row.createCell(3).setCellValue(data.getMatakuliah());
-            if (data.getDetailPertemuan() == null){
+            if (data.getDetailPertemuan() == null) {
                 row.createCell(4).setCellValue("-");
-            }else {
+            } else {
                 row.createCell(4).setCellValue(data.getDetailPertemuan());
             }
         }
 
-        for (int i = 0; i < column.length; i++){
+        for (int i = 0; i < column.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Data-Report-Ujian-"+ LocalDate.now()+".xlsx");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=Data-Report-Ujian-" + LocalDate.now() + ".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
@@ -1692,26 +1783,31 @@ public class ReportController {
     // REKAP PRESENSI DOSEN
 
     @GetMapping("/report/recapitulation/presensiDosen/list")
-    public void listPresensiDosen(Model model, @RequestParam(required = false) String dari, @RequestParam(required = false) String sampai){
+    public void listPresensiDosen(Model model, @RequestParam(required = false) String dari,
+            @RequestParam(required = false) String sampai) {
         if (dari != null && sampai != null) {
             model.addAttribute("tglDari", dari);
             model.addAttribute("tglSampai", sampai);
 
-            model.addAttribute("listPresensi", presensiDosenDao.rekapPresensiDosen(LocalDate.parse(dari), LocalDate.parse(sampai)));
-        }else{
+            model.addAttribute("listPresensi",
+                    presensiDosenDao.rekapPresensiDosen(LocalDate.parse(dari), LocalDate.parse(sampai)));
+        } else {
             LocalDate now = LocalDate.now(ZoneId.systemDefault());
             model.addAttribute("tglDari", now.with(TemporalAdjusters.firstDayOfMonth()));
             model.addAttribute("tglSampai", now.with(TemporalAdjusters.lastDayOfMonth()));
-            model.addAttribute("listPresensi", presensiDosenDao.rekapPresensiDosen(now.with(TemporalAdjusters.firstDayOfMonth()), now.with(TemporalAdjusters.lastDayOfMonth())));
+            model.addAttribute("listPresensi", presensiDosenDao.rekapPresensiDosen(
+                    now.with(TemporalAdjusters.firstDayOfMonth()), now.with(TemporalAdjusters.lastDayOfMonth())));
         }
     }
 
     @GetMapping("/report/recapitulation/presensiDosen/detail")
-    public void detailPresensiDosen(Model model, @RequestParam Dosen dosen, @RequestParam String dari, @RequestParam String sampai){
+    public void detailPresensiDosen(Model model, @RequestParam Dosen dosen, @RequestParam String dari,
+            @RequestParam String sampai) {
         model.addAttribute("dosen", dosen);
         model.addAttribute("tglDari", dari);
         model.addAttribute("tglSampai", sampai);
-        model.addAttribute("detail", presensiDosenDao.detailPresensiDosen(dosen.getId(), LocalDate.parse(dari), LocalDate.parse(sampai)));
+        model.addAttribute("detail",
+                presensiDosenDao.detailPresensiDosen(dosen.getId(), LocalDate.parse(dari), LocalDate.parse(sampai)));
     }
 
 }

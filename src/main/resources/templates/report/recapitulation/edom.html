@@ -1,182 +1,296 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
-<head>
-    <meta charset="UTF-8">
-    <title>EDOM</title>
-</head>
-<body>
-<div layout:fragment="main">
-    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-        <div class="container-fluid">
-            <div class="header-body">
-                <!-- Card stats -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card card-stats mb-4 mb-xl-0">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">Recapitulation</h5>
-                                        <span class="h2 font-weight-bold mb-0">Edom</span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                            <i class="fas fa-user-astronaut"></i>
-                                        </div>
-                                    </div>
-                                </div>
+<!doctype html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>EDOM</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Recapitulation
+												</h5>
+												<span class="h2 font-weight-bold mb-0">Edom</span>
+											</div>
+											<div class="col-auto">
+												<div
+													class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow"
+												>
+													<i class="fas fa-user-astronaut"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                            </div>
-                        </div>
-                    </div>
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col">
+						<div class="card shadow">
+							<div class="card-header border-0">
+								<div class="row align-items-center">
+									<div class="col text-right"></div>
+								</div>
+							</div>
+							<div class="card-body">
+								<form method="get">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Tahun Akademik</label>
+												<select name="tahunAkademik" class="form-control">
+													<option
+														th:each="data : ${tahunAkademik}"
+														th:text="${data.namaTahunAkademik}"
+														th:selected="(${data} == *{selectedTahun})"
+														th:value="${data.id}"
+													></option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Prodi</label>
+												<select name="prodi" class="form-control">
+													<option
+														th:each="data : ${prodi}"
+														th:text="${data.namaProdi}"
+														th:selected="(${data} == *{selectedProdi})"
+														th:value="${data.id}"
+													></option>
+												</select>
+											</div>
+										</div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+										<div class="col-md-12 text-center">
+											<button type="submit" class="btn btn-primary">Search</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="alert alert-warning" th:if="${questionNull != null}">
+								<center>
+									<strong th:text="${questionNull}"> </strong>
+								</center>
+							</div>
+							<span th:if="${selectedTahun != null && questionNull == null}">
+								<!-- Tabs -->
+								<ul class="nav nav-tabs mt-3 mx-3" role="tablist">
+									<li class="nav-item">
+										<a
+											class="nav-link active"
+											id="tab-dosen"
+											data-toggle="tab"
+											href="#dosen"
+											role="tab"
+											>Dosen</a
+										>
+									</li>
+									<li class="nav-item">
+										<a
+											class="nav-link"
+											id="tab-sarpras"
+											data-toggle="tab"
+											href="#sarpras"
+											role="tab"
+											>Sarana &amp; Prasarana</a
+										>
+									</li>
+								</ul>
 
-    <div class="container-fluid mt--7">
-        <div class="row">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <div class="row align-items-center">
-                            <div class="col text-right">
+								<div class="tab-content">
+									<!-- ========== DOSEN TAB ========== -->
+									<div class="tab-pane fade show active" id="dosen" role="tabpanel">
+										<div class="row mt-3">
+											<div class="col text-center">
+												<a
+													th:href="@{/report/recapitulation/downloadedom(tahunAkademik = ${selectedTahun.id})}"
+													class="btn btn-success text-white"
+													><i class="fa fa-download"></i> Download Edom Dosen</a
+												>
+											</div>
+										</div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Tahun Akademik</label>
-                                        <select name="tahunAkademik"class="form-control">
-                                            <option th:each="data : ${tahunAkademik}"
-                                                    th:text="${data.namaTahunAkademik}"
-                                                    th:selected="(${data} == *{selectedTahun})"
-                                                    th:value="${data.id}"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Prodi</label>
-                                        <select name="prodi"class="form-control">
-                                            <option th:each="data : ${prodi}"
-                                                    th:text="${data.namaProdi}"
-                                                    th:selected="(${data} == *{selectedProdi})"
-                                                    th:value="${data.id}"></option>
-                                        </select>
-                                    </div>
-                                </div>
+										<div class="card-body" th:each="data : ${headerEdom}">
+											<div class="card shadow">
+												<div class="card-body">
+													<table>
+														<tr>
+															<td>Lecturer Name</td>
+															<td>&nbsp; :</td>
+															<td style="padding-left: 5px" th:text="${data.namaDosen}">
+																Ahmad Masykur
+															</td>
+														</tr>
+														<tr>
+															<td>Course Name</td>
+															<td>&nbsp; :</td>
+															<td
+																style="padding-left: 5px"
+																th:text="${data.namaMatakuliah}"
+															>
+																Ushul Fiqh II
+															</td>
+														</tr>
+														<tr>
+															<td>Class</td>
+															<td>&nbsp; :</td>
+															<td style="padding-left: 5px" th:text="${data.namaKelas}">
+																A
+															</td>
+														</tr>
+														<tr>
+															<td>Number of Students</td>
+															<td>&nbsp; :</td>
+															<td
+																style="padding-left: 5px"
+																th:text="${data.totalMahasiswa}"
+															>
+																24
+															</td>
+														</tr>
+														<tr>
+															<td>Number of students who have filled in</td>
+															<td>&nbsp; :</td>
+															<td
+																style="padding-left: 5px"
+																th:text="${data.totalMengisi}"
+															>
+																24
+															</td>
+														</tr>
+													</table>
+												</div>
 
-                                <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="alert alert-warning" th:if="${questionNull != null}">
-                        <center>
-                            <strong th:text="${questionNull}">
+												<div class="table-responsive">
+													<table class="table align-items-center table-flush">
+														<thead class="thead-light">
+															<tr>
+																<th scope="col"><center>No</center></th>
+																<th scope="col">Score Point</th>
+																<th scope="col">Score</th>
+															</tr>
+														</thead>
+														<tbody>
+															<th:block th:with="counter = ${new int[]{0}}">
+																<tr
+																	th:each="dataDetail : ${detailEdom}"
+																	th:if="${data.idJadwal == dataDetail.idJadwal and data.idDosen == dataDetail.idDosen}"
+																>
+																	<td th:text="${counter[0] = counter[0] + 1}">
+																		<center>1</center>
+																	</td>
+																	<td th:text="${dataDetail.questionText}">
+																		Disiplin masuk kelas
+																	</td>
+																	<td th:text="${dataDetail.nilai}">
+																		<center>4.2</center>
+																	</td>
+																</tr>
+															</th:block>
+														</tbody>
+														<thead class="thead-light">
+															<tr>
+																<th colspan="2"><center>Average</center></th>
+																<th
+																	th:text="${data.rataRata != null} ? ${#numbers.formatDecimal(data.rataRata, 0, 'COMMA', 2, 'POINT')} : '0'"
+																>
+																	4.2
+																</th>
+															</tr>
+														</thead>
+													</table>
+												</div>
+											</div>
+										</div>
 
-                            </strong>
-                        </center>
-                    </div>
-                    <span th:if="${selectedTahun != null && questionNull == null}">
-                        <div class="row">
-                            <div class="col text-center">
-                                <a th:href="@{/report/recapitulation/downloadedom(tahunAkademik = ${selectedTahun.id}) }" class="btn btn-success text-white"><i class="fa fa-download"></i> Download</a>
-                            </div>
-                        </div>
-                        <div class="card-body" th:each="data : ${headerEdom}">
-                            <div class="card shadow">
-                                <div class="card-body">
-                                    <table>
-                                        <tr>
-                                            <td>Lecturer Name</td>
-                                            <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[4]}">Ahmad Masykur</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Course Name</td>
-                                            <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[2]}">Ushul Fiqh II</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Class</td>
-                                            <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[3]}">Ushul Fiqh II</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Number of Students</td>
-                                            <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[5]}">24</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Number of students who have filled in</td>
-                                            <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[6]}">24</td>
-                                        </tr>
-                                    </table>
-                                </div>
+										<div class="text-center text-muted py-4" th:if="${#lists.isEmpty(headerEdom)}">
+											<em>Belum ada data edom dosen untuk tahun akademik ini.</em>
+										</div>
+									</div>
 
-                                <div class="table-responsive">
-                                    <table class="table align-items-center table-flush">
-                                        <thead class="thead-light">
-                                        <tr>
-                                            <th scope="col"><center>No</center></th>
-                                            <th scope="col">Score Point</th>
-                                            <th scope="col">Score</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="dataDetail : ${detailEdom}">
-                                            <td th:if="${data[0] == dataDetail[0] and data[1] == dataDetail[1]}" th:text="${dataDetail[7]}"><center>1</center></td>
-                                            <td th:if="${data[0] == dataDetail[0] and data[1] == dataDetail[1]}" th:text="${dataDetail[8]}">Disiplin masuk kelas</td>
-                                            <td th:if="${data[0] == dataDetail[0] and data[1] == dataDetail[1]}" th:text="${dataDetail[9]}"><center>4.2</center></td>
-                                        </tr>
-<!--                                        <tr>-->
-<!--                                            <td><center>2</center></td>-->
-<!--                                            <td th:text="${edomQuestion2.pertanyaan}">Disiplin membaca Al Quran 5T di setiap sesi perkuliahan</td>-->
-<!--                                            <td th:text="${data[7]}"><center>4.2</center></td>-->
-<!--                                        </tr>-->
-<!--                                        <tr>-->
-<!--                                            <td><center>3</center></td>-->
-<!--                                            <td th:text="${edomQuestion3.pertanyaan}">Cara menyampaikan materi perkuliahan</td>-->
-<!--                                            <td th:text="${data[8]}"><center>4.2</center></td>-->
-<!--                                        </tr>-->
-<!--                                        <tr>-->
-<!--                                            <td><center>4</center></td>-->
-<!--                                            <td th:text="${edomQuestion4.pertanyaan}">Keragaman konten materi pada e learning</td>-->
-<!--                                            <td th:text="${data[9]}"><center>4.2</center></td>-->
-<!--                                        </tr>-->
-<!--                                        <tr>-->
-<!--                                            <td><center>5</center></td>-->
-<!--                                            <td th:text="${edomQuestion5.pertanyaan}">Perhatian kepada Mahasiswa</td>-->
-<!--                                            <td th:text="${data[10]}"><center>4.2</center></td>-->
-<!--                                        </tr>-->
-                                        </tbody>
-                                        <thead class="thead-light">
-                                        <tr>
-                                            <th colspan="2"><center>Average</center></th>
-                                            <th th:text="${#numbers.formatDecimal(data[7], 0, 'COMMA', 2, 'POINT')}">4.2</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
+									<!-- ========== SARPRAS TAB ========== -->
+									<div class="tab-pane fade" id="sarpras" role="tabpanel">
+										<div class="card-body" th:each="entry : ${sarprasPerCategory}">
+											<div class="card shadow">
+												<div class="card-header bg-gradient-lighter">
+													<h4 class="mb-0" th:text="${entry.key}">Nama Kategori</h4>
+												</div>
+												<div class="table-responsive">
+													<table class="table align-items-center table-flush">
+														<thead class="thead-light">
+															<tr>
+																<th scope="col" style="width: 60px">
+																	<center>No</center>
+																</th>
+																<th scope="col">Pertanyaan</th>
+																<th scope="col" style="width: 120px">Responden</th>
+																<th scope="col" style="width: 120px">Rata-rata</th>
+															</tr>
+														</thead>
+														<tbody>
+															<th:block th:with="counter = ${new int[]{0}}">
+																<tr th:each="item : ${entry.value}">
+																	<td>
+																		<center
+																			th:text="${counter[0] = counter[0] + 1}"
+																		>
+																			1
+																		</center>
+																	</td>
+																	<td th:text="${item.questionText}">
+																		Kebersihan ruang kelas
+																	</td>
+																	<td th:text="${item.totalResponden}">50</td>
+																	<td
+																		th:text="${item.rataRata != null} ? ${#numbers.formatDecimal(item.rataRata, 0, 'COMMA', 2, 'POINT')} : '0'"
+																	>
+																		4.2
+																	</td>
+																</tr>
+															</th:block>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+
+										<div
+											class="text-center text-muted py-4"
+											th:if="${#maps.isEmpty(sarprasPerCategory)}"
+										>
+											<em
+												>Belum ada data edom sarana &amp; prasarana untuk tahun akademik
+												ini.</em
+											>
+										</div>
+									</div>
+								</div>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
