@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html
 	lang="en"
 	xmlns:th="http://www.thymeleaf.org"
@@ -12,7 +12,9 @@
 		<style type="text/css">
 			.background-color-white {
 				background-color: white;
-				box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+				box-shadow:
+					0 2px 4px 0 rgba(0, 0, 0, 0.2),
+					0 3px 10px 0 rgba(0, 0, 0, 0.19);
 				border-radius: 10px;
 			}
 			.shape {
@@ -349,7 +351,7 @@
 										<h3
 											th:if="${dataSemester[3] != 'PENDEK'}"
 											class="mb-0"
-											th:text="${dataSemester[2] + ' ( Semester ' + (row.index + 1) + ')'}"
+											th:text="${dataSemester[2] + ' ( Semester ' + dataSemester[6] + ')'}"
 										>
 											Semester<b> 1</b>
 										</h3>
@@ -497,7 +499,7 @@
 	$(document).ready(function () {
 		$(".select-check:input:checkbox")
 			.each(function (index) {
-				this.checked = ".select-check:input:checkbox" < max_limit;
+				this.checked = index < max_limit;
 			})
 			.change(function () {
 				if ($(".select-check:input:checkbox:checked").length > max_limit) {

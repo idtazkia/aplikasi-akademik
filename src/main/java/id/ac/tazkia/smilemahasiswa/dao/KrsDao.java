@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -54,7 +55,25 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                         "order by b.kode_tahun_akademik", nativeQuery = true)
         List<Object[]> semesterTranskript1(String idMahasiswa);
 
-        @Query(value = "CAll getsemestertranskript(?1);", nativeQuery = true)
+        @Query(value = "(SELECT a.id, b.kode_tahun_akademik, b.nama_tahun_akademik, b.jenis, " +
+                        "CASE WHEN b.jenis = 'PENDEK' THEN 0 " +
+                        "ELSE (SELECT COUNT(*) FROM tahun_akademik ta " +
+                        "WHERE ta.jenis != 'PENDEK' AND ta.kode_tahun_akademik <= b.kode_tahun_akademik " +
+                        "AND EXISTS (SELECT 1 FROM krs k2 INNER JOIN krs_detail kd2 ON k2.id = kd2.id_krs " +
+                        "INNER JOIN jadwal j2 ON kd2.id_jadwal = j2.id " +
+                        "INNER JOIN matakuliah_kurikulum mk2 ON j2.id_matakuliah_kurikulum = mk2.id " +
+                        "WHERE k2.id_mahasiswa = ?1 AND k2.status = 'AKTIF' AND kd2.status = 'AKTIF' AND mk2.jumlah_sks > 0 "
+                        +
+                        "AND k2.id_tahun_akademik = ta.id)) " +
+                        "END AS row_num \n" +
+                        "FROM krs AS a \n" +
+                        "INNER JOIN krs_detail AS g ON a.id = g.id_krs \n" +
+                        "INNER JOIN jadwal AS h ON g.id_jadwal = h.id \n" +
+                        "INNER JOIN matakuliah_kurikulum AS i ON h.id_matakuliah_kurikulum = i.id \n" +
+                        "INNER JOIN tahun_akademik AS b ON a.id_tahun_akademik = b.id \n" +
+                        "WHERE a.status = 'AKTIF' AND g.status='AKTIF' AND i.jumlah_sks > 0 AND a.id_mahasiswa = ?1 GROUP BY a.id \n"
+                        +
+                        "ORDER BY b.kode_tahun_akademik)", nativeQuery = true)
         List<Object[]> semesterTranskript(String idMahasiswa);
 
         @Query(value = "(SELECT a.id, b.kode_tahun_akademik, b.nama_tahun_akademik, b.jenis, " +
@@ -70,7 +89,17 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
                         "    AND EXISTS (SELECT 1 FROM presensi_dosen pd WHERE pd.id_jadwal = j2.id AND pd.id_dosen = jd2.id_dosen AND pd.status = 'AKTIF')"
                         +
                         ") THEN 'UNDONE' ELSE 'DONE' END AS status_edom, " +
-                        "b.id as tahunId \n" +
+                        "b.id as tahunId, " +
+                        "CASE WHEN b.jenis = 'PENDEK' THEN 0 " +
+                        "ELSE (SELECT COUNT(*) FROM tahun_akademik ta " +
+                        "WHERE ta.jenis != 'PENDEK' AND ta.kode_tahun_akademik <= b.kode_tahun_akademik " +
+                        "AND EXISTS (SELECT 1 FROM krs k2 INNER JOIN krs_detail kd2 ON k2.id = kd2.id_krs " +
+                        "INNER JOIN jadwal j2 ON kd2.id_jadwal = j2.id " +
+                        "INNER JOIN matakuliah_kurikulum mk2 ON j2.id_matakuliah_kurikulum = mk2.id " +
+                        "WHERE k2.id_mahasiswa = ?1 AND k2.status = 'AKTIF' AND kd2.status = 'AKTIF' AND mk2.jumlah_sks > 0 "
+                        +
+                        "AND k2.id_tahun_akademik = ta.id)) " +
+                        "END AS nomor_semester \n" +
                         " FROM krs AS a \n" +
                         "INNER JOIN krs_detail AS g ON a.id = g.id_krs \n" +
                         "INNER JOIN jadwal AS h ON g.id_jadwal = h.id \n" +
