@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title th:text="${title}">Daftar Setting Approval Surat</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Daftar Setting Approval Surat
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col-xl-12 mb-5 mb-xl-0">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<div class="row align-items-center">
+									<div class="col-8">
+										<h3 class="mb-0">Daftar Setting Approval Surat</h3>
+									</div>
+									<div class="col-4 text-right">
+										<a th:href="@{/surat/setting-approval/form}" class="btn btn-primary btn-sm">
+											<i class="fas fa-plus"></i> Tambah Setting
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<!-- Filter Form -->
+							<div class="card-body border-bottom">
+								<form th:action="@{/surat/setting-approval/list}" method="get">
+									<div class="row">
+										<div class="col-md-8">
+											<div class="form-group">
+												<label for="jenisSurat">Jenis Surat</label>
+												<input
+													type="text"
+													class="form-control"
+													name="jenisSurat"
+													id="jenisSurat"
+													th:value="${jenisSurat}"
+													placeholder="Cari jenis surat..."
+												/>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>&nbsp;</label>
+												<div>
+													<button type="submit" class="btn btn-primary">
+														<i class="fas fa-search"></i> Cari
+													</button>
+													<a
+														th:href="@{/surat/setting-approval/list}"
+														class="btn btn-secondary"
+													>
+														<i class="fas fa-redo"></i> Reset
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+
+							<!-- Alert Messages -->
+							<div th:if="${success}" class="alert alert-success alert-dismissible fade show mx-3">
+								<span th:text="${success}"></span>
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+							</div>
+
+							<div th:if="${error}" class="alert alert-danger alert-dismissible fade show mx-3">
+								<span th:text="${error}"></span>
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+							</div>
+
+							<div class="table-responsive">
+								<table class="table align-items-center table-flush">
+									<thead class="thead-light">
+										<tr>
+											<th scope="col">No</th>
+											<th scope="col">Nama Setting</th>
+											<th scope="col">Jenis Surat</th>
+											<th scope="col" style="width: 15%;">Approver</th>
+											<th scope="col" style="width: 10%;">Status</th>
+											<th scope="col" style="width: 12%;">Tanggal Update</th>
+											<th scope="col" style="width: 15%;">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="setting, rowStat : ${data}">
+											<td th:text="${rowStat.index + 1 + (data.number * data.size)}"></td>
+											<td th:text="${setting.namaSetting}"></td>
+											<td th:text="${setting.jenisSurat}"></td>
+											<td th:text="${setting.karyawanApprover != null ? setting.karyawanApprover.namaKaryawan : '-'}"></td>
+											<td>
+												<span th:if="${setting.status == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).AKTIF}"
+													  class="badge badge-success">Aktif</span>
+												<span th:if="${setting.status == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).HAPUS}"
+													  class="badge badge-danger">Nonaktif</span>
+											</td>
+											<td th:text="${setting.tanggalUpdate != null ? #temporals.format(setting.tanggalUpdate, 'dd-MM-yyyy') : '-'}"></td>
+											<td>
+												<div class="btn-group" role="group" style="flex-wrap: wrap; gap: 5px;">
+													<a th:href="@{/surat/setting-approval/form/{id}(id=${setting.id})"
+													   class="btn btn-sm btn-info" style="min-width: 80px;">
+														<i class="fas fa-edit"></i> Edit
+													</a>
+													<form th:if="${setting.status == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).AKTIF}"
+														  th:action="@{/surat/setting-approval/delete/{id}(id=${setting.id})}"
+														  method="post"
+														  style="display: inline;"
+														  onsubmit="return confirm('Apakah Anda yakin ingin menonaktifkan setting approval ini?');">
+														<button type="submit" class="btn btn-sm btn-danger" style="min-width: 80px;">
+															<i class="fas fa-ban"></i> Nonaktif
+														</button>
+													</form>
+													<form th:if="${setting.status == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).HAPUS}"
+														  th:action="@{/surat/setting-approval/activate/{id}(id=${setting.id})}"
+														  method="post"
+														  style="display: inline;"
+														  onsubmit="return confirm('Apakah Anda yakin ingin mengaktifkan kembali setting approval ini?');">
+														<button type="submit" class="btn btn-sm btn-success" style="min-width: 80px;">
+															<i class="fas fa-check"></i> Aktifkan
+														</button>
+													</form>
+												</div>
+											</td>
+										</tr>
+										<tr th:if="${data.empty}">
+											<td colspan="7" class="text-center">Tidak ada data</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<!-- Pagination -->
+							<div class="card-footer py-4" th:if="${!data.isEmpty()}">
+								<nav aria-label="...">
+									<ul class="pagination justify-content-end mb-0">
+										<li
+											class="page-item"
+											th:classappend="${!data.hasPrevious()} ? 'disabled' : ''}"
+										>
+											<a
+												class="page-link"
+												th:href="@{/surat/setting-approval/list(page=${data.number - 1}, jenisSurat=${jenisSurat})}"
+												tabindex="-1"
+											>
+												<i class="fas fa-angle-left"></i>
+												<span class="sr-only">Previous</span>
+											</a>
+										</li>
+										<li
+											class="page-item"
+											th:classappend="${page == data.number ? 'active' : ''}"
+											th:each="page : ${#numbers.sequence(0, data.totalPages - 1)}"
+										>
+											<a
+												class="page-link"
+												th:href="@{/surat/setting-approval/list(page=${page}, jenisSurat=${jenisSurat})}"
+												th:text="${page + 1}"
+											>
+												1
+											</a>
+										</li>
+										<li
+											class="page-item"
+											th:classappend="${!data.hasNext()} ? 'disabled' : ''}"
+										>
+											<a
+												class="page-link"
+												th:href="@{/surat/setting-approval/list(page=${data.number + 1}, jenisSurat=${jenisSurat})}"
+											>
+												<i class="fas fa-angle-right"></i>
+												<span class="sr-only">Next</span>
+											</a>
+										</li>
+									</ul>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<footer class="footer">
+					<div class="row align-items-center justify-content-xl-between">
+						<div class="col-xl-6">
+							<div class="copyright text-center text-xl-left text-muted">
+								&copy; 2020 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Smile</a>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title th:text="${title}">Daftar Surat Keterangan Mahasiswa</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Daftar Surat Keterangan Mahasiswa
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<!-- Table -->
+				<div class="row">
+					<div class="col-xl-12 mb-5 mb-xl-0">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<div class="row align-items-center">
+									<div class="col-8">
+										<h3 class="mb-0">Daftar Surat Keterangan Mahasiswa</h3>
+									</div>
+								</div>
+							</div>
+
+							<!-- Filter Form -->
+							<div class="card-body border-bottom">
+								<form th:action="@{/surat/suratketerangan/list}" method="get">
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label for="nim">NIM Mahasiswa</label>
+												<input
+													type="text"
+													class="form-control"
+													name="nim"
+													id="nim"
+													th:value="${nim}"
+													placeholder="Masukkan NIM"
+												/>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label for="status">Status Approval</label>
+												<select
+													class="form-control"
+													name="status"
+													id="status"
+												>
+													<option value="">Semua Status</option>
+													<option value="WAITING" th:selected="${status == 'WAITING'}">Waiting</option>
+													<option value="APPROVED" th:selected="${status == 'APPROVED'}">Approved</option>
+													<option value="REJECTED" th:selected="${status == 'REJECTED'}">Rejected</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>&nbsp;</label>
+												<div>
+													<button type="submit" class="btn btn-primary">
+														<i class="fas fa-search"></i> Filter
+													</button>
+													<a
+														th:href="@{/surat/suratketerangan/list}"
+														class="btn btn-secondary"
+													>
+														<i class="fas fa-redo"></i> Reset
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+
+							<div class="table-responsive">
+								<!-- Projects table -->
+								<table class="table align-items-center table-flush">
+									<thead class="thead-light">
+										<tr>
+											<th scope="col">No.</th>
+											<th scope="col">Tanggal Pengajuan</th>
+											<th scope="col">NIM</th>
+											<th scope="col">Nama Mahasiswa</th>
+											<th scope="col">Prodi</th>
+											<th scope="col">Keperluan</th>
+											<th scope="col">Approver</th>
+											<th scope="col">Status Approval</th>
+											<th scope="col">Tanggal Approval</th>
+											<th scope="col">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="surat, rowStat : ${data}">
+											<td th:text="${rowStat.index + 1 + (data.number * data.size)}">-</td>
+											<td th:text="${#temporals.format(surat.tanggalDibuat, 'dd-MM-yyyy')}">-</td>
+											<td th:text="${surat.mahasiswa.nim}">-</td>
+											<td th:text="${surat.mahasiswa.nama}">-</td>
+											<td th:text="${surat.mahasiswa.idProdi.namaProdi}">-</td>
+											<td th:text="${surat.keperluan}">-</td>
+											<td>
+												<span th:if="${surat.userApproval != null}" th:text="${surat.userApproval.namaKaryawan}">-</span>
+												<span th:if="${surat.userApproval == null}" class="text-muted">Belum dipilih</span>
+											</td>
+											<td>
+												<span
+													class="badge badge-warning"
+													th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}"
+												>
+													<i class="fas fa-clock"></i> Waiting
+												</span>
+												<span
+													class="badge badge-success"
+													th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED'}"
+												>
+													<i class="fas fa-check"></i> Approved
+												</span>
+												<span
+													class="badge badge-danger"
+													th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'REJECTED'}"
+												>
+													<i class="fas fa-times"></i> Rejected
+												</span>
+											</td>
+											<td>
+												<span
+													th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED' and surat.tanggalApproval != null}"
+													th:text="${#temporals.format(surat.tanggalApproval, 'dd-MM-yyyy')}"
+												>
+													-
+												</span>
+												<span
+													th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}"
+													class="text-muted"
+												>
+													-
+												</span>
+												<span
+													th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'REJECTED'}"
+													class="text-danger"
+												>
+													-
+												</span>
+											</td>
+											<td>
+												<a
+													th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED'}"
+													th:href="@{/surat/suratketerangan/download/{id}(id=${surat.id})}"
+													class="btn btn-sm btn-success"
+												>
+													<i class="fas fa-download"></i>
+												</a>
+												<!-- Tombol Pilih Approver (muncul jika status WAITING) -->
+												<button
+													th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}"
+													class="btn btn-sm btn-primary"
+													data-toggle="modal"
+													th:data-target="'#assignApproverModal-' + ${surat.id}"
+												>
+													<i class="fas fa-user-plus"></i>
+												</button>
+												<form
+													th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}"
+													th:action="@{/surat/suratketerangan/approve/{id}(id=${surat.id})}"
+													method="post"
+													style="display: inline;"
+												>
+													<button
+														type="submit"
+														class="btn btn-sm btn-success"
+														onclick="return confirm('Approve surat keterangan ini?')"
+														th:disabled="${surat.userApproval == null}"
+														title="Pilih approver terlebih dahulu"
+													>
+														<i class="fas fa-check"></i>
+													</button>
+												</form>
+												<form
+													th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}"
+													th:action="@{/surat/suratketerangan/reject/{id}(id=${surat.id})}"
+													method="post"
+													style="display: inline;"
+												>
+													<button
+														type="submit"
+														class="btn btn-sm btn-danger"
+														onclick="return confirm('Reject surat keterangan ini?')"
+													>
+														<i class="fas fa-times"></i>
+													</button>
+												</form>
+											</td>
+										</tr>
+										<tr th:if="${data.isEmpty()}">
+											<td colspan="10" class="text-center">Tidak ada data</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<!-- Pagination -->
+							<div class="card-footer py-4" th:if="${!data.isEmpty()}">
+								<nav aria-label="...">
+									<ul class="pagination justify-content-end mb-0">
+										<li
+											class="page-item"
+											th:classappend="${!data.hasPrevious() ? 'disabled' : ''}"
+										>
+											<a
+												class="page-link"
+												th:href="@{/surat/suratketerangan/list(page=${data.number - 1}, nim=${nim}, status=${status})}"
+												tabindex="-1"
+											>
+												<i class="fas fa-angle-left"></i>
+												<span class="sr-only">Previous</span>
+											</a>
+										</li>
+										<li
+											class="page-item"
+											th:classappend="${page == data.number ? 'active' : ''}"
+											th:each="page : ${#numbers.sequence(0, data.totalPages - 1)}"
+										>
+											<a
+												class="page-link"
+												th:href="@{/surat/suratketerangan/list(page=${page}, nim=${nim}, status=${status})}"
+												th:text="${page + 1}"
+											>
+												1
+											</a>
+										</li>
+										<li
+											class="page-item"
+											th:classappend="${!data.hasNext() ? 'disabled' : ''}"
+										>
+											<a
+												class="page-link"
+												th:href="@{/surat/suratketerangan/list(page=${data.number + 1}, nim=${nim}, status=${status})}"
+											>
+												<i class="fas fa-angle-right"></i>
+												<span class="sr-only">Next</span>
+											</a>
+										</li>
+									</ul>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Modal Assign Approver untuk setiap surat -->
+				<div th:each="surat : ${data}">
+					<div class="modal fade"
+						 th:id="'assignApproverModal-' + ${surat.id}"
+						 tabindex="-1"
+						 role="dialog"
+						 th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'WAITING'}">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<form th:action="@{/surat/suratketerangan/assign/{id}(id=${surat.id})}" method="post">
+									<div class="modal-header">
+										<h5 class="modal-title">Pilih Approver</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="alert alert-info">
+											<i class="fas fa-info-circle"></i>
+											Pilih karyawan yang akan menyetujui surat keterangan mahasiswa ini.
+										</div>
+										<div class="form-group">
+											<label for="idKaryawan">Karyawan Approver <span class="text-danger">*</span></label>
+											<select class="form-control"
+														name="idKaryawan"
+														id="idKaryawan"
+														required>
+												<option value="">-- Pilih Karyawan --</option>
+												<option th:each="karyawan : ${listKaryawan}"
+														th:value="${karyawan.id}"
+														th:text="${karyawan.namaKaryawan}"
+														th:selected="${surat.userApproval != null and surat.userApproval.id == karyawan.id}">
+												</option>
+											</select>
+											<small class="form-text text-muted">
+												Karyawan yang dipilih akan bertindak sebagai approver surat.
+											</small>
+										</div>
+										<div class="form-group">
+											<label>Informasi Mahasiswa:</label>
+											<div class="card bg-light">
+												<div class="card-body">
+													<p><strong>NIM:</strong> <span th:text="${surat.mahasiswa.nim}">-</span></p>
+													<p><strong>Nama:</strong> <span th:text="${surat.mahasiswa.nama}">-</span></p>
+													<p><strong>Prodi:</strong> <span th:text="${surat.mahasiswa.idProdi.namaProdi}">-</span></p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+										<button type="submit" class="btn btn-primary">
+											<i class="fas fa-save"></i> Simpan
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<footer class="footer">
+					<div class="row align-items-center justify-content-xl-between">
+						<div class="col-xl-6">
+							<div class="copyright text-center text-xl-left text-muted">
+								&copy; 2020 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Smile</a>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>

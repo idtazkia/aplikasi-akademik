@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title th:text="${title}">Form Setting Approval</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Form Setting Approval
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col-xl-12 mb-5 mb-xl-0">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<div class="row align-items-center">
+									<div class="col-8">
+										<h3 class="mb-0" th:text="${title}">Form Setting Approval</h3>
+									</div>
+									<div class="col-4 text-right">
+										<a th:href="@{/surat/setting-approval/list}" class="btn btn-secondary btn-sm">
+											<i class="fas fa-arrow-left"></i> Kembali
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<!-- Alert Messages -->
+							<div th:if="${success}" class="alert alert-success alert-dismissible fade show mx-3 mt-3">
+								<span th:text="${success}"></span>
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+							</div>
+
+							<div th:if="${error}" class="alert alert-danger alert-dismissible fade show mx-3 mt-3">
+								<span th:text="${error}"></span>
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+							</div>
+
+							<div class="card-body">
+								<div th:if="${setting != null}">
+									<form th:action="@{/surat/setting-approval/save}" method="post">
+										<input type="hidden" name="id" th:value="${setting.id != null ? setting.id : ''}">
+
+										<div class="form-group">
+											<label for="namaSetting">Nama Setting <span class="text-danger">*</span></label>
+											<input type="text"
+												   class="form-control"
+												   id="namaSetting"
+												   name="namaSetting"
+												   th:value="${setting.namaSetting}"
+												   required
+												   placeholder="Masukkan nama setting approval">
+											<small class="form-text text-muted">Contoh: Approval Surat Keterangan Mahasiswa</small>
+										</div>
+
+										<div class="form-group">
+											<label for="jenisSurat">Jenis Surat <span class="text-danger">*</span></label>
+											<input type="text"
+												   class="form-control"
+												   id="jenisSurat"
+												   name="jenisSurat"
+												   th:value="${setting.jenisSurat}"
+												   required
+												   placeholder="Masukkan jenis surat">
+											<small class="form-text text-muted">Contoh: SURAT_KETERANGAN_MAHASISWA</small>
+										</div>
+
+										<div class="form-group">
+											<label for="idKaryawanApprover">Approver <span class="text-danger">*</span></label>
+											<select class="form-control"
+													id="idKaryawanApprover"
+													name="idKaryawanApprover"
+													required>
+												<option value="">-- Pilih Approver --</option>
+												<option th:each="karyawan : ${listKaryawan}"
+														th:value="${karyawan.id}"
+														th:text="${karyawan.namaKaryawan}"
+														th:selected="${setting.karyawanApprover != null and setting.karyawanApprover.id == karyawan.id}">
+												</option>
+											</select>
+											<small class="form-text text-muted">Pilih karyawan yang akan menjadi approver untuk surat ini</small>
+										</div>
+
+										<div class="form-group">
+											<button type="submit" name="action" value="save" class="btn btn-primary">
+												<i class="fas fa-save"></i> Simpan
+											</button>
+											<button type="submit" name="action" value="saveAndNew" class="btn btn-success">
+												<i class="fas fa-plus"></i> Simpan & Tambah Lagi
+											</button>
+											<a th:href="@{/surat/setting-approval/list}" class="btn btn-secondary">
+												<i class="fas fa-times"></i> Batal
+											</a>
+										</div>
+									</form>
+								</div>
+								<div th:if="${setting == null}" class="alert alert-danger">
+									Error: Setting tidak ditemukan. <a th:href="@{/surat/setting-approval/list}">Kembali ke daftar</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<footer class="footer">
+					<div class="row align-items-center justify-content-xl-between">
+						<div class="col-xl-6">
+							<div class="copyright text-center text-xl-left text-muted">
+								&copy; 2020 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Smile</a>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>
