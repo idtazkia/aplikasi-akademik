@@ -562,4 +562,218 @@ public class FeederPesertaKelasController {
                     "message", "Internal server error: " + e.getMessage()));
         }
     }
+
+    /**
+     * Verify dan repair peserta kelas yang flag-nya AKTIF tapi ga ada di Feeder
+     * POST /api/feeder/verify-repair/peserta-kelas?tahunAkademik=xxx&prodi=yyy
+     * 
+     * Endpoint ini berguna untuk:
+     * - Memverifikasi peserta yang status lokal = AKTIF benar-benar ada di Feeder
+     * - Jika tidak ada di Feeder, akan di-insert ulang (repair)
+     * - Jika ada di Feeder tapi status lokal bukan AKTIF, akan di-update (sync flag)
+     */
+    @PostMapping("/verify-repair/peserta-kelas")
+    public ResponseEntity<SyncResult<String>> verifyAndRepairPesertaKelas(
+            @RequestParam String tahunAkademik,
+            @RequestParam String prodi) {
+
+        log.info("Verify & repair peserta kelas - tahunAkademik: {}, prodi: {}", tahunAkademik, prodi);
+
+        try {
+            TahunAkademik ta = tahunAkademikDao.findById(tahunAkademik).orElse(null);
+            Prodi p = prodiDao.findById(prodi).orElse(null);
+
+            if (ta == null || p == null) {
+                return ResponseEntity.badRequest().body(SyncResult.<String>builder()
+                        .entityName("PesertaKelas")
+                        .errors(List.of("Tahun akademik atau prodi tidak ditemukan"))
+                        .build());
+            }
+
+            List<Jadwal> jadwals = jadwalDao
+                    .findByTahunAkademikAndProdiAndHariNotNullAndStatus(ta, p, StatusRecord.AKTIF)
+                    .stream()
+                    .filter(Jadwal::isKelasSyncedToFeeder)
+                    .collect(Collectors.toList());
+
+            if (jadwals.isEmpty()) {
+                return ResponseEntity.ok(SyncResult.<String>builder()
+                        .entityName("PesertaKelas")
+                        .matchedCount(0)
+                        .mismatchedCount(0)
+                        .build());
+            }
+
+            // Collect all NIMs and build jadwal-peserta map
+            List<String> allUniqueNims = new ArrayList<>();
+            Map<String, List<KrsDetail>> jadwalPesertaMap = new HashMap<>();
+
+            for (Jadwal jadwal : jadwals) {
+                List<KrsDetail> pesertaList = krsDetailDao.findByJadwalAndStatus(jadwal, StatusRecord.AKTIF);
+                jadwalPesertaMap.put(jadwal.getId(), pesertaList);
+
+                pesertaList.stream()
+                        .filter(krs -> krs.getMahasiswa() != null)
+                        .map(krs -> krs.getMahasiswa().getNim())
+                        .filter(nim -> nim != null && !nim.trim().isEmpty())
+                        .map(String::trim)
+                        .forEach(nim -> {
+                            if (!allUniqueNims.contains(nim)) {
+                                allUniqueNims.add(nim);
+                            }
+                        });
+            }
+
+            // Batch fetch ALL id_registrasi_mahasiswa
+            log.info("Batch fetching {} mahasiswa from Feeder", allUniqueNims.size());
+            Map<String, String> mahasiswaCache = allUniqueNims.isEmpty()
+                    ? new HashMap<>()
+                    : feederService.getAllMahasiswaByNims(allUniqueNims);
+            log.info("Found {} mahasiswa in Feeder", mahasiswaCache.size());
+
+            // Batch fetch existing peserta from Feeder
+            List<String> allKelasIds = jadwals.stream()
+                    .map(Jadwal::getIdKelasKuliahFeeder)
+                    .collect(Collectors.toList());
+
+            log.info("Batch fetching existing peserta for {} kelas from Feeder", allKelasIds.size());
+            Map<String, List<String>> existingPesertaMap = feederService.getExistingPesertaKelasByKelas(allKelasIds);
+            log.info("Found existing peserta for {} kelas", existingPesertaMap.size());
+
+            int repairedCount = 0;
+            int alreadyOkCount = 0;
+            int flagFixedCount = 0;
+            int failedCount = 0;
+            int notInFeederCount = 0;
+            List<String> errorMessages = new ArrayList<>();
+            List<String> repairedItems = new ArrayList<>();
+
+            for (Jadwal jadwal : jadwals) {
+                String idKelasKuliah = jadwal.getIdKelasKuliahFeeder();
+                List<String> existingMahasiswaIds = existingPesertaMap.getOrDefault(idKelasKuliah, new ArrayList<>());
+
+                List<KrsDetail> pesertaList = jadwalPesertaMap.get(jadwal.getId());
+
+                for (KrsDetail krs : pesertaList) {
+                    try {
+                        if (krs.getMahasiswa() == null) {
+                            continue;
+                        }
+
+                        String nim = krs.getMahasiswa().getNim();
+                        if (nim == null || nim.trim().isEmpty()) {
+                            continue;
+                        }
+                        nim = nim.trim();
+
+                        String idRegistrasiMahasiswa = mahasiswaCache.get(nim);
+                        if (idRegistrasiMahasiswa == null) {
+                            notInFeederCount++;
+                            continue;
+                        }
+
+                        boolean localFlagAktif = krs.isSyncedToFeeder();
+                        boolean existsInFeeder = existingMahasiswaIds.contains(idRegistrasiMahasiswa);
+
+                        if (existsInFeeder && localFlagAktif) {
+                            alreadyOkCount++;
+                            continue;
+                        }
+
+                        if (existsInFeeder && !localFlagAktif) {
+                            krs.setStatusFeeder(StatusRecord.AKTIF);
+                            krsDetailDao.save(krs);
+                            flagFixedCount++;
+                            log.info("Fixed local flag for peserta - kelas: {}, nim: {}", idKelasKuliah, nim);
+                            continue;
+                        }
+
+                        if (!existsInFeeder) {
+                            log.info("Repairing missing peserta - kelas: {}, nim: {}, localFlag: {}", 
+                                    idKelasKuliah, nim, localFlagAktif);
+                            
+                            FeederResponse<String> response = feederService.insertPesertaKelasKuliah(
+                                    idKelasKuliah,
+                                    idRegistrasiMahasiswa);
+
+                            if (response.isSuccess()) {
+                                krs.setStatusFeeder(StatusRecord.AKTIF);
+                                krsDetailDao.save(krs);
+                                repairedCount++;
+                                String item = String.format("%s - %s (%s)", 
+                                        jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah(),
+                                        nim, 
+                                        krs.getMahasiswa().getNama());
+                                repairedItems.add(item);
+                                log.info("Repaired peserta - kelas: {}, nim: {}", idKelasKuliah, nim);
+                            } else {
+                                failedCount++;
+                                String errorMsg = String.format("Failed repair peserta %s: %s", nim, response.getErrorDesc());
+                                errorMessages.add(errorMsg);
+                                log.error(errorMsg);
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        failedCount++;
+                        String errorMsg = String.format("Error repairing peserta: %s", e.getMessage());
+                        errorMessages.add(errorMsg);
+                        log.error(errorMsg, e);
+                    }
+                }
+            }
+
+            log.info("Verify & repair peserta selesai - repaired: {}, alreadyOk: {}, flagFixed: {}, failed: {}, notInFeeder: {}",
+                    repairedCount, alreadyOkCount, flagFixedCount, failedCount, notInFeederCount);
+
+            SyncResult<String> result = SyncResult.<String>builder()
+                    .entityName("PesertaKelas")
+                    .matchedCount(alreadyOkCount)
+                    .mismatchedCount(failedCount)
+                    .skippedCount(notInFeederCount)
+                    .build();
+
+            result.setTotalData(repairedCount + alreadyOkCount + flagFixedCount + failedCount + notInFeederCount);
+
+            if (!repairedItems.isEmpty()) {
+                List<SyncResult.SyncItem<String>> repairedSyncItems = new ArrayList<>();
+                for (String item : repairedItems.size() > 50 ? repairedItems.subList(0, 50) : repairedItems) {
+                    SyncResult.SyncItem<String> syncItem = new SyncResult.SyncItem<>();
+                    syncItem.setDifferences(Arrays.asList("REPAIRED: " + item));
+                    repairedSyncItems.add(syncItem);
+                }
+                result.setMissingInFeeder(repairedSyncItems);
+            }
+
+            if (!errorMessages.isEmpty()) {
+                List<SyncResult.SyncItem<String>> mismatchedItems = new ArrayList<>();
+                for (String errorMsg : errorMessages.size() > 20 ? errorMessages.subList(0, 20) : errorMessages) {
+                    SyncResult.SyncItem<String> item = new SyncResult.SyncItem<>();
+                    item.setDifferences(Arrays.asList(errorMsg));
+                    mismatchedItems.add(item);
+                }
+                result.setMismatched(mismatchedItems);
+            }
+
+            // Add summary info
+            Map<String, Object> summary = new HashMap<>();
+            summary.put("repaired", repairedCount);
+            summary.put("alreadyOk", alreadyOkCount);
+            summary.put("flagFixed", flagFixedCount);
+            summary.put("failed", failedCount);
+            summary.put("notInFeeder", notInFeederCount);
+            result.setSummary(String.format(
+                    "✅ PesertaKelas verified: %d repaired, %d already OK, %d flag fixed, %d failed, %d mhs not in Feeder",
+                    repairedCount, alreadyOkCount, flagFixedCount, failedCount, notInFeederCount));
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("Error in verify & repair peserta kelas", e);
+            return ResponseEntity.internalServerError().body(SyncResult.<String>builder()
+                    .entityName("PesertaKelas")
+                    .errors(List.of("Internal server error: " + e.getMessage()))
+                    .build());
+        }
+    }
 }
