@@ -234,6 +234,7 @@ public class SuratKeteranganMahasiswaService {
             BufferedImage qrImage = qrBarcode(verificationUrl, 120);
             Image qrPdfImage = Image.getInstance(qrImage, null);
             qrPdfImage.scaleAbsolute(70, 70);
+            qrPdfImage.setSpacingBefore(10f);
             rightCell.addElement(qrPdfImage);
         } catch (Exception e) {
             log.error("Gagal buat QR Code: {}", e.getMessage());
