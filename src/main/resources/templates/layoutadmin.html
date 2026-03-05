@@ -1357,6 +1357,15 @@
 											>Surat Penelitian</a
 										>
 									</li>
+									<li
+										class="nav-item"
+										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')"
+									>
+										<a th:href="@{/surat/approval/list}" class="nav-link">
+											<i class="ni ni-single-02 text-success"></i>
+											Approval Surat
+										</a>
+									</li>
 								</ul>
 							</div>
 						</li>

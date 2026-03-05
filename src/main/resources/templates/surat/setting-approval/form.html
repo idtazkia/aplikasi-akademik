@@ -94,18 +94,19 @@
 
 										<div class="form-group">
 											<label for="idKaryawanApprover">Approver <span class="text-danger">*</span></label>
-											<select class="form-control"
+											<select class="form-control js-example-placeholder-single"
 													id="idKaryawanApprover"
 													name="idKaryawanApprover"
+													style="width: 100%!important;"
 													required>
 												<option value="">-- Pilih Approver --</option>
 												<option th:each="karyawan : ${listKaryawan}"
 														th:value="${karyawan.id}"
-														th:text="${karyawan.namaKaryawan}"
+														th:text="${karyawan.namaKaryawan + (karyawan.nik != null ? ' (' + karyawan.nik + ')' : '')}"
 														th:selected="${setting.karyawanApprover != null and setting.karyawanApprover.id == karyawan.id}">
 												</option>
 											</select>
-											<small class="form-text text-muted">Pilih karyawan yang akan menjadi approver untuk surat ini</small>
+											<small class="form-text text-muted">Pilih karyawan yang akan menjadi approver</small>
 										</div>
 
 										<div class="form-group">
@@ -141,5 +142,16 @@
 				</footer>
 			</div>
 		</div>
+		<th:block layout:fragment="script">
+			<script>
+				$(document).ready(function() {
+					$("#idKaryawanApprover").select2({
+						placeholder: '-- Pilih Approver --',
+						allowClear: true,
+						dropdownParent: $('.card-body')
+					});
+				});
+			</script>
+		</th:block>
 	</body>
 </html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Approval Surat Keterangan Mahasiswa</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Approval Surat Keterangan Mahasiswa
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col-xl-12 mb-5 mb-xl-0">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<h3 class="mb-0">Daftar Permohonan Surat Keterangan Mahasiswa</h3>
+							</div>
+
+							<!-- Alert Messages -->
+							<div th:if="${success}" class="alert alert-success alert-dismissible fade show mx-3 mt-3">
+								<span th:text="${success}"></span>
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+							</div>
+
+							<div th:if="${error}" class="alert alert-danger alert-dismissible fade show mx-3 mt-3">
+								<span th:text="${error}"></span>
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+							</div>
+
+							<div class="card-body">
+								<!-- Filter -->
+								<form th:action="@{/surat/approval/list}" method="get" class="mb-3">
+									<div class="row">
+										<div class="col-md-4">
+											<label>Filter Status:</label>
+											<select name="status" class="form-control">
+												<option value="">Semua Status</option>
+												<option value="WAITING" th:selected="${status == 'WAITING'}">Menunggu Approval</option>
+												<option value="APPROVED" th:selected="${status == 'APPROVED'}">Disetujui</option>
+												<option value="HAPUS" th:selected="${status == 'HAPUS'}">Ditolak</option>
+											</select>
+										</div>
+										<div class="col-md-2">
+											<button type="submit" class="btn btn-primary mt-4">
+												<i class="fas fa-filter"></i> Filter
+											</button>
+										</div>
+										<div class="col-md-6 text-right mt-4">
+											<button type="button" onclick="location.href='/surat/approval/list'" class="btn btn-secondary">
+												<i class="fas fa-sync"></i> Refresh
+											</button>
+										</div>
+									</div>
+								</form>
+
+								<!-- Table -->
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th>No</th>
+												<th>Tanggal Pengajuan</th>
+												<th>NIM</th>
+												<th>Nama Mahasiswa</th>
+												th>Prodi</th>
+												<th>Keterangan</th>
+												<th>Status Approval</th>
+												th>Tanggal Approval</th>
+												th>Aksi</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="surat, stat : ${data}">
+												<td th:text="${stat.count + (data.number * data.size) - data.size + 1}"></td>
+												<td th:text="${#temporals.format(surat.tanggalDibuat, 'dd-MM-yyyy')}"></td>
+												<td th:text="${surat.mahasiswa.nim}"></td>
+												<td th:text="${surat.mahasiswa.nama}"></td>
+												<td th:text="${surat.mahasiswa.idProdi != null ? surat.mahasiswa.idProdi.namaProdi : '-'}"></td>
+												<td th:text="${surat.keperluan}"></td>
+												<td>
+													<span th:if="${surat.statusApproval.name() == 'WAITING'}"
+														  class="badge badge-warning">Menunggu Approval</span>
+													<span th:if="${surat.statusApproval.name() == 'APPROVED'}"
+														  class="badge badge-success">Disetujui</span>
+													<span th:if="${surat.statusApproval.name() == 'HAPUS'}"
+														  class="badge badge-danger">Ditolak</span>
+												</td>
+												<td th:text="${surat.tanggalApproval != null ? #temporals.format(surat.tanggalApproval, 'dd-MM-yyyy') : '-'}"></td>
+												<td>
+													<a th:href="@{/surat/approval/detail/{id}(id=${surat.id})}" class="btn btn-info btn-sm">
+														<i class="fas fa-eye"></i> Detail
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<!-- Pagination -->
+								<div th:if="${data.totalPages > 1}" class="mt-3">
+									<nav aria-label="Page navigation">
+										<ul class="pagination">
+											<li th:class="${data.isFirst() ? 'page-item disabled' : 'page-item'}">
+												<a th:if="${!data.isFirst()}"
+												   th:href="@{/surat/approval/list(page=0)}">First</a>
+												<span th:if="${data.isFirst()}">First</span>
+											</li>
+											<li th:class="${!data.hasPrevious() ? 'page-item disabled' : 'page-item'}">
+												<a th:if="${data.hasPrevious()}"
+												   th:href="@{/surat/approval/list(page=${data.number - 1})}">Previous</a>
+												<span th:if="${!data.hasPrevious()}">Previous</span>
+											</li>
+											<li th:each="i : ${#numbers.sequence(0, data.totalPages - 1)}"
+											    th:class="${i == data.number} ? 'page-item active' : 'page-item'}">
+												<a th:if="${i != data.number}"
+												   th:href="@{/surat/approval/list(page=${i})}" th:text="${i + 1}"></a>
+												<span th:if="${i == data.number}" th:text="${i + 1}"></span>
+											</li>
+											<li th:class="${!data.hasNext() ? 'page-item disabled' : 'page-item'}">
+												<a th:if="${data.hasNext()}"
+												   th:href="@{/surat/approval/list(page=${data.number + 1})}">Next</a>
+												<span th:if="${!data.hasNext()}">Next</span>
+											</li>
+											<li th:class="${data.isLast() ? 'page-item disabled' : 'page-item'}">
+												<a th:if="${!data.isLast()}"
+												   th:href="@{/surat/approval/list(page=${data.totalPages - 1})}">Last</a>
+												<span th:if="${data.isLast()}">Last</span>
+											</li>
+										</ul>
+									</nav>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

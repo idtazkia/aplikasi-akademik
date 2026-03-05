@@ -131,15 +131,29 @@
                                         <td th:text="${#temporals.format(surat.tanggalDibuat, 'dd-MM-yyyy')}">-</td>
                                         <td th:text="${surat.keperluan}">-</td>
                                         <td>
-                                            <span class="badge badge-success">
-                                                <i class="fa fa-check-circle"></i> Siap diunduh
+                                            <span class="badge badge-warning" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'WAITING'}">
+                                                <i class="fa fa-clock"></i> Menunggu Approval
+                                            </span>
+                                            <span class="badge badge-warning" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'WAITING'}">
+                                                <i class="fa fa-clock"></i> Menunggu Approval
+                                            </span>
+                                            <span class="badge badge-success" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'APPROVED'}">
+                                                <i class="fa fa-check-circle"></i> Disetujui
+                                            </span>
+                                            <span class="badge badge-danger" th:if="${surat.statusApproval != null and surat.statusApproval.name() == 'HAPUS'}">
+                                                <i class="fa fa-times-circle"></i> Ditolak
                                             </span>
                                         </td>
                                         <td>
-                                            <a th:href="@{/surat/keterangan/download/{id}(id=${surat.id})}"
+                                            <a th:if="${surat.statusApproval == null or surat.statusApproval.name() == 'APPROVED'}"
+                                               th:href="@{/surat/keterangan/download/{id}(id=${surat.id})}"
                                                class="btn btn-success btn-sm">
                                                 <i class="fa fa-download"></i> Download
                                             </a>
+                                            <span th:if="${surat.statusApproval != null and (surat.statusApproval.name() == 'WAITING' or surat.statusApproval.name() == 'WAITING')}"
+                                                  class="text-muted">
+                                                <i class="fa fa-lock"></i> Menunggu Approval
+                                            </span>
                                         </td>
                                     </tr>
                                     </tbody>

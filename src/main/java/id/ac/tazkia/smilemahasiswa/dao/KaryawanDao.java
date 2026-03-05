@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.karyawan.KaryawanDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
@@ -28,6 +29,11 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
 
     Page<Karyawan> findByStatusOrderByNamaKaryawan(StatusRecord aktif, Pageable page);
 
+    List<Karyawan> findByStatusOrderByNamaKaryawan(StatusRecord aktif);
+
+    @Query("SELECT k FROM Karyawan k WHERE k.status = :status AND (k.idUser IS NULL OR k.idUser.id IS NOT NULL) AND (k.idUser IS NULL OR k.idUser.id != '') AND (k.idUser IS NULL OR k.idUser.id != '-') ORDER BY k.namaKaryawan")
+    List<Karyawan> findActiveKaryawanWithValidUser(@Param("status") StatusRecord status);
+
     @Query(value = "SELECT COALESCE(id_absen,0) + 1 AS id_absen FROM karyawan ORDER BY id_absen DESC LIMIT 1" , nativeQuery = true)
     Integer cariIDAbesen();
 
@@ -40,5 +46,7 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
             "order by nama_karyawan asc", nativeQuery = true)
     List<KaryawanIntDto> apiGetKaryawan();
 
+    @Query("SELECT new id.ac.tazkia.smilemahasiswa.dto.karyawan.KaryawanDto(k.id, k.namaKaryawan, k.nik) FROM Karyawan k WHERE k.status = :status AND (k.idUser IS NULL OR k.idUser.id IS NOT NULL) AND (k.idUser IS NULL OR k.idUser.id != '') AND (k.idUser IS NULL OR k.idUser.id != '-') AND (LOWER(k.namaKaryawan) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(k.nik) LIKE LOWER(CONCAT('%', :search, '%'))) ORDER BY k.namaKaryawan")
+    List<KaryawanDto> searchKaryawanWithValidUser(@Param("status") StatusRecord status, @Param("search") String search);
 
 }

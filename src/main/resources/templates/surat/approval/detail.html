@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Detail Permohonan Surat</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Detail Permohonan Surat Keterangan Mahasiswa
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<div class="row">
+					<div class="col-xl-12 mb-5 mb-xl-0">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<h3 class="mb-0">Detail Permohonan Surat</h3>
+							</div>
+
+							<div class="card-body" th:if="${surat != null}">
+								<!-- Info Mahasiswa -->
+								<div class="row mb-4">
+									<div class="col-md-6">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title">Informasi Mahasiswa</h5>
+											</div>
+											<div class="card-body">
+												<table class="table">
+													<tr>
+														<th width="30%">NIM</th>
+														<td th:text="${surat.mahasiswa.nim}"></td>
+													</tr>
+													<tr>
+														<th>Nama Lengkap</th>
+														<td th:text="${surat.mahasiswa.nama}"></td>
+													</tr>
+													<tr>
+														<th>Program Studi</th>
+														<td th:text="${surat.mahasiswa.idProdi != null ? surat.mahasiswa.idProdi.namaProdi : '-'}"></td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title">Informasi Permohonan</h5>
+											</div>
+											<div class="card-body">
+												<table class="table">
+													<tr>
+														<th width="30%">Tanggal Pengajuan</th>
+														<td th:text="${#temporals.format(surat.tanggalDibuat, 'dd MMMM yyyy HH:mm')}"></td>
+													</tr>
+													<tr>
+														th>Keterangan</th>
+														<td th:text="${surat.keperluan}"></td>
+													</tr>
+													<tr>
+														<th>Status Surat</th>
+														<td>
+															<span th:if="${surat.status.name() == 'AKTIF'}"
+																  class="badge badge-success">Aktif</span>
+															<span th:if="${surat.status.name() == 'HAPUS'}"
+																  class="badge badge-danger">Dihapus</span>
+														</td>
+													</tr>
+													<tr>
+														th>Status Approval</th>
+														<td>
+															<span th:if="${surat.statusApproval.name() == 'WAITING'}"
+																  class="badge badge-warning">Menunggu Approval</span>
+															<span th:if="${surat.statusApproval.name() == 'APPROVED'}"
+																  class="badge badge-success">Disetujui</span>
+															<span th:if="${surat.statusApproval.name() == 'HAPUS'}"
+																  class="badge badge-danger">Ditolak</span>
+														</td>
+													</tr>
+													<tr th:if="${surat.tanggalApproval != null}">
+														<th>Tanggal Approval</th>
+														<td th:text="${#temporals.format(surat.tanggalApproval, 'dd MMMM yyyy HH:mm')}"></td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Action Buttons -->
+								<div class="row" th:if="${surat.statusApproval.name() == 'WAITING'}">
+									<div class="col-12">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title">Aksi Approval</h5>
+											</div>
+											<div class="card-body">
+												<form th:action="@{/surat/approval/approve/{id}(id=${surat.id})}" method="post" class="d-inline mr-2">
+													<button type="submit" class="btn btn-success"
+															onclick="return confirm('Apakah Anda yakin ingin menyetujui permohonan ini?')">
+														<i class="fas fa-check"></i> Setujui Permohonan
+													</button>
+												</form>
+
+												<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">
+													<i class="fas fa-times"></i> Tolak Permohonan
+												</button>
+
+												<a th:href="@{/surat/approval/list}" class="btn btn-secondary">
+													<i class="fas fa-arrow-left"></i> Kembali
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Back Button -->
+								<div class="row" th:if="${surat.statusApproval.name() != 'WAITING'}">
+									<div class="col-12 text-center">
+										<a th:href="@{/surat/approval/list}" class="btn btn-secondary">
+											<i class="fas fa-arrow-left"></i> Kembali ke Daftar
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Reject -->
+		<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="rejectModalLabel">Tolak Permohonan</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form th:action="@{/surat/approval/reject/{id}(id=${surat.id})}" method="post">
+							<div class="form-group">
+								<label for="alasan">Alasan Penolakan <span class="text-danger">*</span></label>
+								<textarea class="form-control"
+										  id="alasan"
+										  name="alasan"
+										  rows="3"
+										  placeholder="Masukkan alasan penolakan..."
+										  required></textarea>
+								<small class="form-text text-muted">Jelaskan mengapa permohonan ini ditolak</small>
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn btn-danger">
+									<i class="fas fa-times"></i> Tolak Permohonan
+								</button>
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">
+									<i class="fas fa-ban"></i> Batal
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

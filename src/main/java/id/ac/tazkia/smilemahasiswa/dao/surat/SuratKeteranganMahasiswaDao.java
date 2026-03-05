@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao.surat;
 
+import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.surat.SuratKeteranganMahasiswa;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,13 @@ public interface SuratKeteranganMahasiswaDao extends JpaRepository<SuratKeterang
     List<SuratKeteranganMahasiswa> findByMahasiswaNimOrderByTanggalDibuatDesc(String nim);
 
     List<SuratKeteranganMahasiswa> findByStatusOrderByTanggalDibuatDesc(String status);
+
+    // Filter by approver (karyawan yang login)
+    Page<SuratKeteranganMahasiswa> findByUserApprovalOrderByTanggalDibuatDesc(Karyawan userApproval, Pageable pageable);
+
+    // Filter by approver and status approval
+    @Query("SELECT skm FROM SuratKeteranganMahasiswa skm WHERE skm.userApproval = :userApproval AND skm.statusApproval = :statusApproval")
+    Page<SuratKeteranganMahasiswa> findByUserApprovalAndStatusApprovalOrderByTanggalDibuatDesc(@Param("userApproval") Karyawan userApproval, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
 
     // Filter by prodi for KPS
     @Query("SELECT skm FROM SuratKeteranganMahasiswa skm WHERE skm.mahasiswa.idProdi = :prodi")

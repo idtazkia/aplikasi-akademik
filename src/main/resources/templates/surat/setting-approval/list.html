@@ -128,8 +128,7 @@
 											<td th:text="${setting.tanggalUpdate != null ? #temporals.format(setting.tanggalUpdate, 'dd-MM-yyyy') : '-'}"></td>
 											<td>
 												<div class="btn-group" role="group" style="flex-wrap: wrap; gap: 5px;">
-													<a th:href="@{/surat/setting-approval/form/{id}(id=${setting.id})"
-													   class="btn btn-sm btn-info" style="min-width: 80px;">
+													<a th:href="@{/surat/setting-approval/form/{id}(id=${setting.id})}" class="btn btn-sm btn-info" style="min-width: 80px;">
 														<i class="fas fa-edit"></i> Edit
 													</a>
 													<form th:if="${setting.status == T(id.ac.tazkia.smilemahasiswa.entity.StatusRecord).AKTIF}"
