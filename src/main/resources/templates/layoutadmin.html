@@ -13,7 +13,7 @@
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
-<!DOCTYPE html>
+<!doctype html>
 <html
 	lang="en"
 	xmlns:th="http://www.thymeleaf.org"
@@ -487,7 +487,6 @@
 							</div>
 						</li>
 
-
 						<li
 							class="nav-item"
 							sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_BEASISWA') or hasAuthority('VIEW_ADMIN_MATRIK') or hasAuthority('VIEW_KPS')"
@@ -890,10 +889,10 @@
 									</li>
 									<li
 										class="nav-item"
-										sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_KPS')"
+										sec:authorize="hasAuthority('VIEW_STAFF_PRODI') or hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')"
 									>
 										<a th:href="@{/graduation/seminar/prodi/list}" class="nav-link"
-											>Seminar Proposal</a
+											>Penjadwalan Seminar Proposal</a
 										>
 									</li>
 									<li
@@ -940,7 +939,7 @@
 									</li>
 									<li
 										class="nav-item"
-										sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF_PRODI')"
+										sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_STAFF_PRODI')"
 									>
 										<a th:href="@{/graduation/sidang/prodi/list}" class="nav-link"
 											>Penjadwalan Sidang</a
@@ -1340,7 +1339,9 @@
 										class="nav-item"
 										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')"
 									>
-										<a th:href="@{/surat/suratketerangan/list}" class="nav-link">Surat Keterangan Mahasiswa</a>
+										<a th:href="@{/surat/suratketerangan/list}" class="nav-link"
+											>Surat Keterangan Mahasiswa</a
+										>
 									</li>
 									<li
 										class="nav-item"
@@ -1352,7 +1353,9 @@
 										class="nav-item"
 										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')"
 									>
-										<a th:href="@{/surat/suratpenelitian/list}" class="nav-link">Surat Penelitian</a>
+										<a th:href="@{/surat/suratpenelitian/list}" class="nav-link"
+											>Surat Penelitian</a
+										>
 									</li>
 								</ul>
 							</div>
