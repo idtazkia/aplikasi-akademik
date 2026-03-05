@@ -930,12 +930,19 @@ public class StudentBillController {
                                 tagihanDao.save(tagihan);
 
                                 if (cicilan != null) {
+                                    BigDecimal nilaiPerCicilan = requestCicilanDao.hitungCicilan(tagihan.getNilaiTagihan(), cicilan);
+                                    BigDecimal totalCicilanDibayar = nilaiPerCicilan.multiply(new BigDecimal(cicilan));
+                                    BigDecimal sisa = tagihan.getNilaiTagihan().subtract(totalCicilanDibayar);
+
                                     for (int i = 1; i<=cicilan; i++) {
-                                        BigDecimal totalCicilan = requestCicilanDao.hitungCicilan(tagihan.getNilaiTagihan(), cicilan);
+                                        BigDecimal nilaiCicilan = nilaiPerCicilan;
+                                        if (i == cicilan) {
+                                            nilaiCicilan = nilaiPerCicilan.add(sisa);
+                                        }
                                         RequestCicilan rc = new RequestCicilan();
                                         rc.setTagihan(tagihan);
                                         rc.setTanggalPengajuan(LocalDate.now());
-                                        rc.setNilaiCicilan(totalCicilan);
+                                        rc.setNilaiCicilan(nilaiCicilan);
                                         rc.setStatusCicilan(StatusCicilan.CICILAN);
                                         rc.setStatusApprove(StatusApprove.APPROVED);
                                         rc.setTanggalJatuhTempo(tagihan.getTanggalPembuatan().plusMonths(i));
@@ -987,12 +994,19 @@ public class StudentBillController {
                                 }
 
                                 if (cicilan != null) {
+                                    BigDecimal nilaiPerCicilan = requestCicilanDao.hitungCicilan(tagihan.getNilaiTagihan(), cicilan);
+                                    BigDecimal totalCicilanDibayar = nilaiPerCicilan.multiply(new BigDecimal(cicilan));
+                                    BigDecimal sisa = tagihan.getNilaiTagihan().subtract(totalCicilanDibayar);
+
                                     for (int i = 1; i<=cicilan; i++) {
-                                        BigDecimal totalCicilan = requestCicilanDao.hitungCicilan(tagihan.getNilaiTagihan(), cicilan);
+                                        BigDecimal nilaiCicilan = nilaiPerCicilan;
+                                        if (i == cicilan) {
+                                            nilaiCicilan = nilaiPerCicilan.add(sisa);
+                                        }
                                         RequestCicilan rc = new RequestCicilan();
                                         rc.setTagihan(tagihan);
                                         rc.setTanggalPengajuan(LocalDate.now());
-                                        rc.setNilaiCicilan(totalCicilan);
+                                        rc.setNilaiCicilan(nilaiCicilan);
                                         rc.setStatusCicilan(StatusCicilan.CICILAN);
                                         rc.setStatusApprove(StatusApprove.APPROVED);
                                         rc.setTanggalJatuhTempo(tagihan.getTanggalPembuatan().plusMonths(i));
