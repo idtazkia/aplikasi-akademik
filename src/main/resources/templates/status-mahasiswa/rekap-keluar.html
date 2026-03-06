@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Rekap Status Keluar</title>
+    <style>
+        .rekap-table th {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status-lulus { color: #28a745; }
+        .status-mengundurkan-diri { color: #6c757d; }
+        .status-putus-studi { color: #dc3545; }
+        .status-meninggal-dunia { color: #343a40; }
+        .status-dikeluarkan { color: #fd7e14; }
+        .status-mutasi { color: #6f42c1; }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <!-- Header -->
+    <div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Rekap</h5>
+                                        <span class="h2 font-weight-bold mb-0">Status Keluar Mahasiswa</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-danger text-white rounded-circle shadow">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Back Button -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a th:href="@{/status}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form th:action="@{/status/rekap/keluar}" method="get">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tahun Akademik</label>
+                                <select name="tahunAkademik" class="select2-searchable">
+                                    <option value="">Semua Tahun Akademik</option>
+                                    <option th:each="t : ${listTahunAkademik}" th:value="${t.id}"
+                                        th:text="${t.namaTahunAkademik}"
+                                        th:selected="${tahunAkademik == t.id}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary mr-2">
+                                <i class="fas fa-filter mr-1"></i> Tampilkan
+                            </button>
+                            <a th:if="${tahunAkademik != null}" th:href="@{/status/rekap/keluar}"
+                                class="btn btn-secondary">
+                                <i class="fas fa-times mr-1"></i> Reset
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4" th:if="${rekap != null and not #lists.isEmpty(rekap)}">
+            <div class="col-md-2" th:if="${rekapStatusHelper.getCountByStatus(rekap, 'LULUS') > 0}">
+                <div class="card text-center" style="border-top: 4px solid #28a745;">
+                    <div class="card-body">
+                        <h3 class="text-success" th:text="${rekapStatusHelper.getCountByStatus(rekap, 'LULUS')}"></h3>
+                        <p class="mb-0">Lulus</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2" th:if="${rekapStatusHelper.getCountByStatus(rekap, 'MENGUNDURKAN_DIRI') > 0}">
+                <div class="card text-center" style="border-top: 4px solid #6c757d;">
+                    <div class="card-body">
+                        <h3 class="text-secondary" th:text="${rekapStatusHelper.getCountByStatus(rekap, 'MENGUNDURKAN_DIRI')}"></h3>
+                        <p class="mb-0">Mengundurkan Diri</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2" th:if="${rekapStatusHelper.getCountByStatus(rekap, 'PUTUS_STUDI') > 0}">
+                <div class="card text-center" style="border-top: 4px solid #dc3545;">
+                    <div class="card-body">
+                        <h3 class="text-danger" th:text="${rekapStatusHelper.getCountByStatus(rekap, 'PUTUS_STUDI')}"></h3>
+                        <p class="mb-0">Putus Studi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2" th:if="${rekapStatusHelper.getCountByStatus(rekap, 'MENINGGAL_DUNIA') > 0}">
+                <div class="card text-center" style="border-top: 4px solid #343a40;">
+                    <div class="card-body">
+                        <h3 th:text="${rekapStatusHelper.getCountByStatus(rekap, 'MENINGGAL_DUNIA')}"></h3>
+                        <p class="mb-0">Meninggal Dunia</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2" th:if="${rekapStatusHelper.getCountByStatus(rekap, 'DIKELUARKAN') > 0}">
+                <div class="card text-center" style="border-top: 4px solid #fd7e14;">
+                    <div class="card-body">
+                        <h3 class="text-warning" th:text="${rekapStatusHelper.getCountByStatus(rekap, 'DIKELUARKAN')}"></h3>
+                        <p class="mb-0">Dikeluarkan</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2" th:if="${rekapStatusHelper.getCountByStatus(rekap, 'MUTASI') > 0}">
+                <div class="card text-center" style="border-top: 4px solid #6f42c1;">
+                    <div class="card-body">
+                        <h3 class="text-primary" th:text="${rekapStatusHelper.getCountByStatus(rekap, 'MUTASI')}"></h3>
+                        <p class="mb-0">Mutasi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rekap Table -->
+        <div class="card shadow" th:if="${rekap != null and not #lists.isEmpty(rekap)}">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered rekap-table">
+                        <thead>
+                            <tr>
+                                <th>Status Keluar</th>
+                                <th th:each="t : ${rekapStatusHelper.getAllTahunAkademik(rekap)}" th:text="${t}"></th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="statusKeluar : ${rekapStatusHelper.getAllStatusKeluar(rekap)}">
+                                <td>
+                                    <span th:class="'status-' + ${#strings.toLowerCase(statusKeluar).replace('_', '-')}"
+                                        th:text="${statusKeluar}"></span>
+                                </td>
+                                <td th:each="t : ${rekapStatusHelper.getAllTahunAkademik(rekap)}">
+                                    <span th:text="${rekapStatusHelper.getJumlahByTahun(rekap, statusKeluar, t)}"></span>
+                                </td>
+                                <td class="bg-light">
+                                    <strong th:text="${rekapStatusHelper.getTotalByStatusKeluar(rekap, statusKeluar)}"></strong>
+                                </td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td><strong>TOTAL</strong></td>
+                                <td th:each="t : ${rekapStatusHelper.getAllTahunAkademik(rekap)}">
+                                    <strong th:text="${rekapStatusHelper.getTotalByTahun(rekap, t)}"></strong>
+                                </td>
+                                <td><strong th:text="${rekapStatusHelper.getGrandTotal(rekap)}"></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary List -->
+                <div class="mt-4">
+                    <h6>Detail:</h6>
+                    <ul class="list-unstyled">
+                        <li th:each="m : ${rekap}">
+                            <strong th:text="${m[1]}"></strong>:
+                            <span th:text="${m[2]}"></span> mahasiswa
+                            (periode <span th:text="${m[1]}"></span>)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Data -->
+        <div class="card shadow" th:if="${rekap == null or #lists.isEmpty(rekap)}">
+            <div class="card-body">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Silakan pilih tahun akademik untuk menampilkan rekap status keluar.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <style>
+        .select2-container--bootstrap4 .select2-selection {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            height: calc(2.25rem + 2px);
+            font-size: 0.875rem;
+        }
+        .select2-container--bootstrap4 .select2-selection--single {
+            padding: 0.375rem 0.75rem;
+        }
+        .select2-container--bootstrap4 .select2-selection__rendered {
+            padding-left: 0;
+            color: #495057;
+        }
+        .select2-container--bootstrap4 .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+            right: 0.75rem;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for searchable dropdowns
+            $('.select2-searchable').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                placeholder: 'Pilih...',
+                allowClear: false,
+                dropdownParent: null
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

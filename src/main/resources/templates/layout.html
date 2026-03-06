@@ -151,6 +151,15 @@
                                     <li><a th:href="@{/surat/penelitian/form}">Surat Penelitian</a></li>
                                 </ul>
                             </li>
+                            <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a data-toggle="collapse" data-target="#statusMobileMenu" href="#">Status</a>
+                                <ul id="statusMobileMenu" class="collapse dropdown-header-top">
+                                    <li><a th:href="@{/status}">Manajemen Status</a></li>
+                                    <li><a th:href="@{/status/table}">Table Edit</a></li>
+                                    <li><a th:href="@{/status/suggestions}">Smart Suggestions</a></li>
+                                    <li><a th:href="@{/status/rekap/masuk}">Rekap Status Masuk</a></li>
+                                    <li><a th:href="@{/status/rekap/keluar}">Rekap Status Keluar</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -178,6 +187,8 @@
                     </li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/dokumen/mahasiswa}"><i class="fa fa-archive"></i> Documents</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#surat"><i class="fa fa-envelope"></i> Surat</a>
+                    </li>
+                    <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a data-toggle="tab" href="#statusMenu"><i class="fa fa-tasks"></i> Status</a>
                     </li>
                 </ul>
                 <div class="tab-content custom-menu-content">
@@ -227,6 +238,15 @@
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/form}">Surat Pengantar Magang</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/penelitian/form}">Surat Penelitian</a></li>
                             <!-- <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a></li> -->
+                        </ul>
+                    </div>
+                    <div id="statusMenu" class="tab-pane notika-tab-menu-bg animated flipInX">
+                        <ul class="notika-main-menu-dropdown">
+                            <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a th:href="@{/status}"><i class="fa fa-tasks"></i> Manajemen Status</a></li>
+                            <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a th:href="@{/status/table}"><i class="fa fa-table"></i> Table Edit</a></li>
+                            <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a th:href="@{/status/suggestions}"><i class="fa fa-lightbulb-o"></i> Smart Suggestions</a></li>
+                            <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a th:href="@{/status/rekap/masuk}"><i class="fa fa-sign-in"></i> Rekap Status Masuk</a></li>
+                            <li sec:authorize="hasAnyAuthority('Superadmin', 'Superuser', 'Kps')"><a th:href="@{/status/rekap/keluar}"><i class="fa fa-sign-out"></i> Rekap Status Keluar</a></li>
                         </ul>
                     </div>
                 </div>

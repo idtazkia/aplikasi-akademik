@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Suggestions - Update Status Berjalan</title>
+    <style>
+        .suggestion-card {
+            border-left: 4px solid;
+            margin-bottom: 20px;
+        }
+        .suggestion-card.info { border-left-color: #17a2b8; }
+        .status-aktif { background-color: #d4edda; color: #155724; }
+        .status-cuti { background-color: #fff3cd; color: #856404; }
+        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
+        .status-lulus { background-color: #c3e6cb; color: #155724; font-weight: bold; }
+        .status-putus_studi { background-color: #dc3545; color: #fff; font-weight: bold; }
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <!-- Header -->
+    <div class="header bg-gradient-info pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Smart</h5>
+                                        <span class="h2 font-weight-bold mb-0">Suggestions - Update Status Berjalan</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                            <i class="fas fa-lightbulb"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Alert -->
+        <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+
+        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+
+        <!-- Filter -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fas fa-filter mr-2"></i> Filter</h5>
+                <form th:action="@{/status/suggestions}" method="get">
+                    <input type="hidden" name="search" value="true" />
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Tahun Akademik</label>
+                                <select name="tahun" class="form-control">
+                                    <option value="">-- Tahun Akademik Aktif --</option>
+                                    <option th:each="t : ${listTahunAkademik}" th:value="${t.id}"
+                                        th:text="${t.namaTahunAkademik}" th:selected="${t.id == selectedTahun}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Program Studi</label>
+                                <select name="prodi" class="form-control">
+                                    <option value="">Semua Prodi</option>
+                                    <option th:each="p : ${listProdi}" th:value="${p.id}"
+                                        th:text="${p.namaProdi}" th:selected="${p.id == selectedProdi}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search mr-1"></i> Filter
+                            </button>
+                            <a th:href="@{/status/suggestions}" class="btn btn-secondary">
+                                <i class="fas fa-times mr-1"></i> Reset
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="card shadow mb-4">
+            <div class="card-body suggestion-card info">
+                <h5 class="mb-2"><i class="fas fa-info-circle text-info mr-2"></i> Tentang Fitur Ini</h5>
+                <p class="mb-2">Fitur ini akan merekomendasikan status berjalan mahasiswa berdasarkan aktivitas akademik:</p>
+                <ul class="mb-2">
+                    <li><strong>LULUS:</strong> Mahasiswa memiliki tanggal lulus yang masuk dalam range tahun akademik</li>
+                    <li><strong>PUTUS_STUDI:</strong> Masa studi melebihi batas per jenjang (D3: 5 tahun, S1: 7 tahun, S2: 4 tahun, S3: 6 tahun)</li>
+                    <li><strong>NONAKTIF:</strong> Mahasiswa sudah cuti 2x dan masih tidak ada KRS (butuh perhatian khusus)</li>
+                    <li><strong>CUTI:</strong> Tidak ada KRS (belum cuti 2x)</li>
+                    <li><strong>AKTIF:</strong> Mahasiswa memiliki KRS</li>
+                </ul>
+                <p class="text-muted small mb-0">
+                    <i class="fas fa-filter mr-1"></i>
+                    Filter: Masa studi sesuai batas per jenjang + 6 bulan buffer, belum memiliki status keluar, sudah terdaftar sebelum semester dimulai.
+                </p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4" th:if="${suggestions != null and not #lists.isEmpty(suggestions)}">
+            <div class="col-md-2">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Total</h5>
+                                <span class="h2 font-weight-bold mb-0" th:text="${totalMahasiswa}">0</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Aktif</h5>
+                                <span class="h2 font-weight-bold mb-0 text-success" th:text="${jumlahAktif}">0</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-success text-white rounded-circle shadow">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Cuti</h5>
+                                <span class="h2 font-weight-bold mb-0 text-warning" th:text="${jumlahCuti}">0</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-warning text-white rounded-circle shadow">
+                                    <i class="fas fa-pause-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Nonaktif</h5>
+                                <span class="h2 font-weight-bold mb-0 text-danger" th:text="${jumlahNonaktif}">0</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-danger text-white rounded-circle shadow">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Lulus</h5>
+                                <span class="h2 font-weight-bold mb-0 text-info" th:text="${jumlahLulus}">0</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Putus Studi</h5>
+                                <span class="h2 font-weight-bold mb-0 text-dark" th:text="${jumlahPutusStudi}">0</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-dark text-white rounded-circle shadow">
+                                    <i class="fas fa-user-slash"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card shadow" th:if="${suggestions != null and not #lists.isEmpty(suggestions)}">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="mb-0">Daftar Mahasiswa & Rekomendasi Status</h5>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="checkAll()">
+                            <i class="fas fa-check-double mr-1"></i> Pilih Semua
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="uncheckAll()">
+                            <i class="fas fa-times mr-1"></i> Hapus Pilihan
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/status/suggestions/update-status-berjalan}" method="post" id="updateForm">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th width="50">
+                                        <input type="checkbox" id="checkAll" onclick="toggleCheckAll(this)" />
+                                    </th>
+                                    <th>NIM</th>
+                                    <th>Nama</th>
+                                    <th>Prodi</th>
+                                    <th>Angkatan</th>
+                                    <th>Masa Studi</th>
+                                    <th>KRS</th>
+                                    <th>Detail</th>
+                                    <th>Cuti</th>
+                                    <th>Status Saat Ini</th>
+                                    <th>Status Rekomendasi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${suggestions}">
+                                    <td>
+                                        <input type="checkbox" class="row-checkbox"
+                                            th:value="${s.idMahasiswa}"
+                                            th:data-status="${s.statusRekomendasi}" />
+                                        <input type="hidden" class="row-status"
+                                            th:value="${s.statusRekomendasi}"
+                                            th:id="'status-' + ${s.idMahasiswa}" />
+                                    </td>
+                                    <td th:text="${s.nim}"></td>
+                                    <td th:text="${s.nama}"></td>
+                                    <td th:text="${s.namaProdi}"></td>
+                                    <td th:text="${s.angkatan}"></td>
+                                    <td>
+                                        <span class="badge badge-info" th:text="${s.masaStudiTahun + ' th'}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${s.adaKrs}" class="text-success">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span th:unless="${s.adaKrs}" class="text-danger">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </td>
+                                    <td th:text="${s.jumlahKrsDetail}"></td>
+                                    <td th:text="${s.jumlahCutiSebelumnya}"></td>
+                                    <td>
+                                        <span th:if="${s.statusBaruSaatIni != null}"
+                                            class="badge-status"
+                                            th:classappend="${'status-' + #strings.toLowerCase(s.statusBaruSaatIni)}"
+                                            th:text="${s.statusBaruSaatIni}"></span>
+                                        <span th:unless="${s.statusBaruSaatIni != null}" class="text-muted">-</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status"
+                                            th:classappend="${s.statusRekomendasi != null} ? ${'status-' + #strings.toLowerCase(s.statusRekomendasi)} : 'status-aktif'"
+                                            th:text="${s.statusRekomendasi}"></span>
+                                        <br>
+                                        <small class="text-muted" th:text="${s.keteranganRekomendasi}"></small>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/status/mahasiswa/{id}(id=${s.idMahasiswa})}"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3" th:if="${suggestionsPage != null}">
+                        <div>
+                            <span class="text-muted">
+                                Menampilkan <strong th:text="${suggestionsPage.number * suggestionsPage.size + 1}">1</strong>
+                                - <strong th:text="${suggestionsPage.number * suggestionsPage.size + suggestionsPage.numberOfElements}">20</strong>
+                                dari <strong th:text="${suggestionsPage.totalElements}">0</strong> mahasiswa
+                            </span>
+                        </div>
+                        <div>
+                            <ul class="pagination mb-0">
+                                <li class="page-item" th:classappend="${suggestionsPage.first} ? 'disabled' : ''">
+                                    <a class="page-link" th:href="@{/status/suggestions(page=0, size=${suggestionsPage.size}, prodi=${selectedProdi}, tahun=${selectedTahun}, search=true)}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${suggestionsPage.first} ? 'disabled' : ''">
+                                    <a class="page-link" th:href="@{/status/suggestions(page=${suggestionsPage.number - 1}, size=${suggestionsPage.size}, prodi=${selectedProdi}, tahun=${selectedTahun}, search=true)}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, suggestionsPage.number - 2), T(java.lang.Math).min(suggestionsPage.totalPages - 1, suggestionsPage.number + 2))}"
+                                    th:classappend="${i == suggestionsPage.number} ? 'active' : ''">
+                                    <a class="page-link" th:href="@{/status/suggestions(page=${i}, size=${suggestionsPage.size}, prodi=${selectedProdi}, tahun=${selectedTahun}, search=true)}"
+                                       th:text="${i + 1}">1</a>
+                                </li>
+                                <li class="page-item" th:classappend="${suggestionsPage.last} ? 'disabled' : ''">
+                                    <a class="page-link" th:href="@{/status/suggestions(page=${suggestionsPage.number + 1}, size=${suggestionsPage.size}, prodi=${selectedProdi}, tahun=${selectedTahun}, search=true)}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${suggestionsPage.last} ? 'disabled' : ''">
+                                    <a class="page-link" th:href="@{/status/suggestions(page=${suggestionsPage.totalPages - 1}, size=${suggestionsPage.size}, prodi=${selectedProdi}, tahun=${selectedTahun}, search=true)}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Hidden inputs for selected data -->
+                    <div id="selectedIdsContainer"></div>
+                    <input type="hidden" name="prodiFilter" th:value="${selectedProdi}" />
+                    <input type="hidden" name="tahunFilter" th:value="${selectedTahun}" />
+                    <input type="hidden" name="pageFilter" th:value="${suggestionsPage?.number}" />
+                    <input type="hidden" name="sizeFilter" th:value="${suggestionsPage?.size}" />
+                    <input type="hidden" name="searchFilter" value="true" />
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success" onclick="return prepareSubmit()">
+                            <i class="fas fa-save mr-1"></i> Update Status Terpilih
+                        </button>
+                        <button type="button" class="btn btn-warning" onclick="updateAll()">
+                            <i class="fas fa-sync mr-1"></i> Update Semua
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- No Data -->
+        <div class="card shadow" th:if="${suggestions == null or #lists.isEmpty(suggestions)}">
+            <div class="card-body text-center py-5">
+                <!-- Jika belum search (pertama kali buka) -->
+                <th:block th:if="${suggestions == null}">
+                    <i class="fas fa-filter fa-3x text-info mb-3"></i>
+                    <h4>Silakan Filter Data</h4>
+                    <p class="text-muted">Pilih filter di atas dan klik tombol <strong>Filter</strong> untuk menampilkan data.</p>
+                    <p class="text-muted small">
+                        Kriteria: Masa studi sesuai batas per jenjang, belum memiliki status keluar, sudah terdaftar sebelum semester dimulai.
+                    </p>
+                </th:block>
+                <!-- Jika sudah search tapi tidak ada hasil -->
+                <th:block th:if="${suggestions != null and #lists.isEmpty(suggestions)}">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <h4>Tidak Ada Data</h4>
+                    <p class="text-muted">Tidak ada mahasiswa yang memerlukan update status berjalan dengan filter yang dipilih.</p>
+                    <p class="text-muted small">
+                        Kriteria: Masa studi sesuai batas per jenjang, belum memiliki status keluar, sudah terdaftar sebelum semester dimulai.
+                    </p>
+                </th:block>
+                <a th:href="@{/status}" class="btn btn-primary mt-3">
+                    <i class="fas fa-arrow-right mr-2"></i> Kembali ke Manajemen Status
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        $(document).ready(function() {
+            // Initialize
+        });
+
+        // Toggle check all checkboxes
+        function toggleCheckAll(checkbox) {
+            $('.row-checkbox').prop('checked', checkbox.checked);
+        }
+
+        // Check all
+        function checkAll() {
+            $('.row-checkbox').prop('checked', true);
+            $('#checkAll').prop('checked', true);
+        }
+
+        // Uncheck all
+        function uncheckAll() {
+            $('.row-checkbox').prop('checked', false);
+            $('#checkAll').prop('checked', false);
+        }
+
+        // Prepare form submission
+        function prepareSubmit() {
+            var selectedIds = [];
+            var selectedStatus = [];
+
+            $('.row-checkbox:checked').each(function() {
+                var id = $(this).val();
+                var status = $('#status-' + id).val();
+                selectedIds.push(id);
+                selectedStatus.push(status);
+            });
+
+            if (selectedIds.length === 0) {
+                alert('Pilih minimal 1 mahasiswa!');
+                return false;
+            }
+
+            // Add selected IDs and status to form
+            var container = $('#selectedIdsContainer');
+            container.empty();
+
+            for (var i = 0; i < selectedIds.length; i++) {
+                container.append('<input type="hidden" name="idMahasiswa" value="' + selectedIds[i] + '" />');
+                container.append('<input type="hidden" name="statusRekomendasi" value="' + selectedStatus[i] + '" />');
+            }
+
+            return confirm('Update status berjalan untuk ' + selectedIds.length + ' mahasiswa?');
+        }
+
+        // Update all
+        function updateAll() {
+            checkAll();
+            if (prepareSubmit()) {
+                $('#updateForm').submit();
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>

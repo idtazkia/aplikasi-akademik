@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import javax.persistence.Column;
@@ -68,7 +69,6 @@ public class Mahasiswa {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull
     private LocalDate tanggalLahir;
 
     private String idKelurahan;
@@ -172,9 +172,57 @@ public class Mahasiswa {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalMasuk;
 
+    /**
+     * Jenis masuk mahasiswa
+     * Menentukan jalur/cara mahasiswa masuk ke perguruan tinggi
+     */
+    @Enumerated(EnumType.STRING)
+    private JenisMasuk jenisMasuk;
+
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLulus;
+
+    /**
+     * Status keluar mahasiswa
+     * Diisi saat mahasiswa sudah keluar/lulus
+     * null = mahasiswa masih aktif/kuliah
+     */
+    @Enumerated(EnumType.STRING)
+    private StatusKeluar statusKeluar;
+
+    /**
+     * Tanggal keluar (lebih umum dari tanggalLulus)
+     * Bisa tanggal lulus, tanggal mengundurkan diri, dll
+     */
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalKeluar;
+
+    /**
+     * Tahun akademik saat mahasiswa keluar
+     * Lebih umum dari tahunAkademikMengundurkanDiri
+     */
+    @ManyToOne
+    @JoinColumn(name = "id_tahun_akademik_keluar")
+    private TahunAkademik tahunAkademikKeluar;
+
+    /**
+     * Alasan keluar (opsional)
+     * Bisa diisi untuk keterangan tambahan
+     */
+    @Column(columnDefinition = "TEXT")
+    private String alasanKeluar;
+
+    /**
+     * User yang mengupdate status keluar
+     */
+    private String statusKeluarUpdateUser;
+
+    /**
+     * Tanggal update status keluar
+     */
+    private LocalDateTime statusKeluarUpdateDate;
 
     @ManyToOne
     @JoinColumn(name = "id_beasiswa")

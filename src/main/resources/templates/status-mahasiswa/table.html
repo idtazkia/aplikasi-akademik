@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Table Edit - Status Mahasiswa</title>
+    <style>
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .status-aktif { background-color: #d4edda; color: #155724; }
+        .status-cuti { background-color: #fff3cd; color: #856404; }
+        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
+        .status-lulus { background-color: #cce5ff; color: #004085; }
+        .status-mengundurkan-diri { background-color: #e2e3e5; color: #383d41; }
+        .status-mbkm { background-color: #d1ecf1; color: #0c5460; }
+        .status-menunggu_ujian { background-color: #e7e3fc; color: #5a4fcf; }
+        .status-double_degree { background-color: #d6d6fd; color: #3d3d8c; }
+        .status-meninggal_dunia { background-color: #000; color: #fff; }
+        .status-putus_studi { background-color: #f5c6cb; color: #721c24; }
+        .status-dikeluarkan { background-color: #f8d7da; color: #721c24; }
+        .status-mutasi { background-color: #d6d8db; color: #1c1e21; }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <!-- Header -->
+    <div class="header bg-gradient-success pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Table Edit</h5>
+                                        <span class="h2 font-weight-bold mb-0">Status Mahasiswa</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-success text-white rounded-circle shadow">
+                                            <i class="fas fa-table"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Alert -->
+        <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+
+        <!-- Card -->
+        <div class="card shadow">
+            <div class="card-header border-0">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h3 class="mb-0">Filter & Edit Status</h3>
+                    </div>
+                    <div class="col text-right">
+                        <a th:href="@{/status}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left mr-1"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Filter Form -->
+                <div class="mb-4">
+                    <form th:action="@{/status/table}" method="get">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Prodi</label>
+                                    <select name="prodi" class="form-control">
+                                        <option value="">Semua Prodi</option>
+                                        <option th:each="p : ${listProdi}" th:value="${p.id}"
+                                            th:text="${p.namaProdi}" th:selected="${prodi == p.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Angkatan</label>
+                                    <input type="text" name="angkatan" class="form-control"
+                                        placeholder="Contoh: 2021,2022" th:value="${angkatan}" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Tahun Akademik</label>
+                                    <select name="tahun" class="select2-searchable">
+                                        <option value="">Semua</option>
+                                        <option th:each="t : ${listTahunAkademik}" th:value="${t.id}"
+                                            th:text="${t.namaTahunAkademik}" th:selected="${tahun == t.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search mr-1"></i> Filter
+                                        </button>
+                                        <a th:href="@{/status/table}" class="btn btn-secondary">
+                                            <i class="fas fa-times mr-1"></i> Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Table -->
+                <div th:if="${dataMahasiswa != null}" class="table-responsive">
+                    <table class="table table-bordered table-striped align-items-center">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>NIM</th>
+                                <th>Nama</th>
+                                <th>Prodi</th>
+                                <th>Angkatan</th>
+                                <th>Jenis Masuk</th>
+                                <th>Status Berjalan</th>
+                                <th>Status Keluar</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="d : ${dataMahasiswa}">
+                                <td th:text="${d[2]}"></td>
+                                <td th:text="${d[3]}"></td>
+                                <td th:text="${d[4]}"></td>
+                                <td th:text="${d[5]}"></td>
+                                <td>
+                                    <span class="status-badge status-lulus" th:text="${d[6] ?: '-'}"></span>
+                                </td>
+                                <td>
+                                    <span class="status-badge"
+                                        th:class="'status-' + ${#strings.toLowerCase(d[7] == null ? 'aktif' : d[7])}"
+                                        th:text="${d[7] ?: 'AKTIF'}"></span>
+                                </td>
+                                <td>
+                                    <span class="status-badge"
+                                        th:class="'status-' + ${#strings.toLowerCase(d[10] == null ? '-' : d[10])}"
+                                        th:text="${d[10] ?: '-'}"></span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                        th:data-target="${'#modalStatus-' + d[1]}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div th:if="${dataMahasiswa != null}" class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span class="text-muted">
+                            Menampilkan <strong th:text="${dataMahasiswa.number * dataMahasiswa.size + 1}">1</strong>
+                            - <strong th:text="${dataMahasiswa.number * dataMahasiswa.size + dataMahasiswa.numberOfElements}">20</strong>
+                            dari <strong th:text="${dataMahasiswa.totalElements}">0</strong> mahasiswa
+                        </span>
+                    </div>
+                    <div>
+                        <ul class="pagination mb-0">
+                            <li class="page-item" th:classappend="${dataMahasiswa.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/status/table(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, status=${status}, page=0, size=${dataMahasiswa.size})}">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${dataMahasiswa.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/status/table(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, status=${status}, page=${dataMahasiswa.number - 1}, size=${dataMahasiswa.size})}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, dataMahasiswa.number - 2), T(java.lang.Math).min(dataMahasiswa.totalPages - 1, dataMahasiswa.number + 2))}"
+                                th:classappend="${i == dataMahasiswa.number} ? 'active' : ''">
+                                <a class="page-link" th:href="@{/status/table(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, status=${status}, page=${i}, size=${dataMahasiswa.size})}"
+                                   th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${dataMahasiswa.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/status/table(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, status=${status}, page=${dataMahasiswa.number + 1}, size=${dataMahasiswa.size})}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${dataMahasiswa.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/status/table(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, status=${status}, page=${dataMahasiswa.totalPages - 1}, size=${dataMahasiswa.size})}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div th:if="${dataMahasiswa == null}" class="alert alert-info">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Silakan pilih filter untuk menampilkan data mahasiswa.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Status -->
+    <div th:each="d : ${dataMahasiswa}" th:if="${dataMahasiswa != null}">
+        <div class="modal fade" th:id="${'modalStatus-' + d[1]}" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Status - <span th:text="${d[2]}"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <form class="status-form" th:action="@{/status/table/save}" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="idMahasiswa" th:value="${d[1]}" />
+                            <input type="hidden" name="prodi" th:value="${prodi}" />
+                            <input type="hidden" name="angkatan" th:value="${angkatan}" />
+                            <input type="hidden" name="tahun" th:value="${tahun}" />
+
+                            <div class="card shadow border-0 mb-3">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>NIM</label>
+                                                <input type="text" class="form-control" th:value="${d[2]}" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nama</label>
+                                                <input type="text" class="form-control" th:value="${d[3]}" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Prodi</label>
+                                                <input type="text" class="form-control" th:value="${d[4]}" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Angkatan</label>
+                                                <input type="text" class="form-control" th:value="${d[5]}" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card shadow border-0 mb-3">
+                                <div class="card-header bg-transparent">
+                                    <h6 class="mb-0">Status Berjalan</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tahun Akademik</label>
+                                                <select name="idTahunAkademik" class="select2-searchable" required>
+                                                    <option value="">Pilih Tahun Akademik</option>
+                                                    <option th:each="t : ${listTahunAkademik}" th:value="${t.id}"
+                                                        th:text="${t.namaTahunAkademik}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Status Berjalan</label>
+                                                <select name="statusBerjalan" class="form-control" required>
+                                                    <option value="">Pilih Status</option>
+                                                    <option th:each="s : ${listStatusBerjalanUmum}" th:value="${s.name()}"
+                                                        th:text="${s.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group tanggal-keluar-group" style="display: none;">
+                                        <label>Tanggal Keluar <span class="text-danger">*</span></label>
+                                        <input type="date" name="tanggalKeluar" class="form-control tanggal-keluar-input" />
+                                        <small class="form-text text-muted">Wajib diisi jika memilih status keluar (Lulus, Mengundurkan Diri, dll)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Keterangan</label>
+                                        <textarea name="keterangan" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary btn-save-status">
+                                <i class="fas fa-save mr-1"></i> Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <style>
+        .select2-container--bootstrap4 .select2-selection {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            height: calc(2.25rem + 2px);
+            font-size: 0.875rem;
+        }
+        .select2-container--bootstrap4 .select2-selection--single {
+            padding: 0.375rem 0.75rem;
+        }
+        .select2-container--bootstrap4 .select2-selection__rendered {
+            padding-left: 0;
+            color: #495057;
+        }
+        .select2-container--bootstrap4 .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+            right: 0.75rem;
+        }
+    </style>
+    <script>
+        // Status keluar yang memerlukan tanggal keluar
+        var statusKeluarList = ['LULUS', 'MENGUNDURKAN_DIRI', 'MENINGGAL_DUNIA', 'PUTUS_STUDI', 'DIKELUARKAN', 'MUTASI'];
+
+        $(document).ready(function() {
+            // Initialize Select2 for searchable dropdowns
+            $('.select2-searchable').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                placeholder: 'Pilih...',
+                allowClear: false,
+                dropdownParent: null
+            });
+
+            // Initialize Select2 inside modal when modal is shown
+            $('button[data-toggle="modal"]').on('click', function() {
+                var modalId = $(this).attr('data-target');
+                $(modalId).one('shown.bs.modal', function() {
+                    $(modalId).find('.select2-searchable').select2({
+                        theme: 'bootstrap4',
+                        width: '100%',
+                        placeholder: 'Pilih...',
+                        allowClear: false,
+                        dropdownParent: $(modalId)
+                    });
+                });
+            });
+
+            // Handle status berjalan change - show/hide tanggal keluar
+            $(document).on('change', 'select[name="statusBerjalan"]', function() {
+                var selectedStatus = $(this).val();
+                var $form = $(this).closest('form');
+                var $tanggalKeluarGroup = $form.find('.tanggal-keluar-group');
+                var $tanggalKeluarInput = $form.find('.tanggal-keluar-input');
+
+                if (statusKeluarList.includes(selectedStatus)) {
+                    $tanggalKeluarGroup.show();
+                    $tanggalKeluarInput.prop('required', true);
+                } else {
+                    $tanggalKeluarGroup.hide();
+                    $tanggalKeluarInput.prop('required', false).val('');
+                }
+            });
+
+            // Handle form submit via AJAX
+            $(document).on('click', '.btn-save-status', function(e) {
+                e.preventDefault();
+                var $form = $(this).closest('form');
+                var $modal = $form.closest('.modal');
+
+                // Get CSRF token
+                var csrfToken = $('meta[name="_csrf"]').attr('content');
+                var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+                var headers = {};
+                if (csrfHeader && csrfToken) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                // Serialize form data
+                var formData = $form.serialize();
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    method: 'POST',
+                    headers: headers,
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            // Close modal and reload page
+                            $modal.modal('hide');
+                            location.reload();
+                        } else {
+                            // Show error
+                            var errorMsg = response.message || 'Terjadi kesalahan';
+                            if (response.errors && response.errors.length > 0) {
+                                errorMsg += '\n' + JSON.stringify(response.errors);
+                            }
+                            alert('Error: ' + errorMsg);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Terjadi kesalahan. Silakan coba lagi.');
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

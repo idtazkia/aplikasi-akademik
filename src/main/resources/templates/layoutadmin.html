@@ -24,6 +24,9 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<!-- CSRF Token -->
+		<meta name="_csrf" th:content="${_csrf.token}" />
+		<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 		<title>Argon Dashboard - Free Dashboard for Bootstrap 4 by Creative Tim</title>
 		<!-- Favicon -->
 		<link th:href="@{/css/assets/img/brand/favicon.png}" rel="icon" type="image/png" />
@@ -1365,6 +1368,43 @@
 											<i class="ni ni-single-02 text-success"></i>
 											Approval Surat
 										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+						<!-- Menu Status Mahasiswa -->
+						<li
+							class="nav-item"
+							sec:authorize="hasAnyAuthority('VIEW_SUPERUSER', 'VIEW_SUPERADMINjawab ', 'VIEW_KPS')"
+						>
+							<a
+								class="nav-link"
+								href="#navbar-status"
+								data-toggle="collapse"
+								role="button"
+								aria-expanded="false"
+								aria-controls="navbar-status"
+							>
+								<i class="ni ni-single-copy-04 text-info"></i>
+								<span class="nav-link-text">Status Mahasiswa</span>
+							</a>
+							<div class="collapse" id="navbar-status">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item">
+										<a th:href="@{/status}" class="nav-link"><i class="ni ni-bullet-list-67"></i> Manajemen Status</a>
+									</li>
+									<li class="nav-item">
+										<a th:href="@{/status/table}" class="nav-link"><i class="ni ni-table"></i> Table Edit</a>
+									</li>
+									<li class="nav-item">
+										<a th:href="@{/status/suggestions}" class="nav-link"><i class="ni ni-lightbulb-61"></i> Smart Suggestions</a>
+									</li>
+									<li class="nav-item">
+										<a th:href="@{/status/rekap/masuk}" class="nav-link"><i class="ni ni-button-play"></i> Rekap Status Masuk</a>
+									</li>
+									<li class="nav-item">
+										<a th:href="@{/status/rekap/keluar}" class="nav-link"><i class="ni ni-button-pause"></i> Rekap Status Keluar</a>
 									</li>
 								</ul>
 							</div>

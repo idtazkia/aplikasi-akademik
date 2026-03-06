@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Manajemen Status Mahasiswa</title>
+    <style>
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .status-aktif { background-color: #d4edda; color: #155724; }
+        .status-cuti { background-color: #fff3cd; color: #856404; }
+        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
+        .status-lulus { background-color: #cce5ff; color: #004085; }
+        .status-mengundurkan-diri { background-color: #e2e3e5; color: #383d41; }
+        .status-mbkm { background-color: #d1ecf1; color: #0c5460; }
+        .status-menunggu_ujian { background-color: #e7e3fc; color: #5a4fcf; }
+        .status-double_degree { background-color: #d6d6fd; color: #3d3d8c; }
+        .status-meninggal_dunia { background-color: #000; color: #fff; }
+        .status-putus_studi { background-color: #f5c6cb; color: #721c24; }
+        .status-dikeluarkan { background-color: #f8d7da; color: #721c24; }
+        .status-mutasi { background-color: #d6d8db; color: #1c1e21; }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <!-- Header -->
+    <div class="header bg-gradient-info pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Status</h5>
+                                        <span class="h2 font-weight-bold mb-0">Manajemen Status Mahasiswa</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
+                                            <i class="fas fa-users-cog"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Alert Messages -->
+        <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#quickUpdate" role="tab">
+                            <i class="fas fa-bolt mr-2"></i> Quick Update (Bulk)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tableEdit" role="tab">
+                            <i class="fas fa-table mr-2"></i> Table Edit
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#smartSuggestions" role="tab">
+                            <i class="fas fa-lightbulb mr-2"></i> Smart Suggestions
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Tab 1: Quick Update (Bulk) -->
+                    <div class="tab-pane fade show active" id="quickUpdate" role="tabpanel">
+                        <!-- Filter Section -->
+                        <div class="mb-4">
+                            <h5 class="mb-3"><i class="fas fa-filter mr-2"></i> Filter Mahasiswa</h5>
+                            <form th:action="@{/status}" method="get">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Prodi</label>
+                                            <select name="prodi" class="form-control">
+                                                <option value="">Semua Prodi</option>
+                                                <option th:each="p : ${listProdi}" th:value="${p.id}"
+                                                    th:text="${p.namaProdi}" th:selected="${prodi == p.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Angkatan</label>
+                                            <input type="text" name="angkatan" class="form-control"
+                                                placeholder="Contoh: 2021,2022,2023" th:value="${angkatan}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tahun Akademik</label>
+                                            <select name="tahun" class="select2-searchable">
+                                                <option value="">Semua</option>
+                                                <option th:each="t : ${listTahunAkademik}" th:value="${t.id}"
+                                                    th:text="${t.namaTahunAkademik}" th:selected="${tahun == t.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                            <div>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-search mr-1"></i> Filter
+                                                </button>
+                                                <a th:href="@{/status}" class="btn btn-secondary">
+                                                    <i class="fas fa-times mr-1"></i> Reset
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div th:if="${dataMahasiswa != null and not #lists.isEmpty(dataMahasiswa)}" class="mb-4">
+                            <!-- Import/Export -->
+                            <div class="card bg-gradient-info mb-3">
+                                <div class="card-body">
+                                    <h6 class="text-white"><i class="fas fa-file-excel mr-2"></i> Import/Export Excel</h6>
+                                    <p class="text-white mb-2">Update status banyak mahasiswa sekaligus menggunakan Excel:</p>
+                                    <a th:href="@{/status/export-template}" class="btn btn-light btn-sm mr-2">
+                                        <i class="fas fa-download mr-1 text-success"></i> Download Template
+                                    </a>
+                                    <button class="btn btn-light btn-sm" onclick="showImportModal()">
+                                        <i class="fas fa-upload mr-1 text-primary"></i> Import Excel
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Status Berjalan -->
+                            <div class="card bg-gradient-success mb-3">
+                                <div class="card-body">
+                                    <h6 class="text-white"><i class="fas fa-play-circle mr-2"></i> Status Berjalan</h6>
+                                    <p class="text-white mb-2">Atur status berjalan untuk <strong th:text="${dataMahasiswaPage != null} ? ${dataMahasiswaPage.totalElements} : ${#lists.size(dataMahasiswa)}"></strong> mahasiswa:</p>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('AKTIF')">
+                                        <i class="fas fa-check-circle mr-1 text-success"></i> Aktif
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('CUTI')">
+                                        <i class="fas fa-pause-circle mr-1 text-warning"></i> Cuti
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('NONAKTIF')">
+                                        <i class="fas fa-times-circle mr-1 text-danger"></i> Non-Aktif
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('MBKM')">
+                                        <i class="fas fa-exchange-alt mr-1 text-info"></i> Kampus Merdeka
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('MENUNGGU_UJIAN')">
+                                        <i class="fas fa-hourglass-half mr-1 text-secondary"></i> Menunggu Ujian
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('DOUBLE_DEGREE')">
+                                        <i class="fas fa-graduation-cap mr-1 text-primary"></i> Double Degree
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Status Keluar -->
+                            <div class="card bg-gradient-danger">
+                                <div class="card-body">
+                                    <h6 class="text-white"><i class="fas fa-stop-circle mr-2"></i> Status Keluar</h6>
+                                    <p class="text-white mb-2">Set status keluar untuk <strong th:text="${dataMahasiswaPage != null} ? ${dataMahasiswaPage.totalElements} : ${#lists.size(dataMahasiswa)}"></strong> mahasiswa:</p>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('LULUS')">
+                                        <i class="fas fa-graduation-cap mr-1 text-primary"></i> Lulus
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('MENGUNDURKAN_DIRI')">
+                                        <i class="fas fa-user-minus mr-1 text-secondary"></i> Mengundurkan Diri
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('MENINGGAL_DUNIA')">
+                                        <i class="fas fa-heart-broken mr-1 text-secondary"></i> Meninggal Dunia
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('PUTUS_STUDI')">
+                                        <i class="fas fa-ban mr-1 text-danger"></i> Putus Studi
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('DIKELUARKAN')">
+                                        <i class="fas fa-user-times mr-1 text-warning"></i> Dikeluarkan
+                                    </button>
+                                    <button class="btn btn-light btn-sm mr-1 mb-1" onclick="bulkUpdate('MUTASI')">
+                                        <i class="fas fa-exchange-alt mr-1 text-info"></i> Mutasi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Table -->
+                        <div th:if="${dataMahasiswa != null}" class="table-responsive">
+                            <table class="table table-bordered table-striped align-items-center">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAll" /></th>
+                                        <th>NIM</th>
+                                        <th>Nama</th>
+                                        <th>Prodi</th>
+                                        <th>Angkatan</th>
+                                        <th>Jenis Masuk</th>
+                                        <th>Status Berjalan</th>
+                                        <th>Status Keluar</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="d : ${dataMahasiswa}">
+                                        <td><input type="checkbox" class="row-checkbox" th:value="${d[1]}" /></td>
+                                        <td th:text="${d[2]}"></td>
+                                        <td th:text="${d[3]}"></td>
+                                        <td th:text="${d[4]}"></td>
+                                        <td th:text="${d[5]}"></td>
+                                        <td>
+                                            <span class="status-badge status-lulus" th:text="${d[6] ?: '-'}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge"
+                                                th:class="'status-' + ${#strings.toLowerCase(d[11] == null ? 'aktif' : d[11])}"
+                                                th:text="${d[11] ?: 'AKTIF'}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge"
+                                                th:class="'status-' + ${#strings.toLowerCase(d[7] == null ? '-' : d[7])}"
+                                                th:text="${d[7] ?: '-'}"></span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/status/mahasiswa/{id}(id=${d[1]})}"
+                                                class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div th:if="${dataMahasiswaPage != null}" class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="text-muted">
+                                    Menampilkan <strong th:text="${dataMahasiswaPage.number * dataMahasiswaPage.size + 1}">1</strong>
+                                    - <strong th:text="${dataMahasiswaPage.number * dataMahasiswaPage.size + dataMahasiswaPage.numberOfElements}">50</strong>
+                                    dari <strong th:text="${dataMahasiswaPage.totalElements}">0</strong> mahasiswa
+                                </span>
+                            </div>
+                            <div>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item" th:classappend="${dataMahasiswaPage.first} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{/status(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, page=0, size=${dataMahasiswaPage.size})}">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${dataMahasiswaPage.first} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{/status(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, page=${dataMahasiswaPage.number - 1}, size=${dataMahasiswaPage.size})}">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, dataMahasiswaPage.number - 2), T(java.lang.Math).min(dataMahasiswaPage.totalPages - 1, dataMahasiswaPage.number + 2))}"
+                                        th:classappend="${i == dataMahasiswaPage.number} ? 'active' : ''">
+                                        <a class="page-link" th:href="@{/status(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, page=${i}, size=${dataMahasiswaPage.size})}"
+                                           th:text="${i + 1}">1</a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${dataMahasiswaPage.last} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{/status(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, page=${dataMahasiswaPage.number + 1}, size=${dataMahasiswaPage.size})}">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${dataMahasiswaPage.last} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{/status(prodi=${prodi}, angkatan=${angkatan}, tahun=${tahun}, page=${dataMahasiswaPage.totalPages - 1}, size=${dataMahasiswaPage.size})}">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div th:if="${dataMahasiswa == null}" class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Silakan pilih filter untuk menampilkan data mahasiswa.
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Table Edit -->
+                    <div class="tab-pane fade" id="tableEdit" role="tabpanel">
+                        <div class="text-center py-5">
+                            <i class="fas fa-table fa-3x text-muted mb-3"></i>
+                            <h4>Table Edit</h4>
+                            <p class="text-muted">Gunakan halaman ini untuk mengedit status satu per satu.</p>
+                            <a th:href="@{/status/table}" class="btn btn-primary">
+                                <i class="fas fa-arrow-right mr-2"></i> Buka Halaman Table Edit
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Smart Suggestions -->
+                    <div class="tab-pane fade" id="smartSuggestions" role="tabpanel">
+                        <div class="text-center py-5">
+                            <i class="fas fa-lightbulb fa-3x text-muted mb-3"></i>
+                            <h4>Smart Suggestions</h4>
+                            <p class="text-muted">System akan mendeteksi anomali dalam status mahasiswa.</p>
+                            <a th:href="@{/status/suggestions}" class="btn btn-primary">
+                                <i class="fas fa-arrow-right mr-2"></i> Buka Halaman Smart Suggestions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laporan & Rekap -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-sign-in fa-2x text-primary mb-2"></i>
+                        <h5>Rekap Status Masuk</h5>
+                        <p class="text-muted mb-3">Lihat rekap mahasiswa berdasarkan jalur masuk</p>
+                        <a th:href="@{/status/rekap/masuk}" class="btn btn-primary">
+                            <i class="fas fa-chart-bar mr-2"></i> Lihat Rekap
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-sign-out fa-2x text-danger mb-2"></i>
+                        <h5>Rekap Status Keluar</h5>
+                        <p class="text-muted mb-3">Lihat rekap mahasiswa berdasarkan status keluar</p>
+                        <a th:href="@{/status/rekap/keluar}" class="btn btn-danger">
+                            <i class="fas fa-chart-bar mr-2"></i> Lihat Rekap
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Import Excel -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Status dari Excel</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form id="importForm" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Pilih File Excel</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx,.xls" required />
+                        <small class="form-text text-muted">
+                            Upload file Excel yang sudah diisi. Pastikan format sesuai dengan template.
+                        </small>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Format Excel:</strong><br>
+                        • NIM (wajib)<br>
+                        • Tahun Akademik (opsional - jika kosong pakai dari filter)<br>
+                        • Status Berjalan (wajib)<br>
+                        • Tanggal Keluar (opsional - untuk status keluar)<br>
+                        • Keterangan (opsional)
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload mr-1"></i> Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <style>
+        .select2-container--bootstrap4 .select2-selection {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            height: calc(2.25rem + 2px);
+            font-size: 0.875rem;
+        }
+        .select2-container--bootstrap4 .select2-selection--single {
+            padding: 0.375rem 0.75rem;
+        }
+        .select2-container--bootstrap4 .select2-selection__rendered {
+            padding-left: 0;
+            color: #495057;
+        }
+        .select2-container--bootstrap4 .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+            right: 0.75rem;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for searchable dropdowns
+            $('.select2-searchable').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                placeholder: 'Pilih...',
+                allowClear: false,
+                dropdownParent: null
+            });
+
+            // Check all functionality
+            $('#checkAll').change(function() {
+                $('.row-checkbox').prop('checked', $(this).prop('checked'));
+            });
+
+            // Handle import form submit
+            $('#importForm').on('submit', function(e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+
+                // Get filter values
+                var prodi = $('select[name="prodi"]').val();
+                var angkatan = $('input[name="angkatan"]').val();
+                var tahun = $('select[name="tahun"]').val();
+
+                // Add filter values to formData
+                formData.append('prodi', prodi || '');
+                formData.append('angkatan', angkatan || '');
+                formData.append('tahun', tahun || '');
+
+                // Get CSRF token
+                var csrfToken = $('meta[name="_csrf"]').attr('content');
+                var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+                $.ajax({
+                    url: '/status/import-excel',
+                    method: 'POST',
+                    headers: csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#importModal').modal('hide');
+                        $('#importForm')[0].reset();
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        var errorMsg = 'Terjadi kesalahan saat import.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        alert('Error: ' + errorMsg);
+                    }
+                });
+            });
+        });
+
+        // Show import modal
+        function showImportModal() {
+            $('#importModal').modal('show');
+        }
+
+        // Bulk update function
+        function bulkUpdate(status) {
+            var selectedIds = [];
+            $('.row-checkbox:checked').each(function() {
+                selectedIds.push($(this).val());
+            });
+
+            if (selectedIds.length === 0) {
+                alert('Pilih minimal 1 mahasiswa!');
+                return;
+            }
+
+            if (!confirm('Ubah status ' + selectedIds.length + ' mahasiswa menjadi ' + status + '?')) {
+                return;
+            }
+
+            var prodi = $('select[name="prodi"]').val();
+            var angkatan = $('input[name="angkatan"]').val();
+            var tahun = $('select[name="tahun"]').val();
+
+            // Get CSRF token
+            var csrfToken = $('meta[name="_csrf"]').attr('content');
+            var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+            var headers = {};
+            if (csrfHeader && csrfToken) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            $.ajax({
+                url: '/status/bulk/execute',
+                method: 'POST',
+                headers: headers,
+                traditional: true,  // Gunakan traditional serialization untuk array
+                data: {
+                    idProdi: prodi,
+                    angkatan: angkatan,
+                    idTahunAkademik: tahun,
+                    statusSaatIni: null,
+                    statusBaru: status,
+                    idMahasiswa: selectedIds,
+                    previewMode: false,
+                    keterangan: 'Bulk update dari quick action'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var message = response.message;
+                        // Tampilkan pesan skip jika ada
+                        if (response.skippedMessages && response.skippedMessages.length > 0) {
+                            message += '\n\nDetail:\n' + response.skippedMessages.join('\n');
+                        }
+                        alert(message);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    console.error('Error:', xhr.responseText);
+                }
+            });
+        }
+    </script>
+</th:block>
+</body>
+</html>

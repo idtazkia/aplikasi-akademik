@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Rekap Status Masuk</title>
+    <style>
+        .rekap-table th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <!-- Header -->
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Rekap</h5>
+                                        <span class="h2 font-weight-bold mb-0">Status Masuk Mahasiswa</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Back Button -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a th:href="@{/status}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form th:action="@{/status/rekap/masuk}" method="get">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Angkatan (pisahkan dengan koma)</label>
+                                <input type="text" name="angkatan" class="form-control"
+                                    placeholder="Contoh: 2021,2022,2023" th:value="${angkatan}" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary mr-2">
+                                <i class="fas fa-filter mr-1"></i> Tampilkan
+                            </button>
+                            <a th:if="${angkatan != null}" th:href="@{/status/rekap/masuk}"
+                                class="btn btn-secondary">
+                                <i class="fas fa-times mr-1"></i> Reset
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Rekap Table -->
+        <div class="card shadow" th:if="${rekap != null and not #lists.isEmpty(rekap)}">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered rekap-table">
+                        <thead>
+                            <tr>
+                                <th>Jenis Masuk</th>
+                                <th th:each="a : ${rekapStatusHelper.getAllAngkatan(rekap)}" th:text="${a}"></th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="jenisMasuk : ${rekapStatusHelper.getAllJenisMasuk(rekap)}">
+                                <td><strong th:text="${jenisMasuk}"></strong></td>
+                                <td th:each="a : ${rekapStatusHelper.getAllAngkatan(rekap)}">
+                                    <span th:text="${rekapStatusHelper.getJumlahByAngkatan(rekap, jenisMasuk, a)}"></span>
+                                </td>
+                                <td class="bg-light">
+                                    <strong th:text="${rekapStatusHelper.getTotalByJenisMasuk(rekap, jenisMasuk)}"></strong>
+                                </td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td><strong>TOTAL</strong></td>
+                                <td th:each="a : ${rekapStatusHelper.getAllAngkatan(rekap)}">
+                                    <strong th:text="${rekapStatusHelper.getTotalByAngkatan(rekap, a)}"></strong>
+                                </td>
+                                <td><strong th:text="${rekapStatusHelper.getGrandTotal(rekap)}"></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary -->
+                <div class="mt-4">
+                    <h6>Ringkasan:</h6>
+                    <ul class="list-unstyled">
+                        <li th:each="m : ${rekap}">
+                            <strong th:text="${m[0]}"></strong>:
+                            <span th:text="${m[2]}"></span> mahasiswa
+                            (angkatan <span th:text="${m[1]}"></span>)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Data -->
+        <div class="card shadow" th:if="${rekap == null or #lists.isEmpty(rekap)}">
+            <div class="card-body">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Silakan pilih angkatan untuk menampilkan rekap status masuk.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+</th:block>
+</body>
+</html>

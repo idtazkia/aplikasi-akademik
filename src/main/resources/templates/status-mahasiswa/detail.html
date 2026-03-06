@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Riwayat Status - Mahasiswa</title>
+    <style>
+        .timeline-item {
+            border-left: 3px solid #dee2e6;
+            padding-left: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #007bff;
+            position: absolute;
+            left: -7.5px;
+            top: 0;
+        }
+        .timeline-dot.AKTIF { background-color: #28a745; }
+        .timeline-dot.CUTI { background-color: #ffc107; }
+        .timeline-dot.NONAKTIF { background-color: #dc3545; }
+        .timeline-dot.LULUS { background-color: #17a2b8; }
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .status-aktif { background-color: #d4edda; color: #155724; }
+        .status-cuti { background-color: #fff3cd; color: #856404; }
+        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
+        .status-lulus { background-color: #cce5ff; color: #004085; }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <!-- Header -->
+    <div class="header bg-gradient-info pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Detail</h5>
+                                        <span class="h2 font-weight-bold mb-0" th:text="${mahasiswa.nim}"></span>
+                                        <p class="text-muted mb-0" th:text="${mahasiswa.nama}"></p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Alert -->
+        <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+
+        <!-- Back Button -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a th:href="@{/status}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </a>
+                <a th:href="@{/mahasiswa/{id}/detail(id=${mahasiswa.id})}" class="btn btn-info btn-sm">
+                    <i class="fas fa-user mr-1"></i> Detail Mahasiswa
+                </a>
+            </div>
+        </div>
+
+        <!-- Mahasiswa Info -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <img th:src="@{/mahasiswa/{id}/foto(id=${mahasiswa.id})}"
+                                    onerror="this.src='/assets/images/avatar.png'"
+                                    class="rounded-circle img-fluid" width="100" height="100"
+                                    alt="Foto Mahasiswa" />
+                            </div>
+                            <div class="col-md-10">
+                                <h4 th:text="${mahasiswa.nama}"></h4>
+                                <p class="text-muted mb-1">
+                                    <strong>NIM:</strong> <span th:text="${mahasiswa.nim}"></span> |
+                                    <strong>Prodi:</strong> <span th:text="${mahasiswa.idProdi.namaProdi}"></span> |
+                                    <strong>Angkatan:</strong> <span th:text="${mahasiswa.angkatan}"></span>
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Jenis Masuk:</strong>
+                                    <span class="status-badge status-lulus" th:if="${mahasiswa.jenisMasuk != null}"
+                                        th:text="${mahasiswa.jenisMasuk.label}"></span>
+                                    <span class="text-muted" th:if="${mahasiswa.jenisMasuk == null}">-</span>
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Status Keluar:</strong>
+                                    <span class="status-badge"
+                                        th:class="'status-' + ${#strings.toLowerCase(mahasiswa.statusKeluar ?: 'aktif')}"
+                                        th:text="${mahasiswa.statusKeluar?.label ?: 'Masih Kuliah'}"></span>
+                                    <span th:if="${mahasiswa.tanggalKeluar != null}"
+                                        class="text-muted"> (tanggal: <span th:text="${mahasiswa.tanggalKeluar}"></span>)</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Riwayat Status & Update Form -->
+        <div class="row">
+            <!-- Riwayat Status -->
+            <div class="col-md-7">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-history mr-2"></i> Riwayat Status Per Semester</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${riwayatStatus == null or #lists.isEmpty(riwayatStatus)}"
+                            class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            Belum ada riwayat status untuk mahasiswa ini.
+                        </div>
+
+                        <div th:if="${riwayatStatus != null and not #lists.isEmpty(riwayatStatus)}">
+                            <div class="timeline-item" th:each="rs : ${riwayatStatus}">
+                                <div class="timeline-dot" th:class="${rs.statusBerjalan.name()}"></div>
+                                <div class="card shadow-sm mb-2">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">
+                                                    <span th:text="${rs.tahunAkademik.namaTahunAkademik}"></span>
+                                                    <span class="status-badge ml-2"
+                                                        th:class="'status-' + ${#strings.toLowerCase(rs.statusBerjalan.name())}"
+                                                        th:text="${rs.statusBerjalan.name()}"></span>
+                                                </h6>
+                                                <p class="mb-1 text-muted">
+                                                    <i class="fas fa-calendar mr-1"></i>
+                                                    Mulai: <span th:text="${rs.tanggalMulai != null ? rs.tanggalMulai : '-'}"></span>
+                                                    <span th:if="${rs.tanggalSelesai != null}"
+                                                        class="text-warning"> | Selesai: <span th:text="${rs.tanggalSelesai}"></span></span>
+                                                </p>
+                                                <p th:if="${rs.keterangan != null}" class="mb-0">
+                                                    <i class="fas fa-comment mr-1"></i>
+                                                    <small th:text="${rs.keterangan}"></small>
+                                                </p>
+                                            </div>
+                                            <small class="text-muted">
+                                                Update: <span th:text="${rs.updatedBy ?: '-'}"></span>
+                                                <span th:if="${rs.updatedAt != null}">
+                                                    | <span th:text="${#temporals.format(rs.updatedAt, 'dd-MM-yyyy HH:mm')}"></span>
+                                                </span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Update Status Keluar -->
+            <div class="col-md-5" th:if="${mahasiswa.statusKeluar == null}">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-sign-out-alt mr-2"></i> Update Status Keluar</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/status/mahasiswa/{id}/keluar(id=${mahasiswa.id})}" method="post">
+                            <div class="form-group">
+                                <label>Status Keluar *</label>
+                                <select name="statusKeluar" class="form-control" required>
+                                    <option value="">Pilih Status Keluar</option>
+                                    <option th:each="s : ${listStatusKeluar}" th:value="${s.name()}"
+                                        th:text="${s.label}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Tanggal Keluar *</label>
+                                <input type="date" name="tanggalKeluar" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Tahun Akademik</label>
+                                <select name="idTahunAkademikKeluar" class="select2-searchable">
+                                    <option value="">Pilih Tahun Akademik</option>
+                                    <option th:each="t : ${listTahunAkademik}" th:value="${t.id}"
+                                        th:text="${t.namaTahunAkademik}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Alasan Keluar</label>
+                                <textarea name="alasanKeluar" class="form-control" rows="3"
+                                    placeholder="Alasan mahasiswa keluar (opsional)"></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" name="updateRiwayatStatus" class="form-check-input"
+                                    id="updateRiwayatStatus" checked />
+                                <label class="form-check-label" for="updateRiwayatStatus">
+                                    Update juga riwayat status di periode ini
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block mt-3">
+                                <i class="fas fa-save mr-1"></i> Simpan Status Keluar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <style>
+        .select2-container--bootstrap4 .select2-selection {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            height: calc(2.25rem + 2px);
+            font-size: 0.875rem;
+        }
+        .select2-container--bootstrap4 .select2-selection--single {
+            padding: 0.375rem 0.75rem;
+        }
+        .select2-container--bootstrap4 .select2-selection__rendered {
+            padding-left: 0;
+            color: #495057;
+        }
+        .select2-container--bootstrap4 .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+            right: 0.75rem;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for searchable dropdowns
+            $('.select2-searchable').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                placeholder: 'Pilih...',
+                allowClear: false,
+                dropdownParent: null
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>
