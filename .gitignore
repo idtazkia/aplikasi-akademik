@@ -24,4 +24,5 @@ nbdist/
 
 .vscode
 application.properties
-
+backup/
+tools/db-credentials.sh
