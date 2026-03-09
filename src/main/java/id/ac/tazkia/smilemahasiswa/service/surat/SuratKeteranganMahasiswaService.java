@@ -47,22 +47,6 @@ public class SuratKeteranganMahasiswaService {
         PdfWriter.getInstance(document, outputStream);
         document.open();
 
-        // === TANGGAL HIJRIAH ===
-        HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("en"));
-        String hijriah = islamicDate.format(fmt)
-                .replace("Jumada I", "Jumadil Awal")
-                .replace("Jumada I", "Jumadil Awal") // Double replacement untuk memastikan
-                .replace("Jumada II", "Jumadil Akhir")
-                .replace("Jumada al-Akhir", "Jumadil Akhir")
-                .replace("Jumada al-Awwal", "Jumadil Awal")
-                .replace("Rabiʻ I", "Rabi'ul Awal")
-                .replace("Rabiʻ II", "Rabi'ul Akhir")
-                .replace("Rabi al-Akhir", "Rabi'ul Akhir")
-                .replace("Rabi al-Awwal", "Rabi'ul Awal")
-                .replace("Jumadil AwalI", "Jumadil Awal") // Fix untuk kasus khusus
-                .replace("Jumadil AkhirI", "Jumadil Akhir"); // Fix untuk kasus khusus
-
         // === HELPER: Load Image dengan Error Handling ===
         java.util.function.BiFunction<String, Float, Image> loadImage = (filename, scale) -> {
             try {
@@ -80,7 +64,8 @@ public class SuratKeteranganMahasiswaService {
         // === BACKGROUND ===
         Image background = loadImage.apply("LOGO TR.png", 400f);
         if (background != null) {
-            background.setAbsolutePosition(400, 190);
+            float centerX = (PageSize.A4.getWidth() - 400) / 2;
+            background.setAbsolutePosition(centerX, 190);
             background.scaleAbsolute(400, 450);
             document.add(background);
         }
@@ -226,6 +211,15 @@ public class SuratKeteranganMahasiswaService {
         rightCell.setBorder(Rectangle.NO_BORDER);
         rightCell.setPaddingLeft(50);
 
+        // Tanggal surat dikeluarkan
+        String tanggalTtd = getTanggalTtd();
+        Paragraph tanggalParagraph = new Paragraph(tanggalTtd, fStandard);
+        tanggalParagraph.setAlignment(Element.ALIGN_LEFT);
+        tanggalParagraph.setIndentationLeft(50);
+        tanggalParagraph.setSpacingAfter(5);
+
+        document.add(tanggalParagraph);
+
         Paragraph jabatan = new Paragraph("Kepala Bagian Akademik,", fStandard);
         rightCell.addElement(jabatan);
 
@@ -245,20 +239,28 @@ public class SuratKeteranganMahasiswaService {
 
         // Get nama dan NIK penandatangan dari userApproval
         String namaPenandatanganStr = "Mohammad Bintang Pamuncak, S.E.I., M.Sc, Ph.D";
-        String nikNidnStr = "2120089305/015.173";
+        String nikNidnStr = "NIK: 2120089305 / NIDN: 015.173";
 
         if (surat.getUserApproval() != null) {
             namaPenandatanganStr = surat.getUserApproval().getNamaKaryawan();
-            if (surat.getUserApproval().getNik() != null && surat.getUserApproval().getNidn() != null) {
-                nikNidnStr = surat.getUserApproval().getNik() + "/" + surat.getUserApproval().getNidn();
-            } else if (surat.getUserApproval().getNik() != null) {
-                nikNidnStr = "NIK: " + surat.getUserApproval().getNik();
-            } else if (surat.getUserApproval().getNidn() != null) {
-                nikNidnStr = "NIDN: " + surat.getUserApproval().getNidn();
+            StringBuilder nikNidnBuilder = new StringBuilder();
+
+            if (surat.getUserApproval().getNik() != null) {
+                nikNidnBuilder.append("NIK: ").append(surat.getUserApproval().getNik());
+            }
+            if (surat.getUserApproval().getNidn() != null) {
+                if (nikNidnBuilder.length() > 0) {
+                    nikNidnBuilder.append(" / ");
+                }
+                nikNidnBuilder.append("NIDN: ").append(surat.getUserApproval().getNidn());
+            }
+
+            if (nikNidnBuilder.length() > 0) {
+                nikNidnStr = nikNidnBuilder.toString();
             }
         }
 
-        Paragraph namaPenandatangan = new Paragraph(namaPenandatanganStr, fontB);
+        Paragraph namaPenandatangan = new Paragraph(namaPenandatanganStr, FontFactory.getFont(FontFactory.TIMES_BOLD, 11, Font.UNDERLINE));
         namaPenandatangan.setSpacingBefore(5);
         rightCell.addElement(namaPenandatangan);
 
@@ -286,43 +288,9 @@ public class SuratKeteranganMahasiswaService {
 
     private String generateNomorSurat(SuratKeteranganMahasiswa surat) {
         LocalDate today = LocalDate.now();
-        String romawiBulan = getRomawiBulan(today.getMonthValue());
 
-        return String.format("430-B/Ket/Tazkia-Universitas/Akd/%s/%s",
-                romawiBulan, today.getYear());
-    }
-
-    private String getRomawiBulan(int bulan) {
-        String[] romawi = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
-        return romawi[bulan - 1];
-    }
-
-    private String getTanggalHijri() {
-        HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("en"));
-        String hijriah = islamicDate.format(formatter)
-                .replace("Jumada I", "Jumadil Awal")
-                .replace("Jumada II", "Jumadil Akhir")
-                .replace("Jumada al-Akhir", "Jumadil Akhir")
-                .replace("Jumada al-Awwal", "Jumadil Awal")
-                .replace("Rabi' I", "Rabi'ul Awal")
-                .replace("Rabi' II", "Rabi'ul Akhir")
-                .replace("Rabi al-Akhir", "Rabi'ul Akhir")
-                .replace("Rabi al-Awwal", "Rabi'ul Awal");
-        return hijriah + " H.";
-    }
-
-    private String formatDate(LocalDate date) {
-        if (date == null) return "";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id"));
-        return date.format(formatter);
-    }
-
-    private String formatTanggalCetak() {
-        LocalDate today = LocalDate.now();
-        String tanggalMasehi = formatDate(today);
-        String tanggalHijri = getTanggalHijri();
-        return tanggalMasehi + " / " + tanggalHijri;
+        return String.format("430-B/Ket/Universitas-Tazkia/Akd/%d/%s",
+                today.getMonthValue(), today.getYear());
     }
 
     private String getTanggalTtd() {
