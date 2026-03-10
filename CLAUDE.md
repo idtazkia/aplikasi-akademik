@@ -63,6 +63,11 @@ Mahasiswa → KRS → KrsDetail ←→ MatakuliahKurikulum
 - `ddl-auto=none` — schema changes only via migrations
 - Key prodi IDs: SI `621c0232-c1db-4aee-8993-815fdd950412`, TI `9f64c400-5850-4d18-a039-d2f2807899c8`
 
+## Runbooks
+
+Step-by-step procedures for common production data operations in `runbooks/`:
+- `recording-submissions.md` — record student assignment submissions (external links) and set scores
+
 ## CI/CD
 
 GitLab CI (`.gitlab-ci.yml`): Maven build with MySQL 5 service container. Deploy on `*-RELEASE` tags via SSH.
