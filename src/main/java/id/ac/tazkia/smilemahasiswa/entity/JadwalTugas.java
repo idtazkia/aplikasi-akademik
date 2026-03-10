@@ -49,7 +49,7 @@ public class JadwalTugas extends Auditable {
     private LocalDateTime tenggatWaktu;
 
     @Enumerated(EnumType.STRING)
-    private JenisPengiriman jenisPengiriman;
+    private JenisPengiriman jenisPengiriman = JenisPengiriman.ONLINE_TEKS;
 
     private Integer maksFileUpload;
 
