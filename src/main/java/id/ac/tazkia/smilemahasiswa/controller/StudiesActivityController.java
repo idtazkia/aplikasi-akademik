@@ -1627,7 +1627,12 @@ public class StudiesActivityController {
 
         @GetMapping("/studiesActivity/assesment/edit")
         public void editTugas(@RequestParam(name = "id", value = "id") JadwalTugas jadwalTugas, Model model) {
-                switch (jadwalTugas.getJenisPengiriman()) {
+                if (jadwalTugas.getJenisPengiriman() == null) {
+                        model.addAttribute("onlineteks", "checked");
+                        model.addAttribute("uploadfile", "checked");
+                        model.addAttribute("presentasi", "checked");
+                        model.addAttribute("ujian", "checked");
+                } else switch (jadwalTugas.getJenisPengiriman()) {
                         case ONLINE_TEKS:
                                 model.addAttribute("onlineteks", "checked");
                                 break;
