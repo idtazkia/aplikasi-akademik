@@ -59,15 +59,19 @@ public interface SuratMagangDao extends JpaRepository<SuratMagang, String> {
     @Query("SELECT sm FROM SuratMagang sm WHERE LOWER(sm.mahasiswa.nim) LIKE LOWER(CONCAT('%', :nim, '%')) AND sm.statusApproval = :statusApproval")
     Page<SuratMagang> findByNimContainingIgnoreCaseAndStatusApproval(@Param("nim") String nim, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
 
-    // Filter by Prodi and NIM
-    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi = :prodi AND LOWER(sm.mahasiswa.nim) LIKE LOWER(CONCAT('%', :nim, '%'))")
-    Page<SuratMagang> findByMahasiswaIdProdiAndNimContainingIgnoreCase(@Param("prodi") Prodi prodi, @Param("nim") String nim, Pageable pageable);
+    // Filter by Prodi (for KPS and admin/superuser) - comparison by ID to ensure correct filtering
+    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi.id = :prodiId")
+    Page<SuratMagang> findByMahasiswaIdProdi(@Param("prodiId") String prodiId, Pageable pageable);
 
-    // Filter by Prodi and Status Approval
-    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi = :prodi AND sm.statusApproval = :statusApproval")
-    Page<SuratMagang> findByMahasiswaIdProdiAndStatusApproval(@Param("prodi") Prodi prodi, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
+    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi.id = :prodiId AND LOWER(sm.namaPerusahaan) LIKE LOWER(CONCAT('%', :search, '%'))")
+    Page<SuratMagang> findByMahasiswaIdProdiAndNamaPerusahaanContainingIgnoreCase(@Param("prodiId") String prodiId, @Param("search") String search, Pageable pageable);
 
-    // Filter by Prodi, NIM, and Status Approval
-    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi = :prodi AND LOWER(sm.mahasiswa.nim) LIKE LOWER(CONCAT('%', :nim, '%')) AND sm.statusApproval = :statusApproval")
-    Page<SuratMagang> findByMahasiswaIdProdiAndNimContainingIgnoreCaseAndStatusApproval(@Param("prodi") Prodi prodi, @Param("nim") String nim, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
+    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi.id = :prodiId AND LOWER(sm.mahasiswa.nim) LIKE LOWER(CONCAT('%', :nim, '%'))")
+    Page<SuratMagang> findByMahasiswaIdProdiAndNimContainingIgnoreCase(@Param("prodiId") String prodiId, @Param("nim") String nim, Pageable pageable);
+
+    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi.id = :prodiId AND sm.statusApproval = :statusApproval")
+    Page<SuratMagang> findByMahasiswaIdProdiAndStatusApproval(@Param("prodiId") String prodiId, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
+
+    @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi.id = :prodiId AND LOWER(sm.mahasiswa.nim) LIKE LOWER(CONCAT('%', :nim, '%')) AND sm.statusApproval = :statusApproval")
+    Page<SuratMagang> findByMahasiswaIdProdiAndNimContainingIgnoreCaseAndStatusApproval(@Param("prodiId") String prodiId, @Param("nim") String nim, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
 }

@@ -72,7 +72,7 @@
                     <div class="card-body">
                         <form th:action="@{/surat/suratmagang/list}" method="get">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="nim" class="form-control-label">NIM</label>
                                         <input type="text" class="form-control"
@@ -81,7 +81,7 @@
                                                placeholder="Masukkan NIM mahasiswa...">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="status" class="form-control-label">Status Approval</label>
                                         <select class="form-control" name="status" id="status">
@@ -89,6 +89,18 @@
                                             <option value="WAITING" th:selected="${status == 'WAITING'}">Menunggu Approval</option>
                                             <option value="APPROVED" th:selected="${status == 'APPROVED'}">Disetujui</option>
                                             <option value="REJECTED" th:selected="${status == 'REJECTED'}">Ditolak</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" sec:authorize="hasAnyAuthority('VIEW_ADMIN', 'VIEW_SUPERUSER')">
+                                    <div class="form-group">
+                                        <label for="prodi" class="form-control-label">Program Studi</label>
+                                        <select class="form-control" name="prodiId" id="prodi">
+                                            <option value="">Semua Program Studi</option>
+                                            <option th:each="p : ${listProdi}"
+                                                    th:value="${p.id}"
+                                                    th:text="${p.namaProdi}"
+                                                    th:selected="${prodiId == p.id}"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -111,6 +123,7 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Mahasiswa</th>
+                                <th scope="col">Prodi</th>
                                 <th scope="col">Nama Perusahaan</th>
                                 <th scope="col">Divisi</th>
                                 <th scope="col">Alamat</th>
@@ -124,6 +137,7 @@
                             <tr th:each="surat, iterStat : ${data.content}">
                                 <td th:text="${iterStat.count + data.number * data.size}">1</td>
                                 <td th:text="${surat.mahasiswa != null ? surat.mahasiswa.nama : '-'}">Nama Mahasiswa</td>
+                                <td th:text="${surat.mahasiswa != null and surat.mahasiswa.idProdi != null ? surat.mahasiswa.idProdi.namaProdi : '-'}">Program Studi</td>
                                 <td th:text="${surat.namaPerusahaan}">Nama Perusahaan</td>
                                 <td th:text="${surat.divisi}">Divisi</td>
                                 <td th:text="${surat.alamat}">Alamat</td>
