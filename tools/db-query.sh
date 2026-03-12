@@ -6,7 +6,7 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/db-credentials.sh"
 
-if [ -t 0 ] && [ $# -gt 0 ]; then
+if [ $# -gt 0 ]; then
     # Argument mode
     ssh -o ConnectTimeout=10 "$DB_SSH_USER@$DB_SSH_HOST" \
         "mysql -u $DB_USER -p'$DB_PASS' $DB_NAME -e \"$1\""
