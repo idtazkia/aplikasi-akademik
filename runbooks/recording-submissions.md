@@ -79,6 +79,73 @@ SET jj.nilai = nt.nilai
 WHERE jj.id_jadwal_tugas = '<jadwal_tugas_id>' AND jj.status = 'AKTIF';
 ```
 
+### 6. Recalculate final scores
+
+After updating `krs_nilai_tugas.nilai`, recalculate weighted scores and `krs_detail` totals. This mirrors `ScoreService.reCalculatingNilai()` — run once per jadwal.
+
+**Step 1: Recalculate `krs_nilai_tugas.nilai_akhir`** (weighted = `bobot * nilai / 100`):
+
+```sql
+UPDATE krs_nilai_tugas AS a,
+(SELECT d.id AS id_krs_nilai_tugas, ROUND((c.bobot * d.nilai) / 100, 2) AS nilai_tugas
+ FROM krs_detail AS a
+ INNER JOIN jadwal AS b ON a.id_jadwal = b.id AND b.id = '<jadwal_id>' AND a.status = 'AKTIF'
+ INNER JOIN jadwal_bobot_tugas AS c ON c.id_jadwal = b.id AND c.status = 'AKTIF'
+ INNER JOIN krs_nilai_tugas AS d ON c.id = d.id_bobot_tugas AND d.id_krs_detail = a.id AND d.status = 'AKTIF') AS b
+SET a.nilai_akhir = b.nilai_tugas
+WHERE a.id = b.id_krs_nilai_tugas;
+```
+
+**Step 2: Recalculate `krs_detail` totals** (nilai_akhir, grade, bobot):
+
+```sql
+UPDATE krs_detail AS a,
+(SELECT id, nilai_presensi, nilai_tugas, nilai_uts, nilai_uas, nilai_akhir,
+  IF(nilai_akhir >= 85,'A', IF(nilai_akhir >= 80,'A-', IF(nilai_akhir >= 75,'B+',
+  IF(nilai_akhir >= 70,'B', IF(nilai_akhir >= 65,'B-', IF(nilai_akhir >= 60,'C+',
+  IF(nilai_akhir >= 55,'C', IF(nilai_akhir >= 50,'D','E')))))))) AS grade,
+  IF(nilai_akhir >= 85,4.00, IF(nilai_akhir >= 80,3.70, IF(nilai_akhir >= 75,3.30,
+  IF(nilai_akhir >= 70,3.00, IF(nilai_akhir >= 65,2.70, IF(nilai_akhir >= 60,2.30,
+  IF(nilai_akhir >= 55,2.00, IF(nilai_akhir >= 50,1.00,0.00)))))))) AS bobot
+ FROM
+  (SELECT id,
+    ROUND(COALESCE(nilai_presensi,0),2) AS nilai_presensi,
+    ROUND(COALESCE(nilai_tugas,0),2) AS nilai_tugas,
+    ROUND(COALESCE(nilai_uts,0),2) AS nilai_uts,
+    ROUND(nilai_uas,2) AS nilai_uas,
+    ROUND(COALESCE(nilai_tugas,0) + COALESCE(nilai_uts,0) + COALESCE(nilai_uas,0) + COALESCE(nilai_presensi,0),2) AS nilai_akhir
+   FROM
+    (SELECT a.id,
+      SUM(IF(c.kategori_tugas = 'TUGAS', (c.bobot * d.nilai) / 100, 0)) AS nilai_tugas,
+      SUM(IF(c.kategori_tugas = 'UTS', (c.bobot * d.nilai) / 100, 0)) AS nilai_uts,
+      SUM(IF(c.kategori_tugas = 'UAS', (c.bobot * d.nilai) / 100, 0)) AS nilai_uas,
+      (x.nilai_presensi * b.bobot_presensi) / 100 AS nilai_presensi
+     FROM krs_detail AS a
+     INNER JOIN jadwal AS b ON a.id_jadwal = b.id AND b.id = '<jadwal_id>' AND a.status = 'AKTIF'
+     INNER JOIN jadwal_bobot_tugas AS c ON c.id_jadwal = b.id AND c.status = 'AKTIF'
+     INNER JOIN krs_nilai_tugas AS d ON c.id = d.id_bobot_tugas AND d.id_krs_detail = a.id AND d.status = 'AKTIF'
+     LEFT JOIN
+      (SELECT b.id AS id_krs_detail, presdos, presensi, (presensi / presdos) * 100 AS nilai_presensi
+       FROM
+        (SELECT id_jadwal, COUNT(a.id) AS presdos FROM presensi_dosen AS a
+         WHERE id_jadwal = '<jadwal_id>' AND status_presensi <> 'MANGKIR' AND status = 'AKTIF') AS a
+       LEFT JOIN
+        (SELECT COUNT(a.id) AS presensi, a.id, a.id_jadwal FROM krs_detail AS a
+         INNER JOIN presensi_mahasiswa AS b ON b.id_krs_detail = a.id
+           AND a.id_jadwal = '<jadwal_id>' AND a.status = 'AKTIF' AND b.status = 'AKTIF'
+           AND b.status_presensi NOT IN ('MANGKIR')
+         GROUP BY a.id) AS b
+       ON a.id_jadwal = b.id_jadwal) AS x
+     ON a.id = x.id_krs_detail
+     GROUP BY a.id) AS a) AS a) AS b
+SET a.nilai_presensi = b.nilai_presensi, a.nilai_tugas = b.nilai_tugas,
+    a.nilai_uts = b.nilai_uts, a.nilai_uas = b.nilai_uas,
+    a.nilai_akhir = b.nilai_akhir, a.grade = b.grade, a.bobot = b.bobot
+WHERE a.id = b.id AND a.id_jadwal = '<jadwal_id>';
+```
+
+Replace `<jadwal_id>` with the jadwal ID (not jadwal_tugas). Run both queries for each affected jadwal.
+
 ## Gotchas
 
 - **kategori_tugas NULL**: `krs_nilai_tugas.kategori_tugas` may be NULL (especially for SI entries). Always join on `jadwal_bobot_tugas.kategori_tugas` instead.
