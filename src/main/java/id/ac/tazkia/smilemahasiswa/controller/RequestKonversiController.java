@@ -3,6 +3,8 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -214,10 +216,24 @@ public class RequestKonversiController {
 
         @GetMapping("/api/request-detail-konversi-mahasiswa/{id}")
         @ResponseBody
-        public List<DetailPendaftaranKonversi> getListDetailPendaftar(@PathVariable String id) {
+        public List<Map<String, Object>> getListDetailPendaftar(@PathVariable String id) {
                 PendaftaranRequestKonversi pendaftaranRequestKonversi = pendaftaranRequestKonversiDao.findById(id)
                                 .get();
-                return pendaftaranRequestKonversi.getDetailPendaftaranKonversiList();
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (DetailPendaftaranKonversi detail : pendaftaranRequestKonversi.getDetailPendaftaranKonversiList()) {
+                        Map<String, Object> map = new LinkedHashMap<>();
+                        map.put("id", detail.getId());
+                        map.put("matakuliah", detail.getMatakuliah());
+                        map.put("gradeLama", detail.getGradeLama());
+                        map.put("gradeBaru", detail.getGradeBaru());
+                        map.put("sks", detail.getKrsDetail() != null
+                                        && detail.getKrsDetail().getMatakuliahKurikulum() != null
+                                                        ? detail.getKrsDetail().getMatakuliahKurikulum().getJumlahSks()
+                                                        : null);
+                        map.put("status", detail.getStatus());
+                        result.add(map);
+                }
+                return result;
         }
 
         @GetMapping("/api/request-total-sks-mahasiswa/{id}")
