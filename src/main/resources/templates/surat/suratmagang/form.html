@@ -207,6 +207,45 @@
                                 </div>
                             </div>
 
+                            <!-- Jenis Magang & Hari Kerja -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="jenisMagang" class="form-control-label">Jenis Magang</label>
+                                        <select class="form-control"
+                                                th:field="*{jenisMagang}"
+                                                id="jenisMagang">
+                                            <option value="">-- Pilih Jenis Magang --</option>
+                                            <option th:each="jenis : ${T(id.ac.tazkia.smilemahasiswa.entity.surat.JenisMagang).values()}"
+                                                    th:value="${jenis}"
+                                                    th:text="${jenis.label}"></option>
+                                        </select>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('jenisMagang')}">
+                                            <span th:errors="*{jenisMagang}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="hariKerja" class="form-control-label">
+                                            Hari Kerja
+                                        </label>
+                                        <select class="form-control"
+                                                th:field="*{hariKerja}"
+                                                id="hariKerja">
+                                            <option value="">-- Pilih Hari Kerja --</option>
+                                            <option th:each="hk : ${T(id.ac.tazkia.smilemahasiswa.entity.surat.HariKerja).values()}"
+                                                    th:value="${hk}"
+                                                    th:text="${hk.label}"></option>
+                                        </select>
+                                        <small class="form-text text-muted">Pilih pola hari kerja magang (opsional)</small>
+                                        <small class="text-danger" th:if="${#fields.hasErrors('hariKerja')}">
+                                            <span th:errors="*{hariKerja}"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Divider -->
                             <div class="row">
                                 <div class="col-12">
@@ -524,6 +563,41 @@
             // Load existing mahasiswa data if editing
             // This would require another API call or passing initial data from controller
             console.log('Loading initial mahasiswa data for ID:', mahasiswaIdInput.value);
+        }
+
+        // Setup jenis magang change listener
+        setupJenisMagangListener();
+    }
+
+    function setupJenisMagangListener() {
+        const jenisMagangSelect = document.getElementById('jenisMagang');
+        const hariKerjaSelect = document.getElementById('hariKerja');
+
+        if (jenisMagangSelect && hariKerjaSelect) {
+            jenisMagangSelect.addEventListener('change', function() {
+                const jenisMagang = this.value;
+
+                // Set default hari kerja based on jenis magang
+                if (jenisMagang === 'MAGANG_MANDIRI') {
+                    // Magang mandiri biasanya Senin-Jumat
+                    hariKerjaSelect.value = 'SENIN_JUMAT';
+                    showNotification('Hari kerja otomatis diatur ke Senin - Jumat', 'info');
+                } else if (jenisMagang === 'MAGANG_MBKM' || jenisMagang === 'MAGANG_TUGAS_AKHIR') {
+                    // Magang MBKM/Tugas Akhir bisa Senin-Sabtu (lebih fleksibel)
+                    hariKerjaSelect.value = 'SENIN_SABTU';
+                    showNotification('Hari kerja otomatis diatur ke Senin - Sabtu', 'info');
+                } else {
+                    // Reset if no selection
+                    hariKerjaSelect.value = '';
+                }
+
+                console.log('Jenis Magang changed to:', jenisMagang, '- Hari Kerja set to:', hariKerjaSelect.value);
+            });
+
+            // Trigger on initial load if jenis magang already has value
+            if (jenisMagangSelect.value) {
+                jenisMagangSelect.dispatchEvent(new Event('change'));
+            }
         }
     }
 

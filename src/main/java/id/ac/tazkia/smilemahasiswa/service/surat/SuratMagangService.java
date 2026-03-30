@@ -10,6 +10,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import id.ac.tazkia.smilemahasiswa.dao.surat.SuratMagangDao;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.surat.SuratMagang;
+import id.ac.tazkia.smilemahasiswa.entity.surat.HariKerja;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -215,8 +216,8 @@ public class SuratMagangService {
         isi.add(new Chunk(" s.d ", fStandard));
         isi.add(new Chunk(formatDate(suratMagang.getTanggalSelesaiMagang()), fontB));
         isi.add(new Chunk(" atau selama ", fStandard));
-        isi.add(new Chunk(String.valueOf(calculateHari(suratMagang.getTanggalMulaiMagang(), suratMagang.getTanggalSelesaiMagang())), fontB));
-        isi.add(new Chunk(" (" + konversiAngkaKeTerbilang(calculateHari(suratMagang.getTanggalMulaiMagang(), suratMagang.getTanggalSelesaiMagang())) + ") hari kerja. Adapun Mahasiswanya yaitu:", fStandard));
+        isi.add(new Chunk(String.valueOf(calculateHaiKerja(suratMagang)), fontB));
+        isi.add(new Chunk(" (" + konversiAngkaKeTerbilang(calculateHaiKerja(suratMagang)) + ") hari kerja. Adapun Mahasiswanya yaitu:", fStandard));
         document.add(isi);
         document.add(new Paragraph("\n"));
 
@@ -396,6 +397,37 @@ public class SuratMagangService {
         String tanggalMasehi = formatDate(today);
         String tanggalHijri = getTanggalHijri();
         return tanggalMasehi + " / " + tanggalHijri;
+    }
+
+    private Integer calculateHaiKerja(SuratMagang suratMagang) {
+        LocalDate mulai = suratMagang.getTanggalMulaiMagang();
+        LocalDate selesai = suratMagang.getTanggalSelesaiMagang();
+        HariKerja hariKerja = suratMagang.getHariKerja();
+
+        if (mulai == null || selesai == null || hariKerja == null) return 0;
+
+        int totalHariKerja = 0;
+        LocalDate current = mulai;
+
+        while (!current.isAfter(selesai)) {
+            int dayOfWeek = current.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+
+            if (hariKerja == HariKerja.SENIN_JUMAT) {
+                // Monday to Friday (1-5)
+                if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                    totalHariKerja++;
+                }
+            } else if (hariKerja == HariKerja.SENIN_SABTU) {
+                // Monday to Saturday (1-6)
+                if (dayOfWeek >= 1 && dayOfWeek <= 6) {
+                    totalHariKerja++;
+                }
+            }
+
+            current = current.plusDays(1);
+        }
+
+        return totalHariKerja;
     }
 
     private Integer calculateHari(LocalDate mulai, LocalDate selesai) {

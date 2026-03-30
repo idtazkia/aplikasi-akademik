@@ -16,6 +16,7 @@ import lombok.Data;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.surat.HariKerja;
 
 @Entity
 @Table(name = "surat_magang")
@@ -33,6 +34,9 @@ public class SuratMagang {
 
     @Enumerated(EnumType.STRING)
     private JenisMagang jenisMagang;
+
+    @Enumerated(EnumType.STRING)
+    private HariKerja hariKerja = HariKerja.SENIN_JUMAT;
 
     private Integer sksKonversi;
 

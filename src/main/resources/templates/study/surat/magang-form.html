@@ -125,7 +125,7 @@
                                 <input type="hidden" th:field="*{mahasiswa}" />
 
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="jenisMagang">Jenis Magang <span class="text-danger">*</span></label>
                                             <select class="form-control"
@@ -140,6 +140,26 @@
                                             </select>
                                             <small class="text-danger" th:if="${#fields.hasErrors('jenisMagang')}">
                                                 <span th:errors="*{jenisMagang}"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="hariKerja">Hari Kerja</label>
+                                            <select class="form-control"
+                                                    th:field="*{hariKerja}"
+                                                    id="hariKerja">
+                                                <option value="">-- Pilih Hari Kerja --</option>
+                                                <option th:each="hk : ${T(id.ac.tazkia.smilemahasiswa.entity.surat.HariKerja).values()}"
+                                                        th:value="${hk}"
+                                                        th:text="${hk.label}">
+                                                </option>
+                                            </select>
+                                            <small class="form-text text-muted">
+                                                <i class="fa fa-info-circle"></i> Pola hari kerja magang
+                                            </small>
+                                            <small class="text-danger" th:if="${#fields.hasErrors('hariKerja')}">
+                                                <span th:errors="*{hariKerja}"></span>
                                             </small>
                                         </div>
                                     </div>
@@ -283,6 +303,7 @@
                                         <th>Jenis Magang</th>
                                         <th>Nama Perusahaan</th>
                                         <th>Divisi</th>
+                                        <th>Jumlah Hari</th>
                                         <th>SKS Konversi</th>
                                         <th>Periode Magang</th>
                                         <th>Status Persetujuan</th>
@@ -300,6 +321,12 @@
                                         </td>
                                         <td th:text="${surat.namaPerusahaan}">-</td>
                                         <td th:text="${surat.divisi != null ? surat.divisi : '-'}">-</td>
+                                        <td>
+                                            <strong th:if="${surat.tanggalMulaiMagang != null and surat.tanggalSelesaiMagang != null}">
+                                                <span th:text="${magangController.calculateHaiKerja(surat)}">0</span> hari
+                                            </strong>
+                                            <span th:if="${surat.tanggalMulaiMagang == null or surat.tanggalSelesaiMagang == null}">-</span>
+                                        </td>
                                         <td>
                                             <span th:if="${surat.sksKonversi != null}" th:text="${surat.sksKonversi + ' SKS'}">-</span>
                                             <span th:if="${surat.sksKonversi == null}">-</span>
