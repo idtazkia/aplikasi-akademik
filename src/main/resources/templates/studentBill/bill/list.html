@@ -80,15 +80,15 @@
                                     <td></td>
                                     <td></td>
                                     <td><h5>Total : </h5></td>
-                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
-                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan ?: 0, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar ?: 0, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td></td>
                                     <td><h5>Sisa : </h5></td>
                                     <td></td>
-                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal((totalTagihan ?: 0) - (totalDibayar ?: 0), 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -127,7 +127,7 @@
                                 <td></td>
                                 <td><h5>Total : </h5></td>
                                 <td></td>
-                                <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5></td>
+                                <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar ?: 0, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5></td>
                             </tr>
                             </tbody>
                         </table>
