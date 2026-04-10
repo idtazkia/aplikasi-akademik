@@ -564,7 +564,7 @@
                                                                     <th>Ketua</th>
                                                                     <th>Penguji</th>
                                                                     <th>Pembimbing</th>
-                                                                    <th th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}">Pembimbing 2</th>
+                                                                    <th th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02' && data.note.dosen2 != null}">Pembimbing 2</th>
                                                                 </tr>
                                                                 </thead>
 

@@ -2995,8 +2995,10 @@ public class GraduationController {
                 }
 
             } else {
-                Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,
-                        BigDecimal.ZERO);
+                boolean hasDosen2 = seminar.getNote().getDosen2() != null;
+                Object nilaiKosong = hasDosen2
+                        ? seminarDao.validasiPublishNilaiTesis(seminar, BigDecimal.ZERO)
+                        : seminarDao.validasiPublishNilaiStudy(seminar, BigDecimal.ZERO);
                 if (nilaiKosong == null) {
                     seminar.setPublish("AKTIF");
                     seminar.setStatusSempro(StatusTugasAkhir.APPROVED);
