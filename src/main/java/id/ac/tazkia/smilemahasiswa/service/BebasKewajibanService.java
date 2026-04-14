@@ -520,6 +520,229 @@ public class BebasKewajibanService {
         System.out.println("PDF selesai dibuat!");
     }
 
+    // ================== CETAK SKL ENGLISH (PDF) ==================
+    public void cetakSklEnglish(PendaftaranBebasKewajiban bebasKewajiban, OutputStream outputStream) throws IOException {
+        System.out.println("cetakSklEnglish berjalan");
+        System.out.println("Logo path: " + logo);
+
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, outputStream);
+        document.open();
+
+        // === TANGGAL HIJRIAH ===
+        HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("en"));
+        String hijriah = islamicDate.format(fmt)
+                .replace("Jumada I", "Jumadil Awal")
+                .replace("Jumada II", "Jumadil Akhir")
+                .replace("Rabiʻ I", "Rabi'ul Awal")
+                .replace("Rabiʻ II", "Rabi'ul Akhir");
+
+        // === HELPER: Load Image dengan Error Handling ===
+        BiFunction<String, Float, Image> loadImage = (filename, scale) -> {
+            try {
+                String fullPath = logo + File.separator + filename;
+                System.out.println("Loading image: " + fullPath);
+                Image img = Image.getInstance(fullPath);
+                img.scaleToFit(scale, scale);
+                return img;
+            } catch (Exception e) {
+                System.err.println("Gagal load gambar: " + filename + " | Error: " + e.getMessage());
+                return null;
+            }
+        };
+
+        // === BACKGROUND ===
+        Image background = loadImage.apply("LOGO TR.png", 400f);
+        if (background != null) {
+            background.setAbsolutePosition(400, 190);
+            background.scaleAbsolute(400, 450);
+            document.add(background);
+        }
+
+        // === BISMILLAH ===
+        Image bismillah = loadImage.apply("bismillah.png", 140f);
+        if (bismillah != null) {
+            bismillah.setAbsolutePosition(222, PageSize.A4.getHeight() - bismillah.getScaledHeight() - 90);
+            document.add(bismillah);
+        }
+
+        // === LOGO TAZKIA ===
+        Image logoTazkia = loadImage.apply("Logo - UNITAZ.png", 120f);
+        if (logoTazkia != null) {
+            logoTazkia.setAbsolutePosition(25, PageSize.A4.getHeight() - logoTazkia.getScaledHeight() - 15);
+            document.add(logoTazkia);
+        }
+
+        document.add(new Paragraph("\n\n\n\n\n"));
+
+        // === JUDUL ===
+        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 14);
+        titleFont.setStyle(Font.UNDERLINE);
+        Paragraph title = new Paragraph("LETTER OF GRADUATION CERTIFICATE", titleFont);
+        title.setAlignment(Element.ALIGN_CENTER);
+        document.add(title);
+
+        // === NOMOR SURAT ===
+        Paragraph nomorSurat = new Paragraph(
+                "Number: " + bebasKewajiban.getNomorSurat(),
+                FontFactory.getFont(FontFactory.TIMES_ROMAN, 12));
+        nomorSurat.setAlignment(Element.ALIGN_CENTER);
+        document.add(nomorSurat);
+        document.add(new Paragraph("\n\n"));
+
+        // === GAMBAR SALAM ===
+        Image salam = loadImage.apply("salam.png", 140f);
+        if (salam != null) {
+            Paragraph pSalam = new Paragraph();
+            pSalam.setIndentationLeft(50);
+            pSalam.add(new Chunk(salam, 0, -5, true));
+            document.add(pSalam);
+        }
+        document.add(new Paragraph("\n\n"));
+
+        // === ISI ===
+        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+
+        Paragraph p = new Paragraph(
+                "The Academic Authority of Universitas Islam Tazkia hereby certifies that:", fStandard);
+        p.setAlignment(Element.ALIGN_JUSTIFIED);
+        p.setIndentationLeft(50);
+        p.setIndentationRight(50);
+        document.add(p);
+        document.add(new Paragraph("\n"));
+
+        // === TABEL DATA MAHASISWA ===
+        PdfPTable table = new PdfPTable(3);
+        table.setWidths(new int[] { 10, 1, 15 });
+        table.setWidthPercentage(80);
+        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+
+        addTableCell(table, "Name", font);
+        addTableCell(table, ":", font);
+        addTableCell(table, bebasKewajiban.getMahasiswa().getNama(), font);
+
+        addTableCell(table, "Student ID", font);
+        addTableCell(table, ":", font);
+        addTableCell(table, bebasKewajiban.getMahasiswa().getNim(), font);
+
+        addTableCell(table, "Place, Date of Birth", font);
+        addTableCell(table, ":", font);
+        addTableCell(table,
+                bebasKewajiban.getMahasiswa().getTempatLahir() + ", " +
+                        convertDateEnglish(bebasKewajiban.getMahasiswa().getTanggalLahir()),
+                font);
+        document.add(table);
+        document.add(new Paragraph("\n"));
+
+        // === PARAGRAF LULUS ===
+        Paragraph p2 = new Paragraph();
+        p2.setAlignment(Element.ALIGN_JUSTIFIED);
+        p2.setIndentationLeft(50);
+        p2.setIndentationRight(50);
+        p2.add(new Chunk(
+                "has truly completed all academic requirements and has attended the final project defense as the closing examination for the Study Program of ",
+                fStandard));
+        p2.add(new Chunk(bebasKewajiban.getMahasiswa().getIdProdi().getNamaProdiEnglish() != null ?
+                bebasKewajiban.getMahasiswa().getIdProdi().getNamaProdiEnglish() :
+                bebasKewajiban.getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
+        p2.add(new Chunk(", Faculty of ", fStandard));
+        p2.add(new Chunk(bebasKewajiban.getMahasiswa().getIdProdi().getFakultas().getNamaFakultas(), fStandard));
+        p2.add(new Chunk(" at Universitas Islam Tazkia and has been declared ", fStandard));
+        p2.add(new Chunk("GRADUATED ", fontB));
+        p2.add(new Chunk(" to hold the degree of " + bebasKewajiban.getMahasiswa().getIdProdi().getGelar(), fStandard));
+        document.add(p2);
+        document.add(new Paragraph("\n"));
+
+        // === PENUTUP ===
+        Paragraph p3 = new Paragraph(
+                "Thus, while awaiting the original diploma, this Letter of Graduation Certificate may be used as necessary.",
+                fStandard);
+        p3.setAlignment(Element.ALIGN_JUSTIFIED);
+        p3.setIndentationLeft(50);
+        p3.setIndentationRight(50);
+        document.add(p3);
+        document.add(new Paragraph("\n\n"));
+
+        // === WASSALAM (dipindah ke atas tanggal) ===
+        Image wassalam = loadImage.apply("wassalam.png", 140f);
+        if (wassalam != null) {
+            Paragraph pWassalam = new Paragraph();
+            pWassalam.setIndentationLeft(50);
+            pWassalam.add(new Chunk(wassalam, 0, -5, true));
+            document.add(pWassalam);
+        }
+
+        // === TANGGAL ===
+        Paragraph tanggal = new Paragraph();
+        tanggal.setIndentationLeft(50);
+        tanggal.add(new Chunk("Bogor, ", fStandard));
+        tanggal.add(new Chunk(LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")) + " M", fStandard));
+        tanggal.add(new Chunk(" / ", fStandard));
+        tanggal.add(new Chunk(hijriah + " H", fStandard));
+        document.add(tanggal);
+
+        // === JABATAN, BARCODE, DAN TTD DIGITAL ===
+        PdfPTable signTable = new PdfPTable(1);
+        signTable.setWidthPercentage(60);
+        signTable.setHorizontalAlignment(Element.ALIGN_LEFT);
+
+        PdfPCell leftCell = new PdfPCell();
+        leftCell.setBorder(Rectangle.NO_BORDER);
+        leftCell.setPaddingLeft(50);
+
+        Paragraph jabatan = new Paragraph("Vice Rector for Academic Affairs,", fontB);
+        jabatan.setSpacingAfter(10);
+        leftCell.addElement(jabatan);
+
+        try {
+            String url = "https://smile.tazkia.ac.id/skl/" + bebasKewajiban.getId();
+            BufferedImage qrImage = qrBarcode(url, 120);
+            Image qrPdfImage = Image.getInstance(qrImage, null);
+            qrPdfImage.scaleAbsolute(70, 70);
+            leftCell.addElement(qrPdfImage);
+        } catch (Exception e) {
+            System.err.println("Gagal buat QR Code: " + e.getMessage());
+            Paragraph fallback = new Paragraph("QR Error", FontFactory.getFont(FontFactory.TIMES_ROMAN, 8));
+            fallback.setAlignment(Element.ALIGN_CENTER);
+            leftCell.addElement(fallback);
+        }
+
+        Paragraph nama = new Paragraph("Dr. Nur Hendrasto, M.Si., CPC", fontB);
+        nama.setSpacingBefore(5);
+        leftCell.addElement(nama);
+
+        Paragraph nidn = new Paragraph("NIK/NIDN: 018.156/2104028504", fontB);
+        leftCell.addElement(nidn);
+
+        signTable.addCell(leftCell);
+        document.add(signTable);
+
+        // === FOOTER ===
+        Image footer = loadImage.apply("Footer.jpg", 0f);
+        if (footer != null) {
+            float marginLeftRight = -10f;
+            float marginBottom = 2f;
+            float maxWidth = PageSize.A4.getWidth() - (2 * marginLeftRight);
+
+            footer.scaleToFit(maxWidth, 200f);
+            footer.setAbsolutePosition(marginLeftRight, marginBottom);
+            document.add(footer);
+        }
+
+        document.close();
+        System.out.println("PDF SKL English selesai dibuat!");
+    }
+
+    private String convertDateEnglish(LocalDate date) {
+        if (date == null) {
+            return "-";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy", new Locale("en"));
+        return date.format(formatter);
+    }
+
     // === HELPER TABEL ===
     private void addTableCell(PdfPTable table, String text, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));

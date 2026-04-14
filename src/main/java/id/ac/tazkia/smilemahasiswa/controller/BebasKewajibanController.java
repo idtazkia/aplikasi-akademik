@@ -323,14 +323,14 @@ public class BebasKewajibanController {
 
     // CETAK SKL
     @GetMapping("/kewajiban/cetakSkl")
-    public void cetakSKL(@RequestParam("bebasKewajiban") String bebasKewajibanId, 
+    public void cetakSKL(@RequestParam("bebasKewajiban") String bebasKewajibanId,
                         HttpServletResponse response) throws IOException {
 
         PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findById(bebasKewajibanId)
                 .orElseThrow(() -> new RuntimeException("Data tidak ditemukan"));
 
         // Set header untuk download
-        String fileName = "SKL_" + bebasKewajiban.getMahasiswa().getNim() + 
+        String fileName = "SKL_" + bebasKewajiban.getMahasiswa().getNim() +
                         "_" + bebasKewajiban.getMahasiswa().getNama().replace(" ", "_") + ".pdf";
 
         response.setContentType("application/pdf");
@@ -338,6 +338,25 @@ public class BebasKewajibanController {
 
         // Panggil service untuk generate PDF
         bebasKewajibanService.cetakSKL(bebasKewajiban, response.getOutputStream());
+    }
+
+    // CETAK SKL ENGLISH
+    @GetMapping("/kewajiban/cetakSklEnglish")
+    public void cetakSklEnglish(@RequestParam("bebasKewajiban") String bebasKewajibanId,
+                        HttpServletResponse response) throws IOException {
+
+        PendaftaranBebasKewajiban bebasKewajiban = bebasKewajibanDao.findById(bebasKewajibanId)
+                .orElseThrow(() -> new RuntimeException("Data tidak ditemukan"));
+
+        // Set header untuk download
+        String fileName = "SKL_English_" + bebasKewajiban.getMahasiswa().getNim() +
+                        "_" + bebasKewajiban.getMahasiswa().getNama().replace(" ", "_") + ".pdf";
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+
+        // Panggil service untuk generate PDF
+        bebasKewajibanService.cetakSklEnglish(bebasKewajiban, response.getOutputStream());
     }
 
     // halaman admin

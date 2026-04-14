@@ -489,15 +489,26 @@
                     <div th:if="${bebasKewajiban.statusApprove == bebasKewajiban.statusApprove.APPROVED}" class="text-center py-5">
                         <h3 class="text-success mb-4">Bebas Kewajiban <strong>DISETUJUI</strong>!</h3>
                         <p>Selamat! Anda telah memenuhi semua persyaratan.</p>
-                        <a th:href="@{/kewajiban/cetakSkl(bebasKewajiban=${bebasKewajiban.id})}"
-   class="btn btn-success btn-lg"
-   download>
-    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-2">
-        <path d="M.5 9.9a.5.5 0 0 1 .5-.5h4V2a.5.5 0 0 1 1 0v7.5h4a.5.5 0 0 1 .354.854l-4 4a.5.5 0 0 1-.708 0l-4-4A.5.5 0 0 1 .5 9.9z"/>
-        <path d="M15 13.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1 0-1h13a.5.5 0 0 1 .5.5z"/>
-    </svg>
-    Download SKL
-</a>
+                        <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+                            <a th:href="@{/kewajiban/cetakSkl(bebasKewajiban=${bebasKewajiban.id})}"
+                               class="btn btn-success btn-lg"
+                               download>
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5-.5h4V2a.5.5 0 0 1 1 0v7.5h4a.5.5 0 0 1 .354.854l-4 4a.5.5 0 0 1-.708 0l-4-4A.5.5 0 0 1 .5 9.9z"/>
+                                    <path d="M15 13.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1 0-1h13a.5.5 0 0 1 .5.5z"/>
+                                </svg>
+                                Download SKL (Bahasa Indonesia)
+                            </a>
+                            <a th:href="@{/kewajiban/cetakSklEnglish(bebasKewajiban=${bebasKewajiban.id})}"
+                               class="btn btn-primary btn-lg"
+                               download>
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5-.5h4V2a.5.5 0 0 1 1 0v7.5h4a.5.5 0 0 1 .354.854l-4 4a.5.5 0 0 1-.708 0l-4-4A.5.5 0 0 1 .5 9.9z"/>
+                                    <path d="M15 13.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1 0-1h13a.5.5 0 0 1 .5.5z"/>
+                                </svg>
+                                Download SKL (English Version)
+                            </a>
+                        </div>
                     </div>
                     <div th:if="${bebasKewajiban.statusApprove != bebasKewajiban.statusApprove.APPROVED}" class="text-center py-5 text-muted">
                         <h5>Sedang Dalam Proses</h5>
