@@ -147,6 +147,7 @@
                             <li><a data-toggle="collapse" data-target="#suratMenu" href="#">Surat</a>
                                 <ul id="suratMenu" class="collapse dropdown-header-top">
                                     <li><a th:href="@{/surat/keterangan/form}">Surat Keterangan Mahasiswa</a></li>
+                                    <li><a th:href="@{/surat/tugas_kuliah/form}">Surat Tugas Kuliah</a></li>
                                     <li><a th:href="@{/surat/form}">Surat Magang</a></li>
                                     <li><a th:href="@{/surat/penelitian/form}">Surat Penelitian</a></li>
                                 </ul>
@@ -235,6 +236,7 @@
                     <div id="surat" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/keterangan/form}">Surat Keterangan Mahasiswa</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/tugas_kuliah/form}">Surat Tugas Kuliah</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/form}">Surat Pengantar Magang</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/surat/penelitian/form}">Surat Penelitian</a></li>
                             <!-- <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a href="https://bit.ly/Suratpermohonantazkia">Keterangan Aktif</a></li> -->

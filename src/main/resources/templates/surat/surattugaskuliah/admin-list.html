@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layoutadmin}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title th:text="${title}">Daftar Surat Tugas Kuliah - Admin</title>
+	</head>
+	<body>
+		<div layout:fragment="main">
+			<!-- Header -->
+			<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+				<div class="container-fluid">
+					<div class="header-body">
+						<!-- Card stats -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12">
+								<div class="card card-stats mb-4 mb-xl-0">
+									<div class="card-body">
+										<div class="row">
+											<div class="col">
+												<h5 class="card-title text-uppercase text-muted mb-0">
+													Daftar Surat Tugas Kuliah
+												</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page content -->
+			<div class="container-fluid mt--7">
+				<!-- Table -->
+				<div class="row">
+					<div class="col-xl-12 mb-5 mb-xl-0">
+						<div class="card shadow">
+							<div class="card-header bg-white border-0">
+								<div class="row align-items-center">
+									<div class="col-8">
+										<h3 class="mb-0">Semua Surat Tugas Kuliah</h3>
+									</div>
+								</div>
+							</div>
+
+							<div class="table-responsive">
+								<!-- Projects table -->
+								<table class="table align-items-center table-flush">
+									<thead class="thead-light">
+										<tr>
+											<th scope="col">No.</th>
+											<th scope="col">Tanggal</th>
+											<th scope="col">Mahasiswa</th>
+											<th scope="col">Matakuliah</th>
+											<th scope="col">Perusahaan</th>
+											<th scope="col">Status</th>
+											<th scope="col">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="surat, rowStat : ${data}">
+											<td th:text="${rowStat.index + 1 + (data.number * data.size)}">-</td>
+											<td>
+												<div th:text="${#temporals.format(surat.tanggalPengajuan, 'dd-MM-yyyy')}">-</div>
+												<small class="text-muted" th:if="${surat.tanggalApproveKaprodi != null}"
+												       th:text="${'Approved: ' + #temporals.format(surat.tanggalApproveKaprodi, 'dd-MM-yyyy')}"></small>
+											</td>
+											<td>
+												<strong th:text="${surat.mahasiswa.nama}">-</strong><br>
+												<small class="text-muted" th:text="${surat.mahasiswa.nim}">-</small><br>
+												<span class="badge badge-info" th:text="${surat.mahasiswa.idProdi.namaProdi}">-</span>
+											</td>
+											<td>
+												<strong th:text="${surat.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">-</strong><br>
+												<small class="text-muted">
+													Kelas: <span th:text="${surat.jadwal.kelas.namaKelas}">-</span>
+												</small><br>
+												<small class="text-muted">
+													<i class="fas fa-calendar"></i> <span th:text="${surat.jadwal.hari.namaHari}">-</span>
+												</small>
+											</td>
+											<td>
+												<strong th:text="${surat.namaPerusahaan}">-</strong><br>
+												<small class="text-muted" th:text="${surat.alamatPerusahaan}">-</small>
+											</td>
+											<td>
+												<span class="badge badge-warning"
+												      th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'WAITING'}">
+													<i class="fas fa-clock"></i> Menunggu
+												</span>
+												<span class="badge badge-success"
+												      th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'APPROVED'}">
+													<i class="fas fa-check"></i> Disetujui
+												</span>
+												<span class="badge badge-danger"
+												      th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'REJECTED'}">
+													<i class="fas fa-times"></i> Ditolak
+												</span>
+												<div th:if="${surat.komentarKaprodi != null}" style="margin-top: 5px;">
+													<small class="text-muted">
+														<i class="fas fa-comment"></i> <span th:text="${surat.komentarKaprodi}">-</span>
+													</small>
+												</div>
+											</td>
+											<td>
+												<a th:href="@{'/surat/tugas_kuliah/cetak?surat=' + ${surat.id}}"
+												   class="btn btn-sm btn-success">
+													<i class="fas fa-download"></i>
+												</a>
+											</td>
+										</tr>
+										<tr th:if="${data.isEmpty()}">
+											<td colspan="7" class="text-center">Tidak ada data</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<!-- Pagination -->
+							<div class="card-footer py-4" th:if="${!data.isEmpty()}">
+								<nav aria-label="...">
+									<ul class="pagination justify-content-end mb-0">
+										<li class="page-item" th:classappend="${!data.hasPrevious() ? 'disabled' : ''}">
+											<a class="page-link"
+											   th:href="@{/surat/tugas_kuliah/admin/list(page=${data.number - 1})}"
+											   tabindex="-1">
+												<i class="fas fa-angle-left"></i>
+												<span class="sr-only">Previous</span>
+											</a>
+										</li>
+										<li class="page-item"
+										    th:classappend="${page == data.number ? 'active' : ''}"
+										    th:each="page : ${#numbers.sequence(0, data.totalPages - 1)}">
+											<a class="page-link"
+											   th:href="@{/surat/tugas_kuliah/admin/list(page=${page})}"
+											   th:text="${page + 1}">1</a>
+										</li>
+										<li class="page-item" th:classappend="${!data.hasNext() ? 'disabled' : ''}">
+											<a class="page-link"
+											   th:href="@{/surat/tugas_kuliah/admin/list(page=${data.number + 1})}">
+												<i class="fas fa-angle-right"></i>
+												<span class="sr-only">Next</span>
+											</a>
+										</li>
+									</ul>
+								</nav>
+								<div class="text-center mt-3">
+									<small class="text-muted">
+										Halaman <span th:text="${data.number + 1}">1</span>
+										dari <span th:text="${data.totalPages}">1</span>
+										(Total: <span th:text="${data.totalElements}">0</span> data)
+									</small>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<footer class="footer" th:if="${data.isEmpty()}">
+					<div class="row align-items-center justify-content-xl-between">
+						<div class="col-xl-6">
+							<div class="copyright text-center text-xl-left text-muted">
+								© 2024 <a href="https://www.tazkia.ac.id" class="font-weight-bold ml-1" target="_blank">Institut Tazkia</a>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>

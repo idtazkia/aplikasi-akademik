@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Daftar Surat Tugas Kuliah</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Daftar Surat Tugas Kuliah</h2>
+                                        <p>Riwayat pengajuan surat tugas kuliah</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/surat/tugas_kuliah/form}">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-plus"></i> Buat Surat Baru
+                                        </button>
+                                    </a>
+                                    <a th:href="@{/}">
+                                        <button class="btn btn-default">
+                                            <i class="fa fa-arrow-circle-left"></i> Kembali
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="bsc-tbl-st">
+                        <div class="table-responsive" th:if="${not #lists.isEmpty(data)}">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th style="width: 5%">No.</th>
+                                    <th style="width: 15%">Tanggal Pengajuan</th>
+                                    <th style="width: 20%">Matakuliah</th>
+                                    <th style="width: 20%">Nama Perusahaan/Yayasan</th>
+                                    <th style="width: 10%">Status</th>
+                                    <th style="width: 15%">Aksi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="surat, rowStat : ${data}">
+                                    <td th:text="${rowStat.index + 1}">-</td>
+                                    <td th:text="${#temporals.format(surat.tanggalPengajuan, 'dd-MM-yyyy')}">-</td>
+                                    <td>
+                                        <strong th:text="${surat.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">-</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fa fa-graduation-cap"></i> Kelas: <span th:text="${surat.jadwal.kelas.namaKelas}">-</span>
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fa fa-calendar"></i> <span th:text="${surat.jadwal.hari.namaHari}">-</span>
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span th:text="${surat.namaPerusahaan}">-</span>
+                                        <br>
+                                        <small class="text-muted" th:text="${surat.alamatPerusahaan}">-</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-warning" th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'WAITING'}">
+                                            <i class="fa fa-clock"></i> Menunggu
+                                        </span>
+                                        <span class="badge badge-success" th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'APPROVED'}">
+                                            <i class="fa fa-check-circle"></i> Disetujui
+                                        </span>
+                                        <span class="badge badge-danger" th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'REJECTED'}">
+                                            <i class="fa fa-times-circle"></i> Ditolak
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/surat/tugas_kuliah/cetak?surat=${surat.id}}"
+                                           class="btn btn-primary btn-sm"
+                                           th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'APPROVED'}">
+                                            <i class="fa fa-download"></i> Download
+                                        </a>
+                                        <span class="text-muted"
+                                              th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() != 'APPROVED'}">
+                                            <i class="fa fa-lock"></i> Terkunci
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${#lists.isEmpty(data)}" class="text-center py-5">
+                            <i class="fa fa-inbox fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">Belum ada surat tugas kuliah yang diajukan</p>
+                            <a th:href="@{/surat/tugas_kuliah/form}" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Buat Surat Baru
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
