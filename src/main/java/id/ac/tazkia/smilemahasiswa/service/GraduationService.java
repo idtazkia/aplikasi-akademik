@@ -56,7 +56,7 @@ public class GraduationService {
     public void downloadDataConceptNote(TahunAkademik tahunAkademik, Prodi prodi, HttpServletResponse response)
             throws IOException {
 
-        String[] column = { "No", "Nim", "Nama", "Prodi", "Pembimbing 1", "Pembimbing 2", "Jenis" };
+        String[] column = { "No", "Nim", "Nama", "Prodi", "Pembimbing 1", "Pembimbing 2", "Judul", "Judul (English)", "Jenis" };
         List<Note> notes = noteDao.findByTahunAkademikAndMahasiswaIdProdiAndStatus(tahunAkademik, prodi,
                 StatusApprove.APPROVED);
 
@@ -117,7 +117,11 @@ public class GraduationService {
             row.createCell(4).setCellValue(note.getDosen().getKaryawan().getNamaKaryawan());
             if (note.getDosen2() != null) {
                 row.createCell(5).setCellValue(note.getDosen2().getKaryawan().getNamaKaryawan());
+            } else {
+                row.createCell(5).setCellValue("-");
             }
+            row.createCell(6).setCellValue(note.getJudul() != null ? note.getJudul() : "-");
+            row.createCell(7).setCellValue(note.getJudulInggris() != null ? note.getJudulInggris() : "-");
 
             String jenis = null;
 
@@ -146,15 +150,11 @@ public class GraduationService {
 
             }
 
-            row.createCell(5).setCellValue("-");
-            row.createCell(6).setCellValue(jenis);
-            row.getCell(0).setCellStyle(dataCellStyle);
-            row.getCell(1).setCellStyle(dataCellStyle);
-            row.getCell(2).setCellStyle(dataCellStyle);
-            row.getCell(3).setCellStyle(dataCellStyle);
-            row.getCell(4).setCellStyle(dataCellStyle);
-            row.getCell(5).setCellStyle(dataCellStyle);
-            row.getCell(6).setCellStyle(dataCellStyle);
+            row.createCell(8).setCellValue(jenis);
+            for (int i = 0; i <= 8; i++) {
+                if (row.getCell(i) == null) row.createCell(i).setCellValue("");
+                row.getCell(i).setCellStyle(dataCellStyle);
+            }
         }
 
         for (int i = 0; i < column.length; i++) {

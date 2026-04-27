@@ -592,6 +592,9 @@ public class GraduationController {
     public void list(Model model, @RequestParam(required = false) TahunAkademik tahun, Pageable pageable,
             @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) StatusApprove status) {
 
+        model.addAttribute("tahun", tahunAkademikDao.findAll());
+        model.addAttribute("prodi", prodiDao.findAll());
+
         if (tahun != null) {
             if (status != null) {
                 model.addAttribute("selectedTahun", tahun);
