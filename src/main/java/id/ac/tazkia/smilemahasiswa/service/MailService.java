@@ -303,6 +303,64 @@ public class MailService {
 
     }
 
+    public void approvedSeminarAkademik(Seminar seminar) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/seminar/approved.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nim", seminar.getNote().getMahasiswa().getNim());
+        data.put("nama", seminar.getNote().getMahasiswa().getNama());
+        data.put("judulIndo", seminar.getNote().getJudul());
+        data.put("judulInggris", seminar.getNote().getJudulInggris());
+        data.put("dosen1", seminar.getNote().getDosen().getKaryawan().getNamaKaryawan());
+        data.put("dosen2", seminar.getNote().getDosen2() != null
+                ? seminar.getNote().getDosen2().getKaryawan().getNamaKaryawan() : "-");
+        data.put("jenisSeminar", seminar.getNote().getJenis() != null
+                ? seminar.getNote().getJenis().toString() : "Proposal");
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        String email = seminar.getNote().getMahasiswa().getEmailTazkia();
+        if (email == null || email.isBlank()) {
+            email = seminar.getNote().getMahasiswa().getEmailPribadi();
+        }
+        if (email != null && !email.isBlank()) {
+            gmailApiService.kirimEmail(
+                    "Smile Notifikasi",
+                    email,
+                    "Pendaftaran Seminar Disetujui Akademik",
+                    output.toString());
+        }
+    }
+
+    public void rejectedSeminarAkademik(Seminar seminar) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/seminar/rejected.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nim", seminar.getNote().getMahasiswa().getNim());
+        data.put("nama", seminar.getNote().getMahasiswa().getNama());
+        data.put("judulIndo", seminar.getNote().getJudul());
+        data.put("judulInggris", seminar.getNote().getJudulInggris());
+        data.put("dosen1", seminar.getNote().getDosen().getKaryawan().getNamaKaryawan());
+        data.put("dosen2", seminar.getNote().getDosen2() != null
+                ? seminar.getNote().getDosen2().getKaryawan().getNamaKaryawan() : "-");
+        data.put("jenisSeminar", seminar.getNote().getJenis() != null
+                ? seminar.getNote().getJenis().toString() : "Proposal");
+        data.put("keterangan", seminar.getKomentarAkademik() != null
+                ? seminar.getKomentarAkademik() : "-");
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        String email = seminar.getNote().getMahasiswa().getEmailTazkia();
+        if (email == null || email.isBlank()) {
+            email = seminar.getNote().getMahasiswa().getEmailPribadi();
+        }
+        if (email != null && !email.isBlank()) {
+            gmailApiService.kirimEmail(
+                    "Smile Notifikasi",
+                    email,
+                    "Pendaftaran Seminar Ditolak",
+                    output.toString());
+        }
+    }
+
     public void intershipApproved(FileMagang fileMagang) {
         Mustache templateEmail = mustacheFactory.compile("templates/email/magang/approve.html");
         Map<String, String> data = new HashMap<>();
