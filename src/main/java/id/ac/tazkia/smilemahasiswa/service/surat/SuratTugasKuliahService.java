@@ -196,9 +196,9 @@ public class SuratTugasKuliahService {
         perkenalan.setAlignment(Element.ALIGN_JUSTIFIED);
         perkenalan.setIndentationLeft(50);
         perkenalan.setIndentationRight(50);
-        perkenalan.add(new Chunk("Pertama-tama perkenankan kami menghaturkan Tahiyyah Islamiyah semoga Pimpinan dan Staf ", fStandard));
+        perkenalan.add(new Chunk("Pertama-tama perkenankan kami menghaturkan Tahiyyah Islamiyyah semoga segenap pimpinan dan staf ", fStandard));
         perkenalan.add(new Chunk(surat.getNamaPerusahaan(), fontB));
-        perkenalan.add(new Chunk(" senantiasa berada dalam lindungan Allah SWT, Amin.", fStandard));
+        perkenalan.add(new Chunk(" senantiasa sehat wal afiat serta sukses dalam menjalankan aktifitas sehari-hari. Amin.", fStandard));
         document.add(perkenalan);
         document.add(new Paragraph("\n"));
 
@@ -209,13 +209,10 @@ public class SuratTugasKuliahService {
         isi.setIndentationRight(50);
 
         String namaMatakuliah = surat.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
-        String namaKelas = surat.getJadwal().getKelas().getNamaKelas();
 
-        isi.add(new Chunk("Sehubungan dengan pelaksanaan perkuliahan matakuliah ", fStandard));
+        isi.add(new Chunk("Sehubungan dengan adanya tugas perkuliahan mini riset pada mata kuliah ", fStandard));
         isi.add(new Chunk(namaMatakuliah, fontB));
-        isi.add(new Chunk(" kelas ", fStandard));
-        isi.add(new Chunk(namaKelas, fontB));
-        isi.add(new Chunk(", maka dengan ini kami mengharap kehadiran Bapak/Ibu untuk dapat memberikan kesempatan kepada mahasiswa kami untuk melakukan wawancara sebagai syarat penyelesaian tugas kuliah. Adapun mahasiswanya yaitu:", fStandard));
+        isi.add(new Chunk(", maka untuk mahasiswa berikut :", fStandard));
 
         document.add(isi);
         document.add(new Paragraph("\n"));
@@ -237,11 +234,7 @@ public class SuratTugasKuliahService {
         addTableCell(table, ":", fStandard);
         addTableCell(table, surat.getMahasiswa().getIdProdi().getNamaProdi(), fStandard);
 
-        addTableCell(table, "Matakuliah", fStandard);
-        addTableCell(table, ":", fStandard);
-        addTableCell(table, namaMatakuliah + " - " + namaKelas, fStandard);
-
-        addTableCell(table, "No. Telepon", fStandard);
+        addTableCell(table, "No Handphone", fStandard);
         addTableCell(table, ":", fStandard);
         addTableCell(table, getNoTelepon(surat.getMahasiswa()), fStandard);
 
@@ -249,12 +242,22 @@ public class SuratTugasKuliahService {
         document.add(new Paragraph("\n"));
 
         // === PENUTUP ===
-        Paragraph penutup = new Paragraph(
-                "Demikian surat permohonan ini kami sampaikan, atas kesediaan dan kerjasamanya kami ucapkan terima kasih.", fStandard);
+        Paragraph penutup = new Paragraph();
         penutup.setAlignment(Element.ALIGN_JUSTIFIED);
         penutup.setIndentationLeft(50);
         penutup.setIndentationRight(50);
+        penutup.add(new Chunk("dimohonkan untuk dapat melaksanakan wawancara penelitian di ", fStandard));
+        penutup.add(new Chunk(surat.getNamaPerusahaan(), fontB));
+        penutup.add(new Chunk(" guna penyelesaian tugas kuliah.", fStandard));
         document.add(penutup);
+        document.add(new Paragraph("\n"));
+
+        Paragraph penutup2 = new Paragraph(
+                "Demikian surat permohonan ini dibuat dan besar harapan kami untuk dapat disetujui. Terima kasih.", fStandard);
+        penutup2.setAlignment(Element.ALIGN_JUSTIFIED);
+        penutup2.setIndentationLeft(50);
+        penutup2.setIndentationRight(50);
+        document.add(penutup2);
         document.add(new Paragraph("\n"));
 
         // === WASSALAM ===
