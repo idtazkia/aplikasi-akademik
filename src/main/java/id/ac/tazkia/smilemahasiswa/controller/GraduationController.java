@@ -1681,6 +1681,7 @@ public class GraduationController {
         seminarDao.save(seminar);
         graduationService.createTugasAkhir(seminar.getNote().getMahasiswa(), StatusTugasAkhir.APPROVED_AKADEMIK,
                 TugasAkhir.MenuTugasAkhir.SEMINAR);
+        mailService.approvedSeminarAkademik(seminar);
 
         return "redirect:admin/list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
@@ -1708,6 +1709,7 @@ public class GraduationController {
         seminarDao.save(seminar);
         graduationService.createTugasAkhir(seminar.getNote().getMahasiswa(), StatusTugasAkhir.REJECTED,
                 TugasAkhir.MenuTugasAkhir.SEMINAR);
+        mailService.rejectedSeminarAkademik(seminar);
 
         return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId() + "&prodi="
                 + seminar.getNote().getMahasiswa().getIdProdi().getId();
