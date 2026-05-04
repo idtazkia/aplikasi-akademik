@@ -19,6 +19,7 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto(k.idAbsen,k.namaKaryawan,k.rfid,true ,'',0) from  Karyawan k where k.status = :status and k.idAbsen is not null and k.rfid is not null")
     List<ApiRfidDto> rfidKaryawan(@Param("status")StatusRecord statusRecord);
 
+    //Surat tugas
     @Query("SELECT k FROM Karyawan k WHERE k.idUser = :user AND k.status = 'AKTIF'")
     Karyawan findByIdUser(@Param("user") User user);
 
