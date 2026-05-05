@@ -455,7 +455,7 @@ public class SidangController {
     public String saveSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp,
                              Authentication authentication,
                              MultipartFile kartu, MultipartFile plagiat, MultipartFile draft, MultipartFile pendaftaran,
-                             MultipartFile berita, MultipartFile korespondensi) throws Exception {
+                             MultipartFile berita) throws Exception {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -652,24 +652,6 @@ public class SidangController {
 
         } else {
             sidang.setFileSidang(sidang.getFileSidang());
-        }
-
-        if (korespondensi != null && !korespondensi.isEmpty()) {
-            String namaAsli = korespondensi.getOriginalFilename();
-            String extension = "";
-            int i = namaAsli.lastIndexOf('.');
-            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-            if (i > p) {
-                extension = namaAsli.substring(i + 1);
-            }
-            String idFile = UUID.randomUUID().toString();
-            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
-            new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-            korespondensi.transferTo(tujuan);
-            sidang.setFileKorespondensi(idFile + "." + extension);
-        } else {
-            sidang.setFileKorespondensi(sidang.getFileKorespondensi());
         }
 
         sidang.setTanggalInput(LocalDateTime.now().plusHours(7));
@@ -2512,6 +2494,7 @@ public class SidangController {
     public String prosesLOA(@Valid Sidang sidang,
                                          BindingResult error, MultipartFile kartu, MultipartFile jurnal, MultipartFile pendaftaran,
                                          MultipartFile ktp, MultipartFile ijazah, @RequestParam(required = false) MultipartFile berita,
+                                         @RequestParam(required = false) MultipartFile korespondensi,
                                          Authentication currentUser) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -2653,6 +2636,24 @@ public class SidangController {
             sidang.setFileIjazah(sidang.getFileIjazah());
         }
 
+
+        if (korespondensi != null && !korespondensi.isEmpty()) {
+            String namaAsli = korespondensi.getOriginalFilename();
+            String extension = "";
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            korespondensi.transferTo(tujuan);
+            sidang.setFileKorespondensi(idFile + "." + extension);
+        } else {
+            sidang.setFileKorespondensi(sidang.getFileKorespondensi());
+        }
 
         sidang.setTanggalInput(LocalDateTime.now().plusHours(7));
         sidang.setStatusSidang(StatusApprove.WAITING);

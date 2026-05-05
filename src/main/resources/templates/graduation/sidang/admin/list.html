@@ -867,10 +867,6 @@
                                                 <a class="dropdown-item" target="_blank"
                                                    th:href="@{/upload/{sidang}/berita/(sidang=${data.id})}">Berita
                                                     Acara Sempro</a>
-                                                <a class="dropdown-item" target="_blank"
-                                                   th:if="${data.fileKorespondensi != null}"
-                                                   th:href="@{/upload/{sidang}/korespondensi/(sidang=${data.id})}">Bukti
-                                                    Korespondensi</a>
                                             </div>
 
                                             <div class="dropdown-menu"
@@ -890,6 +886,10 @@
                                                 <a class="dropdown-item"
                                                    th:href="@{/upload/{sidang}/file-jurnal-loa/{file}/(sidang=${data.id},file=${'ijazah'})}"
                                                    target="_blank">Ijazah</a>
+                                                <a class="dropdown-item" target="_blank"
+                                                   th:if="${data.fileKorespondensi != null}"
+                                                   th:href="@{/upload/{sidang}/korespondensi/(sidang=${data.id})}">Bukti
+                                                    Korespondensi</a>
                                             </div>
 
                                             <div class="dropdown-menu"
