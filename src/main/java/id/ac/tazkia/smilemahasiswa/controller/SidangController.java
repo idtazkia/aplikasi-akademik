@@ -455,7 +455,7 @@ public class SidangController {
     public String saveSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp,
                              Authentication authentication,
                              MultipartFile kartu, MultipartFile plagiat, MultipartFile draft, MultipartFile pendaftaran,
-                             MultipartFile berita) throws Exception {
+                             MultipartFile berita, MultipartFile korespondensi) throws Exception {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -653,6 +653,25 @@ public class SidangController {
         } else {
             sidang.setFileSidang(sidang.getFileSidang());
         }
+
+        if (korespondensi != null && !korespondensi.isEmpty()) {
+            String namaAsli = korespondensi.getOriginalFilename();
+            String extension = "";
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            korespondensi.transferTo(tujuan);
+            sidang.setFileKorespondensi(idFile + "." + extension);
+        } else {
+            sidang.setFileKorespondensi(sidang.getFileKorespondensi());
+        }
+
         sidang.setTanggalInput(LocalDateTime.now().plusHours(7));
         sidang.setStatusSidang(StatusApprove.WAITING);
         sidang.setAkademik(StatusApprove.WAITING);
@@ -2096,6 +2115,30 @@ public class SidangController {
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
+        }
+    }
+
+    @GetMapping("/upload/{sidang}/korespondensi/")
+    public ResponseEntity<byte[]> korespondensi(@PathVariable Sidang sidang, Model model) throws Exception {
+        String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
+                + File.separator + sidang.getFileKorespondensi();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (sidang.getFileKorespondensi().toLowerCase().endsWith("jpeg")
+                    || sidang.getFileKorespondensi().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (sidang.getFileKorespondensi().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (sidang.getFileKorespondensi().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
