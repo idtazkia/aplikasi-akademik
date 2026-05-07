@@ -26,3 +26,4 @@ nbdist/
 application.properties
 backup/
 tools/db-credentials.sh
+.DS_Store
