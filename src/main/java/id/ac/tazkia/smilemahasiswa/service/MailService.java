@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
@@ -403,5 +404,33 @@ public class MailService {
 
     }
 
+
+    public void reminderTagihanBulanan(Tagihan tagihan, String nilaiTagihan) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/keuangan/tagihan.html");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id"));
+        String tanggalJatuhTempo = tagihan.getTanggalJatuhTempo().format(formatter);
+        DateTimeFormatter formatterKirim = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id"));
+        String tanggalKirim = LocalDate.now().format(formatterKirim);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("tanggalKirim", tanggalKirim);
+        data.put("nomorTagihan", tagihan.getNomor());
+        data.put("nama", tagihan.getMahasiswa().getNama());
+        data.put("nim", tagihan.getMahasiswa().getNim());
+        data.put("email", tagihan.getMahasiswa().getEmailPribadi());
+        data.put("nomorTelepon", tagihan.getMahasiswa().getTeleponSeluler());
+        data.put("jenisTagihan", tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama());
+        data.put("nilaiTagihan", nilaiTagihan);
+        data.put("tanggalJatuhTempo", tanggalJatuhTempo);
+
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail(
+                "Tazkia Finance",
+                tagihan.getMahasiswa().getEmailTazkia(),
+                "Informasi Tagihan Biaya Pendidikan",
+                output.toString());
+    }
 
 }

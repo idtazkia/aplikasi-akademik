@@ -115,4 +115,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
     @Query(value = "select sum(nilai_cicilan) as total from request_cicilan where id_tagihan=?1 and status_cicilan='EDITED' and status='AKTIF'", nativeQuery = true)
     BigDecimal sumTotalCicilan(String idTagihan);
 
+    // Query untuk scheduler reminder cicilan setiap tanggal 1 (semua yang belum lunas)
+    List<RequestCicilan> findByStatusAndStatusApproveAndStatusCicilan(StatusRecord status, StatusApprove statusApprove, StatusCicilan statusCicilan);
+
 }

@@ -5,167 +5,176 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Yayasan Tazkia Cendekia - Finance Dept</title>
-    <div style="text-align:center">
-        <table
-            style="text-align:left;max-width:640px;color:#737373;border-collapse:collapse;border-left:1px solid #e4e4e4;border-right:1px solid #e4e4e4;vertical-align:top">
+    <title>Universitas Tazkia - Finance Dept</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .email-wrapper {
+            width: 100%;
+            background-color: #f4f4f4;
+            padding: 20px 0;
+        }
+        .email-container {
+            max-width: 640px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-collapse: collapse;
+        }
+        .header {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px 40px;
+        }
+        .header img {
+            max-width: 100%;
+            height: auto;
+        }
+        .content {
+            padding: 30px 40px;
+            color: #333333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .content .greeting-arabic {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .content .greeting {
+            margin-bottom: 5px;
+        }
+        .content .message {
+            margin-bottom: 20px;
+        }
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .detail-table td {
+            padding: 8px 10px;
+            border: 1px solid #dddddd;
+            vertical-align: top;
+        }
+        .detail-table td.label {
+            background-color: #f9f9f9;
+            font-weight: bold;
+            width: 180px;
+        }
+        .instruction {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .footer {
+            background-color: #0a5c4e;
+            color: #ffffff;
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .footer a {
+            color: #ffffff;
+        }
+    </style>
+</head>
 
-            <tbody>
+<body>
+    <div class="email-wrapper">
+        <table class="email-container" align="center" cellpadding="0" cellspacing="0"
+            style="max-width:640px;width:100%;border:1px solid #e4e4e4;">
 
-                <tr>
+            <!-- Header -->
+            <tr>
+                <td class="header" style="background-color:#f4f4f4;padding:20px 40px;text-align:center;">
+                    <img src="https://tazkia.ac.id/assets/notification/headerlogo.png" width="720"
+                        height="auto" border="0" alt="Universitas Tazkia" />
+                </td>
+            </tr>
 
-                    <td
-                        style="background-color:#f8f8f8;padding-left:18px;border-bottom:1px solid #e4e4e4;border-top:1px solid #e4e4e4">
-                    </td>
+            <!-- Content -->
+            <tr>
+                <td class="content" style="padding:30px 40px;color:#333333;font-size:14px;line-height:1.6;">
 
-                    <td style="padding:13px 10px 8px 0px;background-color:#f8f8f8;border-top:1px solid #e4e4e4;border-bottom:1px solid #e4e4e4"
-                        valign="middle">
+                    <div style="font-size:12px;color:#999999;margin-bottom:15px;text-align:right;">
+                        {{tanggalKirim}}
+                    </div>
 
-                        <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f4f4f4">
-                            <tr>
-                                <td class="fluid-img img-left p30-15 "
-                                    style="padding-left: 40px; padding-right:40px; padding-top:30px; padding-bottom:30px; font-size:0pt; line-height:0pt; text-align:center;">
-                                    <img src="https://tazkia.ac.id/assets/notification/headerlogo.png" width="720"
-                                        height="auto" border="0" alt="" />
-                                </td>
-                            </tr>
-                        </table>
+                    <div class="greeting-arabic" style="font-size:16px;margin-bottom:10px;">
+                        السلام عليكم و رحمة الله و بركاته
+                    </div>
 
-                    </td>
+                    <div class="greeting" style="margin-bottom:3px;">
+                        Kepada Yth. <b>{{nama}}</b>,
+                    </div>
+                    <div class="greeting" style="margin-bottom:15px;">
+                        <i>Dear {{nama}},</i>
+                    </div>
 
-                    <td
-                        style="background-color:#f8f8f8;padding-right:18px;border-top:1px solid #e4e4e4;border-bottom:1px solid #e4e4e4">
-                    </td>
+                    <div class="message" style="margin-bottom:8px;">
+                        Kami ingin mengingatkan bahwa Periode pembayaran cicilan biaya pendidikan dilakukan setiap Awal Bulan.
+                    </div>
 
-                </tr>
+                    <div class="message" style="margin-bottom:15px;">
+                        Berikut kami sampaikan tagihan Anda pada Universitas Tazkia dengan rincian sebagai berikut:
+                    </div>
 
-                <tr>
+                    <table class="detail-table" style="width:100%;border-collapse:collapse;margin:15px 0;font-size:14px;">
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Nomor Tagihan</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">{{nomorTagihan}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Nama</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">{{nama}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Email</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">{{email}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Nomor Telepon</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">{{nomorTelepon}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Total Tagihan</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">{{nilaiTagihan}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Keterangan</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">{{jenisTagihan}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="background-color:#f9f9f9;font-weight:bold;width:180px;padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">Rekening Pembayaran</td>
+                            <td style="padding:8px 10px;border:1px solid #dddddd;vertical-align:top;">
+                                Bank Syariah Indonesia<br/>
+                                9009001402510409006
+                            </td>
+                        </tr>
+                    </table>
 
-                    <td style="padding-left:18px"></td>
+                    <div class="instruction" style="margin-top:15px;font-size:14px;">
+                        Silakan lakukan pembayaran ke rekening di atas untuk menyelesaikan transaksi Anda.
+                    </div>
 
-                    <td style="padding:18px 0px 12px 0px;vertical-align:top;border-bottom:1px solid #e4e4e4">
+                </td>
+            </tr>
 
-                        <div><span style="padding:0px 6px 0px 0px">السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ
-                                وَبَرَكَاتُهُ<br><br><i>Dear {{nama}},</i></span>
-
-                            <div>
-
-                                <div style="padding:12px 0px 12px 0px">
-
-                                    <div style="color:#737373;padding:2px 0px 0px 0px;font-size:14px;line-height:18px">
-                                        Ini adalah pengingat bahwa tagihan Anda akan jatuh tempo dalam <b>7 hari</b>.
-                                    </div>
-
-                                </div>
-
-                                <table style="width:100%;color:#737373;vertical-align:top;font-size:14px">
-
-                                    <tbody>
-
-                                        <tr>
-
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top"
-                                                width="200">Nama</td>
-
-                                            <td style="text-align:center;vertical-align:top" width="12">:</td>
-
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top">
-                                                <b>{{nama}}</b></td>
-
-                                        </tr>
-
-                                        <tr>
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top"
-                                                width="200">NIM</td>
-
-                                            <td style="text-align:center;vertical-align:top" width="12">:</td>
-
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top">
-                                                {{nim}}</td>
-
-                                        </tr>
-
-                                        <tr>
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top"
-                                                width="200">Jenis Tagihan</td>
-
-                                            <td style="text-align:center;vertical-align:top" width="12">:</td>
-
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top">
-                                                {{jenisTagihan}}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top"
-                                                width="200">Nilai Tagihan</td>
-
-                                            <td style="text-align:center;vertical-align:top" width="12">:</td>
-
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top">
-                                                {{nilaiTagihan}}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top"
-                                                width="200">Tanggal Jatuh Tempo</td>
-
-                                            <td style="text-align:center;vertical-align:top" width="12">:</td>
-
-                                            <td style="padding-right:6px;padding-bottom:6px;vertical-align:top">
-                                                <b>{{tanggalJatuhTempo}}</b></td>
-                                        </tr>
-
-                                    </tbody>
-
-                                </table>
-
-                                <div style="padding:12px 0px 12px 0px">
-
-                                    <div style="color:#737373;padding:2px 0px 0px 0px;font-size:14px;line-height:18px">
-                                        Mohon untuk segera melakukan pembayaran sebelum tanggal jatuh tempo untuk menghindari keterlambatan.
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                    <td style="padding-right:18px"></td>
-
-                </tr>
-
-                <tr>
-
-                    <td style="padding-left:18px"></td>
-
-
-                    <td align="center"><br></td>
-
-                    <td style="padding-right:18px"></td>
-
-                </tr>
-
-                <tr>
-
-                    <td colspan="3"
-                        style="background-color:#f98f41;font-size:12px;color:#ffffff;vertical-align:middle;text-align:center;padding:10px 10px 10px 10px;line-height:15px;border:1px solid #e4e4e4"
-                        valign="middle">
-
-                        Copyright 2024 SMILE TAZKIA, All rights reserved.<br>
-
-                    </td>
-
-                </tr>
-
-            </tbody>
+            <!-- Footer -->
+            <tr>
+                <td class="footer" style="background-color:#0a5c4e;color:#ffffff;padding:20px 40px;text-align:center;font-size:12px;line-height:1.6;">
+                    Copyright 2017-2025 UNIVERSITAS TAZKIA, All rights reserved.<br/>
+                    Mohon tidak membalas email ini. Untuk pertanyaan atau saran, silahkan hubungi:<br/>
+                    Call Center Keuangan : 08561360444
+                </td>
+            </tr>
 
         </table>
-        <div class="yj6qo"></div>
-        <div class="adL">
-
-
-        </div>
     </div>
+</body>
+
+</html>

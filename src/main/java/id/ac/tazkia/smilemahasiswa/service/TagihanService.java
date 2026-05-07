@@ -3,6 +3,8 @@ package id.ac.tazkia.smilemahasiswa.service;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.entity.RequestCicilan;
+import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.jni.Local;
@@ -94,7 +96,13 @@ public class TagihanService {
     private PrediksiTestDao prediksiTestDao;
 
     @Autowired
+    private GmailApiService gmailApiService;
+
+    @Autowired
     private AktivasiService aktivasiService;
+
+    @Autowired
+    private MailService mailService;
 
     public void generateTagihanBeasiswa(TahunAkademik tahunAkademik, Program program, List<Mahasiswa> mahasiswas){
         if (!mahasiswas.isEmpty()) {
@@ -719,6 +727,65 @@ public class TagihanService {
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
             requestCreateTagihan(tagihan);
+        }
+    }
+
+    /**
+     * Scheduler untuk mengirim reminder tagihan setiap tanggal 1 setiap bulan
+     * Dijalankan setiap tanggal 1 pukul 07:00 WIB
+     */
+    @Scheduled(cron = "0 0 7 1 * *", zone = "Asia/Jakarta")
+    public void reminderTagihanBulanan() {
+        log.info("=== Mulai scheduler reminder tagihan bulanan (tanggal 1) ===");
+
+        // 1. Cari semua tagihan yang belum lunas
+        List<Tagihan> tagihanList = tagihanDao.findByStatusAndStatusTagihanAndLunas(
+                StatusRecord.AKTIF, StatusTagihan.AKTIF, false);
+        log.info("Ditemukan {} tagihan yang belum lunas", tagihanList.size());
+
+        // Kirim notifikasi untuk setiap tagihan
+        for (Tagihan tagihan : tagihanList) {
+            try {
+                kirimNotifikasiTagihan(tagihan);
+            } catch (Exception e) {
+                log.error("Gagal mengirim notifikasi untuk tagihan ID: {} - Error: {}",
+                        tagihan.getId(), e.getMessage(), e);
+            }
+        }
+
+        // 2. Cari semua cicilan yang sedang ditagihkan
+        List<RequestCicilan> cicilanList = requestCicilanDao.findByStatusAndStatusApproveAndStatusCicilan(
+                StatusRecord.AKTIF, StatusApprove.APPROVED, StatusCicilan.SEDANG_DITAGIHKAN);
+        log.info("Ditemukan {} cicilan yang sedang ditagihkan", cicilanList.size());
+
+        // Kirim notifikasi untuk setiap cicilan
+        for (RequestCicilan cicilan : cicilanList) {
+            try {
+                kirimNotifikasiCicilan(cicilan);
+            } catch (Exception e) {
+                log.error("Gagal mengirim notifikasi untuk cicilan ID: {} - Error: {}",
+                        cicilan.getId(), e.getMessage(), e);
+            }
+        }
+
+        log.info("=== Selesai scheduler reminder tagihan bulanan ===");
+    }
+
+    private void kirimNotifikasiTagihan(Tagihan tagihan) {
+        try {
+            mailService.reminderTagihanBulanan(tagihan, tagihan.getNilaiTagihan().toString());
+            log.info("Notifikasi tagihan terkirim ke: {}", tagihan.getMahasiswa().getNama());
+        } catch (Exception e) {
+            log.error("Gagal mengirim notifikasi tagihan: {}", e.getMessage(), e);
+        }
+    }
+
+    private void kirimNotifikasiCicilan(RequestCicilan cicilan) {
+        try {
+            mailService.reminderTagihanBulanan(cicilan.getTagihan(), cicilan.getNilaiCicilan().toString());
+            log.info("Notifikasi cicilan terkirim ke: {}", cicilan.getTagihan().getMahasiswa().getNama());
+        } catch (Exception e) {
+            log.error("Gagal mengirim notifikasi cicilan: {}", e.getMessage(), e);
         }
     }
 

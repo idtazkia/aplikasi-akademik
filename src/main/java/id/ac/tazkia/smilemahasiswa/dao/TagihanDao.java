@@ -14,6 +14,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> {
@@ -590,5 +591,8 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "group by c.id,b.kode_tagihan)as b on a.nim = b.nim and a.kodeTagihan = b.kode_tagihan\n" +
             "order by a.kodeTagihan, a.nim", nativeQuery = true)
     List<DataTagihanAkunDto> getDataTagihanPerAkun(String tahun, List<String> kodeTemplate);
+
+    // Query untuk scheduler reminder tagihan setiap tanggal 1 (semua yang belum lunas)
+    List<Tagihan> findByStatusAndStatusTagihanAndLunas(StatusRecord status, StatusTagihan statusTagihan, Boolean lunas);
 
 }
