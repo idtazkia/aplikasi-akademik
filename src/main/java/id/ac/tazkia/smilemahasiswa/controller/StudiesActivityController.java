@@ -3722,21 +3722,21 @@ public class StudiesActivityController {
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
                 Row predicateRow = sheet.createRow(predicate);
                 predicateRow.createCell(0).setCellValue("Predicate :");
-                if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) <= 0) {
                         predicateRow.createCell(1).setCellValue("Satisfactory");
                         predicateRow.getCell(1).setCellStyle(styleData);
 
                 }
 
-                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0
-                                && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal(3.01)) >= 0
+                                && ipk.getIpk().compareTo(new BigDecimal(3.50)) <= 0) {
                         predicateRow.createCell(1).setCellValue("Good");
                         predicateRow.getCell(1).setCellStyle(styleData);
 
                 }
 
-                if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0
-                                && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal(3.51)) >= 0
+                                && ipk.getIpk().compareTo(new BigDecimal(3.80)) <= 0) {
                         Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
 
                         if (!validate.equals(0)) {
@@ -3749,7 +3749,7 @@ public class StudiesActivityController {
 
                 }
 
-                if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0
+                if (ipk.getIpk().compareTo(new BigDecimal(3.81)) >= 0
                                 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0) {
                         Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
 
@@ -5177,21 +5177,21 @@ public class StudiesActivityController {
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
                 Row predicateRow = sheet.createRow(predicate);
                 predicateRow.createCell(0).setCellValue("Predikat :");
-                if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal("3.00")) <= 0) {
                         predicateRow.createCell(1).setCellValue("Memuaskan");
                         predicateRow.getCell(1).setCellStyle(styleData);
 
                 }
 
-                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0
-                                && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal("3.01")) >= 0
+                                && ipk.getIpk().compareTo(new BigDecimal("3.50")) <= 0) {
                         predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
                         predicateRow.getCell(1).setCellStyle(styleData);
 
                 }
 
-                if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0
-                                && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal("3.51")) >= 0
+                                && ipk.getIpk().compareTo(new BigDecimal("3.80")) <= 0) {
                         Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
                         if (!validate.equals(0)) {
                                 predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
@@ -5203,8 +5203,8 @@ public class StudiesActivityController {
 
                 }
 
-                if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0
-                                && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0) {
+                if (ipk.getIpk().compareTo(new BigDecimal("3.81")) >= 0
+                                && ipk.getIpk().compareTo(new BigDecimal("4.00")) <= 0) {
                         Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
                         if (!validate.equals(0)) {
                                 predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
@@ -5266,7 +5266,7 @@ public class StudiesActivityController {
                 Row excellentRow = sheet.createRow(excellent);
                 sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 7, 9));
-                excellentRow.createCell(0).setCellValue("3,80-4,00");
+                excellentRow.createCell(0).setCellValue("3,81-4,00");
                 excellentRow.createCell(1).setCellValue("Pujian Tertinggi (Minimal B)");
                 excellentRow.createCell(5).setCellValue("A");
                 excellentRow.createCell(6).setCellValue("4");
@@ -5283,7 +5283,7 @@ public class StudiesActivityController {
                 Row veryGoodRow = sheet.createRow(veryGood);
                 sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 7, 9));
-                veryGoodRow.createCell(0).setCellValue("3,50-3,79");
+                veryGoodRow.createCell(0).setCellValue("3,51-3,80");
                 veryGoodRow.createCell(1).setCellValue("Pujian (Minimal B)");
                 veryGoodRow.createCell(5).setCellValue("A-");
                 veryGoodRow.createCell(6).setCellValue("3,7");
@@ -5300,7 +5300,7 @@ public class StudiesActivityController {
                 Row goodRow = sheet.createRow(good);
                 sheet.addMergedRegion(new CellRangeAddress(good, good, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(good, good, 7, 9));
-                goodRow.createCell(0).setCellValue("3,00-3,49");
+                goodRow.createCell(0).setCellValue("3,01-3,50");
                 goodRow.createCell(1).setCellValue("Sangat Memuaskan");
                 goodRow.createCell(5).setCellValue("B+");
                 goodRow.createCell(6).setCellValue("3,3");
@@ -5316,7 +5316,7 @@ public class StudiesActivityController {
                 Row satisfactoryRow = sheet.createRow(satisfactory);
                 sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 7, 9));
-                satisfactoryRow.createCell(0).setCellValue("2,75-2,99");
+                satisfactoryRow.createCell(0).setCellValue("2,75-3,00");
                 satisfactoryRow.createCell(1).setCellValue("Memuaskan");
                 satisfactoryRow.createCell(5).setCellValue("B");
                 satisfactoryRow.createCell(6).setCellValue("3");
@@ -8531,19 +8531,19 @@ public class StudiesActivityController {
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 4;
                 Row predicateRow = sheet.createRow(predicate);
                 predicateRow.createCell(0).setCellValue("Predikat :");
-                if (ipk.compareTo(new BigDecimal(2.99)) <= 0) {
+                if (ipk.compareTo(new BigDecimal("3.00")) <= 0) {
                         predicateRow.createCell(1).setCellValue("Memuaskan");
                         predicateRow.getCell(1).setCellStyle(styleData);
 
                 }
 
-                if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0) {
+                if (ipk.compareTo(new BigDecimal(3.01)) >= 0 && ipk.compareTo(new BigDecimal(3.50)) <= 0) {
                         predicateRow.createCell(1).setCellValue("Sangat Memuaskan");
                         predicateRow.getCell(1).setCellStyle(styleData);
 
                 }
 
-                if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0) {
+                if (ipk.compareTo(new BigDecimal("3.51")) >= 0 && ipk.compareTo(new BigDecimal("3.80")) <= 0) {
                         Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
                         if (!validate.equals(0)) {
                                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
@@ -8555,7 +8555,7 @@ public class StudiesActivityController {
 
                 }
 
-                if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0) {
+                if (ipk.compareTo(new BigDecimal("3.81")) >= 0 && ipk.compareTo(new BigDecimal("4.00")) <= 0) {
                         Integer validate = krsDetailDao.validasiPredikat(mahasiswa);
                         if (!validate.equals(0)) {
                                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
@@ -8617,7 +8617,7 @@ public class StudiesActivityController {
                 Row excellentRow = sheet.createRow(excellent);
                 sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 7, 9));
-                excellentRow.createCell(0).setCellValue("3,80-4,00");
+                excellentRow.createCell(0).setCellValue("3,81-4,00");
                 excellentRow.createCell(1).setCellValue("Pujian Tertinggi (Minimal B)");
                 excellentRow.createCell(5).setCellValue("A");
                 excellentRow.createCell(6).setCellValue("4");
@@ -8634,7 +8634,7 @@ public class StudiesActivityController {
                 Row veryGoodRow = sheet.createRow(veryGood);
                 sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 7, 9));
-                veryGoodRow.createCell(0).setCellValue("3,50-3,79");
+                veryGoodRow.createCell(0).setCellValue("3,51-3,80");
                 veryGoodRow.createCell(1).setCellValue("Pujian (Minimal B)");
                 veryGoodRow.createCell(5).setCellValue("A-");
                 veryGoodRow.createCell(6).setCellValue("3,7");
@@ -8651,7 +8651,7 @@ public class StudiesActivityController {
                 Row goodRow = sheet.createRow(good);
                 sheet.addMergedRegion(new CellRangeAddress(good, good, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(good, good, 7, 9));
-                goodRow.createCell(0).setCellValue("3,00-3,49");
+                goodRow.createCell(0).setCellValue("3,01-3,50");
                 goodRow.createCell(1).setCellValue("Sangat Memuaskan");
                 goodRow.createCell(5).setCellValue("B+");
                 goodRow.createCell(6).setCellValue("3,3");
@@ -8667,7 +8667,7 @@ public class StudiesActivityController {
                 Row satisfactoryRow = sheet.createRow(satisfactory);
                 sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 1, 3));
                 sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 7, 9));
-                satisfactoryRow.createCell(0).setCellValue("2,75-2,99");
+                satisfactoryRow.createCell(0).setCellValue("2,75-3,00");
                 satisfactoryRow.createCell(1).setCellValue("Memuaskan");
                 satisfactoryRow.createCell(5).setCellValue("B");
                 satisfactoryRow.createCell(6).setCellValue("3");
@@ -10889,6 +10889,49 @@ public class StudiesActivityController {
 
         }
 
+        @GetMapping("/studiesActivity/transcript/pdfindo2")
+        public void transkriptFormatPdf2(@RequestParam(required = false) String nim, HttpServletResponse response)
+                        throws IOException {
+
+                Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+
+                List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+                listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+                int totalSKS = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+                BigDecimal totalMutu = listTranskript.stream().map(DataTranskript::getMutu)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal ipk = totalSKS == 0 ? BigDecimal.ZERO
+                                : totalMutu.divide(new BigDecimal(totalSKS), 2, BigDecimal.ROUND_HALF_UP);
+
+                List<DataTranskript> semester1 = new ArrayList<>();
+                List<DataTranskript> semester2 = new ArrayList<>();
+                List<DataTranskript> semester3 = new ArrayList<>();
+                List<DataTranskript> semester4 = new ArrayList<>();
+                List<DataTranskript> semester5 = new ArrayList<>();
+                List<DataTranskript> semester6 = new ArrayList<>();
+                List<DataTranskript> semester7 = new ArrayList<>();
+                List<DataTranskript> semester8 = new ArrayList<>();
+
+                for (DataTranskript data : listTranskript) {
+                        if (data.getSemester().equals("1")) semester1.add(data);
+                        if (data.getSemester().equals("2")) semester2.add(data);
+                        if (data.getSemester().equals("3")) semester3.add(data);
+                        if (data.getSemester().equals("4")) semester4.add(data);
+                        if (data.getSemester().equals("5")) semester5.add(data);
+                        if (data.getSemester().equals("6")) semester6.add(data);
+                        if (data.getSemester().equals("7")) semester7.add(data);
+                        if (data.getSemester().equals("8")) semester8.add(data);
+                }
+
+                response.setContentType("application/pdf");
+                response.setHeader("Content-Disposition",
+                                "attachment; filename=\"Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama() + ".pdf\"");
+
+                transcriptService.transkripIndo2(mahasiswa, semester1, semester2, semester3, semester4,
+                                semester5, semester6, semester7, semester8, totalSKS, ipk, totalMutu, response);
+        }
+
         @GetMapping("/studiesActivity/transcript/excelindo2")
         public void transkriptFormatExcel2(@RequestParam(required = false) String nim, HttpServletResponse response)
                         throws IOException {
@@ -11613,14 +11656,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem1 : semester1) {
                         Row row = sheet.createRow(rowNumSemester1);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester1, rowNumSemester1, 8, 9));
 
                         row.createCell(1).setCellValue(sem1.getKode());
                         row.createCell(2).setCellValue(sem1.getMatkul());
                         row.createCell(6).setCellValue(sem1.getSks());
                         row.createCell(7).setCellValue(sem1.getGrade());
                         row.createCell(8).setCellValue(sem1.getBobot().toString());
-                        row.createCell(10).setCellValue(sem1.getMutu().toString());
+                        row.createCell(9).setCellValue(sem1.getMutu().toString());
 
                         rowNumSemester1++;
 
@@ -11633,7 +11675,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11643,7 +11685,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11651,14 +11693,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem2 : semester2) {
                         Row row = sheet.createRow(rowNumSemester2);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester2, rowNumSemester2, 8, 9));
 
                         row.createCell(1).setCellValue(sem2.getKode());
                         row.createCell(2).setCellValue(sem2.getMatkul());
                         row.createCell(6).setCellValue(sem2.getSks());
                         row.createCell(7).setCellValue(sem2.getGrade());
                         row.createCell(8).setCellValue(sem2.getBobot().toString());
-                        row.createCell(10).setCellValue(sem2.getMutu().toString());
+                        row.createCell(9).setCellValue(sem2.getMutu().toString());
 
                         rowNumSemester2++;
 
@@ -11671,7 +11712,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11681,7 +11722,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11689,14 +11730,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem3 : semester3) {
                         Row row = sheet.createRow(rowNumSemester3);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester3, rowNumSemester3, 8, 9));
 
                         row.createCell(1).setCellValue(sem3.getKode());
                         row.createCell(2).setCellValue(sem3.getMatkul());
                         row.createCell(6).setCellValue(sem3.getSks());
                         row.createCell(7).setCellValue(sem3.getGrade());
                         row.createCell(8).setCellValue(sem3.getBobot().toString());
-                        row.createCell(10).setCellValue(sem3.getMutu().toString());
+                        row.createCell(9).setCellValue(sem3.getMutu().toString());
 
                         rowNumSemester3++;
 
@@ -11709,7 +11749,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11719,7 +11759,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11727,14 +11767,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem4 : semester4) {
                         Row row = sheet.createRow(rowNumSemester4);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester4, rowNumSemester4, 8, 9));
 
                         row.createCell(1).setCellValue(sem4.getKode());
                         row.createCell(2).setCellValue(sem4.getMatkul());
                         row.createCell(6).setCellValue(sem4.getSks());
                         row.createCell(7).setCellValue(sem4.getGrade());
                         row.createCell(8).setCellValue(sem4.getBobot().toString());
-                        row.createCell(10).setCellValue(sem4.getMutu().toString());
+                        row.createCell(9).setCellValue(sem4.getMutu().toString());
 
                         rowNumSemester4++;
 
@@ -11748,7 +11787,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11758,7 +11797,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11766,14 +11805,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem5 : semester5) {
                         Row row = sheet.createRow(rowNumSemester5);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester5, rowNumSemester5, 8, 9));
 
                         row.createCell(1).setCellValue(sem5.getKode());
                         row.createCell(2).setCellValue(sem5.getMatkul());
                         row.createCell(6).setCellValue(sem5.getSks());
                         row.createCell(7).setCellValue(sem5.getGrade());
                         row.createCell(8).setCellValue(sem5.getBobot().toString());
-                        row.createCell(10).setCellValue(sem5.getMutu().toString());
+                        row.createCell(9).setCellValue(sem5.getMutu().toString());
 
                         rowNumSemester5++;
 
@@ -11787,7 +11825,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11797,7 +11835,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11806,14 +11844,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem6 : semester6) {
                         Row row = sheet.createRow(rowNumSemester6);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester6, rowNumSemester6, 8, 9));
 
                         row.createCell(1).setCellValue(sem6.getKode());
                         row.createCell(2).setCellValue(sem6.getMatkul());
                         row.createCell(6).setCellValue(sem6.getSks());
                         row.createCell(7).setCellValue(sem6.getGrade());
                         row.createCell(8).setCellValue(sem6.getBobot().toString());
-                        row.createCell(10).setCellValue(sem6.getMutu().toString());
+                        row.createCell(9).setCellValue(sem6.getMutu().toString());
 
                         rowNumSemester6++;
 
@@ -11828,7 +11865,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11838,7 +11875,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11847,14 +11884,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem7 : semester7) {
                         Row row = sheet.createRow(rowNumSemester7);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester7, rowNumSemester7, 8, 9));
 
                         row.createCell(1).setCellValue(sem7.getKode());
                         row.createCell(2).setCellValue(sem7.getMatkul());
                         row.createCell(6).setCellValue(sem7.getSks());
                         row.createCell(7).setCellValue(sem7.getGrade());
                         row.createCell(8).setCellValue(sem7.getBobot().toString());
-                        row.createCell(10).setCellValue(sem7.getMutu().toString());
+                        row.createCell(9).setCellValue(sem7.getMutu().toString());
 
                         rowNumSemester7++;
 
@@ -11869,7 +11905,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11879,7 +11915,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
 
@@ -11888,14 +11924,13 @@ public class StudiesActivityController {
                 for (DataTranskript sem8 : semester8) {
                         Row row = sheet.createRow(rowNumSemester8);
                         sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 2, 5));
-                        sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8, rowNumSemester8, 8, 9));
 
                         row.createCell(1).setCellValue(sem8.getKode());
                         row.createCell(2).setCellValue(sem8.getMatkul());
                         row.createCell(6).setCellValue(sem8.getSks());
                         row.createCell(7).setCellValue(sem8.getGrade());
                         row.createCell(8).setCellValue(sem8.getBobot().toString());
-                        row.createCell(10).setCellValue(sem8.getMutu().toString());
+                        row.createCell(9).setCellValue(sem8.getMutu().toString());
                         rowNumSemester8++;
 
                         if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
@@ -11909,7 +11944,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale2);
                                 row.getCell(7).setCellStyle(styleDataTale2);
                                 row.getCell(8).setCellStyle(styleDataTale2);
-                                row.getCell(10).setCellStyle(styleDataTale2);
+                                row.getCell(9).setCellStyle(styleDataTale2);
                         } else {
                                 row.getCell(1).setCellStyle(styleDataTale);
                                 row.getCell(2).setCellStyle(styleDataKhsTable);
@@ -11919,7 +11954,7 @@ public class StudiesActivityController {
                                 row.getCell(6).setCellStyle(styleDataTale);
                                 row.getCell(7).setCellStyle(styleDataTale);
                                 row.getCell(8).setCellStyle(styleDataTale);
-                                row.getCell(10).setCellStyle(styleDataTale);
+                                row.getCell(9).setCellStyle(styleDataTale);
                         }
                 }
                 int total = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
@@ -11932,10 +11967,10 @@ public class StudiesActivityController {
                 rowTotal.createCell(4).setCellStyle(styleTotalBorder);
                 rowTotal.createCell(5).setCellStyle(styleTotalBorder);
                 rowTotal.createCell(6).setCellValue(totalSKS);
-                rowTotal.createCell(10).setCellValue(totalMuti.toString());
+                rowTotal.createCell(9).setCellValue(totalMuti.toString());
                 rowTotal.getCell(2).setCellStyle(styleTotalBorder);
                 rowTotal.getCell(6).setCellStyle(styleDataTale2);
-                rowTotal.getCell(10).setCellStyle(styleDataTale2);
+                rowTotal.getCell(9).setCellStyle(styleDataTale2);
 
                 int ipKomulatif = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 2;
@@ -12015,7 +12050,7 @@ public class StudiesActivityController {
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 8;
                 Row resultRow = sheet.createRow(keyResult);
                 sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 1, 4));
-                sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 6, 10));
+                sheet.addMergedRegion(new CellRangeAddress(keyResult, keyResult + 1, 6, 9));
                 resultRow.createCell(1).setCellValue("Prestasi Akademik");
                 resultRow.createCell(2).setCellStyle(stylePres);
                 resultRow.createCell(3).setCellStyle(stylePres);
@@ -12024,7 +12059,7 @@ public class StudiesActivityController {
                 resultRow.createCell(7).setCellStyle(stylePres);
                 resultRow.createCell(8).setCellStyle(stylePres);
                 resultRow.createCell(9).setCellStyle(stylePres);
-                resultRow.createCell(10).setCellStyle(stylePres);
+                resultRow.createCell(9).setCellStyle(stylePres);
                 resultRow.getCell(1).setCellStyle(stylePres);
                 resultRow.getCell(6).setCellStyle(stylePres);
 
@@ -12040,14 +12075,14 @@ public class StudiesActivityController {
                 borderRow.createCell(7).setCellStyle(stylePres);
                 borderRow.createCell(8).setCellStyle(stylePres);
                 borderRow.createCell(9).setCellStyle(stylePres);
-                borderRow.createCell(10).setCellStyle(stylePres);
+                borderRow.createCell(9).setCellStyle(stylePres);
 
                 int remark = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
                                 + semester5.size()
                                 + semester6.size() + semester7.size() + semester8.size() + 10;
                 Row remarkRow = sheet.createRow(remark);
                 sheet.addMergedRegion(new CellRangeAddress(remark, remark, 1, 4));
-                sheet.addMergedRegion(new CellRangeAddress(remark, remark, 8, 10));
+                sheet.addMergedRegion(new CellRangeAddress(remark, remark, 8, 9));
                 remarkRow.createCell(1).setCellValue("Keterangan");
                 remarkRow.createCell(2).setCellStyle(stylePres);
                 remarkRow.createCell(3).setCellStyle(stylePres);
@@ -12064,8 +12099,8 @@ public class StudiesActivityController {
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 11;
                 Row excellentRow = sheet.createRow(excellent);
                 sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 2, 4));
-                sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 8, 10));
-                excellentRow.createCell(1).setCellValue("3,80-4,00");
+                sheet.addMergedRegion(new CellRangeAddress(excellent, excellent, 8, 9));
+                excellentRow.createCell(1).setCellValue("3,81-4,00");
                 excellentRow.createCell(2).setCellValue("Pujian Tertinggi (Minimal B)");
                 excellentRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
                 excellentRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
@@ -12083,8 +12118,8 @@ public class StudiesActivityController {
                                 + semester6.size() + semester7.size() + semester8.size() + 12;
                 Row veryGoodRow = sheet.createRow(veryGood);
                 sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 2, 4));
-                sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 8, 10));
-                veryGoodRow.createCell(1).setCellValue("3,50-3,79");
+                sheet.addMergedRegion(new CellRangeAddress(veryGood, veryGood, 8, 9));
+                veryGoodRow.createCell(1).setCellValue("3,51-3,80");
                 veryGoodRow.createCell(2).setCellValue("Pujian (Minimal B)");
                 veryGoodRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
                 veryGoodRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
@@ -12102,8 +12137,8 @@ public class StudiesActivityController {
                                 + semester6.size() + semester7.size() + semester8.size() + 13;
                 Row goodRow = sheet.createRow(good);
                 sheet.addMergedRegion(new CellRangeAddress(good, good, 2, 4));
-                sheet.addMergedRegion(new CellRangeAddress(good, good, 8, 10));
-                goodRow.createCell(1).setCellValue("3,00-3,49");
+                sheet.addMergedRegion(new CellRangeAddress(good, good, 8, 9));
+                goodRow.createCell(1).setCellValue("3,01-3,50");
                 goodRow.createCell(2).setCellValue("Sangat Memuaskan");
                 goodRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
                 goodRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
@@ -12120,8 +12155,8 @@ public class StudiesActivityController {
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 14;
                 Row satisfactoryRow = sheet.createRow(satisfactory);
                 sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 2, 4));
-                sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 8, 10));
-                satisfactoryRow.createCell(1).setCellValue("2,75-2,99");
+                sheet.addMergedRegion(new CellRangeAddress(satisfactory, satisfactory, 8, 9));
+                satisfactoryRow.createCell(1).setCellValue("2,75-3,00");
                 satisfactoryRow.createCell(2).setCellValue("Memuaskan");
                 satisfactoryRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
                 satisfactoryRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
@@ -12137,7 +12172,7 @@ public class StudiesActivityController {
                 int almostGood = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 15;
                 Row almostGoodRow = sheet.createRow(almostGood);
-                sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 8, 10));
+                sheet.addMergedRegion(new CellRangeAddress(almostGood, almostGood, 8, 9));
                 almostGoodRow.createCell(6).setCellValue("B-");
                 almostGoodRow.createCell(7).setCellValue("2,7");
                 almostGoodRow.createCell(8).setCellValue("Baik");
@@ -12148,7 +12183,7 @@ public class StudiesActivityController {
                 int satisfactoryCplus = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 16;
                 Row satisfactoryCplusRow = sheet.createRow(satisfactoryCplus);
-                sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 8, 10));
+                sheet.addMergedRegion(new CellRangeAddress(satisfactoryCplus, satisfactoryCplus, 8, 9));
                 satisfactoryCplusRow.createCell(6).setCellValue("C+");
                 satisfactoryCplusRow.createCell(7).setCellValue("2,3");
                 satisfactoryCplusRow.createCell(8).setCellValue("Cukup");
@@ -12159,7 +12194,7 @@ public class StudiesActivityController {
                 int satisfactoryC = 24 + semester1.size() + semester2.size() + semester3.size() + semester4.size()
                                 + semester5.size() + semester6.size() + semester7.size() + semester8.size() + 17;
                 Row satisfactoryCRow = sheet.createRow(satisfactoryC);
-                sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 8, 10));
+                sheet.addMergedRegion(new CellRangeAddress(satisfactoryC, satisfactoryC, 8, 9));
                 satisfactoryCRow.createCell(6).setCellValue("C");
                 satisfactoryCRow.createCell(7).setCellValue("2");
                 satisfactoryCRow.createCell(8).setCellValue("Cukup");
@@ -12171,7 +12206,7 @@ public class StudiesActivityController {
                                 + semester5.size()
                                 + semester6.size() + semester7.size() + semester8.size() + 18;
                 Row poorRow = sheet.createRow(poor);
-                sheet.addMergedRegion(new CellRangeAddress(poor, poor, 8, 10));
+                sheet.addMergedRegion(new CellRangeAddress(poor, poor, 8, 9));
                 poorRow.createCell(6).setCellValue("D");
                 poorRow.createCell(7).setCellValue("1");
                 poorRow.createCell(8).setCellValue("Kurang");
@@ -12183,7 +12218,7 @@ public class StudiesActivityController {
                                 + semester5.size()
                                 + semester6.size() + semester7.size() + semester8.size() + 19;
                 Row failRow = sheet.createRow(fail);
-                sheet.addMergedRegion(new CellRangeAddress(fail, fail, 8, 10));
+                sheet.addMergedRegion(new CellRangeAddress(fail, fail, 8, 9));
                 failRow.createCell(6).setCellValue("E");
                 failRow.createCell(7).setCellValue("0");
                 failRow.createCell(8).setCellValue("Sangat Kurang");

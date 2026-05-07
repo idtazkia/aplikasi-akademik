@@ -1361,6 +1361,382 @@ public class TranscriptService {
 
     }
 
+    public void transkripIndo2(Mahasiswa mhs, List<DataTranskript> semester1, List<DataTranskript> semester2,
+                               List<DataTranskript> semester3, List<DataTranskript> semester4,
+                               List<DataTranskript> semester5, List<DataTranskript> semester6,
+                               List<DataTranskript> semester7, List<DataTranskript> semester8,
+                               int sks, BigDecimal ipk, BigDecimal mutu,
+                               HttpServletResponse response) throws IOException {
+
+        Document document = new Document(PageSize.A4, 50, 50, 30, 30);
+        PdfWriter writer2 = PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+
+        FontFactory.registerDirectories();
+
+        java.awt.Color brandColor = new java.awt.Color(21, 53, 113);
+        Font kemenFont = FontFactory.getFont("Arial", 12f, Font.BOLD, brandColor);
+        Font uniFont = FontFactory.getFont("Arial", 16f, Font.BOLD, brandColor);
+        Font transFontBold = FontFactory.getFont("Arial", 12f, Font.BOLD, brandColor);
+        Font nomorFont = FontFactory.getFont("Times New Roman", 10f);
+
+        // Load Cambria dari classpath (bundled di resources/fonts/)
+        byte[] cambriaBytes = getClass().getClassLoader().getResourceAsStream("fonts/Cambria.ttc").readAllBytes();
+        byte[] cambriaBoldBytes = getClass().getClassLoader().getResourceAsStream("fonts/Cambriab.ttf").readAllBytes();
+        byte[] cambriaItalicBytes = getClass().getClassLoader().getResourceAsStream("fonts/Cambriai.ttf").readAllBytes();
+        byte[] cambriaBoldItalicBytes = getClass().getClassLoader().getResourceAsStream("fonts/Cambriaz.ttf").readAllBytes();
+        BaseFont bfCambria = BaseFont.createFont("Cambria.ttc,1", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, cambriaBytes, null);
+        BaseFont bfCambriaBold = BaseFont.createFont("Cambriab.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, cambriaBoldBytes, null);
+        BaseFont bfCambriaItalic = BaseFont.createFont("Cambriai.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, cambriaItalicBytes, null);
+        BaseFont bfCambriaBoldItalic = BaseFont.createFont("Cambriaz.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, cambriaBoldItalicBytes, null);
+        Font cambria = new Font(bfCambria, 10f);
+        Font cambriaBold = new Font(bfCambriaBold, 10f);
+        Font cambriaItalic = new Font(bfCambriaItalic, 10f);
+        Font cambriaBoldItalic = new Font(bfCambriaBoldItalic, 10f);
+        // aliases untuk kompatibilitas kode di bawah
+        Font boldFont = cambriaBold;
+        Font normalFont = cambria;
+        Font smallFont = cambria;
+        Font smallBoldFont = cambriaBold;
+        Font italicSmallFont = cambriaItalic;
+        Font matkulFont = cambria;
+        Font matkulBoldFont = cambriaBold;
+
+        // ===== HEADER =====
+        java.net.URL logoUrl = getClass().getClassLoader().getResource("tazkia3.png");
+        Image logo2 = Image.getInstance(logoUrl);
+        logo2.scaleToFit(100, 100);
+        PdfPTable logoTable = new PdfPTable(1);
+        logoTable.setWidthPercentage(100);
+        PdfPCell logoCell = new PdfPCell(logo2, false);
+        logoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        logoCell.setBorder(Rectangle.NO_BORDER);
+        logoCell.setPaddingBottom(2);
+        logoTable.addCell(logoCell);
+        document.add(logoTable);
+
+        Paragraph kemen = new Paragraph("KEMENTERIAN AGAMA REPUBLIK INDONESIA", kemenFont);
+        kemen.setAlignment(Element.ALIGN_CENTER);
+        kemen.setSpacingAfter(0);
+        document.add(kemen);
+
+        Paragraph uni = new Paragraph("UNIVERSITAS ISLAM TAZKIA", uniFont);
+        uni.setAlignment(Element.ALIGN_CENTER);
+        uni.setSpacingAfter(0);
+        document.add(uni);
+
+        Paragraph transLabel = new Paragraph("TRANSKRIP AKADEMIK", transFontBold);
+        transLabel.setAlignment(Element.ALIGN_CENTER);
+        transLabel.setSpacingAfter(0);
+        document.add(transLabel);
+
+        String noTranskript = mhs.getNoTranskript() != null ? mhs.getNoTranskript() : "-";
+        Paragraph nomorPar = new Paragraph("Nomor : " + noTranskript, nomorFont);
+        nomorPar.setAlignment(Element.ALIGN_CENTER);
+        nomorPar.setSpacingAfter(0);
+        document.add(nomorPar);
+
+        // Garis pembatas header
+        PdfPTable lineTable = new PdfPTable(1);
+        lineTable.setWidthPercentage(100);
+        lineTable.setSpacingBefore(2);
+        PdfPCell lineCell = new PdfPCell(new Phrase(""));
+        lineCell.setBorder(Rectangle.NO_BORDER);
+        lineCell.setBorderWidthBottom(1f);
+        lineCell.setPaddingBottom(3);
+        lineTable.addCell(lineCell);
+        document.add(lineTable);
+
+        // ===== INFO MAHASISWA =====
+        PdfPTable infoTable = new PdfPTable(2);
+        infoTable.setWidthPercentage(80);
+        infoTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        infoTable.setWidths(new float[]{4, 6});
+        infoTable.setSpacingBefore(3);
+        PdfPCell ic;
+
+        String programPendidikan = "Sarjana";
+        if (mhs.getIdProdi().getIdJenjang() != null) {
+            String idJenjang = mhs.getIdProdi().getIdJenjang().getId();
+            if ("02".equals(idJenjang)) programPendidikan = "Magister";
+            else if ("03".equals(idJenjang)) programPendidikan = "Doktor";
+        }
+
+        String tglLahir = mhs.getTempatLahir() != null ? mhs.getTempatLahir() : "";
+        if (mhs.getTanggalLahir() != null) tglLahir += ", " + convertDateIndonesia(mhs.getTanggalLahir());
+
+        String tglLulus = mhs.getTanggalLulus() != null ? convertDateIndonesia(mhs.getTanggalLulus()) : "-";
+        String noAkreditasi = mhs.getIdProdi().getNoSk() != null ? mhs.getIdProdi().getNoSk() : "-";
+        String tglSk = mhs.getIdProdi().getTanggalSk() != null ? convertDateIndonesia(mhs.getIdProdi().getTanggalSk()) : "-";
+        String indukNasional = mhs.getIndukNasional() != null ? mhs.getIndukNasional() : "-";
+
+        String[][] infoRows = {
+            {"Nama Mahasiswa", mhs.getNama()},
+            {"NIM", mhs.getNim()},
+            {"Nomor Ijazah Nasional", indukNasional},
+            {"Tempat, Tanggal lahir", tglLahir},
+            {"Program Pendidikan", programPendidikan},
+            {"Program Studi", mhs.getIdProdi().getNamaProdi()},
+            {"Fakultas", mhs.getIdProdi().getFakultas().getNamaFakultas()},
+            {"Nomor Akreditasi", noAkreditasi},
+            {"Tanggal SK Akreditasi", tglSk},
+            {"Tanggal Kelulusan", tglLulus}
+        };
+        for (String[] row : infoRows) {
+            ic = new PdfPCell(new Phrase(row[0], normalFont)); ic.setBorder(Rectangle.NO_BORDER); ic.setPaddingTop(1); ic.setPaddingBottom(1); ic.setPaddingLeft(2); ic.setPaddingRight(2); infoTable.addCell(ic);
+            ic = new PdfPCell(new Phrase(": " + row[1], normalFont)); ic.setBorder(Rectangle.NO_BORDER); ic.setPaddingTop(1); ic.setPaddingBottom(1); ic.setPaddingLeft(2); ic.setPaddingRight(2); infoTable.addCell(ic);
+        }
+        document.add(infoTable);
+
+        // ===== TABEL NILAI (tanpa kolom Semester) =====
+        // Kode Mata Kuliah | Mata Kuliah | Satuan Kredit | Huruf Mutu | Angka Mutu | Jumlah
+        PdfPTable tabNilai = new PdfPTable(6);
+        tabNilai.setWidthPercentage(100);
+        tabNilai.setWidths(new float[]{2.5f, 10, 2, 2, 2, 2});
+        tabNilai.setSpacingBefore(12);
+
+        String[] headers = {"Kode Mata\nKuliah", "Mata Kuliah", "Satuan\nKredit", "Huruf\nMutu", "Angka\nMutu", "Jumlah"};
+        for (String h : headers) {
+            PdfPCell hc = new PdfPCell(new Phrase(h, matkulBoldFont));
+            hc.setHorizontalAlignment(Element.ALIGN_CENTER);
+            hc.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            hc.setPadding(3);
+            hc.setBorderWidthTop(1.5f); hc.setBorderWidthBottom(1.5f);
+            hc.setBorderWidthLeft(0.5f); hc.setBorderWidthRight(0.5f);
+            tabNilai.addCell(hc);
+        }
+        tabNilai.setHeaderRows(1); // repeat header on each new page
+
+        // Garis penutup bawah saat tabel pindah ke halaman berikutnya
+        tabNilai.setTableEvent((table, widths, heights, headerRows1, rowStart, canvases) -> {
+            int rowsOnPage = heights.length - 1;
+            boolean tableComplete = (rowStart + rowsOnPage - headerRows1) >= table.size();
+            if (!tableComplete) {
+                PdfContentByte cb = canvases[PdfPTable.LINECANVAS];
+                float y = heights[heights.length - 1];
+                float x1 = widths[0][0];
+                float x2 = widths[0][widths[0].length - 1];
+                cb.setLineWidth(1.0f);
+                cb.moveTo(x1, y);
+                cb.lineTo(x2, y);
+                cb.stroke();
+            }
+        });
+
+        List<List<DataTranskript>> semesterList = java.util.Arrays.asList(
+            semester1, semester2, semester3, semester4,
+            semester5, semester6, semester7, semester8);
+
+        boolean firstSem = true;
+        for (List<DataTranskript> sem : semesterList) {
+            if (sem == null || sem.isEmpty()) continue;
+            boolean firstRow = true;
+            for (DataTranskript data : sem) {
+                // Garis pemisah antar semester: baris pertama setiap semester (kecuali semester pertama) punya top border
+                float topBorder = (!firstSem && firstRow) ? 0.8f : 0f;
+                PdfPCell dc;
+                dc = new PdfPCell(new Phrase(data.getKode(), matkulFont)); dc.setHorizontalAlignment(Element.ALIGN_CENTER); dc.setPadding(2); dc.setBorderWidthLeft(0.5f); dc.setBorderWidthRight(0.5f); dc.setBorderWidthTop(topBorder); dc.setBorderWidthBottom(0f); tabNilai.addCell(dc);
+                dc = new PdfPCell(new Phrase(data.getMatkul(), matkulFont)); dc.setPadding(2); dc.setBorderWidthLeft(0.5f); dc.setBorderWidthRight(0.5f); dc.setBorderWidthTop(topBorder); dc.setBorderWidthBottom(0f); tabNilai.addCell(dc);
+                dc = new PdfPCell(new Phrase(data.getSks().toString(), matkulFont)); dc.setHorizontalAlignment(Element.ALIGN_CENTER); dc.setPadding(2); dc.setBorderWidthLeft(0.5f); dc.setBorderWidthRight(0.5f); dc.setBorderWidthTop(topBorder); dc.setBorderWidthBottom(0f); tabNilai.addCell(dc);
+                dc = new PdfPCell(new Phrase(data.getGrade(), matkulFont)); dc.setHorizontalAlignment(Element.ALIGN_CENTER); dc.setPadding(2); dc.setBorderWidthLeft(0.5f); dc.setBorderWidthRight(0.5f); dc.setBorderWidthTop(topBorder); dc.setBorderWidthBottom(0f); tabNilai.addCell(dc);
+                dc = new PdfPCell(new Phrase(data.getBobot().toString(), matkulFont)); dc.setHorizontalAlignment(Element.ALIGN_CENTER); dc.setPadding(2); dc.setBorderWidthLeft(0.5f); dc.setBorderWidthRight(0.5f); dc.setBorderWidthTop(topBorder); dc.setBorderWidthBottom(0f); tabNilai.addCell(dc);
+                dc = new PdfPCell(new Phrase(data.getMutu().toString(), matkulFont)); dc.setHorizontalAlignment(Element.ALIGN_CENTER); dc.setPadding(2); dc.setBorderWidthLeft(0.5f); dc.setBorderWidthRight(0.5f); dc.setBorderWidthTop(topBorder); dc.setBorderWidthBottom(0f); tabNilai.addCell(dc);
+                firstRow = false;
+            }
+            firstSem = false;
+        }
+
+        // Row Jumlah
+        PdfPCell tc;
+        tc = new PdfPCell(new Phrase("Jumlah", matkulBoldFont)); tc.setColspan(2); tc.setHorizontalAlignment(Element.ALIGN_CENTER); tc.setPadding(3); tc.setBorderWidthTop(1.5f); tc.setBorderWidthBottom(1.5f); tc.setBorderWidthLeft(0.5f); tc.setBorderWidthRight(0.5f); tabNilai.addCell(tc);
+        tc = new PdfPCell(new Phrase(String.valueOf(sks), matkulBoldFont)); tc.setHorizontalAlignment(Element.ALIGN_CENTER); tc.setPadding(3); tc.setBorderWidthTop(1.5f); tc.setBorderWidthBottom(1.5f); tc.setBorderWidthLeft(0.5f); tc.setBorderWidthRight(0.5f); tabNilai.addCell(tc);
+        tc = new PdfPCell(new Phrase("")); tc.setColspan(2); tc.setPadding(3); tc.setBorderWidthTop(1.5f); tc.setBorderWidthBottom(1.5f); tc.setBorderWidthLeft(0.5f); tc.setBorderWidthRight(0.5f); tabNilai.addCell(tc);
+        tc = new PdfPCell(new Phrase(mutu.toString(), matkulBoldFont)); tc.setHorizontalAlignment(Element.ALIGN_CENTER); tc.setPadding(3); tc.setBorderWidthTop(1.5f); tc.setBorderWidthBottom(1.5f); tc.setBorderWidthLeft(0.5f); tc.setBorderWidthRight(0.5f); tabNilai.addCell(tc);
+
+        document.add(tabNilai);
+
+        // Tabel bantu tanpa border: label IPK di kolom 1-2, nilai IPK sejajar kolom SKS (kolom 3)
+        PdfPTable ipkAlignTable = new PdfPTable(6);
+        ipkAlignTable.setWidthPercentage(100);
+        ipkAlignTable.setWidths(new float[]{2.5f, 10, 2, 2, 2, 2});
+        ipkAlignTable.setSpacingBefore(0);
+        PdfPCell ia;
+        ia = new PdfPCell(new Phrase("Indeks Prestasi Kumulatif", cambriaBold)); ia.setColspan(2); ia.setBorder(Rectangle.NO_BORDER); ia.setPadding(3); ipkAlignTable.addCell(ia);
+        ia = new PdfPCell(new Phrase(ipk.toString(), cambria)); ia.setBorder(Rectangle.NO_BORDER); ia.setHorizontalAlignment(Element.ALIGN_CENTER); ia.setPadding(3); ipkAlignTable.addCell(ia);
+        ia = new PdfPCell(new Phrase("")); ia.setColspan(3); ia.setBorder(Rectangle.NO_BORDER); ia.setPadding(3); ipkAlignTable.addCell(ia);
+        document.add(ipkAlignTable);
+        document.add(new Paragraph(" "));
+
+        // ===== IPK & PREDIKAT =====
+        String predicate;
+        Integer validate = krsDetailDao.validasiPredikat(mhs);
+        if (ipk.compareTo(new BigDecimal("3.81")) >= 0 && validate.equals(0)) {
+            predicate = "Pujian Tertinggi";
+        } else if (ipk.compareTo(new BigDecimal("3.51")) >= 0 && validate.equals(0)) {
+            predicate = "Pujian";
+        } else if (ipk.compareTo(new BigDecimal("3.01")) >= 0) {
+            predicate = "Sangat Memuaskan";
+        } else {
+            predicate = "Memuaskan";
+        }
+
+        Paragraph predPar = new Paragraph("Predikat :  " + predicate, boldFont);
+        document.add(predPar);
+
+        if (mhs.getJudul() != null && !mhs.getJudul().isEmpty()) {
+            String labelJudul = "Judul Skripsi :  ";
+            if (mhs.getIdProdi().getIdJenjang() != null && "02".equals(mhs.getIdProdi().getIdJenjang().getId())) {
+                labelJudul = "Judul Tesis :  ";
+            }
+            Phrase judulPhrase = new Phrase();
+            judulPhrase.add(new Chunk(labelJudul, cambriaBold));
+            judulPhrase.add(new Chunk(mhs.getJudul(), normalFont));
+            Paragraph judulPar = new Paragraph(judulPhrase);
+            judulPar.setSpacingBefore(2);
+            document.add(judulPar);
+        }
+        document.add(new Paragraph(" "));
+
+        // ===== TABEL PRESTASI AKADEMIK + SISTEM PENILAIAN =====
+        // Tabel Prestasi Akademik
+        PdfPTable prestasiTable = new PdfPTable(2);
+        prestasiTable.setTotalWidth(new float[]{50f, 160f});
+        prestasiTable.setLockedWidth(true);
+        PdfPCell ph = new PdfPCell(new Phrase("Prestasi Akademik", smallBoldFont));
+        ph.setColspan(2); ph.setHorizontalAlignment(Element.ALIGN_CENTER); ph.setPadding(3); ph.setBorderWidth(1.5f);
+        prestasiTable.addCell(ph);
+        ph = new PdfPCell(new Phrase("IPK", smallBoldFont));
+        ph.setHorizontalAlignment(Element.ALIGN_CENTER); ph.setPadding(2); ph.setBorderWidth(1.5f);
+        prestasiTable.addCell(ph);
+        ph = new PdfPCell(new Phrase("Keterangan", smallBoldFont));
+        ph.setHorizontalAlignment(Element.ALIGN_CENTER); ph.setPadding(2); ph.setBorderWidth(1.5f);
+        prestasiTable.addCell(ph);
+        String[][] prestasiRows = {
+            {"3,81-4,00", "Pujian Tertinggi (Minimal B)"},
+            {"3,51-3,80", "Pujian (Minimal B)"},
+            {"3,01-3,50", "Sangat Memuaskan"},
+            {"2,75-3,00", "Memuaskan"}
+        };
+        for (String[] row : prestasiRows) {
+            PdfPCell rc = new PdfPCell(new Phrase(row[0], smallFont)); rc.setPadding(2); rc.setBorderWidth(1.5f); prestasiTable.addCell(rc);
+            rc = new PdfPCell(new Phrase(row[1], smallFont)); rc.setPadding(2); rc.setBorderWidth(1.5f); prestasiTable.addCell(rc);
+        }
+
+        // Tabel Sistem Penilaian
+        PdfPTable penilaianTable = new PdfPTable(3);
+        penilaianTable.setWidths(new float[]{1.5f, 1.5f, 4});
+        PdfPCell pph = new PdfPCell(new Phrase("Sistem Penilaian", smallBoldFont));
+        pph.setColspan(3); pph.setHorizontalAlignment(Element.ALIGN_CENTER); pph.setPadding(3); pph.setBorderWidth(1.5f);
+        penilaianTable.addCell(pph);
+        String[] pHeaders = {"HM", "AM", "Arti"};
+        for (String h : pHeaders) {
+            Chunk hChunk = new Chunk(h, smallBoldFont); hChunk.setUnderline(0.5f, -1.5f);
+            PdfPCell hc = new PdfPCell(new Phrase(hChunk)); hc.setHorizontalAlignment(Element.ALIGN_CENTER); hc.setPadding(2); hc.setBorder(Rectangle.NO_BORDER);
+            penilaianTable.addCell(hc);
+        }
+        String[][] penilaianRows = {
+            {"A", "4", "Baik Sekali"},
+            {"A-", "3,7", "Baik Sekali"},
+            {"B+", "3,3", "Baik"},
+            {"B", "3", "Baik"},
+            {"B-", "2,7", "Baik"},
+            {"C+", "2,3", "Cukup"},
+            {"C", "2", "Cukup"},
+            {"D", "1", "Kurang"},
+            {"E", "0", "Sangat Kurang"}
+        };
+        for (String[] row : penilaianRows) {
+            PdfPCell rc;
+            rc = new PdfPCell(new Phrase(row[0], smallFont)); rc.setHorizontalAlignment(Element.ALIGN_CENTER); rc.setPadding(2); rc.setBorder(Rectangle.NO_BORDER); penilaianTable.addCell(rc);
+            rc = new PdfPCell(new Phrase(row[1], smallFont)); rc.setHorizontalAlignment(Element.ALIGN_CENTER); rc.setPadding(2); rc.setBorder(Rectangle.NO_BORDER); penilaianTable.addCell(rc);
+            rc = new PdfPCell(new Phrase(row[2], italicSmallFont)); rc.setHorizontalAlignment(Element.ALIGN_CENTER); rc.setPadding(2); rc.setBorder(Rectangle.NO_BORDER); penilaianTable.addCell(rc);
+        }
+
+        // Gunakan ColumnText agar border prestasiTable tidak stretch
+        float pageWidth2 = document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin();
+        float prestasiWidth2 = 210f;
+        float gap2 = 15f;
+        float penilaianWidth2 = pageWidth2 - prestasiWidth2 - gap2;
+        float curY2 = writer2.getVerticalPosition(true);
+        float colBottom2 = document.bottomMargin();
+
+        com.lowagie.text.pdf.ColumnText ct2 = new com.lowagie.text.pdf.ColumnText(writer2.getDirectContent());
+        ct2.setSimpleColumn(document.leftMargin(), colBottom2,
+                document.leftMargin() + prestasiWidth2, curY2);
+        ct2.addElement(prestasiTable);
+        ct2.go();
+
+        com.lowagie.text.pdf.ColumnText ct3 = new com.lowagie.text.pdf.ColumnText(writer2.getDirectContent());
+        ct3.setSimpleColumn(document.leftMargin() + prestasiWidth2 + gap2, colBottom2,
+                document.leftMargin() + prestasiWidth2 + gap2 + penilaianWidth2, curY2);
+        ct3.addElement(penilaianTable);
+        ct3.go();
+
+        // Hitung tinggi penilaianTable (lebih tinggi) lalu geser posisi dokumen
+        penilaianTable.setTotalWidth(penilaianWidth2);
+        float tablesHeight2 = penilaianTable.getTotalHeight();
+        document.add(new com.lowagie.text.pdf.PdfPTable(1) {{
+            setWidthPercentage(100);
+            setSpacingBefore(0);
+            PdfPCell spacer = new PdfPCell(new Phrase(""));
+            spacer.setBorder(Rectangle.NO_BORDER);
+            spacer.setFixedHeight(tablesHeight2);
+            addCell(spacer);
+        }});
+        document.add(new Paragraph(" "));
+
+        // ===== KALIMAT PENGESAHAN + TTD =====
+        LocalDate tglDisahkan = mhs.getTanggalDisahkan() != null ? mhs.getTanggalDisahkan() : LocalDate.now();
+        String tanggalDisahkan = convertDateIndonesia(tglDisahkan);
+        java.time.chrono.HijrahDate hijrahDate = java.time.chrono.HijrahDate.from(tglDisahkan);
+        String hijriDay = hijrahDate.format(java.time.format.DateTimeFormatter.ofPattern("d", new java.util.Locale("en")));
+        String hijriMonth = hijrahDate.format(java.time.format.DateTimeFormatter.ofPattern("MMMM", new java.util.Locale("en")));
+        String hijriYear = hijrahDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy", new java.util.Locale("en")));
+        String hijriMonthIndo;
+        if (hijriMonth.equals("Muharram")) hijriMonthIndo = "Muharram";
+        else if (hijriMonth.equals("Safar")) hijriMonthIndo = "Safar";
+        else if (hijriMonth.equals("Rabiʻ I")) hijriMonthIndo = "Rabi'ul Awal";
+        else if (hijriMonth.equals("Rabiʻ II")) hijriMonthIndo = "Rabi'ul Akhir";
+        else if (hijriMonth.equals("Jumada I")) hijriMonthIndo = "Jumadil Awal";
+        else if (hijriMonth.equals("Jumada II")) hijriMonthIndo = "Jumadil Akhir";
+        else if (hijriMonth.equals("Rajab")) hijriMonthIndo = "Rajab";
+        else if (hijriMonth.equals("Shaʻban")) hijriMonthIndo = "Sya'ban";
+        else if (hijriMonth.equals("Ramadan")) hijriMonthIndo = "Ramadhan";
+        else if (hijriMonth.equals("Shawwal")) hijriMonthIndo = "Syawwal";
+        else if (hijriMonth.equals("Dhuʻl-Qiʻdah")) hijriMonthIndo = "Dzulqa'dah";
+        else if (hijriMonth.equals("Dhuʻl-Hijjah")) hijriMonthIndo = "Dzulhijjah";
+        else hijriMonthIndo = hijriMonth;
+        String tanggalLengkap = tanggalDisahkan + " / " + hijriDay + " " + hijriMonthIndo + " " + hijriYear + " H";
+        Paragraph tglPar = new Paragraph(
+            "Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + tanggalLengkap, normalFont);
+        document.add(tglPar);
+        document.add(new Paragraph(" "));
+
+        // TTD Dekan di kanan
+        PdfPTable ttdTable = new PdfPTable(2);
+        ttdTable.setWidthPercentage(100);
+        ttdTable.setWidths(new float[]{1, 1});
+
+        PdfPCell emptyCell = new PdfPCell(new Phrase("")); emptyCell.setBorder(Rectangle.NO_BORDER); ttdTable.addCell(emptyCell);
+
+        PdfPCell ttdCell = new PdfPCell();
+        ttdCell.setBorder(Rectangle.NO_BORDER);
+        ttdCell.addElement(new Paragraph("Dekan", normalFont));
+        ttdCell.addElement(new Paragraph(mhs.getIdProdi().getFakultas().getNamaFakultas(), normalFont));
+        ttdCell.addElement(new Paragraph(" "));
+        ttdCell.addElement(new Paragraph(" "));
+        ttdCell.addElement(new Paragraph(" "));
+        Chunk dosenChunk = new Chunk(mhs.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan(), boldFont);
+        dosenChunk.setUnderline(0.5f, -1.5f);
+        Paragraph dosenPar = new Paragraph(); dosenPar.add(dosenChunk);
+        ttdCell.addElement(dosenPar);
+        ttdCell.addElement(new Paragraph("NIK : " + mhs.getIdProdi().getFakultas().getDosen().getKaryawan().getNik(), boldFont));
+        ttdTable.addCell(ttdCell);
+
+        document.add(ttdTable);
+        document.close();
+    }
+
     public String convertDateIndonesia(LocalDate date){
 
         String result = null;
