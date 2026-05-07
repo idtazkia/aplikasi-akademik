@@ -181,7 +181,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a th:href="@{/surat/tugas_kuliah/cetak?surat=${surat.id}}"
+                                        <a th:href="@{/surat/tugas_kuliah/cetak(surat=${surat.id})}"
                                            class="btn btn-primary btn-sm"
                                            th:if="${surat.statusApproveKaprodi != null and surat.statusApproveKaprodi.name() == 'APPROVED'}">
                                             <i class="fa fa-download"></i> Download

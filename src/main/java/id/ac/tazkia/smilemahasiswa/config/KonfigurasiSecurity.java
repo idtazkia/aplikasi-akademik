@@ -252,6 +252,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
         public void configure(WebSecurity web) throws Exception {
                 web.ignoring()
                                 .antMatchers("/login")
+                                .antMatchers("/surat/verifikasi/**")
                                 .antMatchers("/css/**")
                                 .antMatchers("/api/jenjang")
                                 .antMatchers("/filedownload/")

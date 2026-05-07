@@ -297,7 +297,7 @@ public class SuratPenelitianService {
         leftCell.addElement(koordinator);
 
         try {
-            String verificationUrl = "https://tazkia.ac.id/surat/verifikasi/" + suratPenelitian.getId();
+            String verificationUrl = "https://smile.tazkia.ac.id/surat/verifikasi/" + suratPenelitian.getId();
             BufferedImage qrImage = qrBarcode(verificationUrl, 120);
             Image qrPdfImage = Image.getInstance(qrImage, null);
             qrPdfImage.scaleAbsolute(70, 70);

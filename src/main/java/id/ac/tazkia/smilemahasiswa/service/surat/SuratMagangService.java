@@ -282,7 +282,7 @@ public class SuratMagangService {
         leftCell.addElement(koordinator);
 
         try {
-            String verificationUrl = "https://tazkia.ac.id/surat/verifikasi/" + suratMagang.getId();
+            String verificationUrl = "https://smile.tazkia.ac.id/surat/verifikasi/" + suratMagang.getId();
             BufferedImage qrImage = qrBarcode(verificationUrl, 120);
             Image qrPdfImage = Image.getInstance(qrImage, null);
             qrPdfImage.scaleAbsolute(70, 70);

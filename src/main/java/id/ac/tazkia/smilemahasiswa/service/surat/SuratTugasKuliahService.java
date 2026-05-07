@@ -286,7 +286,7 @@ public class SuratTugasKuliahService {
         leftCell.addElement(koordinator);
 
         try {
-            String verificationUrl = "https://tazkia.ac.id/surat/verifikasi/" + surat.getId();
+            String verificationUrl = "http://smile.tazkia.ac.id/surat/verifikasi/" + surat.getId();
             BufferedImage qrImage = qrBarcode(verificationUrl, 120);
             Image qrPdfImage = Image.getInstance(qrImage, null);
             qrPdfImage.scaleAbsolute(70, 70);

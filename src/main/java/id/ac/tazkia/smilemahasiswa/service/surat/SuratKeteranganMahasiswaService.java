@@ -224,7 +224,7 @@ public class SuratKeteranganMahasiswaService {
         rightCell.addElement(jabatan);
 
         try {
-            String verificationUrl = "https://tazkia.ac.id/surat/verifikasi/" + surat.getId();
+            String verificationUrl = "https://smile.tazkia.ac.id/surat/verifikasi/" + surat.getId();
             BufferedImage qrImage = qrBarcode(verificationUrl, 120);
             Image qrPdfImage = Image.getInstance(qrImage, null);
             qrPdfImage.scaleAbsolute(70, 70);
