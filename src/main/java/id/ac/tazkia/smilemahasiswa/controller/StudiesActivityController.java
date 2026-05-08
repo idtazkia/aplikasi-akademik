@@ -10890,7 +10890,9 @@ public class StudiesActivityController {
         }
 
         @GetMapping("/studiesActivity/transcript/pdfindo2")
-        public void transkriptFormatPdf2(@RequestParam(required = false) String nim, HttpServletResponse response)
+        public void transkriptFormatPdf2(@RequestParam(required = false) String nim,
+                        @RequestParam(required = false, defaultValue = "false") boolean preview,
+                        HttpServletResponse response)
                         throws IOException {
 
                 Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
@@ -10924,9 +10926,10 @@ public class StudiesActivityController {
                         if (data.getSemester().equals("8")) semester8.add(data);
                 }
 
+                String namaFile = "Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama() + ".pdf";
+                String disposition = preview ? "inline" : "attachment";
                 response.setContentType("application/pdf");
-                response.setHeader("Content-Disposition",
-                                "attachment; filename=\"Transkript-" + mahasiswa.getNim() + "-" + mahasiswa.getNama() + ".pdf\"");
+                response.setHeader("Content-Disposition", disposition + "; filename=\"" + namaFile + "\"");
 
                 transcriptService.transkripIndo2(mahasiswa, semester1, semester2, semester3, semester4,
                                 semester5, semester6, semester7, semester8, totalSKS, ipk, totalMutu, response);

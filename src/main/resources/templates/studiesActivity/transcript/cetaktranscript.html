@@ -315,9 +315,13 @@
                                             th:if="${mahasiswa.indukNasional != null && mahasiswa.tanggalLahir != null && disahkan != null}">
                                             <center>
                                                 <a th:href="@{/studiesActivity/transcript/excelindo2 (nim = ${mahasiswa.nim})}"
-                                                    class="btn btn-danger btn-outline-warning">Indonesia</a>
+                                                    class="btn btn-danger btn-outline-warning">Indonesia (Excel)</a>
                                                 <a th:href="@{/studiesActivity/transcript/transkriptexcel2 (nim = ${mahasiswa.nim})}"
-                                                    class="btn btn-danger btn-outline-primary">Inggris</a>
+                                                    class="btn btn-danger btn-outline-primary">Inggris (Excel)</a>
+                                                <a th:href="@{/studiesActivity/transcript/pdfindo2 (nim = ${mahasiswa.nim}, preview = true)}"
+                                                    target="_blank" class="btn btn-info btn-outline-info"><i class="fas fa-eye"></i> Preview PDF Indonesia</a>
+                                                <a th:href="@{/studiesActivity/transcript/pdfindo2 (nim = ${mahasiswa.nim})}"
+                                                    class="btn btn-success btn-outline-success"><i class="fas fa-file-pdf"></i> Download PDF Indonesia</a>
                                             </center>
                                         </div>
                                     </div>
