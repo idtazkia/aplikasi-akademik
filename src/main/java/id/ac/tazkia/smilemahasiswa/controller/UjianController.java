@@ -520,6 +520,9 @@ public class UjianController {
         ujianTahfidzKompre.setKomentarAdmin(komentar);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
+        tagihanService.createTagihanMengulang(ujianTahfidzKompre.getMahasiswa(),
+                ujianTahfidzKompre.getTahunAkademik(), jenisUjian);
+
         String jenis = "";
         if (jenisUjian.equals("UjianTahfidz")) {
             jenis = "Tahfidz";
