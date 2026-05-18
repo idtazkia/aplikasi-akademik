@@ -54,6 +54,7 @@ import id.ac.tazkia.smilemahasiswa.entity.Seminar;
 import id.ac.tazkia.smilemahasiswa.entity.Sidang;
 import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.utils.FontHelper;
 
 @Service
 public class SidangService {
@@ -775,7 +776,7 @@ public class SidangService {
         Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         titleFont.setStyle(Font.UNDERLINE);
         Font kodeFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
-        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fStandard = FontHelper.getSafeFont(12);
         Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
 
         Paragraph paragrafkosong = new Paragraph("");
@@ -818,7 +819,7 @@ public class SidangService {
         table.setWidthPercentage(70);
         table.setWidths(new int[] { 3, 1, 15 });
         table.setSpacingBefore(10);
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        Font font = FontHelper.getSafeFont(12);
         font.setColor(CMYKColor.BLACK);
         String nama = null;
         String nidnDosen = null;
@@ -910,7 +911,7 @@ public class SidangService {
         table1.setWidths(new int[] { 3, 5, 8, 5 });
 
         Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
-        Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fontIsi = FontHelper.getSafeFont(12);
 
         cell = new PdfPCell(new Phrase("No. ", fontHeader));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1046,7 +1047,7 @@ public class SidangService {
         table2.setWidthPercentage(70);
         table2.setWidths(new int[] { 3, 1, 15 });
         table2.setSpacingBefore(10);
-        Font font2 = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        Font font2 = FontHelper.getSafeFont(12);
         font2.setColor(CMYKColor.BLACK);
 
         cell = new PdfPCell(new Phrase("Nama", font2));
@@ -1106,7 +1107,7 @@ public class SidangService {
         table3.setWidthPercentage(70);
         table3.setWidths(new int[] { 4, 1, 15 });
         table3.setSpacingBefore(10);
-        Font font3 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font font3 = FontHelper.getSafeFont(12);
         font2.setColor(CMYKColor.BLACK);
 
         cell = new PdfPCell(new Phrase("Hari/Tanggal", font3));
@@ -1348,7 +1349,7 @@ public class SidangService {
         Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         titleFont.setStyle(Font.UNDERLINE);
         Font kodeFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
-        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fStandard = FontHelper.getSafeFont(12);
         Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
 
         Paragraph paragrafkosong = new Paragraph("");
@@ -1391,7 +1392,7 @@ public class SidangService {
         table.setWidthPercentage(70);
         table.setWidths(new int[] { 3, 1, 15 });
         table.setSpacingBefore(10);
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        Font font = FontHelper.getSafeFont(12);
         font.setColor(CMYKColor.BLACK);
 
         String nama = null;
@@ -1484,7 +1485,7 @@ public class SidangService {
         table1.setWidths(new int[] { 3, 5, 8, 5 });
 
         Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
-        Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fontIsi = FontHelper.getSafeFont(12);
 
         cell = new PdfPCell(new Phrase("No. ", fontHeader));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1616,7 +1617,7 @@ public class SidangService {
         table2.setWidthPercentage(70);
         table2.setWidths(new int[] { 3, 1, 15 });
         table2.setSpacingBefore(10);
-        Font font2 = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        Font font2 = FontHelper.getSafeFont(12);
         font2.setColor(CMYKColor.BLACK);
 
         cell = new PdfPCell(new Phrase("Nama", font2));
@@ -1676,7 +1677,7 @@ public class SidangService {
         table3.setWidthPercentage(70);
         table3.setWidths(new int[] { 4, 1, 15 });
         table3.setSpacingBefore(10);
-        Font font3 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font font3 = FontHelper.getSafeFont(12);
         font2.setColor(CMYKColor.BLACK);
 
         cell = new PdfPCell(new Phrase("Hari/Tanggal", font3));

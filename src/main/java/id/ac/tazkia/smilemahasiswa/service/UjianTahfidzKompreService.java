@@ -13,6 +13,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import id.ac.tazkia.smilemahasiswa.utils.FontHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,7 +84,7 @@ public class UjianTahfidzKompreService {
                 PdfPTable table = new PdfPTable(6);
                 table.setWidthPercentage(100);
                 table.setWidths(new int[] { 2, 1, 4, 2, 1, 4 });
-                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+                Font font = FontHelper.getSafeFont(12);
                 font.setColor(CMYKColor.BLACK);
 
                 PdfPCell cell;
@@ -165,7 +166,7 @@ public class UjianTahfidzKompreService {
                 PdfPTable judul = new PdfPTable(1);
                 judul.setWidthPercentage(100);
                 judul.setWidths(new int[] { 10 });
-                Font fontJudul = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14);
+                Font fontJudul = FontHelper.getSafeFont(14);
                 fontJudul.setColor(CMYKColor.BLACK);
                 fontJudul.setStyle(Font.BOLD);
 
@@ -341,7 +342,7 @@ public class UjianTahfidzKompreService {
                 PdfPTable table = new PdfPTable(6);
                 table.setWidthPercentage(100);
                 table.setWidths(new int[] { 2, 1, 4, 2, 1, 4 });
-                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+                Font font = FontHelper.getSafeFont(12);
                 font.setColor(CMYKColor.BLACK);
 
                 PdfPCell cell;
@@ -423,7 +424,7 @@ public class UjianTahfidzKompreService {
                 PdfPTable judul = new PdfPTable(1);
                 judul.setWidthPercentage(100);
                 judul.setWidths(new int[] { 10 });
-                Font fontJudul = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14);
+                Font fontJudul = FontHelper.getSafeFont(14);
                 fontJudul.setColor(CMYKColor.BLACK);
                 fontJudul.setStyle(Font.BOLD);
 

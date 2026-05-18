@@ -14,6 +14,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.entity.BebasKewajiban.*;
+import id.ac.tazkia.smilemahasiswa.utils.FontHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -373,7 +374,7 @@ public class BebasKewajibanService {
         // === NOMOR SURAT ===
         Paragraph nomorSurat = new Paragraph(
                 "Nomor: " + bebasKewajiban.getNomorSurat(),
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 12));
+                FontHelper.getSafeFont(12));
         nomorSurat.setAlignment(Element.ALIGN_CENTER);
         document.add(nomorSurat);
         document.add(new Paragraph("\n\n"));
@@ -389,7 +390,7 @@ public class BebasKewajibanService {
         document.add(new Paragraph("\n\n"));
 
         // === ISI ===
-        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fStandard = FontHelper.getSafeFont(12);
         Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
 
         Paragraph p = new Paragraph(
@@ -404,7 +405,7 @@ public class BebasKewajibanService {
         PdfPTable table = new PdfPTable(3);
         table.setWidths(new int[] { 10, 1, 15 });
         table.setWidthPercentage(80);
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font font = FontHelper.getSafeFont(12);
 
         addTableCell(table, "Nama", font);
         addTableCell(table, ":", font);
@@ -489,7 +490,7 @@ public class BebasKewajibanService {
             leftCell.addElement(qrPdfImage);
         } catch (Exception e) {
             System.err.println("Gagal buat QR Code: " + e.getMessage());
-            Paragraph fallback = new Paragraph("QR Error", FontFactory.getFont(FontFactory.TIMES_ROMAN, 8));
+            Paragraph fallback = new Paragraph("QR Error", FontHelper.getSafeFont(8));
             fallback.setAlignment(Element.ALIGN_CENTER);
             leftCell.addElement(fallback);
         }
@@ -586,7 +587,7 @@ public class BebasKewajibanService {
         // === NOMOR SURAT ===
         Paragraph nomorSurat = new Paragraph(
                 "Number: " + bebasKewajiban.getNomorSurat(),
-                FontFactory.getFont(FontFactory.TIMES_ROMAN, 12));
+                FontHelper.getSafeFont(12));
         nomorSurat.setAlignment(Element.ALIGN_CENTER);
         document.add(nomorSurat);
         document.add(new Paragraph("\n\n"));
@@ -602,7 +603,7 @@ public class BebasKewajibanService {
         document.add(new Paragraph("\n\n"));
 
         // === ISI ===
-        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fStandard = FontHelper.getSafeFont(12);
         Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
 
         Paragraph p = new Paragraph(
@@ -617,7 +618,7 @@ public class BebasKewajibanService {
         PdfPTable table = new PdfPTable(3);
         table.setWidths(new int[] { 10, 1, 15 });
         table.setWidthPercentage(80);
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font font = FontHelper.getSafeFont(12);
 
         addTableCell(table, "Name", font);
         addTableCell(table, ":", font);
@@ -704,7 +705,7 @@ public class BebasKewajibanService {
             leftCell.addElement(qrPdfImage);
         } catch (Exception e) {
             System.err.println("Gagal buat QR Code: " + e.getMessage());
-            Paragraph fallback = new Paragraph("QR Error", FontFactory.getFont(FontFactory.TIMES_ROMAN, 8));
+            Paragraph fallback = new Paragraph("QR Error", FontHelper.getSafeFont(8));
             fallback.setAlignment(Element.ALIGN_CENTER);
             leftCell.addElement(fallback);
         }

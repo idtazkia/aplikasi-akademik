@@ -10,6 +10,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import id.ac.tazkia.smilemahasiswa.dao.surat.SuratKeteranganMahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.surat.SuratKeteranganMahasiswa;
+import id.ac.tazkia.smilemahasiswa.utils.FontHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,7 +96,7 @@ public class SuratKeteranganMahasiswaService {
         document.add(judulSurat);
 
         String nomorSurat = generateNomorSurat(surat);
-        Paragraph nomorSuratParagraph = new Paragraph("Nomor: " + nomorSurat, FontFactory.getFont(FontFactory.TIMES_ROMAN, 11));
+        Paragraph nomorSuratParagraph = new Paragraph("Nomor: " + nomorSurat, FontHelper.getSafeFont(11));
         nomorSuratParagraph.setAlignment(Element.ALIGN_CENTER);
         document.add(nomorSuratParagraph);
 
@@ -113,7 +114,7 @@ public class SuratKeteranganMahasiswaService {
         }
 
         // === SALAM ISLAMIYAH ===
-        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11);
+        Font fStandard = FontHelper.getSafeFont(11);
         Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 11);
 
         Paragraph salamIslami = new Paragraph("السـلام عـلـيكم ورحـمة الله وبركا تــه", fStandard);
@@ -232,7 +233,7 @@ public class SuratKeteranganMahasiswaService {
             rightCell.addElement(qrPdfImage);
         } catch (Exception e) {
             log.error("Gagal buat QR Code: {}", e.getMessage());
-            Paragraph fallback = new Paragraph("QR Error", FontFactory.getFont(FontFactory.TIMES_ROMAN, 8));
+            Paragraph fallback = new Paragraph("QR Error", FontHelper.getSafeFont(8));
             fallback.setAlignment(Element.ALIGN_CENTER);
             rightCell.addElement(fallback);
         }
