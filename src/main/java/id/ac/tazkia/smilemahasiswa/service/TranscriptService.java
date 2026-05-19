@@ -36,6 +36,9 @@ public class TranscriptService {
     @Value("${logo.surat}")
     private String logo;
 
+    @Value("${logo.ttd}")
+    private String logoTtd;
+
     @Autowired
     private KrsDetailDao krsDetailDao;
 
@@ -912,8 +915,21 @@ public class TranscriptService {
         Paragraph title = new Paragraph(mhs.getIdProdi().getJabatan(), fNilai);
         document.add(title);
 
-        document.add(nLine);
-        document.add(nLine);
+        String ttdFileName = mhs.getIdProdi().getDosen().getKaryawan().getTandaTangan();
+        if (ttdFileName != null && !ttdFileName.isEmpty()) {
+            File ttdFile = new File(logoTtd + File.separator + ttdFileName);
+            if (ttdFile.exists()) {
+                Image ttdImage = Image.getInstance(ttdFile.getAbsolutePath());
+                ttdImage.scaleToFit(150, 80);
+                document.add(ttdImage);
+            } else {
+                document.add(nLine);
+                document.add(nLine);
+            }
+        } else {
+            document.add(nLine);
+            document.add(nLine);
+        }
 
         Paragraph kpsName = new Paragraph(mhs.getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), fNilai);
         document.add(kpsName);
