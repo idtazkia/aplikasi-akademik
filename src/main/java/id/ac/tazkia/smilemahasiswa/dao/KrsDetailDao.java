@@ -1599,9 +1599,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
                         "ORDER BY nim;\n", nativeQuery = true)
         List<ListPenilaianMahasiswa> listMahasiswaTugas(JadwalTugas jadwalTugas, Jadwal jadwal);
 
-        @Query("SELECT COUNT(kd) FROM KrsDetail kd WHERE kd.mahasiswa = :mahasiswa AND kd.status = 'AKTIF' AND (LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%skripsi%'))")
+        @Query("SELECT COUNT(kd) FROM KrsDetail kd WHERE kd.mahasiswa = :mahasiswa AND kd.status = 'AKTIF' AND (LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%thesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%thesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%tesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%tesis%'))")
         Long countByMahasiswaAndMatakuliahSkripsi(@Param("mahasiswa") Mahasiswa mahasiswa);
 
-        @Query("SELECT CASE WHEN COUNT(kd) > 0 THEN true ELSE false END FROM KrsDetail kd WHERE kd.mahasiswa = :mahasiswa AND kd.status = 'AKTIF' AND (LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%skripsi%'))")
+        @Query("SELECT CASE WHEN COUNT(kd) > 0 THEN true ELSE false END FROM KrsDetail kd WHERE kd.mahasiswa = :mahasiswa AND kd.status = 'AKTIF' AND (LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%thesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%thesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%tesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%tesis%'))")
         Boolean existsByMahasiswaAndMatakuliahSkripsi(@Param("mahasiswa") Mahasiswa mahasiswa);
 }

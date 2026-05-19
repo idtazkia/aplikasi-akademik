@@ -89,7 +89,7 @@
 										<div class="row">
 											<div class="col-lg-12">
 												<div class="form-group">
-													<label class="form-control-label" for="input-judul">Judul Skripsi</label>
+													<label class="form-control-label" for="input-judul" id="label-judul">Judul Skripsi</label>
 													<input
 														type="text"
 														class="form-control"
@@ -230,5 +230,53 @@
 				</footer>
 			</div>
 		</div>
+
+		<!-- Script untuk dynamic label -->
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			$(document).ready(function() {
+				// Function untuk update label berdasarkan jenjang
+				function updateJudulLabel(mahasiswaId) {
+					if (!mahasiswaId) {
+						$('#label-judul').text('Judul Skripsi');
+						$('#input-judul').attr('placeholder', 'Judul Skripsi');
+						return;
+					}
+
+					// Fetch mahasiswa data untuk mendapatkan jenjang
+					$.ajax({
+						url: '/api/mahasiswa/get-jenjang/' + mahasiswaId,
+						method: 'GET',
+						success: function(response) {
+							if (response && response.jenjang === 'S2') {
+								$('#label-judul').text('Judul Thesis');
+								$('#input-judul').attr('placeholder', 'Judul Thesis');
+							} else {
+								$('#label-judul').text('Judul Skripsi');
+								$('#input-judul').attr('placeholder', 'Judul Skripsi');
+							}
+						},
+						error: function() {
+							// Default ke Skripsi jika error
+							$('#label-judul').text('Judul Skripsi');
+							$('#input-judul').attr('placeholder', 'Judul Skripsi');
+						}
+					});
+				}
+
+				// Trigger ketika mahasiswa berubah
+				$('#input-mahasiswa').on('change', function() {
+					var mahasiswaId = $(this).val();
+					updateJudulLabel(mahasiswaId);
+				});
+
+				// Initialize label jika sudah ada mahasiswa yang dipilih (edit mode)
+				var initialMahasiswaId = $('#input-mahasiswa').val();
+				if (initialMahasiswaId) {
+					updateJudulLabel(initialMahasiswaId);
+				}
+			});
+			/*]]>*/
+		</script>
 	</body>
 </html>

@@ -61,6 +61,7 @@ public class PenelitianController {
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("listSurat", listSurat);
         model.addAttribute("sudahAmbilSkripsi", sudahAmbilSkripsi);
+        model.addAttribute("jenisSkripsi", getJenisSkripsi(mahasiswa));
         log.info("Skripsi taken: {}", sudahAmbilSkripsi);
         model.addAttribute("title", "Form Surat Penelitian");
 
@@ -84,10 +85,11 @@ public class PenelitianController {
             suratPenelitian.setUserApproval(mahasiswa.getIdProdi().getDosen());
         }
 
-        // Check if mahasiswa has taken skripsi course
+        // Check if mahasiswa has taken skripsi/thesis course
         boolean sudahAmbilSkripsi = krsDetailDao.existsByMahasiswaAndMatakuliahSkripsi(suratPenelitian.getMahasiswa());
         if (!sudahAmbilSkripsi) {
-            attributes.addFlashAttribute("error", "Maaf, Anda belum dapat mengajukan surat penelitian. Anda harus sudah mengambil KRS Skripsi terlebih dahulu.");
+            String jenisSkripsi = getJenisSkripsi(suratPenelitian.getMahasiswa());
+            attributes.addFlashAttribute("error", "Maaf, Anda belum dapat mengajukan surat penelitian. Anda harus sudah mengambil KRS " + jenisSkripsi + " terlebih dahulu.");
             return "redirect:/surat/penelitian/form";
         }
 
@@ -124,5 +126,19 @@ public class PenelitianController {
         }
 
         return mahasiswa;
+    }
+
+    /**
+     * Mendapatkan jenis skripsi berdasarkan jenjang mahasiswa (S1 = Skripsi, S2 = Thesis)
+     */
+    private String getJenisSkripsi(Mahasiswa mahasiswa) {
+        if (mahasiswa != null && mahasiswa.getIdProdi() != null &&
+                mahasiswa.getIdProdi().getIdJenjang() != null) {
+            String kodeJenjang = mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang();
+            if (kodeJenjang != null && kodeJenjang.equalsIgnoreCase("S2")) {
+                return "Thesis";
+            }
+        }
+        return "Skripsi";
     }
 }

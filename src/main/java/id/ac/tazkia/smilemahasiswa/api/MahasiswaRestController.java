@@ -11,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/mahasiswa")
 public class MahasiswaRestController {
@@ -125,5 +128,48 @@ public class MahasiswaRestController {
 
         // Default to AKTIF if no specific status
         return "AKTIF";
+    }
+
+    /**
+     * Get jenjang of mahasiswa by ID
+     *
+     * @param id ID of mahasiswa
+     * @return Map containing jenjang information
+     */
+    @GetMapping(value = "/get-jenjang/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> getMahasiswaJenjang(@PathVariable String id) {
+        LOGGER.info("API request: Get jenjang for mahasiswa ID: {}", id);
+
+        // Find mahasiswa by ID
+        Mahasiswa mahasiswa = mahasiswaDao.findById(id).orElse(null);
+
+        if (mahasiswa == null) {
+            LOGGER.warn("Mahasiswa with ID {} not found", id);
+            return ResponseEntity.notFound().build();
+        }
+
+        // Check if mahasiswa record is active
+        if (mahasiswa.getStatus() != StatusRecord.AKTIF) {
+            LOGGER.warn("Mahasiswa with ID {} has inactive status", id);
+            return ResponseEntity.notFound().build();
+        }
+
+        // Build response
+        Map<String, String> response = new HashMap<>();
+
+        // Get jenjang from prodi
+        if (mahasiswa.getIdProdi() != null && mahasiswa.getIdProdi().getIdJenjang() != null) {
+            String kodeJenjang = mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang();
+            response.put("jenjang", kodeJenjang != null ? kodeJenjang.toUpperCase() : "S1");
+            response.put("namaJenjang", mahasiswa.getIdProdi().getIdJenjang().getNamaJenjang());
+        } else {
+            // Default to S1 if no jenjang found
+            response.put("jenjang", "S1");
+            response.put("namaJenjang", "S1");
+        }
+
+        LOGGER.info("Successfully retrieved jenjang for mahasiswa ID: {}", id);
+
+        return ResponseEntity.ok(response);
     }
 }

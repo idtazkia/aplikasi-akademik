@@ -229,7 +229,7 @@ public class SuratPenelitianService {
         isi.setAlignment(Element.ALIGN_JUSTIFIED);
         isi.setIndentationLeft(50);
         isi.setIndentationRight(50);
-        isi.add(new Chunk("Selanjutnya kami sampaikan bahwa mahasiswa kami akan melaksanakan riset/skripsi sebagai salah satu tugas akademik dalam rangka memperoleh gelar ", fStandard));
+        isi.add(new Chunk("Selanjutnya kami sampaikan bahwa mahasiswa kami akan melaksanakan riset/" + getJenisSkripsi(suratPenelitian.getMahasiswa()) + " sebagai salah satu tugas akademik dalam rangka memperoleh gelar ", fStandard));
         isi.add(new Chunk(gelar, fontB));
         isi.add(new Chunk(". Sehubungan dengan hal tersebut di atas, kami mohon kiranya Bapak/Ibu dapat memberikan bantuan kepada mahasiswa kami, yaitu:", fStandard));
         document.add(isi);
@@ -252,7 +252,7 @@ public class SuratPenelitianService {
         addTableCell(table, ":", fStandard);
         addTableCell(table, suratPenelitian.getMahasiswa().getIdProdi().getNamaProdi(), fStandard);
 
-        addTableCell(table, "Judul Skripsi", fStandard);
+        addTableCell(table, getLabelJudul(suratPenelitian.getMahasiswa()), fStandard);
         addTableCell(table, ":", fStandard);
         addTableCellWithWrapping(table, suratPenelitian.getJudulSkripsi(), fStandard);
 
@@ -494,5 +494,33 @@ public class SuratPenelitianService {
         } catch (Exception e) {
             return "/barcode/generate?text=" + text.replace("/", "_");
         }
+    }
+
+    /**
+     * Mendapatkan label judul berdasarkan jenjang mahasiswa (S1 = Skripsi, S2 = Thesis)
+     */
+    private String getLabelJudul(Mahasiswa mahasiswa) {
+        if (mahasiswa != null && mahasiswa.getIdProdi() != null &&
+                mahasiswa.getIdProdi().getIdJenjang() != null) {
+            String kodeJenjang = mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang();
+            if (kodeJenjang != null && kodeJenjang.equalsIgnoreCase("S2")) {
+                return "Judul Thesis";
+            }
+        }
+        return "Judul Skripsi";
+    }
+
+    /**
+     * Mendapatkan jenis skripsi berdasarkan jenjang mahasiswa (S1 = skripsi, S2 = thesis)
+     */
+    private String getJenisSkripsi(Mahasiswa mahasiswa) {
+        if (mahasiswa != null && mahasiswa.getIdProdi() != null &&
+                mahasiswa.getIdProdi().getIdJenjang() != null) {
+            String kodeJenjang = mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang();
+            if (kodeJenjang != null && kodeJenjang.equalsIgnoreCase("S2")) {
+                return "thesis";
+            }
+        }
+        return "skripsi";
     }
 }
