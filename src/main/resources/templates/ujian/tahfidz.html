@@ -64,6 +64,16 @@
                                 <!--                            </div>-->
 
                                 <div>
+                                    <div th:if="${tagihanMengulang}">
+                                        <div class="row" style="margin-top: 20px;">
+                                            <div class="col-md-12 alert alert-warning">
+                                                <strong>Pendaftaran ujian mengulang berhasil dikirim.</strong>
+                                                Silahkan segera melakukan pembayaran tagihan ujian mengulang.
+                                                Pengajuan ujian Anda akan diproses setelah pembayaran dikonfirmasi.
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div th:if="${ipk < 2.75}">
                                         <div class="row" style="margin-top: 20px;">
                                             <div class="col-md-12 alert alert-danger">IPK anda tidak memenuhi syarat
@@ -80,7 +90,7 @@
                                             </div>
                                             <div class="col-md-12" style="margin-top: 20px;">
                                                 <form th:action="@{/tahfidz/kirim}" method="post"
-                                                    enctype="multipart/form-data">
+                                                    enctype="multipart/form-data" onsubmit="document.getElementById('btnTahfidz').disabled=true;document.getElementById('btnTahfidz').innerHTML='<i class=\'fa fa-spinner fa-spin\'></i> Mengirim...';">
                                                     <div class="form-group">
                                                         <div class="row">
                                                             <div class="col-md-6">
@@ -114,7 +124,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <button class="btn btn-success">Kirim</button>
+                                                        <button id="btnTahfidz" type="submit" class="btn btn-success">Kirim</button>
                                                     </div>
                                                 </form>
                                             </div>

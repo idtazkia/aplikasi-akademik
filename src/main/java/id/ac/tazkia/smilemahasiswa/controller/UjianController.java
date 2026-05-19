@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -202,7 +203,7 @@ public class UjianController {
     @PostMapping("/tahfidz/kirim")
     public String kirimPendaftaran(@Valid UjianTahfidzKompre ujianTahfidzKompre,
             @RequestParam("image") MultipartFile file,
-            Authentication authentication) throws Exception {
+            Authentication authentication, RedirectAttributes redirectAttributes) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Dosen dosen = dosenDao.findById(mahasiswa.getIdProdi().getDosen().getId()).get();
@@ -236,7 +237,8 @@ public class UjianController {
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
 
-        if (!ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianTahfidz").isEmpty()) {
+        boolean isMengulang = !ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianTahfidz").isEmpty();
+        if (isMengulang) {
             if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa, "UjianTahfidz").getStatusLulus()
                     .equals(StatusRecord.TIDAK_LULUS)) {
                 ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz") + 1);
@@ -250,6 +252,11 @@ public class UjianController {
         ujianTahfidzKompre.setTahunAkademik(tahunAkademik);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
+        if (isMengulang) {
+            tagihanService.createTagihanMengulang(mahasiswa, tahunAkademik, "UjianTahfidz");
+            redirectAttributes.addFlashAttribute("tagihanMengulang", true);
+        }
+
         return "redirect:/tahfidz";
 
     }
@@ -257,7 +264,7 @@ public class UjianController {
     @PostMapping("/kompre/kirim")
     public String kirimPendaftaranKompre(@Valid UjianTahfidzKompre ujianTahfidzKompre,
             @RequestParam("image") MultipartFile file,
-            Authentication authentication) throws Exception {
+            Authentication authentication, RedirectAttributes redirectAttributes) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Dosen dosen = dosenDao.findById(mahasiswa.getIdProdi().getDosen().getId()).get();
@@ -294,7 +301,8 @@ public class UjianController {
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setStatusApprovalKps("WAITING");
 
-        if (!ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianKomprehensif").isEmpty()) {
+        boolean isMengulang = !ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianKomprehensif").isEmpty();
+        if (isMengulang) {
             if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa, "UjianKomprehensif").getStatusLulus()
                     .equals(StatusRecord.TIDAK_LULUS)) {
                 ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif") + 1);
@@ -308,6 +316,11 @@ public class UjianController {
         ujianTahfidzKompre.setStatusLulus(StatusRecord.NOT_YET_SCHEDULED);
         ujianTahfidzKompre.setTahunAkademik(tahunAkademik);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
+
+        if (isMengulang) {
+            tagihanService.createTagihanMengulang(mahasiswa, tahunAkademik, "UjianKomprehensif");
+            redirectAttributes.addFlashAttribute("tagihanMengulang", true);
+        }
 
         return "redirect:/kompre";
 
@@ -519,9 +532,6 @@ public class UjianController {
         ujianTahfidzKompre.setStatusApprovalKps("REJECTED");
         ujianTahfidzKompre.setKomentarAdmin(komentar);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
-
-        tagihanService.createTagihanMengulang(ujianTahfidzKompre.getMahasiswa(),
-                ujianTahfidzKompre.getTahunAkademik(), jenisUjian);
 
         String jenis = "";
         if (jenisUjian.equals("UjianTahfidz")) {

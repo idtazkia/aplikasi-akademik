@@ -60,6 +60,16 @@
                 <!--                </div>-->
                 <!--              </div>-->
                 <div>
+                  <div th:if="${tagihanMengulang}">
+                    <div class="row" style="margin-top: 20px;">
+                      <div class="col-md-12 alert alert-warning">
+                        <strong>Pendaftaran ujian mengulang berhasil dikirim.</strong>
+                        Silahkan segera melakukan pembayaran tagihan ujian mengulang.
+                        Pengajuan ujian Anda akan diproses setelah pembayaran dikonfirmasi.
+                      </div>
+                    </div>
+                  </div>
+
                   <div th:if="${totalSks < 138 || jumlahNilaiD > 1}">
                     <div class="row" style="margin-top: 20px;">
                       <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks < 138}">
@@ -78,7 +88,7 @@
                           Sidang Komprehensif</a>
                       </div>
                       <div class="col-md-12" style="margin-top: 20px;" th:if="${totalSks >= 138}">
-                        <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data">
+                        <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data" onsubmit="document.getElementById('btnKompre').disabled=true;document.getElementById('btnKompre').innerHTML='<i class=\'fa fa-spinner fa-spin\'></i> Mengirim...';">
                           <div class="form-group">
                             <div class="row">
                               <div class="col-md-6">
@@ -98,7 +108,7 @@
                             <input type="file" name="image" class="form-control">
                           </div>
                           <div class="form-group">
-                            <button class="btn btn-success">Kirim</button>
+                            <button id="btnKompre" type="submit" class="btn btn-success">Kirim</button>
                           </div>
                         </form>
                       </div>
