@@ -1604,4 +1604,27 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
         @Query("SELECT CASE WHEN COUNT(kd) > 0 THEN true ELSE false END FROM KrsDetail kd WHERE kd.mahasiswa = :mahasiswa AND kd.status = 'AKTIF' AND (LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%skripsi%') OR LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%thesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%thesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.namaMatakuliah) LIKE LOWER('%tesis%') OR LOWER(kd.matakuliahKurikulum.matakuliah.singkatan) LIKE LOWER('%tesis%'))")
         Boolean existsByMahasiswaAndMatakuliahSkripsi(@Param("mahasiswa") Mahasiswa mahasiswa);
+
+        @Query(value = "SELECT m.kode_matakuliah, m.nama_matakuliah, p.nama_prodi, " +
+                        "kl.nama_kelas, kar.nama_karyawan AS dosen, " +
+                        "COUNT(kd.id) AS jumlah_mahasiswa, " +
+                        "ROUND(COALESCE(AVG(kd.nilai_akhir), 0), 2) AS rata_rata, " +
+                        "ROUND(COALESCE(AVG(kd.nilai_uts), 0), 2) AS rata_uts, " +
+                        "ROUND(COALESCE(AVG(kd.nilai_uas), 0), 2) AS rata_uas, " +
+                        "ROUND(COALESCE(AVG(kd.nilai_tugas), 0), 2) AS rata_tugas, " +
+                        "ROUND(COALESCE(AVG(kd.nilai_presensi), 0), 2) AS rata_presensi " +
+                        "FROM jadwal j " +
+                        "INNER JOIN matakuliah_kurikulum mk ON j.id_matakuliah_kurikulum = mk.id " +
+                        "INNER JOIN matakuliah m ON mk.id_matakuliah = m.id " +
+                        "INNER JOIN prodi p ON j.id_prodi = p.id " +
+                        "INNER JOIN kelas kl ON j.id_kelas = kl.id " +
+                        "LEFT JOIN dosen d ON j.id_dosen_pengampu = d.id " +
+                        "LEFT JOIN karyawan kar ON d.id_karyawan = kar.id " +
+                        "LEFT JOIN krs_detail kd ON kd.id_jadwal = j.id AND kd.status = 'AKTIF' AND kd.finalisasi = 'FINAL' " +
+                        "WHERE j.id_tahun_akademik = ?1 " +
+                        "AND (?2 IS NULL OR j.id_prodi = ?2) " +
+                        "AND j.status = 'AKTIF' " +
+                        "GROUP BY mk.id, m.kode_matakuliah, m.nama_matakuliah, p.id, p.nama_prodi, kl.id, kl.nama_kelas, d.id, kar.id, kar.nama_karyawan " +
+                        "ORDER BY p.kode_prodi, m.nama_matakuliah, kl.nama_kelas", nativeQuery = true)
+        List<Object[]> rataRataNilaiMatakuliah(String idTahunAkademik, String idProdi);
 }

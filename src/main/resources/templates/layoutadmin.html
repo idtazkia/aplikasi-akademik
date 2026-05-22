@@ -1139,6 +1139,12 @@
 									</li>
 									<li
 										class="nav-item"
+										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF_PRODI')"
+									>
+										<a th:href="@{/report/recapitulation/rata-rata-matakuliah}" class="nav-link">Laporan Rata-Rata Matakuliah</a>
+									</li>
+									<li
+										class="nav-item"
 										sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')"
 									>
 										<a th:href="@{/report/recapitulation/presensiDosen/list}" class="nav-link"

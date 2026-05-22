@@ -471,6 +471,17 @@ public class ReportController {
         }
     }
 
+    @GetMapping("/report/recapitulation/rata-rata-matakuliah")
+    public void rataRataMatakuliah(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi) {
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
+        if (tahunAkademik != null) {
+            model.addAttribute("hasil",
+                    krsDetailDao.rataRataNilaiMatakuliah(tahunAkademik.getId(), prodi != null ? prodi.getId() : null));
+        }
+    }
+
     @GetMapping("/report/recapitulation/downloadipk")
     public void listPerMatkul(@RequestParam(required = false) TahunAkademik tahunAkademik,
             @RequestParam(required = false) String angkatan, @RequestParam(required = false) Prodi prodi,
