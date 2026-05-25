@@ -79,6 +79,9 @@
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary">Cari</button>
                                     <a th:href="@{/report/recapitulation/rata-rata-matakuliah}" class="btn btn-secondary">Reset</a>
+                                    <a th:if="${selectedTahun != null}"
+                                       th:href="@{/report/recapitulation/rata-rata-matakuliah/export(tahunAkademik=${selectedTahun?.id},prodi=${selectedProdi?.id})}"
+                                       class="btn btn-success"><i class="fas fa-file-excel"></i> Download Excel</a>
                                 </div>
                             </div>
                         </form>

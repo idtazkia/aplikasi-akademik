@@ -482,6 +482,85 @@ public class ReportController {
         }
     }
 
+    @GetMapping("/report/recapitulation/rata-rata-matakuliah/export")
+    public void exportRataRataMatakuliah(@RequestParam(required = false) TahunAkademik tahunAkademik,
+            @RequestParam(required = false) Prodi prodi, HttpServletResponse response) throws IOException {
+        if (tahunAkademik == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tahun akademik harus dipilih");
+            return;
+        }
+
+        List<Object[]> data = krsDetailDao.rataRataNilaiMatakuliah(tahunAkademik.getId(), prodi != null ? prodi.getId() : null);
+
+        String[] columns = { "No", "Kode MK", "Nama Matakuliah", "Prodi", "Kelas", "Dosen",
+                "Jml Mahasiswa", "Rata-Rata Akhir", "Rata-Rata UTS", "Rata-Rata UAS", "Rata-Rata Tugas", "Rata-Rata Presensi" };
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Rata-Rata Matakuliah");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 11);
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+        headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle numStyle = workbook.createCellStyle();
+        numStyle.cloneStyleFrom(dataStyle);
+        numStyle.setAlignment(HorizontalAlignment.CENTER);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        int rowNum = 1;
+        int no = 1;
+        for (Object[] row : data) {
+            Row r = sheet.createRow(rowNum++);
+            r.createCell(0).setCellValue(no++);
+            r.createCell(1).setCellValue(row[0] != null ? row[0].toString() : "");
+            r.createCell(2).setCellValue(row[1] != null ? row[1].toString() : "");
+            r.createCell(3).setCellValue(row[2] != null ? row[2].toString() : "");
+            r.createCell(4).setCellValue(row[3] != null ? row[3].toString() : "");
+            r.createCell(5).setCellValue(row[4] != null ? row[4].toString() : "");
+            r.createCell(6).setCellValue(row[5] != null ? row[5].toString() : "0");
+            r.createCell(7).setCellValue(row[6] != null ? row[6].toString() : "0");
+            r.createCell(8).setCellValue(row[7] != null ? row[7].toString() : "0");
+            r.createCell(9).setCellValue(row[8] != null ? row[8].toString() : "0");
+            r.createCell(10).setCellValue(row[9] != null ? row[9].toString() : "0");
+            r.createCell(11).setCellValue(row[10] != null ? row[10].toString() : "0");
+            for (int i = 0; i < 12; i++) {
+                r.getCell(i).setCellStyle(i < 6 ? dataStyle : numStyle);
+            }
+        }
+
+        for (int i = 0; i < columns.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        String prodiLabel = prodi != null ? "-" + prodi.getNamaProdi() : "";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=Rata-Rata-Matakuliah-"
+                + tahunAkademik.getNamaTahunAkademik() + prodiLabel + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
     @GetMapping("/report/recapitulation/downloadipk")
     public void listPerMatkul(@RequestParam(required = false) TahunAkademik tahunAkademik,
             @RequestParam(required = false) String angkatan, @RequestParam(required = false) Prodi prodi,
