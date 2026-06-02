@@ -162,7 +162,7 @@ public class SuratMagangService {
 
         Paragraph kepada = new Paragraph(
                 "Kepada Yth.\nPimpinan " + suratMagang.getNamaPerusahaan(),
-                FontFactory.getFont(FontFactory.TIMES_BOLD, 11));
+                FontHelper.getSafeFontBold(11));
         kepada.setAlignment(Element.ALIGN_JUSTIFIED);
         kepada.setIndentationLeft(50);
         kepada.setIndentationRight(50);
@@ -191,7 +191,7 @@ public class SuratMagangService {
 
         // === SALAM ISLAMIYAH ===
         Font fStandard = FontHelper.getSafeFont(11);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 11);
+        Font fontB = FontHelper.getSafeFontBold(11);
 
         Paragraph salamIslami = new Paragraph("السـلام عـلـيكم ورحـمة الله وبركا تــه", fStandard);
         salamIslami.setAlignment(Element.ALIGN_RIGHT);

@@ -91,7 +91,7 @@ public class SuratKeteranganMahasiswaService {
         
 
         String namaSurat = "SURAT KETERANGAN MAHASISWA";
-        Paragraph judulSurat = new Paragraph(namaSurat, FontFactory.getFont(FontFactory.TIMES_BOLD, 11));
+        Paragraph judulSurat = new Paragraph(namaSurat, FontHelper.getSafeFontBold(11));
         judulSurat.setAlignment(Element.ALIGN_CENTER);
         document.add(judulSurat);
 
@@ -115,7 +115,7 @@ public class SuratKeteranganMahasiswaService {
 
         // === SALAM ISLAMIYAH ===
         Font fStandard = FontHelper.getSafeFont(11);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 11);
+        Font fontB = FontHelper.getSafeFontBold(11);
 
         Paragraph salamIslami = new Paragraph("السـلام عـلـيكم ورحـمة الله وبركا تــه", fStandard);
         salamIslami.setAlignment(Element.ALIGN_RIGHT);
@@ -261,7 +261,7 @@ public class SuratKeteranganMahasiswaService {
             }
         }
 
-        Paragraph namaPenandatangan = new Paragraph(namaPenandatanganStr, FontFactory.getFont(FontFactory.TIMES_BOLD, 11, Font.UNDERLINE));
+        Paragraph namaPenandatangan = new Paragraph(namaPenandatanganStr, FontHelper.getSafeFontBold(11));
         namaPenandatangan.setSpacingBefore(5);
         rightCell.addElement(namaPenandatangan);
 

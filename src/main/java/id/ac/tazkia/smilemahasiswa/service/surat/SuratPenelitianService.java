@@ -163,13 +163,13 @@ public class SuratPenelitianService {
         kepada.setIndentationLeft(50);
         kepada.setIndentationRight(50);
 
-        kepada.add(new Chunk("Kepada Yth.\n", FontFactory.getFont(FontFactory.TIMES_BOLD, 11)));
-        kepada.add(new Chunk(suratPenelitian.getDivisi(), FontFactory.getFont(FontFactory.TIMES_BOLD, 11)));
+        kepada.add(new Chunk("Kepada Yth.\n", FontHelper.getSafeFontBold(11)));
+        kepada.add(new Chunk(suratPenelitian.getDivisi(), FontHelper.getSafeFontBold(11)));
         document.add(kepada);
 
         Paragraph namaPerusahaan = new Paragraph(
                 suratPenelitian.getNamaPerusahaan(),
-                FontFactory.getFont(FontFactory.TIMES_BOLD, 11)
+                FontHelper.getSafeFontBold(11)
         );
         namaPerusahaan.setAlignment(Element.ALIGN_JUSTIFIED);
         namaPerusahaan.setIndentationLeft(50);
@@ -202,7 +202,7 @@ public class SuratPenelitianService {
 
         // === SALAM ISLAMIYAH ===
         Font fStandard = FontHelper.getSafeFont(11);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 11);
+        Font fontB = FontHelper.getSafeFontBold(11);
 
         Paragraph salamIslami = new Paragraph("السـلام عـلـيكم ورحـمة الله وبركا تــه", fStandard);
         salamIslami.setAlignment(Element.ALIGN_RIGHT);

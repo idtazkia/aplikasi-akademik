@@ -23,7 +23,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
@@ -773,11 +772,11 @@ public class SidangService {
         background.scaleAbsolute(400, 450);
         document.add(background);
 
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font titleFont = FontHelper.getSafeFontBold(12);
         titleFont.setStyle(Font.UNDERLINE);
-        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font kodeFont = FontHelper.getSafeFontBold(12);
         Font fStandard = FontHelper.getSafeFont(12);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font fontB = FontHelper.getSafeFontBold(12);
 
         Paragraph paragrafkosong = new Paragraph("");
 
@@ -910,7 +909,7 @@ public class SidangService {
         table1.setWidthPercentage(90);
         table1.setWidths(new int[] { 3, 5, 8, 5 });
 
-        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font fontHeader = FontHelper.getSafeFontBold(12);
         Font fontIsi = FontHelper.getSafeFont(12);
 
         cell = new PdfPCell(new Phrase("No. ", fontHeader));
@@ -1346,11 +1345,11 @@ public class SidangService {
         background.scaleAbsolute(400, 450);
         document.add(background);
 
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font titleFont = FontHelper.getSafeFontBold(12);
         titleFont.setStyle(Font.UNDERLINE);
-        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font kodeFont = FontHelper.getSafeFontBold(12);
         Font fStandard = FontHelper.getSafeFont(12);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font fontB = FontHelper.getSafeFontBold(12);
 
         Paragraph paragrafkosong = new Paragraph("");
 
@@ -1484,7 +1483,7 @@ public class SidangService {
         table1.setWidthPercentage(90);
         table1.setWidths(new int[] { 3, 5, 8, 5 });
 
-        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font fontHeader = FontHelper.getSafeFontBold(12);
         Font fontIsi = FontHelper.getSafeFont(12);
 
         cell = new PdfPCell(new Phrase("No. ", fontHeader));

@@ -365,7 +365,7 @@ public class BebasKewajibanService {
         document.add(new Paragraph("\n\n\n\n\n"));
 
         // === JUDUL ===
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 14);
+        Font titleFont = FontHelper.getSafeFontBold(14);
         titleFont.setStyle(Font.UNDERLINE);
         Paragraph title = new Paragraph("SURAT KETERANGAN LULUS", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
@@ -391,7 +391,7 @@ public class BebasKewajibanService {
 
         // === ISI ===
         Font fStandard = FontHelper.getSafeFont(12);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font fontB = FontHelper.getSafeFontBold(12);
 
         Paragraph p = new Paragraph(
                 "Pimpinan Akademik Universitas Islam Tazkia dengan ini menerangkan bahwa :", fStandard);
@@ -578,7 +578,7 @@ public class BebasKewajibanService {
         document.add(new Paragraph("\n\n\n\n\n"));
 
         // === JUDUL ===
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 14);
+        Font titleFont = FontHelper.getSafeFontBold(14);
         titleFont.setStyle(Font.UNDERLINE);
         Paragraph title = new Paragraph("LETTER OF GRADUATION CERTIFICATE", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
@@ -604,7 +604,7 @@ public class BebasKewajibanService {
 
         // === ISI ===
         Font fStandard = FontHelper.getSafeFont(12);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
+        Font fontB = FontHelper.getSafeFontBold(12);
 
         Paragraph p = new Paragraph(
                 "The Academic Authority of Universitas Islam Tazkia hereby certifies that:", fStandard);
