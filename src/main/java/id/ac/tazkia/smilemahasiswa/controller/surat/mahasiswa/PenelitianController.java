@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import javax.validation.Valid;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -69,7 +70,7 @@ public class PenelitianController {
     }
 
     @PostMapping("/surat/penelitian/form")
-    public String saveSuratPenelitian(@ModelAttribute SuratPenelitian suratPenelitian,
+    public String saveSuratPenelitian(@Valid @ModelAttribute SuratPenelitian suratPenelitian,
                                      BindingResult errors,
                                      RedirectAttributes attributes,
                                      Authentication authentication) {

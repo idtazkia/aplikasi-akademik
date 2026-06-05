@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import id.ac.tazkia.smilemahasiswa.entity.Dosen;
@@ -38,6 +40,8 @@ public class SuratPenelitian {
 
     private String judulSkripsi;
 
+    @NotBlank(message = "Nomor telepon tidak boleh kosong")
+    @Pattern(regexp = "[0-9]{10,15}", message = "Nomor telepon hanya boleh berisi angka (10-15 digit)")
     private String nomorTelepon;
 
     @Enumerated(EnumType.STRING)

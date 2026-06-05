@@ -134,14 +134,20 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="nomorTelepon">Nomor Telepon <span class="text-danger">*</span></label>
-                                            <input type="text"
+                                            <input type="tel"
                                                    class="form-control"
                                                    th:field="*{nomorTelepon}"
                                                    id="nomorTelepon"
-                                                   placeholder="Masukkan nomor telepon"
+                                                   placeholder="Contoh: 08123456789"
+                                                   pattern="[0-9]{10,15}"
+                                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                    required>
                                             <small class="text-danger" th:if="${#fields.hasErrors('nomorTelepon')}">
                                                 <span th:errors="*{nomorTelepon}"></span>
+                                            </small>
+                                            <small class="form-text" style="color: #dc3545;">
+                                                <i class="fas fa-exclamation-circle"></i>
+                                                Pastikan nomor telepon yang dimasukkan adalah nomor <strong>aktif milik Anda sendiri</strong>, bukan nomor orang lain.
                                             </small>
                                         </div>
                                     </div>
