@@ -237,14 +237,9 @@ public class UjianController {
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
 
-        boolean isMengulang = !ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianTahfidz").isEmpty();
+        boolean isMengulang = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianTahfidz", StatusRecord.TIDAK_LULUS) != null;
         if (isMengulang) {
-            if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa, "UjianTahfidz").getStatusLulus()
-                    .equals(StatusRecord.TIDAK_LULUS)) {
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz") + 1);
-            } else {
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz"));
-            }
+            ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz") + 1);
         } else {
             ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz"));
         }
@@ -301,14 +296,9 @@ public class UjianController {
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setStatusApprovalKps("WAITING");
 
-        boolean isMengulang = !ujianTahfidzKompreDao.findByMahasiswaAndJenisUjian(mahasiswa, "UjianKomprehensif").isEmpty();
+        boolean isMengulang = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianKomprehensif", StatusRecord.TIDAK_LULUS) != null;
         if (isMengulang) {
-            if (ujianTahfidzKompreDao.getUjianTerakhir(mahasiswa, "UjianKomprehensif").getStatusLulus()
-                    .equals(StatusRecord.TIDAK_LULUS)) {
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif") + 1);
-            } else {
-                ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif"));
-            }
+            ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif") + 1);
         } else {
             ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif"));
         }
