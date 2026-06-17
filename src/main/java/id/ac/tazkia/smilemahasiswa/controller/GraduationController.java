@@ -220,6 +220,12 @@ public class GraduationController {
     @Value("classpath:sample/jurnal.docx")
     private Resource formulirJurnal;
 
+    @Value("classpath:sample/Surat Pernyataan Data Diri.docx")
+    private Resource suratPernyataanDataDiri;
+
+    @Value("classpath:sample/Surat Pernyataan Data Diri S2.docx")
+    private Resource suratPernyataanDataDiriS2;
+
     // Attribute
 
     @ModelAttribute("dosen")
@@ -787,6 +793,22 @@ public class GraduationController {
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=Surat Permohonan Pernyataan Kelulusan.docx");
         FileCopyUtils.copy(formulirJurnal.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
+    }
+
+    @GetMapping("/sample/surat-pernyataan-data-diri")
+    public void downloadSuratPernyataanDataDiri(HttpServletResponse response) throws Exception {
+        response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        response.setHeader("Content-Disposition", "attachment; filename=Surat Pernyataan Data Diri.docx");
+        FileCopyUtils.copy(suratPernyataanDataDiri.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
+    }
+
+    @GetMapping("/sample/surat-pernyataan-data-diri-s2")
+    public void downloadSuratPernyataanDataDiriS2(HttpServletResponse response) throws Exception {
+        response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        response.setHeader("Content-Disposition", "attachment; filename=Surat Pernyataan Data Diri S2.docx");
+        FileCopyUtils.copy(suratPernyataanDataDiriS2.getInputStream(), response.getOutputStream());
         response.getOutputStream().flush();
     }
 

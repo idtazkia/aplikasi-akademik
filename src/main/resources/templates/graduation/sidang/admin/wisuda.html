@@ -78,6 +78,30 @@
                 </div>
               </div>
             </div>
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header mx-4 p-3 text-center">
+                    <div class="icon icon-shape icon-lg bg-gradient-warning shadow text-center border-radius-lg">
+                      <i class="fas fa-file-alt"></i>
+                    </div>
+                  </div>
+                  <div class="card-body pt-0 p-3 text-center">
+                    <h6 class="text-center mb-0">Surat Pernyataan Data Diri</h6>
+                    <hr class="horizontal dark my-3">
+                    <div th:if="${wisuda.suratPernyataan != null}">
+                      <a class="btn-sm btn-success" target="_blank"
+                         th:href="@{/upload/{wisuda}/suratpernyataan/(wisuda=${wisuda.id})}">
+                        <i class="fas fa-eye"></i> Lihat Surat Pernyataan
+                      </a>
+                    </div>
+                    <div th:if="${wisuda.suratPernyataan == null}">
+                      <span class="badge badge-warning">Belum diupload</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-lg-12">
                 <div class="card h-100">

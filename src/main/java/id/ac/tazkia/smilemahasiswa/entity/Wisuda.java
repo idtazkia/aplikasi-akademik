@@ -36,6 +36,9 @@ public class Wisuda {
     private String foto;
     private String ukuran;
 
+    @Lob
+    private String suratPernyataan;
+
     @Enumerated(EnumType.STRING)
     private StatusApprove status;
 

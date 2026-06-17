@@ -330,8 +330,8 @@ public class TugasAkhirController {
     }
 
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-post")
-    public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-            Authentication authentication) throws Exception {
+    public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, MultipartFile suratPernyataan,
+            RedirectAttributes attributes, Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -362,48 +362,55 @@ public class TugasAkhirController {
 
         if (ukuran >= 1000000) {
             String extension = "";
-
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
 
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
-            String namaFile = UUID.randomUUID().toString();
             String lokasiUpload = wisudaFolder + File.separator + periodeWisuda.getNama() + File.separator
-                    + mahasiswa.getIdProdi().getNamaProdi()
-                    + File.separator
+                    + mahasiswa.getIdProdi().getNamaProdi() + File.separator
                     + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
-            foto.transferTo(tujuan);
+
+            String namaFileFoto = UUID.randomUUID().toString();
+            foto.transferTo(new File(lokasiUpload + File.separator + namaFileFoto + "." + extension));
 
             Wisuda wisuda = new Wisuda();
             wisuda.setMahasiswa(mahasiswa);
-            wisuda.setFoto(namaFile + "." + extension);
+            wisuda.setFoto(namaFileFoto + "." + extension);
             wisuda.setSidang(sidang);
             wisuda.setPeriodeWisuda(periodeWisuda);
             wisuda.setUkuran(String.valueOf(ukuran / (1024 * 1024)) + " Mb");
             wisuda.setStatus(StatusApprove.WAITING);
-            wisudaDao.save(wisuda);
 
+            if (suratPernyataan != null && !suratPernyataan.isEmpty()) {
+                String namaAsliSurat = suratPernyataan.getOriginalFilename();
+                String extSurat = "";
+                int si = namaAsliSurat.lastIndexOf('.');
+                int sp = Math.max(namaAsliSurat.lastIndexOf('/'), namaAsliSurat.lastIndexOf('\\'));
+                if (si > sp) extSurat = namaAsliSurat.substring(si + 1);
+                String namaFileSurat = UUID.randomUUID().toString();
+                suratPernyataan.transferTo(new File(lokasiUpload + File.separator + namaFileSurat + "." + extSurat));
+                wisuda.setSuratPernyataan(namaFileSurat + "." + extSurat);
+            }
+
+            wisudaDao.save(wisuda);
             mailService.detailWisuda(wisudaDto);
             return "redirect:waiting";
 
         } else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
             return "redirect:wisuda?sidang=" + wisudaDto.getSidang();
-
         }
 
     }
 
     @PostMapping("/graduation/wisuda/form-post")
-    public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes,
-            Authentication authentication) throws Exception {
+    public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, MultipartFile suratPernyataan,
+            RedirectAttributes attributes, Authentication authentication) throws Exception {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         String namaAsli = foto.getOriginalFilename();
@@ -429,38 +436,47 @@ public class TugasAkhirController {
 
         if (ukuran >= 1000000) {
             String extension = "";
-
             int i = namaAsli.lastIndexOf('.');
             int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
             if (i > p) {
                 extension = namaAsli.substring(i + 1);
             }
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
-            String namaFile = UUID.randomUUID().toString();
             String lokasiUpload = wisudaFolder + File.separator + periodeWisuda.getNama() + File.separator
                     + mahasiswa.getIdProdi().getNamaProdi() + File.separator
                     + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
+
+            String namaFileFoto = UUID.randomUUID().toString();
+            File tujuan = new File(lokasiUpload + File.separator + namaFileFoto + "." + extension);
             foto.transferTo(tujuan);
 
             Wisuda wisuda = new Wisuda();
             wisuda.setMahasiswa(mahasiswa);
-            wisuda.setFoto(namaFile + "." + extension);
+            wisuda.setFoto(namaFileFoto + "." + extension);
             wisuda.setPeriodeWisuda(periodeWisuda);
             wisuda.setUkuran(String.valueOf(ukuran / (1024 * 1024)) + " Mb");
             wisuda.setStatus(StatusApprove.WAITING);
-            wisudaDao.save(wisuda);
 
+            if (suratPernyataan != null && !suratPernyataan.isEmpty()) {
+                String namaAsliSurat = suratPernyataan.getOriginalFilename();
+                String extSurat = "";
+                int si = namaAsliSurat.lastIndexOf('.');
+                int sp = Math.max(namaAsliSurat.lastIndexOf('/'), namaAsliSurat.lastIndexOf('\\'));
+                if (si > sp) extSurat = namaAsliSurat.substring(si + 1);
+                String namaFileSurat = UUID.randomUUID().toString();
+                suratPernyataan.transferTo(new File(lokasiUpload + File.separator + namaFileSurat + "." + extSurat));
+                wisuda.setSuratPernyataan(namaFileSurat + "." + extSurat);
+            }
+
+            wisudaDao.save(wisuda);
             mailService.detailWisuda(wisudaDto);
             return "redirect:../sidang/mahasiswa/waiting?pasca=aktif";
 
         } else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
             return "redirect:form";
-
         }
 
     }
@@ -738,6 +754,31 @@ public class TugasAkhirController {
 
         }
 
+    }
+
+    @GetMapping("/upload/{wisuda}/suratpernyataan/")
+    public ResponseEntity<byte[]> suratPernyataanWisuda(@PathVariable Wisuda wisuda) throws Exception {
+        if (wisuda.getSuratPernyataan() == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String lokasiFile = wisudaFolder + File.separator + wisuda.getPeriodeWisuda().getNama() + File.separator
+                + wisuda.getMahasiswa().getIdProdi().getNamaProdi() + File.separator
+                + wisuda.getMahasiswa().getNim()
+                + File.separator + wisuda.getSuratPernyataan();
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            String namaFile = wisuda.getSuratPernyataan().toLowerCase();
+            if (namaFile.endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                headers.setContentDispositionFormData("attachment", wisuda.getSuratPernyataan());
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/graduation/info")

@@ -201,12 +201,25 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>File Foto</label>
-                                                <input type="file"  required name="foto" class="form-control">
+                                                <input type="file" required name="foto" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Surat Pernyataan Data Diri</label>
+                                                <div class="mb-2">
+                                                    <a th:if="${mahasiswa.idProdi.idJenjang.kodeJenjang == 'S2'}" href="/sample/surat-pernyataan-data-diri-s2" class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-download"></i> Download Template Surat Pernyataan
+                                                    </a>
+                                                    <a th:if="${mahasiswa.idProdi.idJenjang.kodeJenjang != 'S2'}" href="/sample/surat-pernyataan-data-diri" class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-download"></i> Download Template Surat Pernyataan
+                                                    </a>
+                                                </div>
+                                                <input type="file" required name="suratPernyataan" accept=".pdf,.doc,.docx" class="form-control">
+                                                <small class="text-muted">Download template di atas, isi dan tandatangani, lalu upload kembali (PDF/DOC/DOCX)</small>
                                             </div>
                                             <div class="form-group">
                                                 <input class="form-check-input" required type="checkbox" value="" id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault">
-                                                    Data yang saya isi telah divalidasi dan dapat digunakan untuk kepentingan Wisuda, Ijazah, Transkrip Nilai dan SKPI
+                                                    Saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan. Data ini akan digunakan untuk kepentingan Wisuda, Ijazah, Transkrip Nilai, dan SKPI. Segala kesalahan data yang terjadi akibat ketidaksesuaian dengan data yang diisikan bukan merupakan tanggung jawab kampus.
                                                 </label>
                                             </div>
                                             <div class="alert alert-danger" th:if="${kurang != null}">
