@@ -237,7 +237,8 @@ public class UjianController {
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
 
-        boolean isMengulang = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianTahfidz", StatusRecord.TIDAK_LULUS) != null;
+        boolean isMengulang = ujianTahfidzKompreDao.findAnyTidakLulusByMahasiswaAndJenisUjian(mahasiswa, "UjianTahfidz") != null;
+
         if (isMengulang) {
             ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianTahfidz") + 1);
         } else {
@@ -296,7 +297,7 @@ public class UjianController {
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setStatusApprovalKps("WAITING");
 
-        boolean isMengulang = ujianTahfidzKompreDao.findByMahasiswaAndJenisUjianAndStatusLulus(mahasiswa, "UjianKomprehensif", StatusRecord.TIDAK_LULUS) != null;
+        boolean isMengulang = ujianTahfidzKompreDao.findAnyTidakLulusByMahasiswaAndJenisUjian(mahasiswa, "UjianKomprehensif") != null;
         if (isMengulang) {
             ujianTahfidzKompre.setUjianKe(ujianTahfidzKompreDao.jumlahUjian(mahasiswa, "UjianKomprehensif") + 1);
         } else {
