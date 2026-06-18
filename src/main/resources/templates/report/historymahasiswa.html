@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html
 	lang="en"
 	xmlns:th="http://www.thymeleaf.org"
@@ -189,8 +189,13 @@
 													<br />
 													<div class="row">
 														<div class="col-md-6">
-															<label>Tahun Keluar</label>
-															<h4 th:if="${sidang != null}" th:text="${sidang.tahunAkademik.namaTahunAkademik}">2025/2026 Genap</h4>
+															<label>Tahun Akademik Keluar</label>
+															<h4
+																th:if="${sidang != null}"
+																th:text="${sidang.tahunAkademik.namaTahunAkademik}"
+															>
+																2025/2026 Genap
+															</h4>
 															<h4 th:if="${sidang == null}">-</h4>
 														</div>
 													</div>
