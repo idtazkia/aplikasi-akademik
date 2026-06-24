@@ -56,7 +56,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "on a.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id " +
             "inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id left join request_cicilan as b on a.id=b.id_tagihan " +
             "where b.status='AKTIF' and a.id_tahun_akademik=?1 and c.nim=?2 " +
-            "group by a.id, e.nama, b.status_approve", nativeQuery = true)
+            "group by a.id, e.nama, b.status_approve, b.status_cicilan", nativeQuery = true)
     List<Object[]> cekCicilanPerMahasiswa(TahunAkademik tahunAkademik, Mahasiswa mahasiswa);
 
     @Query(value = "select nim, mahasiswa, nama_prodi, tagihan, b.tanggal_pengajuan, count(b.id) as totalCicilan, totalTagihan, dibayar, sisa from\n" +

@@ -161,7 +161,7 @@ public class SuratMagangService {
         document.add(wrapperTable);
 
         Paragraph kepada = new Paragraph(
-                "Kepada Yth.\nPimpinan " + suratMagang.getNamaPerusahaan(),
+                "Kepada Yth.\nPimpinan\n" + suratMagang.getNamaPerusahaan(),
                 FontHelper.getSafeFontBold(11));
         kepada.setAlignment(Element.ALIGN_JUSTIFIED);
         kepada.setIndentationLeft(50);
@@ -324,17 +324,21 @@ public class SuratMagangService {
     }
 
     private String generateNomorSurat(SuratMagang suratMagang) {
-        LocalDate today = LocalDate.now();
+        LocalDate tanggalSurat = suratMagang.getTanggalDibuat() != null
+                ? suratMagang.getTanggalDibuat().toLocalDate()
+                : LocalDate.now();
         String kodeProdi = getKodeProdi(suratMagang.getMahasiswa().getIdProdi().getNamaProdi());
-        String romawiBulan = getRomawiBulan(today.getMonthValue());
+        String romawiBulan = getRomawiBulan(tanggalSurat.getMonthValue());
 
         return String.format("%03d-B/Universitas-Tazkia/Prodi-%s/%s/%s",
-                getUrutanSurat(today), kodeProdi, romawiBulan, today.getYear());
+                getUrutanSurat(suratMagang), kodeProdi, romawiBulan, tanggalSurat.getYear());
     }
 
-    private Integer getUrutanSurat(LocalDate today) {
-        // TODO: Implement proper sequence number generation
-        return 44; // Mock number, replace with actual sequence logic
+    private Integer getUrutanSurat(SuratMagang suratMagang) {
+        if (suratMagang.getTanggalDibuat() == null) return 1;
+        int tahun = suratMagang.getTanggalDibuat().getYear();
+        Long count = suratMagangDao.countSuratSebelum(suratMagang.getTanggalDibuat(), tahun);
+        return (count != null ? count.intValue() : 0) + 1;
     }
 
     private String getRomawiBulan(int bulan) {

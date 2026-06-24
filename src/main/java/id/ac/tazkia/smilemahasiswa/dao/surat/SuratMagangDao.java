@@ -74,4 +74,7 @@ public interface SuratMagangDao extends JpaRepository<SuratMagang, String> {
 
     @Query("SELECT sm FROM SuratMagang sm WHERE sm.mahasiswa.idProdi.id = :prodiId AND LOWER(sm.mahasiswa.nim) LIKE LOWER(CONCAT('%', :nim, '%')) AND sm.statusApproval = :statusApproval")
     Page<SuratMagang> findByMahasiswaIdProdiAndNimContainingIgnoreCaseAndStatusApproval(@Param("prodiId") String prodiId, @Param("nim") String nim, @Param("statusApproval") id.ac.tazkia.smilemahasiswa.entity.StatusRecord statusApproval, Pageable pageable);
+
+    @Query("SELECT COUNT(sm) FROM SuratMagang sm WHERE sm.tanggalDibuat < :tanggal AND FUNCTION('YEAR', sm.tanggalDibuat) = :tahun")
+    Long countSuratSebelum(@Param("tanggal") java.time.LocalDateTime tanggal, @Param("tahun") int tahun);
 }
