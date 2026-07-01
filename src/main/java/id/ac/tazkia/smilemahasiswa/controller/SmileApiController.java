@@ -1,9 +1,11 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import id.ac.tazkia.smilemahasiswa.dao.DosenDao;
 import id.ac.tazkia.smilemahasiswa.dao.JadwalDao;
 import id.ac.tazkia.smilemahasiswa.dao.KaryawanDao;
 import id.ac.tazkia.smilemahasiswa.dao.KelasDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dto.human.DosenAktifDto;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanDto;
@@ -24,6 +26,8 @@ import java.util.List;
 @RestController
 public class SmileApiController {
 
+    @Autowired
+    private DosenDao dosenDao;
     @Autowired
     private JadwalDao jadwalDao;
     @Autowired
@@ -128,6 +132,12 @@ public class SmileApiController {
 
         return adto;
 
+    }
+
+    @GetMapping("/api/dosen-aktif")
+    @ResponseBody
+    public List<DosenAktifDto> getDosenAktif() {
+        return dosenDao.findAllDosenAktif();
     }
 
     @PostMapping("/api/import-transkript/{angkatan}")

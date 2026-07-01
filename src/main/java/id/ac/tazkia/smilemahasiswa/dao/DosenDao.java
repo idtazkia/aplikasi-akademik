@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.human.DataJabatan;
+import id.ac.tazkia.smilemahasiswa.dto.human.DosenAktifDto;
 import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -70,4 +71,10 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     Integer countListJabatanDosenSearch(JabatanDosen jabatanDosen, String search);
 
     Optional<Dosen> findByKaryawanEmailAndStatus(String email, StatusRecord statusRecord);
+
+    @Query(value = "SELECT d.id AS id, k.nama_karyawan AS nama, k.nidn AS nidn, k.gelar AS gelar " +
+            "FROM dosen AS d INNER JOIN karyawan AS k ON d.id_karyawan = k.id " +
+            "WHERE d.status = 'AKTIF' AND k.status = 'AKTIF' " +
+            "ORDER BY k.nama_karyawan ASC", nativeQuery = true)
+    List<DosenAktifDto> findAllDosenAktif();
 }
