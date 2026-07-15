@@ -68,6 +68,7 @@ Mahasiswa → KRS → KrsDetail ←→ MatakuliahKurikulum
 Step-by-step procedures for common production data operations in `runbooks/`:
 - `recording-submissions.md` — record student assignment submissions (external links) and set scores
 - `recording-sessions.md` — record lecture sessions and student attendance
+- `exporting-course-grades.md` — export per-course grades (not IPK) to xlsx per angkatan/prodi
 
 ## CI/CD
 

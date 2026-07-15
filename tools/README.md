@@ -81,3 +81,15 @@ List students enrolled in a jadwal.
 ```bash
 ./tools/find-students-by-course.sh 4fef1c9f-3120-4b41-9b6e-178177aa4832
 ```
+
+## Export Scripts
+
+### export-nilai-matakuliah.py
+Export per-course grades (not IPK) to xlsx, one sheet per angkatan+prodi. Needs `openpyxl`, which is not in system python — use a venv.
+
+```bash
+python3 -m venv /tmp/venv && /tmp/venv/bin/pip install openpyxl
+/tmp/venv/bin/python tools/export-nilai-matakuliah.py 2024 2025 -o "Data Nilai Matakuliah.xlsx"
+```
+
+Blank cells mean "not yet graded", not zero. See `runbooks/exporting-course-grades.md` before sending the output to anyone.
